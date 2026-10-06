@@ -5,8 +5,7 @@
 export { ArtinosTheme, themeStyle } from './core/Theme';
 export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
 export { THEMES, THEME_META, GLASS_THEMES, MATERIALS, DENSITIES, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
-export type { ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, ScopeProps, Format, Formatter, Formatted, Mapping, MappingFns, Gradient, GradientName, Stop } from './core/utils';
-export type { OptionInput } from './core/options';
+export type { ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
 

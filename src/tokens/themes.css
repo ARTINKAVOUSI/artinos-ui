@@ -1,55 +1,80 @@
-/* ARTINOS UI — themes. Fifty-two complete looks; pick one.
+/* ARTINOS UI — themes. Pick one with data-ar-theme or <ArtinosTheme theme="…">.
  *
- *   studio · signature
- *     studio        studio-grade neutral dark. The default.
- *     studio-light  the same instrument on a light neutral desk.
- *     optical       the original ARTINOS prototype: polished translucent insert on graphite.
- *     reference     the ARTINOS Figma source: polished bar, double-line handle, mono 700.
- *   glass — clean panes over imagery or a live canvas
- *     glass         clear glass, neutral veil, white ink.
- *     glass-light   clear glass with a light veil and dark ink.
- *     glass-dark    smoked glass — deeper veil, same clarity.
- *     crystal       the clearest pane: barely tinted, all rim.
- *   frost — diffuse panes
- *     frost         frosted glass, frosted-white controls.
- *     frost-light   bright milky frost, dark ink.
- *     frost-dark    dark frosted glass, frosted-grey controls, white ink.
- *     ice           cool blue-white frost.
- *   optical glass — clear transmission, frost, blur; no tint, the colour is what is behind
- *     pane          clear glass, a light sweep, silver-pearl pills.
- *     pane-light    the same glass under a light veil, white pills, dark ink.
- *     lucid         the clearest pane, clear glass fills with a lit edge.
- *     gallery       lightly blurred under a neutral shade, crisp frosted fills.
- *   optical frost
- *     satin         continuous frost, glossy white pills.
- *     monolith      deep neutral frost, milky fills that carry the colour behind.
- *     opal          a smoky column: deep shade, bright rims, soft glass fills.
- *     graphite      grey frost, colour drained, grey-glass fills.
- *   luxe glass — clear premium panes: metallic hairlines, wider tracking
- *     onyx          black smoked glass, fine gold hairlines, ivory ink.
- *     sapphire      deep-blue crystal, platinum hairlines, icy controls.
- *     platinum      colourless clear glass, bright platinum double hairline.
- *     diamond       the clearest pane, with a faint prismatic fire.
- *     emerald       deep green crystal, pale-gold hairlines.
- *     rose-gold     blush-veiled clear glass, rose-gold hairlines and seam.
- *     cognac        warm amber smoked glass, brushed-brass hairlines.
- *     amethyst      deep violet crystal, silver hairlines, lavender signal.
- *   luxe frost — diffuse premium panes
- *     champagne     warm gold-tinted frost, ivory controls, antique-gold rim.
- *     pearl         nacreous white frost with an iridescent sheen.
- *     alabaster     thick warm-cream frost, bronze signal, umber ink.
- *     porcelain     cool white glazed frost, cobalt signal.
- *     jade          pale celadon frost, jade signal, forest ink.
- *     moonstone     blue-grey milky frost with a cool glow, white ink.
- *     cashmere      soft taupe frost, oat-white controls, caramel signal.
- *     velvet        deep bordeaux frost, silver hairlines, rose signal.
+ * A theme sets roles here (ground, ink, lines, accents, panel glass) and its
+ * control finish in materials.css. Anything a theme leaves out keeps the studio
+ * value from tokens.css. The rule throughout is restraint: 1px highlights,
+ * hairline edges, shallow wells, no grain or heavy halos; on glass, legibility
+ * comes from the pane, not from effects on the text.
  *
- * A theme sets roles here (ground, ink, lines, signal, panel glass) and its
- * control finish in materials.css. Principle for the studio, glass and frost
- * families: restraint — 1px
- * highlights, hairline edges, shallow wells, no grain, no heavy halos. On glass,
- * legibility comes from the pane's tint, not from effects on the text.
- * Anything a theme leaves out keeps the studio value from tokens.css.
+ * The list below is generated from the registry in core/utils.ts
+ * (node artinos.mjs sync). Families, then id and look:
+ *
+ * themes:start
+ *   untinted-glass
+ *     clear-air       Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge.
+ *     clear-polished  Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast.
+ *     clear-lens      Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection.
+ *     clear-layered   Clear panes with luminous laminated inserts. Restrained double reflections and dark engraved readouts.
+ *   untinted-frost
+ *     frost-etched    Fine etched glass. Light diffusion, translucent matte inserts and delicate satin edges.
+ *     frost-silk      Silky continuous frost. Soft diffusion beneath translucent white inserts with understated dark lettering.
+ *     frost-mist      Airy diffuse glass. A soft reflected veil, floating translucent inserts and a gently lit perimeter.
+ *     frost-deep      Deep optical diffusion. The scene melts behind clear frost; dense satin inserts carry crisp charcoal numerals.
+ *   atelier-glass
+ *     nocturne        Architectural smoke glass. Cut corners, black crystal controls and a fine champagne edge.
+ *     lagoon          Deep petrol crystal. Rounded aquamarine lenses, luminous sea-glass edges and cool ivory ink.
+ *     argent          Daylight silver glass. Crisp square edges, polished silver inserts and precise ink-blue accents.
+ *     garnet          Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals.
+ *   atelier-frost
+ *     ivory           Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details.
+ *     glacier         Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals.
+ *     wisteria        Lilac silk frost. Softly rounded opaline controls, plum lettering and muted violet accents.
+ *     dune            Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering.
+ *   studio
+ *     studio          Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default.
+ *     studio-light    The same instrument on a light neutral desk. White satin controls.
+ *   signature
+ *     optical         The original ARTINOS prototype: polished translucent insert on graphite.
+ *     reference       The ARTINOS Figma source: polished bar, double-line handle, mono 700.
+ *   glass
+ *     glass           Clean clear glass. A neutral veil, clear-rim controls, white ink.
+ *     glass-light     Clear glass with a light veil. The view stays bright, the ink is dark.
+ *     glass-dark      Clean smoked glass. A deeper veil, the same clarity, cool blue signal.
+ *     crystal         The clearest pane: a whisper of tint, bright double hairline, all-rim controls.
+ *   frost
+ *     frost           Frosted glass. A soft diffuse pane, frosted-white controls, dark ink.
+ *     frost-light     Bright milky frost with dark ink. Daylight over imagery.
+ *     frost-dark      Dark frosted glass: heavy diffusion under a charcoal veil, frosted-grey controls.
+ *     ice             Clean cool frost: a faint blue-white pane, icy controls, deep navy ink.
+ *   clear
+ *     pane            Clear glass with a soft light sweep and silver-pearl pills. No tint: the colour is whatever is behind.
+ *     pane-light      The same clear glass under a light veil. White pills, dark ink.
+ *     lucid           The clearest pane. Clear glass fills with a bright lit edge, white ink.
+ *     gallery         Gallery glass: lightly blurred under a neutral shade, hairline rules, crisp frosted fills.
+ *   clear-frost
+ *     satin           Continuous frost. The view melts into soft colour; glossy white pills.
+ *     monolith        Deep neutral frost that carries the warmth of what is behind; milky frosted fills.
+ *     opal            A smoky column: frost under a deep neutral shade, bright rims, soft glass fills.
+ *     graphite        Grey frost with the colour drained, translucent grey-glass fills.
+ *   luxe
+ *     onyx            Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night.
+ *     sapphire        Deep-blue crystal, platinum hairlines, icy clear controls, silver-blue signal.
+ *     platinum        Colourless clear glass with a bright platinum double hairline, crystal-clear controls and white ink.
+ *     diamond         The clearest pane, with a faint prismatic fire in the sheen and the controls. Ice-white signal.
+ *     emerald         Deep green crystal with pale-gold hairlines and seams, and a fresh emerald signal.
+ *     rose-gold       Clear glass under a blush veil, with rose-gold hairlines, rims and seams.
+ *     cognac          Warm amber smoked glass with brushed-brass hairlines and candle-lit ink.
+ *     amethyst        Deep violet crystal with silver hairlines, clear violet controls and a lavender signal.
+ *   luxe-frost
+ *     champagne       Warm gold-tinted frost, ivory controls with an antique-gold rim, espresso ink.
+ *     pearl           Nacreous white frost with a faint iridescent sheen, soft pearl controls, lilac signal.
+ *     alabaster       Thick warm-cream frost, cream satin controls with a bronze hairline, umber ink.
+ *     porcelain       Cool white glazed frost, glossy white controls, cobalt signal and ink-blue text.
+ *     jade            Pale celadon frost with polished pale-green controls, a jade signal and forest ink.
+ *     moonstone       Blue-grey milky frost with a cool glow, milk-white controls and white ink.
+ *     cashmere        Soft taupe frost, oat-white controls with a caramel rim, cocoa ink on the controls.
+ *     velvet          Deep bordeaux frost with silver hairlines, rosy frosted controls and a soft rose signal.
+ * themes:end
  */
 
 /* ---------- UNTINTED — clear transmission and frost in the default forms ----------

@@ -1,4 +1,4 @@
-/* Showcase page chrome only — the components' own styles come from artinos-ui/artinos.css. */
+/* Showcase page chrome only — the components' own styles come from ../src/artinos.css. */
 
 html, body { margin: 0; }
 body { background: #090909; }

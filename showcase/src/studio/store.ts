@@ -1,7 +1,7 @@
 /* Theme Studio — saved themes and exporters. Saved themes live in this browser's
    localStorage (a per-viewer convenience); export them to keep or share. */
-import { THEMES, THEME_META } from '../../../artinos-ui';
-import type { ThemeName } from '../../../artinos-ui';
+import { THEMES, THEME_META } from '../../../src';
+import type { ThemeName } from '../../../src';
 import { DENSITY_TOKENS } from './spec';
 
 export interface CustomTheme {

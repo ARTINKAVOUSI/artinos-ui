@@ -1,4 +1,6 @@
-/* ARTINOS UI — shared helpers: math, mapping, formatting, colour. No React. */
+/* ARTINOS UI — shared helpers: math, mapping, formatting, colour, options, theme
+   registry. No React at runtime (ReactNode is a type-only import). */
+import type { ReactNode } from 'react';
 
 export const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
@@ -6,6 +8,24 @@ export const reducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const cx = (...parts: Array<string | false | null | undefined>) => parts.filter(Boolean).join(' ');
+
+/* ---------- options ---------- */
+
+/** An option is a plain string, or an object with a label and/or an icon. */
+export type OptionInput<V extends string = string> =
+  | V
+  | { value: V; label?: ReactNode; icon?: ReactNode; title?: string; disabled?: boolean };
+
+export interface Option<V extends string = string> {
+  value: V;
+  label: ReactNode;
+  icon?: ReactNode;
+  title?: string;
+  disabled?: boolean;
+}
+
+export const normalizeOptions = <V extends string>(opts: readonly OptionInput<V>[]): Option<V>[] =>
+  opts.map((o) => (typeof o === 'string' ? { value: o, label: o } : { ...o, label: o.label ?? (o.icon ? null : o.value) }));
 
 /* ---------- mapping: the semantic value stays exact, only geometry changes ---------- */
 
@@ -71,15 +91,15 @@ export function runFormat(
 }
 
 /** Unit glyphs that sit tight against the number. */
-export const tightUnit = (u: string) => u === '°' || u === '%';
+const tightUnit = (u: string) => u === '°' || u === '%';
 export const joinFormatted = (f: Formatted) => f.text + (f.unit ? (tightUnit(f.unit) ? '' : ' ') + f.unit : '');
 
 /* ---------- colour ---------- */
 
 export type Stop = [position: number, hex: string];
 
-export const hexRgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-export const toHex = (a: number[]) =>
+const hexRgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const toHex = (a: number[]) =>
   '#' + a.map((x) => Math.round(clamp(x, 0, 255)).toString(16).padStart(2, '0')).join('').toUpperCase();
 
 export function sampleStops(stops: Stop[], t: number): string {

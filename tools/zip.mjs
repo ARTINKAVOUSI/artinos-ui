@@ -1,5 +1,6 @@
 /* A minimal ZIP writer: stored (uncompressed) entries, UTF-8 names, no dependencies.
-   Source kits are small text files, so compression would save little. */
+   Kits and the skill are small text files, so compression would save little.
+   Returns bytes; wrap in a Blob in the browser or write them with fs in Node. */
 
 const CRC_TABLE = (() => {
   const t = new Uint32Array(256);
@@ -11,24 +12,24 @@ const CRC_TABLE = (() => {
   return t;
 })();
 
-function crc32(bytes: Uint8Array) {
+function crc32(bytes) {
   let c = 0xffffffff;
   for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
   return (c ^ 0xffffffff) >>> 0;
 }
 
-function dosTime(d: Date) {
+function dosTime(d) {
   const time = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
   const date = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
   return { time, date };
 }
 
-/** Builds a .zip from path → text. Paths use forward slashes. */
-export function zip(files: Record<string, string>): Blob {
+/** path → text (forward slashes) → .zip bytes */
+export function zip(files) {
   const enc = new TextEncoder();
   const { time, date } = dosTime(new Date());
-  const locals: Uint8Array[] = [];
-  const centrals: Uint8Array[] = [];
+  const locals = [];
+  const centrals = [];
   let offset = 0;
 
   for (const [path, text] of Object.entries(files)) {
@@ -81,5 +82,11 @@ export function zip(files: Record<string, string>): Blob {
   ev.setUint32(12, centralSize, true);
   ev.setUint32(16, offset, true);
 
-  return new Blob([...locals, ...centrals, end] as BlobPart[], { type: 'application/zip' });
+  const out = new Uint8Array(offset + centralSize + end.length);
+  let p = 0;
+  for (const part of [...locals, ...centrals, end]) {
+    out.set(part, p);
+    p += part.length;
+  }
+  return out;
 }

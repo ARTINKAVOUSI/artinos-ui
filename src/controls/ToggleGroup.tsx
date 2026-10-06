@@ -1,10 +1,8 @@
 'use client';
 import type { CSSProperties } from 'react';
 import { useControllable } from '../core/hooks';
-import { normalizeOptions } from '../core/options';
-import type { OptionInput } from '../core/options';
-import { cx, scopeAttrs } from '../core/utils';
-import type { ScopeProps } from '../core/utils';
+import { cx, normalizeOptions, scopeAttrs } from '../core/utils';
+import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS ToggleGroup — independent flags sharing one well. Each chip is a small
    insert with its own LED seam; off, it drains to grey. `multiple={false}` makes

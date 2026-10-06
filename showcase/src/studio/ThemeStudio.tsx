@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ArtinosTheme, THEMES, THEME_META, DENSITIES, Slider, Segmented, Select, ColorField, Switch, Field, Section } from '../../../artinos-ui';
-import type { Density, ThemeName } from '../../../artinos-ui';
+import { ArtinosTheme, THEMES, THEME_META, DENSITIES, Slider, Segmented, Select, ColorField, Switch, Field, Section } from '../../../src';
+import type { Density, ThemeName } from '../../../src';
 import { BACKDROPS, BACKDROP_OPTIONS, GalleryMode, Swatch } from '../shared';
 import type { Backdrop } from '../shared';
 import { ComponentGallery } from '../gallery/ComponentGallery';

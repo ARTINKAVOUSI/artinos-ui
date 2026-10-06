@@ -1,25 +1,15 @@
 /* ARTINOS UI — control finishes: what a capsule is made of.
  *
- * Every control in the family shares one anatomy — a recessed well (trough), a
- * polished insert sitting in it, a seam/LED marking the live edge, and ink that
- * switches where the insert covers it. A finish fills those slots.
- *
- * You never have to pick a finish: each theme carries its own. This file has
- * three parts —
+ * Every control shares one anatomy: a recessed well (trough), a polished insert
+ * sitting in it, a seam/LED marking the live edge, and ink that switches where the
+ * insert covers it. A finish fills those slots. Three parts:
  *   1. the default block — the studio finish, re-declared at every scope boundary
  *   2. advanced overrides — optical · frost · milk · clear · tint · smoked · metal ·
  *      soft · reference, applied only by data-ar-material / the `material` prop
- *   3. theme finishes — studio-light · glass · glass-light · glass-dark · crystal ·
- *      frost · frost-light · frost-dark · ice · the clear luxe themes (pane · pane-light ·
- *      lucid · gallery · satin · monolith · opal · graphite) · the luxe glass themes (onyx · sapphire ·
- *      platinum · diamond · emerald · rose-gold · cognac · amethyst) · the luxe frost
- *      themes (champagne · pearl · alabaster · porcelain · jade · moonstone · cashmere · velvet).
- *      optical and reference use the
- *      override of the same name as their finish.
- * Each part states only what differs from the default block.
- *
- * `initial` on a token means "not set here": components then derive it from
- * density (e.g. radius = 31% of control height).
+ *   3. theme finishes — one block per theme (see themes.css for the list); optical
+ *      and reference reuse the override of the same name
+ * Each part states only what differs from the default block. `initial` on a token
+ * means "not set here": components derive it from density.
  */
 
 /* ---------- DEFAULT (studio) — satin insert in a shallow neutral well. Every finish

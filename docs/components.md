@@ -39,7 +39,21 @@ The precision surface. The capsule is the control, the seam is the handle, the r
 | `status` | `'bound' \| 'automated' \| 'warn' \| 'fault'` | | semantic tint on seam and dot |
 | `aria-label` | string | label | |
 
-Interaction (built in, nothing to wire): press body = jump + drag · press within 13px of the seam = grab without jump · press the readout = precision scrub (vertical distance picks 1× / 0.1× / 0.01×, with HUD) · Alt fine · Shift ultra-fine · Ctrl snap · arrows/Home/End · wheel only when focused · double-click value or Enter/F2 = type a value (`47%`, `2.5k`, `-inf`, `90°`) · Esc cancels a drag · double-click body = off/on.
+Interaction is built in; there's nothing to wire:
+
+| gesture | result |
+|---|---|
+| press the body | value jumps there, then drags |
+| press within 13px of the seam | grabs the value, no jump |
+| press the readout | precision scrub: vertical distance picks 1× (0–26px), 0.1× (26–78px) or 0.01× (beyond), with a local HUD |
+| Alt / Shift / Ctrl | fine / ultra-fine / snap (detents, or 5% steps) |
+| arrows · Home · End · wheel (focused only) | step · min · max |
+| Ctrl + arrow | next detent |
+| double-click the value · Enter · F2 | type a value in the readout's units: `0.73`, `47%`, `2.5k` (Hz), `-inf` (dB), `90°`. Enter applies, Escape cancels |
+| Esc during a drag | cancel back to the start value |
+| double-click the body | switch off / on; the value is kept (unless `toggleable={false}`) |
+
+Ruler variant: the scale moves beneath a fixed index, scrubbing from the readout zooms the engraving, `marks` magnetise lightly, and `snapStep` settles the value on release.
 
 ```tsx
 <Slider label="Roughness" value={rough} onChange={setRough} />
@@ -173,3 +187,11 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
   ))}
 </Panel>
 ```
+
+## Requirements and performance
+
+- React 18.3+ and `react-dom` (built and tested on React 19). TypeScript source, `strict`-clean; any bundler that handles TSX and CSS `@import` works (Vite, Next, webpack).
+- Stateful component files start with `'use client'`; `ArtinosTheme` is hook-free. The precision HUD and the Select list portal to `<body>` and carry the theme's tokens with them.
+- Evergreen browsers: the CSS uses `@property`, `color-mix()`, `:has()` and `backdrop-filter`.
+- No permanent animation loop. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
+- Respects `prefers-reduced-motion`.

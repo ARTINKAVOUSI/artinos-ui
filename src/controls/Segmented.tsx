@@ -1,10 +1,8 @@
 'use client';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useControllable } from '../core/hooks';
-import { normalizeOptions } from '../core/options';
-import type { OptionInput } from '../core/options';
-import { cx, scopeAttrs } from '../core/utils';
-import type { ScopeProps } from '../core/utils';
+import { cx, normalizeOptions, scopeAttrs } from '../core/utils';
+import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS Segmented — one of n. The insert travels between positions and the text
    it arrives under switches ink. Arrow keys move it. */

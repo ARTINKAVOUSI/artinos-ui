@@ -7,8 +7,8 @@ export const SEAM_GRAB = 13;
 /** Vertical distance from the readout that selects each precision level. */
 export const PRECISION_ZONES = [26, 78] as const;
 /** Detent magnet radius in px: resting, and with Ctrl held. */
-export const DETENT_PX = 6;
-export const DETENT_PX_CTRL = 22;
+const DETENT_PX = 6;
+const DETENT_PX_CTRL = 22;
 
 export type PrecisionLevels = 2 | 3;
 

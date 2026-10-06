@@ -3,10 +3,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useControllable, useSafeId } from '../core/hooks';
-import { normalizeOptions } from '../core/options';
-import type { OptionInput } from '../core/options';
-import { cx, reducedMotion, scopeAttrs, snapshotTokens } from '../core/utils';
-import type { ScopeProps } from '../core/utils';
+import { cx, normalizeOptions, reducedMotion, scopeAttrs, snapshotTokens } from '../core/utils';
+import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS Select — closed, a full-width insert with a chevron (or a quiet well with
    `appearance="well"`); open, it extends downward into a glass list panel,

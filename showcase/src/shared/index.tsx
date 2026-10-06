@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { THEMES, THEME_META } from '../../../artinos-ui';
-import type { ThemeName } from '../../../artinos-ui';
+import { THEMES, THEME_META } from '../../../src';
+import type { ThemeName } from '../../../src';
 import persianGarden from '../assets/persian-garden.jpg';
 import monstera from '../assets/monstera.jpg';
 

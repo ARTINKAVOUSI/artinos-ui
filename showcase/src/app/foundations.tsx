@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ArtinosTheme, GLASS_THEMES, THEME_META,
   Slider, RangeSlider, NumberField, Switch, Segmented, ColorField, Select, Field,
-} from '../../../artinos-ui';
-import type { ThemeName } from '../../../artinos-ui';
+} from '../../../src';
+import type { ThemeName } from '../../../src';
 import { Swatch, THEME_OPTIONS, Code } from '../shared';
 
 /* ---------- foundations ---------- */

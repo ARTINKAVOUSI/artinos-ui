@@ -1,19 +1,14 @@
 /* ARTINOS UI — token layer.
  *
  * Three layers, each reading only the one above it:
- *   1. primitives  raw values, private to this file        (--ar-ink-*, --ar-teal-*)
- *   2. roles       what a colour/size means                (--ar-bg-well, --ar-text-hi, --ar-signal)
- *   3. control     what a capsule is made of (per material) (--ar-insert, --ar-seam, --ar-trough)
+ *   1. primitives  raw values, private to this file         (--ar-ink-*, --ar-teal-*)
+ *   2. roles       what a colour/size means                 (--ar-bg-well, --ar-text-hi, --ar-signal)
+ *   3. control     what a capsule is made of (materials.css) (--ar-insert, --ar-seam, --ar-trough)
  *
- * Pick a theme with data-ar-theme (or <ArtinosTheme theme>) — it sets roles
- * (themes.css) and the control finish (materials.css):
- *   studio (default) · studio-light · optical · reference · glass · glass-light ·
- *   glass-dark · crystal · frost · frost-light · frost-dark · ice ·
- *   pane · pane-light · lucid · gallery · satin · monolith · opal · graphite ·
- *   onyx · sapphire · platinum · diamond · emerald · rose-gold · cognac · amethyst ·
- *   champagne · pearl · alabaster · porcelain · jade · moonstone · cashmere · velvet
- * Optional, independent: data-ar-density = dense · standard (default) · comfort.
- * Advanced: data-ar-material overrides a theme's control finish.
+ * The roles here are the studio theme, the default and the base of every other
+ * theme (themes.css). Independent of the theme: data-ar-density = dense ·
+ * standard (default) · comfort. Advanced: data-ar-material overrides a theme's
+ * control finish.
  */
 
 /* ---------- 1 · primitives ---------- */

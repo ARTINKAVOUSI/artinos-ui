@@ -1,0 +1,333 @@
+/* ARTINOS UI — kit builder. The one implementation behind `artinos.mjs export` and the
+   showcase Export kit. Pure: package source text in, kit files out (no file system).
+
+   A kit is a trimmed, copy-paste copy of src/: only the picked components and every
+   file they import, only the picked themes in the token CSS, and an index.ts,
+   artinos.css and README.md to match (plus docs/ when given). */
+
+export const BASE_THEME = 'studio';
+
+export const COMPONENTS = [
+  { id: 'Slider', label: 'Slider', file: 'slider/Slider.tsx', note: 'material · stepped · gradient · ruler · curve · wave' },
+  { id: 'RangeSlider', label: 'RangeSlider', file: 'slider/RangeSlider.tsx', note: 'two seams, one span' },
+  { id: 'NumberField', label: 'NumberField', file: 'controls/NumberField.tsx', note: 'scrub or type a number' },
+  { id: 'Switch', label: 'Switch', file: 'controls/Switch.tsx', note: 'shutter or compact' },
+  { id: 'ToggleGroup', label: 'ToggleGroup', file: 'controls/ToggleGroup.tsx', note: 'independent flags' },
+  { id: 'Segmented', label: 'Segmented', file: 'controls/Segmented.tsx', note: 'one of a few' },
+  { id: 'ColorField', label: 'ColorField', file: 'controls/ColorField.tsx', note: 'hex + alpha' },
+  { id: 'Select', label: 'Select', file: 'controls/Select.tsx', note: 'dropdown list' },
+  { id: 'Panel', label: 'Panel · Section · Field', file: 'layout/Panel.tsx', note: 'glass panel and layout' },
+  { id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
+  { id: 'RollingValue', label: 'RollingValue', file: 'core/RollingValue.tsx', note: 'rolling-digit readout' },
+];
+
+/** Always shipped: the theme scope and the shared helpers every component uses. */
+const CORE = ['core/Theme.tsx', 'core/utils.ts'];
+
+/* ---------- theme registry (read from core/utils.ts, the source of truth) ---------- */
+
+const META_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', family: '([^']+)', kind: '(\w+)', description: '((?:[^'\\]|\\.)*)'/;
+
+/** THEMES in registry order and THEME_META, parsed from the package source. */
+export function readRegistry(sources) {
+  const utils = sources['core/utils.ts'];
+  const themes = [...utils.match(/export const THEMES = \[([\s\S]*?)\] as const;/)[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  const meta = {};
+  for (const line of utils.split('\n')) {
+    const m = line.match(META_RE);
+    if (m) meta[m[1] ?? m[2]] = { label: m[3], family: m[4], kind: m[5], description: m[6].replace(/\\'/g, "'") };
+  }
+  return { themes, meta };
+}
+
+/* ---------- dependency graph ---------- */
+
+const IMPORT_RE = /(?:import|export)\s[^'"]*?from\s+'(\.{1,2}\/[^']+)'/g;
+
+function resolve(sources, from, spec) {
+  const parts = from.split('/').slice(0, -1);
+  for (const seg of spec.split('/')) {
+    if (seg === '..') parts.pop();
+    else if (seg !== '.') parts.push(seg);
+  }
+  const base = parts.join('/');
+  for (const cand of [base, base + '.ts', base + '.tsx', base + '/index.ts']) if (cand in sources) return cand;
+  return null;
+}
+
+function closure(sources, entries) {
+  const seen = new Set();
+  const walk = (f) => {
+    if (seen.has(f) || !(f in sources)) return;
+    seen.add(f);
+    for (const m of sources[f].matchAll(IMPORT_RE)) {
+      const r = resolve(sources, f, m[1]);
+      if (r) walk(r);
+    }
+  };
+  entries.forEach(walk);
+  return [...seen];
+}
+
+/* ---------- CSS trimming (themes.css / materials.css are flat rule lists) ---------- */
+
+const themesIn = (s) => [...s.matchAll(/data-ar-theme='([^']+)'/g)].map((m) => m[1]);
+const materialsIn = (s) => [...s.matchAll(/data-ar-material='([^']+)'/g)].map((m) => m[1]);
+
+/** Split on commas that are not inside parentheses. */
+function splitTop(s) {
+  const out = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) {
+      out.push(cur);
+      cur = '';
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
+/** Keep a selector only if every theme (and material) it names is in the kit; trims :is() lists. */
+function filterSelector(sel, keep, materials) {
+  // `:not([data-ar-material])` names no material, so theme finishes survive without the overrides
+  const ok = (s) => themesIn(s).every((t) => keep.has(t)) && (materials || materialsIn(s).length === 0);
+  const kept = [];
+  let changed = false;
+  for (const raw of splitTop(sel)) {
+    let dropped = false;
+    const p = raw.replace(/:is\(((?:[^()]|\([^()]*\))*)\)/g, (m, inner) => {
+      const items = splitTop(inner).map((x) => x.trim());
+      const left = items.filter((x) => ok(x));
+      if (left.length === items.length) return m;
+      changed = true;
+      if (!left.length) dropped = true;
+      return ':is(' + left.join(', ') + ')';
+    });
+    if (dropped || !ok(p.replace(/:is\((?:[^()]|\([^()]*\))*\)/g, ''))) {
+      changed = true;
+      continue;
+    }
+    kept.push(p);
+  }
+  if (!kept.length) return null;
+  return changed ? kept.map((s) => s.trim()).join(',\n') : sel;
+}
+
+/** Filter rule by rule; a comment travels with the rule after it; the file header is replaced. */
+function trimCss(css, keep, materials, header) {
+  const out = [];
+  let i = 0;
+  let pending = '';
+  let first = true;
+  while (i < css.length) {
+    const ws = css.slice(i).match(/^\s+/);
+    if (ws) {
+      pending += ws[0];
+      i += ws[0].length;
+      continue;
+    }
+    if (css.startsWith('/*', i)) {
+      const end = css.indexOf('*/', i + 2);
+      const c = css.slice(i, end + 2);
+      i = end + 2;
+      if (first) {
+        out.push(header);
+        first = false;
+        pending = '';
+      } else pending += c;
+      continue;
+    }
+    first = false;
+    const open = css.indexOf('{', i);
+    const close = css.indexOf('}', open);
+    if (open < 0 || close < 0) break;
+    const sel = css.slice(i, open);
+    const body = css.slice(open, close + 1);
+    i = close + 1;
+    const next = filterSelector(sel.trim(), keep, materials);
+    if (next) out.push(pending.replace(/^\n{3,}/, '\n\n') + next + ' ' + body);
+    pending = '';
+  }
+  return out.join('').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+}
+
+/* ---------- source rewrites ---------- */
+
+function trimUtils(src, ordered, materials) {
+  const rows = [];
+  for (let k = 0; k < ordered.length; k += 4) rows.push('  ' + ordered.slice(k, k + 4).map((t) => `'${t}'`).join(', ') + ',');
+  let s = src.replace(/export const THEMES = \[[\s\S]*?\] as const;/, `export const THEMES = [\n${rows.join('\n')}\n] as const;`);
+  const start = s.indexOf('export const THEME_META');
+  const end = s.indexOf('\n};', start);
+  const block = s
+    .slice(start, end)
+    .split('\n')
+    .filter((line) => {
+      const m = line.match(/^ {2}(?:'([^']+)'|([\w-]+)): \{ label:/);
+      return !m || ordered.includes(m[1] ?? m[2]);
+    })
+    .join('\n');
+  s = s.slice(0, start) + block + s.slice(end);
+  if (!materials) s = s.replace(/export const MATERIALS = \[[^\]]*\] as const;/, 'export const MATERIALS = [] as const; // finish overrides were left out of this kit');
+  return s;
+}
+
+function buildIndex(sources, files) {
+  const lines = sources['index.ts'].split('\n').filter((line) => {
+    const m = line.match(/from '(\.\/[^']+)'/);
+    if (!m) return true;
+    const r = resolve(sources, 'index.ts', m[1]);
+    return !!r && files.has(r);
+  });
+  // drop section comments left with nothing under them
+  const out = [];
+  lines.forEach((line, k) => {
+    if (/^\/\/ /.test(line)) {
+      const next = lines.slice(k + 1).find((l) => l.trim() !== '');
+      if (!next || next.startsWith('//')) return;
+    }
+    out.push(line);
+  });
+  return out.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+
+function buildCssEntry(o, cssFiles) {
+  const imports = [
+    o.googleFonts ? './tokens/fonts.css' : null,
+    './tokens/tokens.css',
+    './tokens/themes.css',
+    './tokens/materials.css',
+    o.customs.length ? './tokens/custom-themes.css' : null,
+    ...cssFiles.map((f) => './' + f),
+  ].filter(Boolean);
+  return `/* ARTINOS UI — single stylesheet entry. Import once, at the app root:
+     import './${o.folder}/artinos.css';
+   Order matters: tokens → themes → materials → components. */
+${imports.map((p) => `@import '${p}';`).join('\n')}
+`;
+}
+
+function buildReadme(o, meta, themes, comps, files) {
+  const firstTheme = o.themes.find((t) => t !== BASE_THEME) ?? o.customs[0]?.slug ?? BASE_THEME;
+  const has = (id) => comps.some((c) => c.id === id);
+  const demo = [];
+  if (has('Slider')) demo.push(`      <Slider label="Roughness" defaultValue={0.52} />`);
+  if (has('RangeSlider')) demo.push(`      <RangeSlider label="Band" defaultValue={[0.25, 0.7]} />`);
+  if (has('Segmented')) demo.push(`      <Segmented options={['LOW', 'MED', 'HIGH']} defaultValue="MED" label="Quality" />`);
+  if (has('Switch')) demo.push(`      <Switch label="Live" defaultValue />`);
+  if (has('NumberField')) demo.push(`      <NumberField label="Width" defaultValue={268} />`);
+  const names = comps.map((c) => c.id).filter((id) => demo.some((d) => d.includes('<' + id + ' ')));
+  const inner = has('Panel') ? `      <Panel title="Material">\n${demo.map((d) => '  ' + d).join('\n')}\n      </Panel>` : demo.map((d) => d.slice(2)).join('\n');
+  const importNames = ['ArtinosTheme', ...(has('Panel') ? ['Panel'] : []), ...names];
+  const n = themes.length + o.customs.length;
+  const reexport = o.pkgRoot
+    ? '```bash\nnode "' + o.pkgRoot + '/artinos.mjs" export --project . --themes <ids> --components <names> --force\n```'
+    : 'Run `node <path-to-artinos-ui>/artinos.mjs export --project . --themes <ids> --components <names> --force` from the project root, or use the Export kit in the ARTINOS UI showcase.';
+  const guides = o.docs
+    ? `## Guides
+
+- \`docs/components.md\` — every component: props, defaults, examples, interaction, recipes.
+- \`docs/theming.md\` — choosing themes, glass vs solid, density, token overrides, custom themes, the theme list, key tokens.
+
+The guides cover the whole ARTINOS UI package; this kit contains the components and themes listed here. To add themes or components, re-export into this folder from the project root:
+
+${reexport}
+
+`
+    : '';
+  return `# ARTINOS UI — exported kit
+
+A trimmed copy of ARTINOS UI with ${comps.length} component${comps.length === 1 ? '' : 's'} and ${n} theme${n === 1 ? '' : 's'}. Everything it needs is in this folder.
+
+## Install
+
+1. Copy this \`${o.folder}/\` folder into your project (e.g. \`src/${o.folder}\`).
+2. Make sure \`react\` and \`react-dom\` are installed (React 18.3+; built and tested on React 19). There are no other dependencies.
+3. Import the stylesheet once at the app root, then import components.
+
+\`\`\`tsx
+import './${o.folder}/artinos.css';
+import { ${importNames.join(', ')} } from './${o.folder}';
+
+export function Controls() {
+  return (
+    <ArtinosTheme theme="${firstTheme}">
+${inner || '      {/* controls */}'}
+    </ArtinosTheme>
+  );
+}
+\`\`\`
+
+Without React, any element with \`data-ar-theme="${firstTheme}"\` scopes the look too.
+
+Notes:
+- TypeScript source (\`.tsx\`), \`strict\`-clean. Any bundler that handles TSX and CSS \`@import\` works (Vite, Next, webpack).
+- Component files start with \`'use client'\`; they are interactive and need the DOM.
+${o.googleFonts ? "- `tokens/fonts.css` loads Chivo, Chivo Mono and Roboto Mono from Google Fonts. To self-host, delete that `@import` from `artinos.css`; every font stack falls back to system fonts." : '- No web fonts are loaded; the font stacks fall back to system fonts. Declare Chivo / Chivo Mono with @font-face to get the original faces.'}
+${o.materials ? '' : '- Finish overrides (`material` prop) were left out; each theme keeps its own finish.\n'}
+${guides}## Themes
+
+| theme | look |
+|---|---|
+${themes.map((t) => `| \`${t}\`${t === BASE_THEME ? ' (base)' : ''} | ${meta[t]?.description ?? ''} |`).join('\n')}
+${o.customs.map((c) => `| \`${c.slug}\` | ${c.name} — custom theme from the Theme Studio (tokens/custom-themes.css) |`).join('\n')}
+
+## Components
+
+${comps.map((c) => `- **${c.label}** — ${c.note}`).join('\n')}
+
+## Files
+
+\`\`\`
+${files.map((f) => `${o.folder}/${f}`).join('\n')}
+\`\`\`
+`;
+}
+
+/* ---------- the kit ---------- */
+
+/**
+ * @param sources  src-relative path → text, for every .ts / .tsx / .css file in src/
+ * @param o        { folder, themes, components, customs, googleFonts, materials, docs?, pkgRoot? }
+ * @returns        kit-relative path → text, README.md first
+ */
+export function buildKit(sources, o) {
+  const { themes: all, meta } = readRegistry(sources);
+  const themes = [BASE_THEME, ...o.themes.filter((t) => t !== BASE_THEME)];
+  const keep = new Set(themes);
+  const comps = COMPONENTS.filter((c) => o.components.includes(c.id));
+  const tsFiles = closure(sources, [...CORE, ...comps.map((c) => c.file)]).sort();
+  const folders = new Set(tsFiles.map((f) => f.split('/')[0]));
+  const cssFiles = ['core/core.css', 'slider/slider.css', 'controls/controls.css', 'layout/layout.css'].filter((f) => folders.has(f.split('/')[0]));
+
+  const files = {};
+  const list = themes.map((t) => `${t.padEnd(14)}${meta[t]?.label ?? ''}`).join('\n *   ');
+  files['artinos.css'] = buildCssEntry(o, cssFiles);
+  files['index.ts'] = buildIndex(sources, new Set(tsFiles));
+  if (o.googleFonts) files['tokens/fonts.css'] = sources['tokens/fonts.css'];
+  files['tokens/tokens.css'] = sources['tokens/tokens.css'];
+  files['tokens/themes.css'] = trimCss(
+    sources['tokens/themes.css'],
+    keep,
+    o.materials,
+    `/* ARTINOS UI — themes in this kit. Pick one with <ArtinosTheme theme="…"> or data-ar-theme.\n *   ${list}\n * A theme sets roles here and its control finish in materials.css. Anything a\n * theme leaves out keeps the studio value from tokens.css.\n */`,
+  );
+  files['tokens/materials.css'] = trimCss(
+    sources['tokens/materials.css'],
+    keep,
+    o.materials,
+    `/* ARTINOS UI — control finishes: the default (studio) block, ${o.materials ? 'the optional\n * data-ar-material / `material` overrides, ' : ''}and the finish of each theme in this kit.\n * \`initial\` on a token means "not set here": components derive it from density.\n */`,
+  );
+  if (o.customs.length) files['tokens/custom-themes.css'] = o.customs.map((c) => c.css.trim()).join('\n\n') + '\n';
+  for (const f of tsFiles) files[f] = f === 'core/utils.ts' ? trimUtils(sources[f], all.filter((t) => keep.has(t)), o.materials) : sources[f];
+  for (const f of cssFiles) files[f] = sources[f];
+  if (o.docs) for (const [name, text] of Object.entries(o.docs)) files['docs/' + name] = text;
+
+  const order = Object.keys(files).sort((a, b) => (a.includes('/') ? 1 : 0) - (b.includes('/') ? 1 : 0) || a.localeCompare(b));
+  files['README.md'] = buildReadme(o, meta, themes, comps, ['README.md', ...order]);
+  return Object.fromEntries(['README.md', ...order].map((k) => [k, files[k]]));
+}

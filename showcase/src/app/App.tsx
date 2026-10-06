@@ -1,10 +1,10 @@
 /* ARTINOS UI — full showcase. Every control on this page is live and comes from
-   ../artinos-ui exactly as a consuming app would import it.
+   ../src (the package) exactly as a consuming app would import it.
    The app shell: theme / density / backdrop state, view routing (page · #studio),
    the top bar, the page itself and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, THEMES, GLASS_THEMES, THEME_META, DENSITIES, Slider, Segmented, Select } from '../../../artinos-ui';
-import type { Density, ThemeName } from '../../../artinos-ui';
+import { ArtinosTheme, THEMES, GLASS_THEMES, THEME_META, DENSITIES, Slider, Segmented, Select } from '../../../src';
+import type { Density, ThemeName } from '../../../src';
 import { Swatch, THEME_OPTIONS, BACKDROPS, BACKDROP_OPTIONS, Code, Spec, Part } from '../shared';
 import type { Backdrop } from '../shared';
 import { ComponentGallery } from '../gallery/ComponentGallery';

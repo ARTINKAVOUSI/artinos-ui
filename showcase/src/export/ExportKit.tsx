@@ -1,15 +1,15 @@
 /* Export kit dialog — pick themes and components, get a ready-to-paste folder. */
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Field, Switch, THEMES, THEME_META } from '../../../artinos-ui';
-import type { ThemeName } from '../../../artinos-ui';
+import { Field, Switch, THEMES, THEME_META } from '../../../src';
+import type { ThemeName } from '../../../src';
 import { Swatch } from '../shared';
 import { collectTokenNames } from '../studio/spec';
 import { download, slugify, toCss } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 import { BASE_THEME, buildKit, KIT_COMPONENTS } from './kit';
 import type { CustomThemeCss } from './kit';
-import { zip } from './zip';
+import { zip } from '../../../tools/zip.mjs';
 import './export.css';
 
 const FAMILY_LABEL: Record<string, string> = {
@@ -59,6 +59,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const [folder, setFolder] = useState('artinos-ui');
   const [googleFonts, setGoogleFonts] = useState(true);
   const [materials, setMaterials] = useState(true);
+  const [docs, setDocs] = useState(true);
   const [status, setStatus] = useState('');
   const [open, setOpen] = useState<string | null>(null);
 
@@ -72,8 +73,8 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const customCssList = useMemo(() => customs.filter((c) => customIds.includes(c.id)).map((c) => customCss(c, tokenNames)), [customs, customIds, tokenNames]);
   const safeFolder = folder.trim().replace(/[^\w.-]+/g, '-') || 'artinos-ui';
   const files = useMemo(
-    () => buildKit({ folder: safeFolder, themes, components: comps, customs: customCssList, googleFonts, materials }),
-    [safeFolder, themes, comps, customCssList, googleFonts, materials],
+    () => buildKit({ folder: safeFolder, themes, components: comps, customs: customCssList, googleFonts, materials, docs }),
+    [safeFolder, themes, comps, customCssList, googleFonts, materials, docs],
   );
   const total = Object.values(files).reduce((n, s) => n + new Blob([s]).size, 0);
   const nThemes = new Set([BASE_THEME, ...themes]).size + customCssList.length;
@@ -89,7 +90,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const setFamily = (ts: string[], on: boolean) => setThemes((list) => (on ? [...new Set([...list, ...ts])] : list.filter((t) => !ts.includes(t))));
 
   const saveZip = () => {
-    const blob = zip(Object.fromEntries(Object.entries(files).map(([p, s]) => [safeFolder + '/' + p, s])));
+    const blob = new Blob([zip(Object.fromEntries(Object.entries(files).map(([p, s]) => [safeFolder + '/' + p, s]))) as BlobPart], { type: 'application/zip' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -223,9 +224,10 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
             <div className="xk__opts">
               <Field label="Google Fonts" labelWidth={120}><Switch variant="compact" label="Google Fonts" value={googleFonts} onChange={setGoogleFonts} /></Field>
               <Field label="Finish overrides" labelWidth={120}><Switch variant="compact" label="Finish overrides" value={materials} onChange={setMaterials} /></Field>
+              <Field label="Guides" labelWidth={120}><Switch variant="compact" label="Guides" value={docs} onChange={setDocs} /></Field>
             </div>
             <p className="xk__note">
-              Google Fonts loads Chivo and Chivo Mono; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop.
+              Google Fonts loads Chivo and Chivo Mono; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop. Guides add <code>docs/</code>: the component API and theming guide.
             </p>
           </section>
 

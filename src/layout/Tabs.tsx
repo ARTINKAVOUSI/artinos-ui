@@ -2,9 +2,8 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useControllable } from '../core/hooks';
-import { normalizeOptions } from '../core/options';
-import type { OptionInput } from '../core/options';
-import { cx } from '../core/utils';
+import { cx, normalizeOptions } from '../core/utils';
+import type { OptionInput } from '../core/utils';
 
 /* ARTINOS Tabs — a quiet text tab strip with a travelling underline. Renders the
    tablist only; render the active panel yourself from `value`. Arrow keys,

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
   GRADIENTS, Slider, RangeSlider, NumberField, Switch, ToggleGroup, Segmented, ColorField, Select, Panel, Section, Field, Tabs, RollingValue,
-} from '../../../artinos-ui';
-import type { RangeValue } from '../../../artinos-ui';
+} from '../../../src';
+import type { RangeValue } from '../../../src';
 import { Spec, Part, ICONS, wave } from '../shared';
 
 /* The complete component gallery — every component, variant and state. Rendered by the

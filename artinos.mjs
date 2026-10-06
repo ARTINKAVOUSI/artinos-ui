@@ -1,109 +1,181 @@
 #!/usr/bin/env node
-/* ARTINOS UI — one entry point for using this package in other projects. Node 18+, no dependencies.
+/* ARTINOS UI — the package's one command. Node 18+, no dependencies.
  *
  *   node artinos.mjs list
  *       every theme (grouped, with descriptions) and component
  *
- *   node artinos.mjs setup --project <dir> --themes frost-deep,onyx --components Slider,Panel,Select [kit options]
- *       export a trimmed kit into the project (with its guides), install the Claude Code skill
- *       into <dir>/.claude/skills/artinos-ui, and print how to wire it up
+ *   node artinos.mjs setup --project <dir> --themes frost-deep,onyx --components Slider,Panel,Select
+ *       export a trimmed kit into a project (with its guides), install the Claude Code skill
+ *       into <dir>/.claude/skills/artinos-ui, and print the wiring for the detected framework
  *
- *   node artinos.mjs export --project <dir> --themes … --components … [kit options]
+ *   node artinos.mjs export --project <dir> --themes … --components …
  *       only the kit
  *
- *   node artinos.mjs skill --project <dir>     install / refresh the skill in one project
- *   node artinos.mjs skill --user              install / refresh it for every project (~/.claude/skills)
+ *   node artinos.mjs skill --project <dir> | --user
+ *       install / refresh the Claude Code skill in one project, or for every project (~/.claude/skills)
  *
- * Kit options (passed through to skills/artinos-ui/scripts/artinos-kit.mjs):
- *   --out <dir>        kit folder, relative to --project (default: src/artinos-ui if src/ exists, else artinos-ui)
- *   --themes <list|all>   --components <list|all>   --custom <file.css>
- *   --no-fonts   --no-materials   --no-docs   --force   --dry-run
+ *   node artinos.mjs pack
+ *       build dist/artinos-ui.skill (the skill as a shareable file)
+ *
+ *   node artinos.mjs sync
+ *       maintainers: regenerate the theme lists in docs/theming.md and src/tokens/themes.css
+ *       from the registry in src/core/utils.ts
+ *
+ * Kit options for setup / export:
+ *   --themes <ids|all>      comma list; studio, the base, is always added
+ *   --components <ids|all>  comma list (see list)
+ *   --out <dir>             kit folder, relative to --project (default src/artinos-ui, or artinos-ui without src/)
+ *   --custom <file.css>     add a theme exported from the Theme Studio (repeatable)
+ *   --no-fonts              leave out the Google Fonts import (system fonts)
+ *   --no-materials          leave out the optional `material` prop finish overrides
+ *   --no-docs               leave out docs/ (component API and theming guides)
+ *   --force                 update an existing kit in place (files it no longer needs are removed)
+ *   --dry-run               print the files and sizes, write nothing
  */
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BASE_THEME, buildKit, COMPONENTS, readRegistry } from './tools/kit.mjs';
+import { zip } from './tools/zip.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const SKILL = path.join(ROOT, 'skills', 'artinos-ui');
-const KIT = path.join(SKILL, 'scripts', 'artinos-kit.mjs');
+const SRC = path.join(ROOT, 'src');
+const DOCS = path.join(ROOT, 'docs');
+const SKILL = path.join(ROOT, 'skill', 'SKILL.md');
+const GUIDES = ['components.md', 'theming.md'];
+const slash = (p) => p.split(path.sep).join('/');
 
-const [cmd, ...rest] = process.argv.slice(2);
-const has = (n) => rest.includes('--' + n);
-const val = (n) => {
-  const i = rest.indexOf('--' + n);
-  return i >= 0 ? rest[i + 1] : undefined;
+/* ---------- args ---------- */
+const [cmd, ...argv] = process.argv.slice(2);
+const flag = (n) => argv.includes('--' + n);
+const opt = (n) => {
+  const i = argv.indexOf('--' + n);
+  return i >= 0 ? argv[i + 1] : undefined;
 };
-const die = (m) => {
-  console.error('artinos: ' + m);
+const opts = (n) => argv.flatMap((a, i) => (a === '--' + n ? [argv[i + 1]] : []));
+function die(msg) {
+  console.error('artinos: ' + msg);
   process.exit(1);
-};
-/** rest minus our own flags, for the kit script */
-const passThrough = () => {
-  const out = [];
-  for (let i = 0; i < rest.length; i++) {
-    if (rest[i] === '--project' || rest[i] === '--out') i++;
-    else if (rest[i] === '--user') continue;
-    else out.push(rest[i]);
-  }
-  return out;
-};
-const kit = (args) => {
-  try {
-    execFileSync(process.execPath, [KIT, '--src', path.join(ROOT, 'artinos-ui'), ...args], { stdio: 'inherit' });
-  } catch {
-    process.exit(1); // the exporter already printed why
-  }
-};
+}
 
+/* ---------- package source ---------- */
+function readSources() {
+  const out = {};
+  (function walk(dir, rel) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const r = rel ? rel + '/' + e.name : e.name;
+      if (e.isDirectory()) walk(path.join(dir, e.name), r);
+      else if (/\.(ts|tsx|css)$/.test(e.name)) out[r] = fs.readFileSync(path.join(dir, e.name), 'utf8');
+    }
+  })(SRC, '');
+  return out;
+}
+const readGuides = () => Object.fromEntries(GUIDES.map((g) => [g, fs.readFileSync(path.join(DOCS, g), 'utf8')]));
+
+/* ---------- list ---------- */
+function list() {
+  const { themes, meta } = readRegistry(readSources());
+  console.log(`ARTINOS UI — ${ROOT}\n\nThemes (${themes.length})   id · label · kind · look`);
+  for (const fam of [...new Set(themes.map((t) => meta[t].family))]) {
+    console.log(`\n  [${fam}]`);
+    for (const t of themes.filter((x) => meta[x].family === fam)) {
+      const m = meta[t];
+      console.log(`    ${t.padEnd(16)} ${m.label.padEnd(16)} ${m.kind.padEnd(6)} ${m.description}`);
+    }
+  }
+  console.log('\nComponents');
+  for (const c of COMPONENTS) console.log(`    ${c.id.padEnd(14)} ${c.note}`);
+  console.log('\nArtinosTheme (the theme scope) and the studio base theme are always included.');
+}
+
+/* ---------- export ---------- */
 function projectDir() {
-  const p = val('project');
-  if (!p) die('missing --project <dir> (the project to set up; "." for the current folder)');
+  const p = opt('project');
+  if (!p) die('missing --project <dir> (the app to set up; "." for the current folder)');
   const dir = path.resolve(p);
   if (!fs.existsSync(dir)) die(`project folder not found: ${dir}`);
   return dir;
 }
-
-function kitOut(project) {
-  const o = val('out');
-  if (o) return path.resolve(project, o);
-  return path.join(project, fs.existsSync(path.join(project, 'src')) ? 'src' : '', 'artinos-ui');
-}
-
-function copyDir(from, to) {
-  fs.mkdirSync(to, { recursive: true });
-  for (const e of fs.readdirSync(from, { withFileTypes: true })) {
-    const a = path.join(from, e.name);
-    const b = path.join(to, e.name);
-    if (e.isDirectory()) copyDir(a, b);
-    else fs.copyFileSync(a, b);
-  }
-}
-
-function installSkill(target) {
-  if (fs.existsSync(target)) fs.rmSync(target, { recursive: true, force: true });
-  copyDir(SKILL, target);
-  console.log(`Skill installed: ${target}`);
-}
+const readPkg = (project) => {
+  const f = path.join(project, 'package.json');
+  return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null;
+};
 
 function checkProject(project) {
-  const pkgFile = path.join(project, 'package.json');
-  if (!fs.existsSync(pkgFile)) return console.log('Note: no package.json found — make sure this is the app root.');
-  const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'));
+  const pkg = readPkg(project);
+  if (!pkg) return console.log('Note: no package.json here — make sure this is the app root.');
   const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-  const react = deps.react;
-  if (!react) console.log('Note: react is not in package.json — ARTINOS UI needs react and react-dom 18.3+.');
-  else console.log(`React ${react}${deps['react-dom'] ? '' : ' (react-dom missing!)'}${deps.next ? ` · Next ${deps.next}` : ''}${deps.vite ? ` · Vite ${deps.vite}` : ''}`);
+  if (!deps.react) return console.log('Note: react is not in package.json — ARTINOS UI needs react and react-dom 18.3+.');
+  console.log(`React ${deps.react}${deps['react-dom'] ? '' : ' (react-dom missing!)'}${deps.next ? ` · Next ${deps.next}` : ''}${deps.vite ? ` · Vite ${deps.vite}` : ''}`);
+}
+
+function exportKit(project) {
+  const sources = readSources();
+  const { themes: all } = readRegistry(sources);
+  const pick = (v, choices, what) => {
+    if (!v) die(`missing --${what} (comma list or "all"; see: node artinos.mjs list)`);
+    if (v === 'all') return [...choices];
+    const picked = v.split(',').map((s) => s.trim()).filter(Boolean);
+    const bad = picked.filter((x) => !choices.includes(x));
+    if (bad.length) die(`unknown ${what}: ${bad.join(', ')}\nAvailable: ${choices.join(', ')}`);
+    return picked;
+  };
+  const themes = pick(opt('themes'), all, 'themes');
+  const components = pick(opt('components'), COMPONENTS.map((c) => c.id), 'components');
+  const customs = opts('custom').map((f) => {
+    const css = fs.readFileSync(path.resolve(f), 'utf8');
+    const slug = css.match(/\[data-ar-theme='([^']+)'\]/)?.[1];
+    if (!slug) die(`${f}: no [data-ar-theme='…'] block found`);
+    return { slug, name: slug, css };
+  });
+  const out = opt('out') ? path.resolve(project, opt('out')) : path.join(project, fs.existsSync(path.join(project, 'src')) ? 'src' : '', 'artinos-ui');
+  const folder = path.basename(out);
+  const files = buildKit(sources, {
+    folder, themes, components, customs,
+    googleFonts: !flag('no-fonts'), materials: !flag('no-materials'),
+    docs: flag('no-docs') ? null : readGuides(), pkgRoot: slash(ROOT),
+  });
+  const total = Object.values(files).reduce((n, s) => n + Buffer.byteLength(s), 0);
+
+  if (flag('dry-run')) {
+    for (const [p, s] of Object.entries(files)) console.log(`${(Buffer.byteLength(s) / 1024).toFixed(1).padStart(6)} KB  ${folder}/${p}`);
+    console.log(`\n${Object.keys(files).length} files, ${(total / 1024).toFixed(0)} KB — dry run, nothing written.`);
+    return null;
+  }
+  if (fs.existsSync(out) && fs.readdirSync(out).length) {
+    if (!flag('force')) die(`${out} already exists and is not empty. Pass --force to update the kit in it.`);
+    // remove only what a kit owns and this export no longer has
+    const owned = new Set(Object.keys(files));
+    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|layout)\/[^/]+\.(ts|tsx|css)|docs\/(components|theming)\.md)$/;
+    (function prune(dir, rel) {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+        const r = rel ? rel + '/' + e.name : e.name;
+        if (e.isDirectory()) prune(path.join(dir, e.name), r);
+        else if (kitFile.test(r) && !owned.has(r)) fs.unlinkSync(path.join(dir, e.name));
+      }
+    })(out, '');
+    for (const d of ['slider', 'controls', 'layout', 'core', 'tokens', 'docs']) {
+      const p = path.join(out, d);
+      if (fs.existsSync(p) && !fs.readdirSync(p).length) fs.rmdirSync(p);
+    }
+  }
+  for (const [p, s] of Object.entries(files)) {
+    const f = path.join(out, p);
+    fs.mkdirSync(path.dirname(f), { recursive: true });
+    fs.writeFileSync(f, s);
+  }
+  console.log(`Kit: ${Object.keys(files).length} files (${(total / 1024).toFixed(0)} KB) → ${out}`);
+  console.log(`  themes      ${[BASE_THEME, ...themes.filter((t) => t !== BASE_THEME)].join(', ')}${customs.length ? ' + custom ' + customs.map((c) => c.slug).join(', ') : ''}`);
+  console.log(`  components  ${components.join(', ')}`);
+  return out;
 }
 
 /** The app's root module: where the stylesheet is imported once. */
 function findEntry(project) {
-  const pkg = fs.existsSync(path.join(project, 'package.json')) ? JSON.parse(fs.readFileSync(path.join(project, 'package.json'), 'utf8')) : {};
-  const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-  const exts = ['tsx', 'jsx', 'ts', 'js'];
+  const deps = { ...readPkg(project)?.dependencies, ...readPkg(project)?.devDependencies };
   const first = (bases) => {
-    for (const b of bases) for (const e of exts) if (fs.existsSync(path.join(project, `${b}.${e}`))) return `${b}.${e}`;
+    for (const b of bases) for (const e of ['tsx', 'jsx', 'ts', 'js']) if (fs.existsSync(path.join(project, `${b}.${e}`))) return `${b}.${e}`;
     return null;
   };
   if (deps.next) return first(['app/layout', 'src/app/layout']) ?? first(['pages/_app', 'src/pages/_app']) ?? 'app/layout.tsx';
@@ -111,10 +183,10 @@ function findEntry(project) {
 }
 
 function nextSteps(project, out) {
-  const rel = path.relative(project, out).split(path.sep).join('/');
   const entry = findEntry(project);
-  let spec = path.relative(path.dirname(path.join(project, entry)), out).split(path.sep).join('/');
+  let spec = slash(path.relative(path.dirname(path.join(project, entry)), out));
   if (!spec.startsWith('.')) spec = './' + spec;
+  const rel = slash(path.relative(project, out));
   console.log(`
 Next steps
   1. In ${entry}, once:
@@ -123,34 +195,78 @@ Next steps
        import { ArtinosTheme, Slider } from '${spec}';
   3. Wrap the UI:
        <ArtinosTheme theme="…">…</ArtinosTheme>
-  Guides: ${rel}/README.md (usage for this kit) · ${rel}/docs/components.md · ${rel}/docs/theming.md`);
+  Guide: ${rel}/README.md${flag('no-docs') ? '' : ` · ${rel}/docs/components.md · ${rel}/docs/theming.md`}`);
 }
 
+/* ---------- skill ---------- */
+/** The skill's files: SKILL.md with this package's path filled in, and the guides as references. */
+function skillFiles() {
+  return {
+    'SKILL.md': fs.readFileSync(SKILL, 'utf8').replaceAll('{{PACKAGE}}', slash(ROOT)),
+    ...Object.fromEntries(Object.entries(readGuides()).map(([g, t]) => ['references/' + g, t])),
+  };
+}
+function installSkill(target) {
+  if (fs.existsSync(target)) fs.rmSync(target, { recursive: true, force: true });
+  for (const [p, s] of Object.entries(skillFiles())) {
+    fs.mkdirSync(path.dirname(path.join(target, p)), { recursive: true });
+    fs.writeFileSync(path.join(target, p), s);
+  }
+  console.log(`Skill installed → ${target}`);
+}
+
+/* ---------- sync (maintainers) ---------- */
+function sync() {
+  const { themes, meta } = readRegistry(readSources());
+  const fams = [...new Set(themes.map((t) => meta[t].family))];
+  const replaceBetween = (file, start, end, body) => {
+    const s = fs.readFileSync(file, 'utf8');
+    const a = s.indexOf(start);
+    const b = s.indexOf(end, a);
+    if (a < 0 || b < 0) die(`${slash(path.relative(ROOT, file))}: markers ${start} … ${end} not found`);
+    fs.writeFileSync(file, s.slice(0, a + start.length) + body + s.slice(b));
+  };
+  // docs/theming.md: the full theme table
+  const rows = fams.flatMap((f) => themes.filter((t) => meta[t].family === f).map((t, i) => `| ${i ? '' : f} | \`${t}\` | ${meta[t].label} | ${meta[t].kind} | ${meta[t].description} |`));
+  replaceBetween(path.join(DOCS, 'theming.md'), '<!-- themes:start -->', '<!-- themes:end -->', `\n| family | id | name | kind | look |\n|---|---|---|---|---|\n${rows.join('\n')}\n`);
+  // src/tokens/themes.css: the header list
+  const head = fams.map((f) => ` *   ${f}\n` + themes.filter((t) => meta[t].family === f).map((t) => ` *     ${t.padEnd(16)}${meta[t].description}`).join('\n')).join('\n');
+  replaceBetween(path.join(SRC, 'tokens', 'themes.css'), ' * themes:start', ' * themes:end', `\n${head}\n`);
+  console.log(`Synced ${themes.length} themes → docs/theming.md, src/tokens/themes.css`);
+}
+
+/* ---------- run ---------- */
 switch (cmd) {
   case 'list':
-    kit(['--list']);
+    list();
     break;
-  case 'export': {
-    const project = projectDir();
-    checkProject(project);
-    kit(['--out', kitOut(project), ...passThrough()]);
-    if (!has('dry-run')) nextSteps(project, kitOut(project));
-    break;
-  }
+  case 'export':
   case 'setup': {
     const project = projectDir();
     checkProject(project);
-    kit(['--out', kitOut(project), ...passThrough()]);
-    if (has('dry-run')) break;
-    installSkill(path.join(project, '.claude', 'skills', 'artinos-ui'));
-    nextSteps(project, kitOut(project));
+    const out = exportKit(project);
+    if (!out) break;
+    if (cmd === 'setup') installSkill(path.join(project, '.claude', 'skills', 'artinos-ui'));
+    nextSteps(project, out);
     break;
   }
   case 'skill':
-    if (has('user')) installSkill(path.join(os.homedir(), '.claude', 'skills', 'artinos-ui'));
-    else installSkill(path.join(projectDir(), '.claude', 'skills', 'artinos-ui'));
+    installSkill(flag('user') ? path.join(os.homedir(), '.claude', 'skills', 'artinos-ui') : path.join(projectDir(), '.claude', 'skills', 'artinos-ui'));
     break;
-  default:
-    console.log(fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n\/\* ?/, '').replace(/^ \* ?/gm, ''));
+  case 'pack': {
+    const files = Object.fromEntries(Object.entries(skillFiles()).map(([p, s]) => ['artinos-ui/' + p, s]));
+    const dest = path.join(ROOT, 'dist', 'artinos-ui.skill');
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, zip(files));
+    console.log(`Packed ${Object.keys(files).length} files → ${dest}`);
+    break;
+  }
+  case 'sync':
+    sync();
+    break;
+  default: {
+    const doc = fs.readFileSync(fileURLToPath(import.meta.url), 'utf8').split('*/')[0];
+    console.log(doc.replace(/^#!.*\n\/\* ?/, '').replace(/^ \* ?/gm, ''));
     if (cmd && cmd !== 'help' && cmd !== '--help') process.exit(1);
+  }
 }
