@@ -1,0 +1,14 @@
+# dependencies and caches
+node_modules/
+.pnpm-store/
+
+# build output (the shipped showcase is showcase/artinos-ui-showcase.html, which is tracked)
+dist/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

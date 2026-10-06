@@ -1,0 +1,1636 @@
+/* ARTINOS UI — control finishes: what a capsule is made of.
+ *
+ * Every control in the family shares one anatomy — a recessed well (trough), a
+ * polished insert sitting in it, a seam/LED marking the live edge, and ink that
+ * switches where the insert covers it. A finish fills those slots.
+ *
+ * You never have to pick a finish: each theme carries its own. This file has
+ * three parts —
+ *   1. the default block — the studio finish, re-declared at every scope boundary
+ *   2. advanced overrides — optical · frost · milk · clear · tint · smoked · metal ·
+ *      soft · reference, applied only by data-ar-material / the `material` prop
+ *   3. theme finishes — studio-light · glass · glass-light · glass-dark · crystal ·
+ *      frost · frost-light · frost-dark · ice · the clear luxe themes (pane · pane-light ·
+ *      lucid · gallery · satin · monolith · opal · graphite) · the luxe glass themes (onyx · sapphire ·
+ *      platinum · diamond · emerald · rose-gold · cognac · amethyst) · the luxe frost
+ *      themes (champagne · pearl · alabaster · porcelain · jade · moonstone · cashmere · velvet).
+ *      optical and reference use the
+ *      override of the same name as their finish.
+ * Each part states only what differs from the default block.
+ *
+ * `initial` on a token means "not set here": components then derive it from
+ * density (e.g. radius = 31% of control height).
+ */
+
+/* ---------- DEFAULT (studio) — satin insert in a shallow neutral well. Every finish
+   and theme below starts from this block and states only what differs. ---------- */
+:root,
+[data-ar-theme],
+[data-ar-material] {
+  /* type */
+  --ar-control-font: var(--ar-font-num);
+  --ar-label-weight: 500;
+  --ar-value-weight: 300;
+  --ar-label-tracking: 0.13em;
+  --ar-label-case: uppercase;
+  --ar-label-bump: 0px;
+  --ar-value-bump: 0px;
+
+  /* well */
+  --ar-trough: var(--ar-bg-well);
+  --ar-trough-backdrop: none;
+  --ar-well: var(--ar-shadow-well), var(--ar-rim);
+  --ar-inset: 2px;
+  --ar-radius: 7px;
+  --ar-insert-radius: 6px;
+
+  /* insert */
+  --ar-insert: linear-gradient(180deg, #dcdcd8 0%, #c9c9c4 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.55), 0 1px 1px rgba(0, 0, 0, 0.3);
+  --ar-insert-backdrop: none;
+  --ar-insert-blend: normal;
+  --ar-insert-ink: #121212;
+  --ar-insert-unit-ink: rgba(0, 0, 0, 0.5);
+  --ar-insert-text-shadow: none;
+  --ar-insert-off-filter: grayscale(1) brightness(0.68) contrast(0.92);
+
+  /* ink on the well */
+  --ar-label-ink: var(--ar-text-mid);
+  --ar-value-ink: color-mix(in srgb, var(--ar-text-hi) 90%, transparent);
+  --ar-value-ink-hi: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-faint);
+  --ar-off-ink: var(--ar-text-faint);
+  --ar-dim-ink: var(--ar-text-mid);
+  --ar-base-text-shadow: none;
+
+  /* seam — the handle. Single line by default; a/b carve it into a double line. */
+  --ar-seam: rgba(0, 0, 0, 0.38);
+  --ar-seam-hover: rgba(0, 0, 0, 0.62);
+  /* the live seam sits ON the insert: a deepened mix of the signal, so it reads on pale inserts */
+  --ar-seam-active: color-mix(in srgb, var(--ar-signal) 78%, #000);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.35);
+  --ar-seam-glow: 0 0 0 0.5px var(--ar-seam-active), 0 0 6px var(--ar-signal-line);
+  --ar-seam-drop: none;
+  --ar-seam-drop-hot: none;
+  --ar-seam-w: 2px;
+  --ar-seam-offset: 8px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.38;
+  --ar-seam-scale-hot: 0.46;
+
+  /* stepped cells */
+  --ar-cell: rgba(255, 255, 255, 0.03);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+  --ar-cell-insert-shadow: var(--ar-insert-shadow);
+  --ar-cell-radius: initial;
+
+  /* gradient track */
+  --ar-grad-well: inset 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+  --ar-grad-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 46%, rgba(0, 0, 0, 0.12));
+  --ar-grad-seam: rgba(20, 20, 20, 0.72);
+  --ar-grad-seam-hot: #141414;
+  --ar-grad-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.55);
+  --ar-grad-seam-glow: 0 0 0 1px rgba(255, 255, 255, 0.55), 0 0 6px rgba(255, 255, 255, 0.4);
+  --ar-grad-seam-scale: 0.46;
+  --ar-grad-ink-dark: #141414;
+  --ar-grad-ink-light: #f4f4f4;
+
+  /* ruler / plots */
+  --ar-ruler-ink: var(--ar-tick-major);
+  --ar-ruler-minor: var(--ar-tick);
+  --ar-index: var(--ar-text-hi);
+  --ar-plot: var(--ar-text-faint);
+  --ar-plot-hi: var(--ar-text-hi);
+
+  /* LED — the seam of a switch or chip */
+  --ar-led-on: var(--ar-seam-active);
+  --ar-led-off: #bebebe;
+  --ar-led-glow: var(--ar-signal-line);
+
+  /* colour swatch + list panel */
+  --ar-swatch-rim: inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 0 0 1px rgba(0, 0, 0, 0.26), inset 0 -1px 0 rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(30px);
+  --ar-list-shadow: var(--ar-float-ring), 0 18px 40px -16px rgba(0, 0, 0, 0.7);
+  --ar-list-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  --ar-list-insert-blend: normal;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  --ar-list-ink: var(--ar-float-ink);
+  --ar-list-ink-hi: var(--ar-float-ink);
+  --ar-list-text-shadow: none;
+  --ar-list-hover: var(--ar-bg-hover);
+}
+
+/* ---------- UNTINTED — finishes on the unmodified default control anatomy ----------
+ * Intentionally do not override radius, inset, fonts, tracking, weights, seam
+ * dimensions or density. Explicit material overrides retain their own finish.
+ */
+[data-ar-theme='clear-air']:not([data-ar-material]),
+[data-ar-theme='clear-polished']:not([data-ar-material]),
+[data-ar-theme='clear-lens']:not([data-ar-material]),
+[data-ar-theme='clear-layered']:not([data-ar-material]),
+[data-ar-theme='frost-etched']:not([data-ar-material]),
+[data-ar-theme='frost-silk']:not([data-ar-material]),
+[data-ar-theme='frost-mist']:not([data-ar-material]),
+[data-ar-theme='frost-deep']:not([data-ar-material]) {
+  --ar-trough: var(--ar-bg-well);
+  --ar-trough-backdrop: blur(4px);
+  --ar-well: var(--ar-shadow-well), var(--ar-rim);
+  --ar-insert-blend: normal;
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: #e6e6e6;
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+  --ar-insert-off-filter: opacity(0.45);
+  --ar-label-ink: var(--ar-text-mid);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-value-ink-hi: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-off-ink: var(--ar-text-faint);
+  --ar-dim-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --ar-seam: rgba(255, 255, 255, 0.62);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: 1px 0 0 rgba(0, 0, 0, 0.25);
+  --ar-seam-glow: 0 0 0 0.5px rgba(255, 255, 255, 0.38);
+  --ar-cell: rgba(255, 255, 255, 0.035);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(128, 128, 128, 0.6);
+  --ar-led-glow: var(--ar-signal-line);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-grad-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 55%);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(24px);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-list-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-list-ink: var(--ar-float-ink);
+  --ar-list-ink-hi: #ffffff;
+  --ar-list-text-shadow: none;
+  --ar-list-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* AIR GLASS */
+[data-ar-theme='clear-air']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.025) 55%, rgba(255, 255, 255, 0.055) 100%);
+  --ar-insert-backdrop: blur(1px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* POLISHED GLASS */
+[data-ar-theme='clear-polished']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.035) 50%, rgba(255, 255, 255, 0.11) 100%);
+  --ar-insert-backdrop: blur(2px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.38), inset 0 -1px 0 rgba(255, 255, 255, 0.14), 0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+/* LENS GLASS */
+[data-ar-theme='clear-lens']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.045) 32%, rgba(255, 255, 255, 0.015) 67%, rgba(255, 255, 255, 0.2) 100%);
+  --ar-insert-backdrop: blur(7px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64), inset 0 0 0 1px rgba(255, 255, 255, 0.48), inset 0 -1px 0 rgba(255, 255, 255, 0.34), 0 1px 3px rgba(0, 0, 0, 0.24);
+}
+
+/* LAYERED GLASS */
+[data-ar-theme='clear-layered']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.66) 44%, rgba(255, 255, 255, 0.56) 50%, rgba(255, 255, 255, 0.72) 100%);
+  --ar-insert-backdrop: blur(3px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.94), inset 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 -1px 0 rgba(255, 255, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --ar-insert-ink: #191919;
+  --ar-insert-unit-ink: #484848;
+  --ar-insert-text-shadow: none;
+  --ar-seam: rgba(0, 0, 0, 0.42);
+  --ar-seam-hover: #161616;
+  --ar-seam-active: #161616;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* ETCHED FROST */
+[data-ar-theme='frost-etched']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.14) 100%);
+  --ar-insert-backdrop: blur(14px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 -1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* SILK FROST */
+[data-ar-theme='frost-silk']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(255, 255, 255, 0.7) 100%);
+  --ar-insert-backdrop: blur(20px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.76), inset 0 0 0 1px rgba(255, 255, 255, 0.46), inset 0 -1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+  --ar-insert-ink: #191919;
+  --ar-insert-unit-ink: #484848;
+  --ar-insert-text-shadow: none;
+  --ar-seam: rgba(0, 0, 0, 0.42);
+  --ar-seam-hover: #161616;
+  --ar-seam-active: #161616;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* MIST FROST */
+[data-ar-theme='frost-mist']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+  --ar-insert-backdrop: blur(26px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52), inset 0 0 0 1px rgba(255, 255, 255, 0.32), inset 0 -1px 0 rgba(255, 255, 255, 0.18), 0 1px 3px rgba(0, 0, 0, 0.16);
+}
+
+/* DEEP FROST */
+[data-ar-theme='frost-deep']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.59) 100%);
+  --ar-insert-backdrop: blur(32px);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54), inset 0 0 0 1px rgba(255, 255, 255, 0.34), inset 0 -1px 0 rgba(255, 255, 255, 0.12), 0 1px 3px rgba(0, 0, 0, 0.18);
+  --ar-insert-ink: #191919;
+  --ar-insert-unit-ink: #484848;
+  --ar-insert-text-shadow: none;
+  --ar-seam: rgba(0, 0, 0, 0.42);
+  --ar-seam-hover: #161616;
+  --ar-seam-active: #161616;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- ATELIER — coordinated finishes for the eight new palettes ----------
+ * Respect explicit material overrides; all other controls inherit this finish.
+ */
+[data-ar-theme='nocturne']:not([data-ar-material]),
+[data-ar-theme='lagoon']:not([data-ar-material]),
+[data-ar-theme='argent']:not([data-ar-material]),
+[data-ar-theme='garnet']:not([data-ar-material]),
+[data-ar-theme='ivory']:not([data-ar-material]),
+[data-ar-theme='glacier']:not([data-ar-material]),
+[data-ar-theme='wisteria']:not([data-ar-material]),
+[data-ar-theme='dune']:not([data-ar-material]) {
+  --ar-label-weight: 500;
+  --ar-value-weight: 500;
+  --ar-trough: var(--ar-bg-well);
+  --ar-trough-backdrop: blur(6px);
+  --ar-well: var(--ar-shadow-well), var(--ar-rim);
+  --ar-label-ink: var(--ar-text-mid);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-value-ink-hi: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-off-ink: var(--ar-text-faint);
+  --ar-dim-ink: var(--ar-text-low);
+  --ar-base-text-shadow: none;
+  --ar-insert-text-shadow: none;
+  --ar-insert-off-filter: grayscale(0.8) opacity(0.55);
+  --ar-seam-glow: 0 0 0 0.5px var(--ar-seam-active);
+  --ar-seam-scale-hot: 0.6;
+  --ar-cell: var(--ar-bg-hover);
+  --ar-cell-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+  --ar-cell-radius: var(--ar-insert-radius);
+  --ar-led-on: var(--ar-seam-active);
+  --ar-led-off: var(--ar-text-ghost);
+  --ar-led-glow: var(--ar-signal-line);
+  --ar-grad-well: inset 0 0 0 1px var(--ar-line-strong);
+  --ar-grad-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 65%);
+  --ar-swatch-rim: inset 0 0 0 1px var(--ar-line-strong), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(24px) saturate(0.9);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-list-insert: var(--ar-signal-wash);
+  --ar-list-insert-shadow: inset 0 0 0 1px var(--ar-signal-line);
+  --ar-list-ink: var(--ar-float-ink);
+  --ar-list-ink-hi: var(--ar-signal-hi);
+  --ar-list-hover: var(--ar-bg-hover);
+}
+
+/* NOCTURNE — dark insert with dedicated seam contrast. */
+[data-ar-theme='nocturne']:not([data-ar-material]) {
+  --ar-radius: 3px;
+  --ar-insert-radius: 2px;
+  --ar-inset: 2px;
+  --ar-label-tracking: .19em;
+  --ar-insert: linear-gradient(180deg, rgba(116, 108, 91, 0.38) 0%, rgba(51, 50, 48, 0.72) 48%, rgba(24, 25, 29, 0.86) 52%, rgba(68, 65, 57, 0.62) 100%);
+  --ar-insert-backdrop: blur(5px) saturate(0.6);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 0 0 1px rgba(223, 198, 156, 0.44), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-ink: #fff3d9;
+  --ar-insert-unit-ink: #d8c9ad;
+  --ar-seam: #dfc69c;
+  --ar-seam-hover: #fff3d9;
+  --ar-seam-active: #f9e6bd;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-w: 3px;
+  --ar-seam-a: 33%;
+  --ar-seam-b: 67%;
+  --ar-seam-scale: 0.4;
+}
+
+/* LAGOON — dark insert with dedicated seam contrast. */
+[data-ar-theme='lagoon']:not([data-ar-material]) {
+  --ar-radius: 12px;
+  --ar-insert-radius: 11px;
+  --ar-inset: 2px;
+  --ar-label-tracking: .08em;
+  --ar-insert: linear-gradient(180deg, rgba(143, 235, 218, 0.34) 0%, rgba(30, 112, 123, 0.48) 55%, rgba(24, 80, 91, 0.68) 100%);
+  --ar-insert-backdrop: blur(8px) saturate(1.4);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 0 0 1px rgba(171, 247, 225, 0.45), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-ink: #ecfff8;
+  --ar-insert-unit-ink: #bee7de;
+  --ar-seam: #b5f4e2;
+  --ar-seam-hover: #ecfff8;
+  --ar-seam-active: #d9fff0;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-w: 2px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.32;
+  --ar-control-font: var(--ar-font-ui);
+}
+
+/* ARGENT — light insert with dedicated seam contrast. */
+[data-ar-theme='argent']:not([data-ar-material]) {
+  --ar-radius: 2px;
+  --ar-insert-radius: 1px;
+  --ar-inset: 2px;
+  --ar-label-tracking: .16em;
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(227, 237, 247, 0.86) 47%, rgba(192, 207, 222, 0.72) 51%, rgba(248, 252, 255, 0.94) 100%);
+  --ar-insert-backdrop: blur(4px) saturate(0.3);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(83, 108, 133, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-ink: #203244;
+  --ar-insert-unit-ink: #4b6075;
+  --ar-seam: #4b647e;
+  --ar-seam-hover: #203244;
+  --ar-seam-active: #344f72;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-w: 1px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.58;
+}
+
+/* GARNET — dark insert with dedicated seam contrast. */
+[data-ar-theme='garnet']:not([data-ar-material]) {
+  --ar-radius: 6px;
+  --ar-insert-radius: 5px;
+  --ar-inset: 2px;
+  --ar-label-tracking: .14em;
+  --ar-insert: linear-gradient(180deg, rgba(246, 180, 169, 0.38) 0%, rgba(156, 83, 110, 0.56) 42%, rgba(102, 42, 69, 0.7) 46%, rgba(63, 25, 43, 0.85) 100%);
+  --ar-insert-backdrop: blur(6px) saturate(1.25);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(250, 200, 180, 0.48), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-ink: #fff2ed;
+  --ar-insert-unit-ink: #f2d0ce;
+  --ar-seam: #f2b3ad;
+  --ar-seam-hover: #fff2ed;
+  --ar-seam-active: #ffded1;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-w: 3px;
+  --ar-seam-a: 33%;
+  --ar-seam-b: 67%;
+  --ar-seam-scale: 0.38;
+}
+
+/* IVORY — light insert with dedicated seam contrast. */
+[data-ar-theme='ivory']:not([data-ar-material]) {
+  --ar-radius: 9px;
+  --ar-insert-radius: 8px;
+  --ar-inset: 3px;
+  --ar-label-tracking: .1em;
+  --ar-insert: linear-gradient(180deg, rgba(255, 253, 247, 0.98) 0%, rgba(250, 242, 223, 0.92) 65%, rgba(232, 219, 193, 0.8) 100%);
+  --ar-insert-backdrop: blur(18px) saturate(0.6);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(159, 126, 77, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-ink: #3b3021;
+  --ar-insert-unit-ink: #756044;
+  --ar-seam: #957446;
+  --ar-seam-hover: #3b3021;
+  --ar-seam-active: #80613a;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-w: 2px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.32;
+  --ar-control-font: var(--ar-font-ui);
+}
+
+/* GLACIER — light insert with dedicated seam contrast. */
+[data-ar-theme='glacier']:not([data-ar-material]) {
+  --ar-radius: 5px;
+  --ar-insert-radius: 4px;
+  --ar-inset: 2px;
+  --ar-label-tracking: .12em;
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 253, 255, 0.95) 38%, rgba(206, 233, 243, 0.85) 100%);
+  --ar-insert-backdrop: blur(22px) saturate(0.5);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(91, 149, 174, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-ink: #183e52;
+  --ar-insert-unit-ink: #42687c;
+  --ar-seam: #28728e;
+  --ar-seam-hover: #183e52;
+  --ar-seam-active: #17617e;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-w: 2px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.5;
+}
+
+/* WISTERIA — light insert with dedicated seam contrast. */
+[data-ar-theme='wisteria']:not([data-ar-material]) {
+  --ar-radius: 11px;
+  --ar-insert-radius: 10px;
+  --ar-inset: 3px;
+  --ar-label-tracking: .07em;
+  --ar-insert: linear-gradient(155deg, rgba(255, 251, 255, 0.97) 0%, rgba(247, 233, 252, 0.92) 55%, rgba(214, 211, 240, 0.86) 100%);
+  --ar-insert-backdrop: blur(20px) saturate(0.6);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(144, 111, 164, 0.24), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-ink: #412b50;
+  --ar-insert-unit-ink: #755d85;
+  --ar-seam: #8e6ca1;
+  --ar-seam-hover: #412b50;
+  --ar-seam-active: #715084;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-w: 2px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.3;
+  --ar-control-font: var(--ar-font-ui);
+}
+
+/* DUNE — light insert with dedicated seam contrast. */
+[data-ar-theme='dune']:not([data-ar-material]) {
+  --ar-radius: 4px;
+  --ar-insert-radius: 3px;
+  --ar-inset: 3px;
+  --ar-label-tracking: .17em;
+  --ar-insert: linear-gradient(180deg, rgba(224, 212, 189, 0.94) 0%, rgba(195, 178, 151, 0.9) 100%);
+  --ar-insert-backdrop: blur(24px) saturate(0.25);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(241, 220, 181, 0.36), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-ink: #342a1d;
+  --ar-insert-unit-ink: #655440;
+  --ar-seam: #735b39;
+  --ar-seam-hover: #342a1d;
+  --ar-seam-active: #715127;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-w: 1px;
+  --ar-seam-a: 100%;
+  --ar-seam-b: 100%;
+  --ar-seam-scale: 0.5;
+}
+
+/* ---------- ADVANCED OVERRIDES — base finishes for data-ar-material / the material prop ---------- */
+
+/* OPTICAL — the prototype insert: polished translucent, warm, dark ink. */
+[data-ar-material='optical'],
+[data-ar-theme='optical']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(240, 238, 234, 0.95) 0%, rgba(216, 213, 207, 0.92) 52%, rgba(198, 194, 188, 0.9) 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.38), 0 0 0 0.5px rgba(0, 0, 0, 0.28);
+  --ar-insert-ink: #161616;
+  --ar-seam: rgba(0, 0, 0, 0.44);
+  --ar-seam-hover: rgba(0, 0, 0, 0.66);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- glass family (frost · milk · clear · tint · smoked) — shared well ----------
+   A theme-aware recess so text on the trough keeps ≥4.5:1 over any canvas, and a
+   halo text-shadow that follows the app ground. */
+[data-ar-material='frost'],
+[data-ar-material='clear'],
+[data-ar-material='smoked'],
+[data-ar-material='milk'],
+[data-ar-material='tint'] {
+  --ar-trough: color-mix(in srgb, var(--ar-bg-app) 34%, transparent);
+  --ar-trough-backdrop: blur(18px) saturate(1.1);
+  --ar-well: inset 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-value-weight: 500;
+  --ar-label-ink: color-mix(in srgb, var(--ar-text-hi) 88%, transparent);
+  --ar-value-ink: color-mix(in srgb, var(--ar-text-hi) 88%, transparent);
+  --ar-unit-ink: color-mix(in srgb, var(--ar-text-hi) 70%, transparent);
+  --ar-dim-ink: color-mix(in srgb, var(--ar-text-hi) 72%, transparent);
+  --ar-base-text-shadow: 0 1px 2px color-mix(in srgb, var(--ar-bg-app) 70%, transparent);
+  --ar-insert-text-shadow: 0 1px 2px color-mix(in srgb, var(--ar-bg-app) 60%, transparent);
+}
+
+/* FROST — frosted glass: milky, blurred, grain-broken. */
+[data-ar-material='frost'] {
+  --ar-insert: var(--ar-frost-grain), linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(246, 247, 248, 0.5) 48%, rgba(236, 238, 240, 0.44) 52%, rgba(255, 255, 255, 0.58) 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(0, 0, 0, 0.05), inset 0 0 0 0.5px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.26), 0 0 0 0.5px rgba(0, 0, 0, 0.16);
+  --ar-insert-backdrop: blur(16px) saturate(1.25) brightness(1.1);
+  --ar-insert-ink: #141414;
+  --ar-insert-unit-ink: rgba(20, 20, 20, 0.58);
+  --ar-insert-text-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.55);
+  --ar-seam: rgba(0, 0, 0, 0.46);
+  --ar-seam-hover: rgba(0, 0, 0, 0.72);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+
+/* CLEAR — clear glass: almost no body, all edge — a highlight rim and a refraction line. */
+[data-ar-material='clear'] {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.13) 38%, rgba(255, 255, 255, 0.06) 60%, rgba(255, 255, 255, 0.08) 82%, rgba(255, 255, 255, 0.18) 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(255, 255, 255, 0.22), inset 1px 0 0 rgba(255, 255, 255, 0.26), inset -1px 0 0 rgba(255, 255, 255, 0.26), inset 0 2px 5px -2px rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.38), 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+  --ar-insert-backdrop: blur(1.5px) saturate(1.7) brightness(1.2) contrast(1.06);
+  --ar-insert-ink: var(--ar-text-hi);
+  --ar-insert-unit-ink: var(--ar-text-mid);
+  --ar-seam: color-mix(in srgb, var(--ar-text-hi) 82%, transparent);
+  --ar-seam-hover: var(--ar-text-hi);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+}
+
+/* SMOKED — dark tinted glass, white ink. */
+[data-ar-material='smoked'] {
+  --ar-insert: linear-gradient(180deg, rgba(62, 62, 66, 0.74) 0%, rgba(22, 22, 24, 0.7) 50%, rgba(12, 12, 14, 0.72) 52%, rgba(38, 38, 42, 0.72) 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --ar-insert-backdrop: blur(8px) saturate(1.1) brightness(0.78);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.62);
+  --ar-insert-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+  --ar-seam: rgba(255, 255, 255, 0.6);
+  --ar-seam-hover: rgba(255, 255, 255, 0.9);
+  --ar-seam-edge: 1px 0 0 rgba(0, 0, 0, 0.45);
+  --ar-insert-off-filter: grayscale(1) brightness(0.85);
+}
+
+/* MILK — dense frosted glass: almost opaque, softly grained, bright. Reads on any canvas. */
+[data-ar-material='milk'] {
+  --ar-insert: var(--ar-frost-grain), linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 247, 248, 0.84) 50%, rgba(238, 240, 242, 0.82) 52%, rgba(255, 255, 255, 0.88) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(0, 0, 0, 0.06), inset 0 0 0 0.5px rgba(255, 255, 255, 0.8), 0 1px 4px rgba(0, 0, 0, 0.22), 0 0 0 0.5px rgba(0, 0, 0, 0.14);
+  --ar-insert-backdrop: blur(24px) saturate(1.15);
+  --ar-insert-ink: #121416;
+  --ar-insert-unit-ink: rgba(18, 20, 22, 0.56);
+  --ar-insert-text-shadow: none;
+  --ar-seam: rgba(0, 0, 0, 0.4);
+  --ar-seam-hover: rgba(0, 0, 0, 0.68);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+/* TINT — coloured glass: the insert takes the theme's signal hue, white ink. */
+[data-ar-material='tint'] {
+  --ar-insert:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.06) 46%, rgba(255, 255, 255, 0) 54%, rgba(255, 255, 255, 0.12) 100%),
+    color-mix(in srgb, var(--ar-signal) 42%, transparent);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px color-mix(in srgb, var(--ar-signal) 55%, transparent), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.35), 0 0 12px -4px var(--ar-signal-line);
+  --ar-insert-backdrop: blur(10px) saturate(1.5) brightness(0.95);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.7);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ar-seam: rgba(255, 255, 255, 0.72);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+  --ar-led-on: var(--ar-signal);
+}
+
+/* METAL — brushed precision metal: fine vertical grain, hard highlight. */
+[data-ar-material='metal'] {
+  --ar-insert: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, rgba(0, 0, 0, 0.035) 1px 2px), linear-gradient(180deg, #e6e7e9 0%, #bdbfc2 46%, #9c9ea2 54%, #cfd1d4 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 0.5px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ar-insert-ink: #141414;
+  --ar-insert-unit-ink: rgba(0, 0, 0, 0.55);
+  --ar-seam: rgba(0, 0, 0, 0.55);
+  --ar-seam-hover: rgba(0, 0, 0, 0.8);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.65);
+}
+
+/* ---------- REFERENCE FAMILY (soft · reference) — the Figma source, literally ----------
+   Recessed blurred well (inset 0 4 4 .43), #C3C3C3-rimmed polished bar, double-line
+   handle with a -1/-1/3 drop shadow, mono 700. */
+[data-ar-material='soft'],
+[data-ar-material='reference'],
+[data-ar-theme='reference']:not([data-ar-material]) {
+  --ar-control-font: 'Roboto Mono', var(--ar-font-num);
+  --ar-label-weight: 700;
+  --ar-value-weight: 700;
+  --ar-label-tracking: 0;
+  --ar-label-bump: 2.5px;
+  --ar-value-bump: 1px;
+
+  /* the Figma well is 1% black; 14% keeps its ink legible over bright canvases */
+  --ar-trough: rgba(0, 0, 0, 0.14);
+  --ar-trough-backdrop: blur(30px);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ar-well: inset 0 4px 4px rgba(0, 0, 0, 0.43), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --ar-inset: 1px;
+
+  --ar-label-ink: #bbbcc4;
+  --ar-value-ink: #bbbcc4;
+  --ar-value-ink-hi: #e6e7ec;
+  --ar-unit-ink: #bbbcc4;
+  --ar-dim-ink: color-mix(in srgb, #bbbcc4 80%, transparent);
+
+  --ar-seam-w: 4px;
+  --ar-seam-a: 1.2px;
+  --ar-seam-b: 2.8px;
+  --ar-seam-scale: 0.3;
+  --ar-seam-scale-hot: 0.36;
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
+  --ar-seam-drop: drop-shadow(-1px -1px 3px rgba(0, 0, 0, 0.39));
+  --ar-seam-drop-hot: drop-shadow(0 0 3px var(--ar-signal-line));
+
+  --ar-cell: linear-gradient(181.66deg, rgba(194, 194, 194, 0.2871) 1.18%, rgba(237, 237, 237, 0.1485) 18.25%, rgba(204, 202, 202, 0.0198) 43.84%, rgba(31, 31, 31, 0.2178) 91.43%);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(184, 184, 184, 0.3), inset 0 6px 11.3px rgba(0, 0, 0, 0.31);
+  --ar-cell-insert-shadow: inset 0 0 0 1px #c3c3c3, inset 0 6px 11.3px rgba(0, 0, 0, 0.31);
+
+  --ar-grad-well: inset 0 4px 4px rgba(0, 0, 0, 0.43);
+  --ar-grad-sheen: none;
+  --ar-grad-seam: #262626;
+  --ar-grad-seam-hot: var(--ar-seam-active);
+  --ar-grad-seam-edge: none;
+  --ar-grad-seam-glow: none;
+  --ar-grad-seam-scale: 0.62;
+  --ar-grad-ink-dark: #222222;
+  --ar-grad-ink-light: #d7d7d7;
+
+  --ar-ruler-ink: #bbbcc4;
+  --ar-index: #e6e7ec;
+
+  --ar-swatch-rim: inset 0 0 0 2px #6d6969, inset 0 6px 11.3px rgba(0, 0, 0, 0.31);
+  --ar-list-bg: rgba(0, 0, 0, 0.3);
+  --ar-list-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.43), 0 18px 40px -16px rgba(0, 0, 0, 0.7);
+  --ar-list-insert: linear-gradient(181.66deg, rgba(212, 212, 212, 0.99) 1.18%, rgba(237, 237, 237, 0.99) 18.25%, rgba(204, 202, 202, 0.7326) 43.84%, rgba(255, 255, 255, 0.7326) 91.43%);
+  --ar-list-insert-blend: soft-light;
+  --ar-list-insert-shadow: inset 0 0 0 1px #c3c3c3;
+  --ar-list-ink: #bbbcc4;
+  --ar-list-ink-hi: #ffffff;
+  --ar-list-text-shadow: 1px 1px 0 rgba(51, 51, 51, 0.78);
+  --ar-list-hover: rgba(255, 255, 255, 0.07);
+}
+
+/* SOFT — the reference bar in soft-light blend: the canvas colours the insert. */
+[data-ar-material='soft'] {
+  --ar-insert: linear-gradient(181.66deg, rgba(212, 212, 212, 0.99) 1.18%, rgba(237, 237, 237, 0.99) 18.25%, rgba(204, 202, 202, 0.7326) 43.84%, rgba(255, 255, 255, 0.7326) 91.43%);
+  --ar-insert-blend: soft-light;
+  --ar-insert-shadow: inset 0 0 0 1px #c3c3c3;
+  --ar-insert-ink: #bbbcc4;
+  --ar-insert-unit-ink: #bbbcc4;
+  --ar-insert-text-shadow: 1px 1px 0 rgba(51, 51, 51, 0.78);
+  --ar-seam: #bbbcc4;
+  --ar-seam-hover: #e6e7ec;
+}
+
+/* REFERENCE — the polished reference bar, dark ink. */
+[data-ar-material='reference'],
+[data-ar-theme='reference']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(181.66deg, rgba(212, 212, 212, 0.99) 1.18%, rgba(237, 237, 237, 0.99) 18.25%, rgba(204, 202, 202, 0.7326) 43.84%, rgba(255, 255, 255, 0.7326) 91.43%);
+  --ar-insert-shadow: inset 0 0 0 2px #c3c3c3, inset 0 6px 11.3px rgba(0, 0, 0, 0.31);
+  --ar-insert-ink: #222222;
+  --ar-insert-unit-ink: rgba(34, 34, 34, 0.7);
+  --ar-seam: #262626;
+  --ar-seam-hover: #0e0e0e;
+}
+
+/* =====================================================================
+   THEME FINISHES — each theme's controls. :not([data-ar-material]) lets an
+   explicit override still win. Studio is the default block above.
+   ===================================================================== */
+
+/* STUDIO LIGHT — white satin in a shallow grey well; hairlines, no gloss. */
+[data-ar-theme='studio-light']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.055);
+  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.9);
+  --ar-insert: linear-gradient(180deg, #ffffff 0%, #f3f3f1 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.24), 0 1px 2px rgba(0, 0, 0, 0.12);
+  --ar-insert-ink: #141414;
+  --ar-insert-unit-ink: rgba(0, 0, 0, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.7);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: rgba(0, 0, 0, 0.3);
+  --ar-seam-hover: rgba(0, 0, 0, 0.55);
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: none;
+  --ar-cell: rgba(0, 0, 0, 0.03);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.055);
+  --ar-led-off: #cfcfcf;
+  --ar-grad-well: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  --ar-list-insert: #ffffff;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --ar-list-hover: rgba(0, 0, 0, 0.045);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* GLASS — clear glass controls: a light veil of white, a bright hairline rim,
+   white ink. The pane already blurs, so wells and inserts don't blur again. */
+[data-ar-theme='glass']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 0, 0, 0.2);
+  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.13) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 1px 2px rgba(0, 0, 0, 0.16);
+  --ar-insert-backdrop: brightness(1.08) saturate(1.2);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.7);
+  --ar-insert-off-filter: grayscale(1) opacity(0.55);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(255, 255, 255, 0.8);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.22);
+  --ar-seam-glow: 0 0 6px var(--ar-signal-line);
+  --ar-cell: rgba(255, 255, 255, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(255, 255, 255, 0.4);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  --ar-list-backdrop: blur(30px) saturate(1.4);
+  --ar-list-insert: rgba(255, 255, 255, 0.05);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --ar-list-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* GLASS DARK — the same clear-glass controls, quieter on the deeper veil. */
+[data-ar-theme='glass-dark']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 0, 0, 0.3);
+  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.26), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.13) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.36), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.66);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(255, 255, 255, 0.72);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 6px var(--ar-signal-line);
+  --ar-cell: rgba(255, 255, 255, 0.035);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(255, 255, 255, 0.32);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  --ar-list-backdrop: blur(30px) saturate(1.3);
+  --ar-list-insert: rgba(255, 255, 255, 0.04);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-list-hover: rgba(255, 255, 255, 0.07);
+}
+
+/* FROST — frosted-white controls on the frosted pane: dark ink on the insert,
+   white type on the pane, a deepened signal for the live edge. */
+[data-ar-theme='frost']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 0, 0, 0.13);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.74) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 1px 3px rgba(0, 0, 0, 0.14);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.08);
+  --ar-insert-ink: #111416;
+  --ar-insert-unit-ink: rgba(17, 20, 22, 0.55);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  --ar-seam: rgba(0, 0, 0, 0.34);
+  --ar-seam-hover: rgba(0, 0, 0, 0.6);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-cell: rgba(255, 255, 255, 0.08);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-led-off: #b6babd;
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  --ar-list-backdrop: blur(30px) saturate(1.3);
+  --ar-list-insert: rgba(255, 255, 255, 0.08);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --ar-list-hover: rgba(255, 255, 255, 0.1);
+}
+
+/* FROST LIGHT — white controls in a milky well, dark ink, deep teal live edge. */
+[data-ar-theme='frost-light']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.34);
+  --ar-well: inset 0 1px 1px rgba(18, 24, 30, 0.1), inset 0 0 0 1px rgba(18, 24, 30, 0.08);
+  --ar-insert: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.92) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(18, 24, 30, 0.18), 0 1px 2px rgba(18, 24, 30, 0.12);
+  --ar-insert-ink: #121619;
+  --ar-insert-unit-ink: rgba(18, 22, 25, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.65);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: rgba(18, 24, 30, 0.3);
+  --ar-seam-hover: rgba(18, 24, 30, 0.55);
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: none;
+  --ar-cell: rgba(255, 255, 255, 0.34);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(18, 24, 30, 0.06);
+  --ar-led-off: #c3cbd0;
+  --ar-grad-well: inset 0 0 0 1px rgba(18, 24, 30, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(18, 24, 30, 0.14);
+  --ar-list-insert: #ffffff;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(18, 24, 30, 0.08);
+  --ar-list-hover: rgba(18, 24, 30, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* GLASS LIGHT — clear white glass controls with dark ink on a light veil. */
+[data-ar-theme='glass-light']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(255, 255, 255, 0.2);
+  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.66) 0%, rgba(255, 255, 255, 0.44) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 1px 0 #ffffff, 0 1px 2px rgba(0, 0, 0, 0.1);
+  --ar-insert-backdrop: brightness(1.08) saturate(1.2);
+  --ar-insert-ink: #0f1215;
+  --ar-insert-unit-ink: rgba(15, 18, 21, 0.55);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(15, 18, 21, 0.34);
+  --ar-seam-hover: rgba(15, 18, 21, 0.6);
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: none;
+  --ar-cell: rgba(255, 255, 255, 0.14);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+  --ar-led-off: rgba(15, 18, 21, 0.24);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  --ar-list-insert: rgba(255, 255, 255, 0.5);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(15, 18, 21, 0.08);
+  --ar-list-hover: rgba(15, 18, 21, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* CRYSTAL — all rim: near-clear inserts with a bright hairline, white ink. */
+[data-ar-theme='crystal']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 0, 0, 0.18);
+  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.06) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.62), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --ar-insert-backdrop: brightness(1.1) saturate(1.3);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.75);
+  --ar-insert-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  --ar-insert-off-filter: grayscale(1) opacity(0.55);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal-hi);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+  --ar-seam-glow: 0 0 6px var(--ar-signal-line);
+  --ar-cell: rgba(255, 255, 255, 0.04);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --ar-led-on: var(--ar-signal-hi);
+  --ar-led-off: rgba(255, 255, 255, 0.4);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+  --ar-list-backdrop: blur(24px) saturate(1.5);
+  --ar-list-insert: rgba(255, 255, 255, 0.05);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-list-hover: rgba(255, 255, 255, 0.09);
+}
+
+/* FROST DARK — frosted-grey controls on a charcoal frost; white ink. */
+[data-ar-theme='frost-dark']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 0, 0, 0.24);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.2) 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.1);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.7);
+  --ar-insert-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(255, 255, 255, 0.78);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+  --ar-seam-glow: 0 0 6px var(--ar-signal-line);
+  --ar-cell: rgba(255, 255, 255, 0.04);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(255, 255, 255, 0.36);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  --ar-list-backdrop: blur(40px) saturate(1.2);
+  --ar-list-insert: rgba(255, 255, 255, 0.05);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-list-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* ICE — icy blue-white frosted controls, deep navy ink, white type on the pane. */
+[data-ar-theme='ice']:not([data-ar-material]) {
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 20, 40, 0.14);
+  --ar-well: inset 0 1px 2px rgba(0, 20, 40, 0.14), inset 0 0 0 1px rgba(220, 240, 255, 0.16);
+  --ar-insert: linear-gradient(180deg, rgba(248, 252, 255, 0.92) 0%, rgba(226, 240, 250, 0.78) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 30, 60, 0.16), 0 1px 3px rgba(0, 30, 60, 0.16);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.08);
+  --ar-insert-ink: #0b2233;
+  --ar-insert-unit-ink: rgba(11, 34, 51, 0.55);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 20, 40, 0.25);
+  --ar-seam: rgba(11, 34, 51, 0.35);
+  --ar-seam-hover: rgba(11, 34, 51, 0.6);
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-cell: rgba(235, 248, 255, 0.08);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(220, 240, 255, 0.16);
+  --ar-led-off: #b3c3cf;
+  --ar-grad-well: inset 0 0 0 1px rgba(220, 240, 255, 0.26);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(235, 248, 255, 0.4);
+  --ar-list-backdrop: blur(30px) saturate(1.3);
+  --ar-list-insert: rgba(235, 248, 255, 0.08);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(220, 240, 255, 0.18);
+  --ar-list-hover: rgba(235, 248, 255, 0.1);
+}
+
+/* ---------- LUXE finishes ---------- */
+
+/* ONYX — dark glass inserts rimmed in a fine gold hairline; gold seam and LEDs. */
+[data-ar-theme='onyx']:not([data-ar-material]) {
+  --ar-label-tracking: 0.18em;
+  --ar-value-weight: 300;
+  --ar-trough: rgba(0, 0, 0, 0.34);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(212, 175, 106, 0.12);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.04) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.48), inset 0 1px 0 rgba(240, 217, 164, 0.36), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --ar-insert-backdrop: brightness(1.05) saturate(1.1);
+  --ar-insert-ink: #f6f1e7;
+  --ar-insert-unit-ink: rgba(246, 241, 231, 0.6);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #d4af6a;
+  --ar-seam-hover: #f0d9a4;
+  --ar-seam-active: #f0d9a4;
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 8px rgba(212, 175, 106, 0.6);
+  --ar-cell: rgba(212, 175, 106, 0.04);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.12);
+  --ar-led-on: #d4af6a;
+  --ar-led-off: rgba(246, 241, 231, 0.3);
+  --ar-led-glow: rgba(212, 175, 106, 0.6);
+  --ar-grad-well: inset 0 0 0 1px rgba(212, 175, 106, 0.32);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: rgba(240, 217, 164, 0.72);
+  --ar-index: #f0d9a4;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(212, 175, 106, 0.42);
+  --ar-list-backdrop: blur(30px) saturate(1.2);
+  --ar-list-insert: rgba(212, 175, 106, 0.05);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.2);
+  --ar-list-hover: rgba(212, 175, 106, 0.09);
+}
+
+/* SAPPHIRE — icy clear inserts with a platinum rim; silver-blue live edge. */
+[data-ar-theme='sapphire']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 500;
+  --ar-trough: rgba(0, 6, 24, 0.3);
+  --ar-well: inset 0 1px 2px rgba(0, 4, 20, 0.35), inset 0 0 0 1px rgba(180, 205, 255, 0.1);
+  --ar-insert: linear-gradient(180deg, rgba(200, 222, 255, 0.28) 0%, rgba(150, 185, 255, 0.12) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(200, 222, 255, 0.36), inset 0 1px 0 rgba(235, 244, 255, 0.52), 0 1px 3px rgba(0, 6, 24, 0.5);
+  --ar-insert-backdrop: brightness(1.1) saturate(1.3);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(242, 246, 255, 0.72);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(235, 244, 255, 0.85);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal-hi);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 6, 24, 0.3);
+  --ar-seam-glow: 0 0 8px rgba(156, 200, 255, 0.6);
+  --ar-cell: rgba(180, 205, 255, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(180, 205, 255, 0.1);
+  --ar-led-on: var(--ar-signal-hi);
+  --ar-led-off: rgba(242, 246, 255, 0.3);
+  --ar-grad-well: inset 0 0 0 1px rgba(190, 215, 255, 0.24);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #d6e7ff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(200, 222, 255, 0.34);
+  --ar-list-backdrop: blur(30px) saturate(1.5);
+  --ar-list-insert: rgba(180, 205, 255, 0.06);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(190, 215, 255, 0.16);
+  --ar-list-hover: rgba(180, 205, 255, 0.09);
+}
+
+/* CHAMPAGNE — ivory frosted inserts with an antique-gold rim, espresso ink. */
+[data-ar-theme='champagne']:not([data-ar-material]) {
+  --ar-label-tracking: 0.18em;
+  --ar-value-weight: 500;
+  --ar-trough: rgba(40, 26, 8, 0.14);
+  --ar-well: inset 0 1px 2px rgba(40, 26, 8, 0.16), inset 0 0 0 1px rgba(255, 236, 200, 0.18);
+  --ar-insert: linear-gradient(180deg, rgba(255, 251, 242, 0.95) 0%, rgba(247, 236, 214, 0.84) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(214, 184, 120, 0.55), 0 1px 3px rgba(60, 40, 0, 0.18);
+  --ar-insert-backdrop: blur(14px) saturate(1.15) brightness(1.06);
+  --ar-insert-ink: #2e2213;
+  --ar-insert-unit-ink: rgba(46, 34, 19, 0.55);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(50, 30, 0, 0.28);
+  --ar-seam: #b8904a;
+  --ar-seam-hover: #8f6a2c;
+  --ar-seam-active: #8f6a2c;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px #8f6a2c, 0 0 8px rgba(214, 184, 120, 0.7);
+  --ar-cell: rgba(255, 244, 220, 0.08);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.18);
+  --ar-led-on: #b8904a;
+  --ar-led-off: #cdbfa4;
+  --ar-led-glow: rgba(214, 184, 120, 0.7);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 236, 200, 0.3);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #fff6e0;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 236, 200, 0.46);
+  --ar-list-backdrop: blur(30px) saturate(1.25);
+  --ar-list-insert: rgba(255, 244, 220, 0.1);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.24);
+  --ar-list-hover: rgba(255, 244, 220, 0.12);
+}
+
+/* PEARL — soft nacre inserts in a milky well, lilac live edge. */
+[data-ar-theme='pearl']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-trough: rgba(255, 255, 255, 0.34);
+  --ar-well: inset 0 1px 1px rgba(40, 30, 60, 0.1), inset 0 0 0 1px rgba(40, 30, 60, 0.07);
+  --ar-insert: linear-gradient(180deg, #ffffff 0%, #f8f3f9 45%, #eef2f8 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(60, 40, 80, 0.18), 0 1px 3px rgba(60, 40, 80, 0.14);
+  --ar-insert-ink: #1d1a22;
+  --ar-insert-unit-ink: rgba(29, 26, 34, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.65);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: rgba(60, 40, 80, 0.3);
+  --ar-seam-hover: rgba(60, 40, 80, 0.55);
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: none;
+  --ar-cell: rgba(255, 255, 255, 0.36);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(40, 30, 60, 0.06);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: #cdc6d2;
+  --ar-grad-well: inset 0 0 0 1px rgba(40, 30, 60, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(40, 30, 60, 0.14);
+  --ar-list-insert: #ffffff;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(40, 30, 60, 0.08);
+  --ar-list-hover: rgba(40, 30, 60, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* ---------- LUXE GLASS finishes ---------- */
+
+/* PLATINUM — crystal-clear inserts with a bright platinum rim; white seam. */
+[data-ar-theme='platinum']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(0, 0, 0, 0.16);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.12) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.28);
+  --ar-insert-backdrop: brightness(1.12) saturate(1.3);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.74);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+  --ar-seam-glow: 0 0 8px rgba(255, 255, 255, 0.55);
+  --ar-cell: rgba(255, 255, 255, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --ar-led-on: #ffffff;
+  --ar-led-off: rgba(255, 255, 255, 0.28);
+  --ar-led-glow: rgba(255, 255, 255, 0.6);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #ffffff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+  --ar-list-backdrop: blur(28px) saturate(1.6);
+  --ar-list-insert: rgba(255, 255, 255, 0.08);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-list-hover: rgba(255, 255, 255, 0.1);
+}
+
+/* DIAMOND — all-rim inserts with a faint spectral fire; ice-white seam. */
+[data-ar-theme='diamond']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(0, 0, 0, 0.1);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --ar-insert: linear-gradient(100deg, rgba(255, 222, 236, 0.26) 0%, rgba(222, 240, 255, 0.28) 50%, rgba(226, 255, 240, 0.22) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.66), inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.24);
+  --ar-insert-backdrop: brightness(1.16) saturate(1.5) contrast(1.05);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.78);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal);
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+  --ar-seam-glow: 0 0 10px rgba(196, 236, 255, 0.7);
+  --ar-cell: rgba(255, 255, 255, 0.06);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(255, 255, 255, 0.3);
+  --ar-led-glow: rgba(196, 236, 255, 0.7);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #ffffff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  --ar-list-backdrop: blur(24px) saturate(1.8);
+  --ar-list-insert: rgba(255, 255, 255, 0.1);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+  --ar-list-hover: rgba(255, 255, 255, 0.12);
+}
+
+/* EMERALD — green-clear inserts rimmed in pale gold; gold seam, emerald LEDs. */
+[data-ar-theme='emerald']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(0, 16, 10, 0.3);
+  --ar-well: inset 0 1px 2px rgba(0, 16, 10, 0.36), inset 0 0 0 1px rgba(230, 204, 146, 0.12);
+  --ar-insert: linear-gradient(180deg, rgba(160, 245, 205, 0.24) 0%, rgba(60, 180, 130, 0.1) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.46), inset 0 1px 0 rgba(240, 222, 176, 0.42), 0 1px 3px rgba(0, 16, 10, 0.5);
+  --ar-insert-backdrop: brightness(1.08) saturate(1.3);
+  --ar-insert-ink: #f3fbf6;
+  --ar-insert-unit-ink: rgba(243, 251, 246, 0.66);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #e6cc92;
+  --ar-seam-hover: #f4e2b8;
+  --ar-seam-active: var(--ar-signal-hi);
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 8px rgba(95, 220, 170, 0.6);
+  --ar-cell: rgba(160, 240, 200, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.12);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(243, 251, 246, 0.28);
+  --ar-led-glow: rgba(95, 220, 170, 0.6);
+  --ar-grad-well: inset 0 0 0 1px rgba(230, 204, 146, 0.32);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: rgba(240, 222, 176, 0.74);
+  --ar-index: #f4e2b8;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(230, 204, 146, 0.42);
+  --ar-list-backdrop: blur(30px) saturate(1.4);
+  --ar-list-insert: rgba(160, 240, 200, 0.06);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.2);
+  --ar-list-hover: rgba(160, 240, 200, 0.09);
+}
+
+/* ROSE GOLD — blush-clear inserts with a rose-gold rim and seam. */
+[data-ar-theme='rose-gold']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(30, 6, 10, 0.24);
+  --ar-well: inset 0 1px 2px rgba(30, 6, 10, 0.3), inset 0 0 0 1px rgba(236, 178, 158, 0.14);
+  --ar-insert: linear-gradient(180deg, rgba(255, 226, 216, 0.3) 0%, rgba(240, 180, 165, 0.12) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.58), inset 0 1px 0 rgba(255, 230, 220, 0.62), 0 1px 3px rgba(30, 6, 10, 0.42);
+  --ar-insert-backdrop: brightness(1.1) saturate(1.2);
+  --ar-insert-ink: #fff6f3;
+  --ar-insert-unit-ink: rgba(255, 246, 243, 0.7);
+  --ar-insert-text-shadow: 0 1px 2px rgba(30, 6, 10, 0.3);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #eaa994;
+  --ar-seam-hover: #fad6ca;
+  --ar-seam-active: #fad6ca;
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 8px rgba(234, 169, 148, 0.65);
+  --ar-cell: rgba(240, 190, 175, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.14);
+  --ar-led-on: #eaa994;
+  --ar-led-off: rgba(255, 246, 243, 0.3);
+  --ar-led-glow: rgba(234, 169, 148, 0.65);
+  --ar-grad-well: inset 0 0 0 1px rgba(236, 178, 158, 0.36);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: rgba(250, 214, 202, 0.76);
+  --ar-index: #fad6ca;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(236, 178, 158, 0.46);
+  --ar-list-backdrop: blur(30px) saturate(1.3);
+  --ar-list-insert: rgba(240, 190, 175, 0.07);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.22);
+  --ar-list-hover: rgba(240, 190, 175, 0.1);
+}
+
+/* COGNAC — amber-clear inserts with a brass rim; brass seam, amber LEDs. */
+[data-ar-theme='cognac']:not([data-ar-material]) {
+  --ar-label-tracking: 0.18em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(20, 8, 0, 0.32);
+  --ar-well: inset 0 1px 2px rgba(20, 8, 0, 0.4), inset 0 0 0 1px rgba(222, 170, 102, 0.12);
+  --ar-insert: linear-gradient(180deg, rgba(255, 206, 150, 0.24) 0%, rgba(200, 120, 50, 0.1) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.52), inset 0 1px 0 rgba(248, 211, 160, 0.44), 0 1px 3px rgba(20, 8, 0, 0.5);
+  --ar-insert-backdrop: brightness(1.06) saturate(1.2);
+  --ar-insert-ink: #fff4e6;
+  --ar-insert-unit-ink: rgba(255, 244, 230, 0.64);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #deaa66;
+  --ar-seam-hover: #f8d3a0;
+  --ar-seam-active: #f8d3a0;
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 8px rgba(230, 164, 92, 0.62);
+  --ar-cell: rgba(240, 180, 110, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.13);
+  --ar-led-on: #e6a45c;
+  --ar-led-off: rgba(255, 244, 230, 0.28);
+  --ar-led-glow: rgba(230, 164, 92, 0.62);
+  --ar-grad-well: inset 0 0 0 1px rgba(222, 170, 102, 0.34);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: rgba(248, 211, 160, 0.74);
+  --ar-index: #f8d3a0;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(222, 170, 102, 0.44);
+  --ar-list-backdrop: blur(30px) saturate(1.25);
+  --ar-list-insert: rgba(240, 180, 110, 0.06);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.2);
+  --ar-list-hover: rgba(240, 180, 110, 0.09);
+}
+
+/* AMETHYST — violet-clear inserts with a silver rim; lavender live edge. */
+[data-ar-theme='amethyst']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(10, 0, 24, 0.28);
+  --ar-well: inset 0 1px 2px rgba(10, 0, 24, 0.36), inset 0 0 0 1px rgba(225, 220, 240, 0.1);
+  --ar-insert: linear-gradient(180deg, rgba(225, 210, 255, 0.28) 0%, rgba(150, 110, 240, 0.12) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(232, 226, 248, 0.42), inset 0 1px 0 rgba(245, 240, 255, 0.56), 0 1px 3px rgba(10, 0, 24, 0.5);
+  --ar-insert-backdrop: brightness(1.1) saturate(1.3);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(248, 245, 255, 0.7);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: rgba(240, 236, 255, 0.88);
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: var(--ar-signal-hi);
+  --ar-seam-edge: 0 0 0 0.5px rgba(10, 0, 24, 0.3);
+  --ar-seam-glow: 0 0 8px rgba(197, 166, 255, 0.65);
+  --ar-cell: rgba(210, 190, 255, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(225, 220, 240, 0.1);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(248, 245, 255, 0.28);
+  --ar-led-glow: rgba(197, 166, 255, 0.65);
+  --ar-grad-well: inset 0 0 0 1px rgba(225, 220, 240, 0.28);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #e8dcff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(232, 226, 248, 0.38);
+  --ar-list-backdrop: blur(30px) saturate(1.45);
+  --ar-list-insert: rgba(210, 190, 255, 0.06);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(225, 220, 240, 0.18);
+  --ar-list-hover: rgba(210, 190, 255, 0.09);
+}
+
+/* ---------- LUXE FROST finishes ---------- */
+
+/* ALABASTER — cream satin inserts with a bronze hairline; bronze seam. */
+[data-ar-theme='alabaster']:not([data-ar-material]) {
+  --ar-label-tracking: 0.18em;
+  --ar-trough: rgba(255, 252, 246, 0.36);
+  --ar-well: inset 0 1px 1px rgba(80, 56, 20, 0.1), inset 0 0 0 1px rgba(80, 56, 20, 0.07);
+  --ar-insert: linear-gradient(180deg, #fffdf8 0%, #f6efe2 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(120, 86, 40, 0.32), 0 1px 3px rgba(70, 50, 20, 0.14);
+  --ar-insert-ink: #221b12;
+  --ar-insert-unit-ink: rgba(34, 27, 18, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.65);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: #9a7040;
+  --ar-seam-hover: #7a532a;
+  --ar-seam-active: #7a532a;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 6px rgba(154, 112, 64, 0.4);
+  --ar-cell: rgba(255, 252, 246, 0.4);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(80, 56, 20, 0.07);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: #d6cbb8;
+  --ar-led-glow: rgba(154, 112, 64, 0.45);
+  --ar-grad-well: inset 0 0 0 1px rgba(80, 56, 20, 0.14);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(80, 56, 20, 0.16);
+  --ar-list-insert: #fffdf8;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(80, 56, 20, 0.1);
+  --ar-list-hover: rgba(80, 56, 20, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* PORCELAIN — glazed white inserts with a crisp gloss line; cobalt seam. */
+[data-ar-theme='porcelain']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-trough: rgba(255, 255, 255, 0.38);
+  --ar-well: inset 0 1px 1px rgba(14, 24, 50, 0.1), inset 0 0 0 1px rgba(14, 24, 50, 0.06);
+  --ar-insert: linear-gradient(180deg, #ffffff 0%, #ffffff 42%, #eef2f9 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(14, 24, 50, 0.05), 0 0 0 0.5px rgba(14, 24, 50, 0.2), 0 1px 3px rgba(14, 24, 50, 0.14);
+  --ar-insert-ink: #0e1628;
+  --ar-insert-unit-ink: rgba(14, 22, 40, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.65);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: #2a4fb0;
+  --ar-seam-hover: #1c3a8a;
+  --ar-seam-active: #1c3a8a;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.7);
+  --ar-seam-glow: 0 0 6px rgba(42, 79, 176, 0.36);
+  --ar-cell: rgba(255, 255, 255, 0.4);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(14, 24, 50, 0.06);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: #c8cedb;
+  --ar-led-glow: rgba(42, 79, 176, 0.4);
+  --ar-grad-well: inset 0 0 0 1px rgba(14, 24, 50, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(14, 24, 50, 0.14);
+  --ar-list-insert: #ffffff;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(14, 24, 50, 0.08);
+  --ar-list-hover: rgba(14, 24, 50, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* JADE — pale celadon inserts, polished; jade seam. */
+[data-ar-theme='jade']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-trough: rgba(255, 255, 255, 0.32);
+  --ar-well: inset 0 1px 1px rgba(10, 40, 26, 0.1), inset 0 0 0 1px rgba(10, 40, 26, 0.07);
+  --ar-insert: linear-gradient(180deg, #fbfefc 0%, #eaf4ee 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(20, 70, 46, 0.24), 0 1px 3px rgba(10, 40, 26, 0.14);
+  --ar-insert-ink: #0f2219;
+  --ar-insert-unit-ink: rgba(15, 34, 25, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.65);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: #2c7a58;
+  --ar-seam-hover: #1d5c41;
+  --ar-seam-active: #1d5c41;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 6px rgba(44, 122, 88, 0.36);
+  --ar-cell: rgba(255, 255, 255, 0.36);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(10, 40, 26, 0.07);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: #c3d2c9;
+  --ar-led-glow: rgba(44, 122, 88, 0.42);
+  --ar-grad-well: inset 0 0 0 1px rgba(10, 40, 26, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(10, 40, 26, 0.14);
+  --ar-list-insert: #fbfefc;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(10, 40, 26, 0.08);
+  --ar-list-hover: rgba(10, 40, 26, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+
+/* MOONSTONE — milky blue-white frosted inserts, cool blue live edge. */
+[data-ar-theme='moonstone']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-trough: rgba(10, 20, 40, 0.12);
+  --ar-well: inset 0 1px 2px rgba(10, 20, 40, 0.16), inset 0 0 0 1px rgba(220, 232, 255, 0.18);
+  --ar-insert: linear-gradient(180deg, rgba(246, 250, 255, 0.94) 0%, rgba(218, 230, 248, 0.84) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(200, 220, 255, 0.5), 0 1px 3px rgba(10, 20, 40, 0.2);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.08);
+  --ar-insert-ink: #152033;
+  --ar-insert-unit-ink: rgba(21, 32, 51, 0.54);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(10, 20, 40, 0.3);
+  --ar-seam: #6f9ee8;
+  --ar-seam-hover: #3f72c8;
+  --ar-seam-active: #3f72c8;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px #3f72c8, 0 0 8px rgba(170, 205, 255, 0.7);
+  --ar-cell: rgba(230, 240, 255, 0.08);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(220, 232, 255, 0.18);
+  --ar-led-on: #cfe2ff;
+  --ar-led-off: rgba(247, 249, 253, 0.34);
+  --ar-led-glow: rgba(170, 205, 255, 0.75);
+  --ar-grad-well: inset 0 0 0 1px rgba(220, 232, 255, 0.34);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #eef4ff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(220, 232, 255, 0.46);
+  --ar-list-backdrop: blur(30px) saturate(1.15);
+  --ar-list-insert: rgba(230, 240, 255, 0.1);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(220, 232, 255, 0.24);
+  --ar-list-hover: rgba(230, 240, 255, 0.12);
+}
+
+/* CASHMERE — oat-white frosted inserts with a caramel rim, cocoa ink. */
+[data-ar-theme='cashmere']:not([data-ar-material]) {
+  --ar-label-tracking: 0.16em;
+  --ar-trough: rgba(40, 26, 14, 0.12);
+  --ar-well: inset 0 1px 2px rgba(40, 26, 14, 0.16), inset 0 0 0 1px rgba(255, 240, 222, 0.18);
+  --ar-insert: linear-gradient(180deg, rgba(253, 249, 243, 0.95) 0%, rgba(238, 228, 214, 0.86) 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(220, 180, 136, 0.5), 0 1px 3px rgba(40, 26, 14, 0.2);
+  --ar-insert-backdrop: blur(14px) saturate(1.1) brightness(1.06);
+  --ar-insert-ink: #2c2119;
+  --ar-insert-unit-ink: rgba(44, 33, 25, 0.54);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(40, 26, 14, 0.3);
+  --ar-seam: #b98352;
+  --ar-seam-hover: #8f5f34;
+  --ar-seam-active: #8f5f34;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-glow: 0 0 0 0.5px #8f5f34, 0 0 8px rgba(220, 170, 120, 0.7);
+  --ar-cell: rgba(255, 244, 230, 0.08);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 240, 222, 0.18);
+  --ar-led-on: #f1cfa6;
+  --ar-led-off: rgba(252, 248, 243, 0.34);
+  --ar-led-glow: rgba(220, 170, 120, 0.75);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 240, 222, 0.32);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #fff4e6;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 240, 222, 0.46);
+  --ar-list-backdrop: blur(30px) saturate(1.05);
+  --ar-list-insert: rgba(255, 244, 230, 0.1);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 240, 222, 0.24);
+  --ar-list-hover: rgba(255, 244, 230, 0.12);
+}
+
+/* VELVET — rosy frosted inserts on bordeaux, silver rim; rose live edge. */
+[data-ar-theme='velvet']:not([data-ar-material]) {
+  --ar-label-tracking: 0.18em;
+  --ar-value-weight: 400;
+  --ar-trough: rgba(20, 0, 8, 0.26);
+  --ar-well: inset 0 1px 2px rgba(20, 0, 8, 0.34), inset 0 0 0 1px rgba(236, 226, 232, 0.1);
+  --ar-insert: linear-gradient(180deg, rgba(255, 228, 238, 0.3) 0%, rgba(255, 200, 220, 0.14) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(240, 230, 236, 0.4), inset 0 1px 0 rgba(255, 240, 246, 0.5), 0 1px 3px rgba(20, 0, 8, 0.5);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.12);
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(251, 241, 244, 0.7);
+  --ar-insert-text-shadow: 0 1px 2px rgba(20, 0, 8, 0.3);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-seam: #f09bb0;
+  --ar-seam-hover: #ffd3de;
+  --ar-seam-active: #ffd3de;
+  --ar-seam-edge: none;
+  --ar-seam-glow: 0 0 8px rgba(240, 155, 176, 0.62);
+  --ar-cell: rgba(255, 210, 225, 0.05);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(236, 226, 232, 0.1);
+  --ar-led-on: var(--ar-signal);
+  --ar-led-off: rgba(251, 241, 244, 0.28);
+  --ar-led-glow: rgba(240, 155, 176, 0.62);
+  --ar-grad-well: inset 0 0 0 1px rgba(236, 226, 232, 0.28);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #ffd3de;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(240, 230, 236, 0.38);
+  --ar-list-backdrop: blur(40px) saturate(1.2);
+  --ar-list-insert: rgba(255, 210, 225, 0.06);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(236, 226, 232, 0.18);
+  --ar-list-hover: rgba(255, 210, 225, 0.09);
+}
+
+/* ---------- OPTICAL GLASS finishes ---------- */
+
+/* Shared: a bright-rimmed translucent well, white LEDs. */
+:is([data-ar-theme='pane'], [data-ar-theme='lucid'], [data-ar-theme='gallery'],
+  [data-ar-theme='satin'], [data-ar-theme='monolith'], [data-ar-theme='opal'], [data-ar-theme='graphite']):not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.14);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  --ar-label-ink: var(--ar-text-hi);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.32);
+  --ar-cell: rgba(255, 255, 255, 0.06);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-led-on: #ffffff;
+  --ar-led-off: rgba(255, 255, 255, 0.3);
+  --ar-led-glow: rgba(255, 255, 255, 0.6);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #ffffff;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  --ar-list-backdrop: blur(40px) saturate(1.1) brightness(0.7);
+  --ar-list-insert: rgba(255, 255, 255, 0.1);
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  --ar-list-hover: rgba(255, 255, 255, 0.12);
+}
+
+/* Pill fills: glossy, opaque-looking bodies with dark ink and a dark grip. */
+:is([data-ar-theme='pane'], [data-ar-theme='satin']):not([data-ar-material]) {
+  --ar-insert-ink: #262626;
+  --ar-insert-unit-ink: rgba(38, 38, 38, 0.55);
+  --ar-insert-off-filter: grayscale(1) opacity(0.55);
+  --ar-seam: #2a2a2a;
+  --ar-seam-hover: #000000;
+  --ar-seam-active: #000000;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.7);
+  --ar-seam-glow: 1px 0 0 rgba(255, 255, 255, 0.7);
+}
+/* PANE — silver-pearl pills, lit from above with a soft inner curve. */
+[data-ar-theme='pane']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, #e9ebec 0%, #d3d6d7 40%, #c3c6c7 100%);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 3px 5px -2px rgba(255, 255, 255, 0.55), inset 0 -2px 4px -1px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.35);
+}
+/* SATIN — glossy white pills. */
+[data-ar-theme='satin']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, #fdfdfd 0%, #efefef 45%, #dcdcdc 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(0, 0, 0, 0.07), 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Frosted fills: translucent glass bodies, white ink, a white grip. */
+:is([data-ar-theme='lucid'], [data-ar-theme='gallery'], [data-ar-theme='monolith'], [data-ar-theme='opal'], [data-ar-theme='graphite']):not([data-ar-material]) {
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.76);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-insert-off-filter: grayscale(1) opacity(0.5);
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.3);
+  --ar-seam-glow: 0 0 0 0.5px rgba(0, 0, 0, 0.3), 0 0 6px rgba(255, 255, 255, 0.5);
+}
+/* LUCID — clear glass fills: almost no body, a bright lit edge. */
+[data-ar-theme='lucid']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.1) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 4px rgba(0, 0, 0, 0.22);
+  --ar-insert-backdrop: brightness(1.14) saturate(1.2);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
+}
+/* GALLERY — crisp frosted fills in a darker well. */
+[data-ar-theme='gallery']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.22);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.18) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 3px rgba(0, 0, 0, 0.25);
+  --ar-insert-backdrop: blur(10px) saturate(1.1) brightness(1.1);
+}
+/* MONOLITH — milky frosted fills that carry the colour behind them. */
+[data-ar-theme='monolith']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.12);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.44) 0%, rgba(255, 255, 255, 0.26) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.62), 0 1px 4px rgba(0, 0, 0, 0.16);
+  --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.08);
+}
+/* OPAL — soft smoky glass fills, deep wells with a bright rim. */
+[data-ar-theme='opal']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.26);
+  --ar-well: inset 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.1) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.35);
+  --ar-insert-backdrop: blur(8px) brightness(1.15);
+  --ar-base-text-shadow: none;
+  --ar-insert-text-shadow: none;
+}
+/* GRAPHITE — grey-glass fills. */
+[data-ar-theme='graphite']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.12);
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.2) 100%);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.52), 0 1px 4px rgba(0, 0, 0, 0.22);
+  --ar-insert-backdrop: blur(10px) saturate(0.3) brightness(1.1);
+  --ar-base-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* PANE LIGHT — white pills on a pale well, dark ink everywhere. */
+[data-ar-theme='pane-light']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.05);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.07);
+  --ar-insert: linear-gradient(180deg, #ffffff 0%, #ffffff 50%, #f1f1f1 100%);
+  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.16), 0 2px 5px -1px rgba(0, 0, 0, 0.18);
+  --ar-insert-ink: #141414;
+  --ar-insert-unit-ink: rgba(20, 20, 20, 0.5);
+  --ar-insert-off-filter: grayscale(1) opacity(0.6);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-seam: #2a2a2a;
+  --ar-seam-hover: #000000;
+  --ar-seam-active: #000000;
+  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.8);
+  --ar-seam-glow: 1px 0 0 rgba(255, 255, 255, 0.8);
+  --ar-cell: rgba(255, 255, 255, 0.4);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --ar-led-on: #141414;
+  --ar-led-off: rgba(0, 0, 0, 0.16);
+  --ar-led-glow: rgba(0, 0, 0, 0);
+  --ar-grad-well: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  --ar-grad-sheen: none;
+  --ar-swatch-rim: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  --ar-list-insert: #ffffff;
+  --ar-list-insert-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.07);
+  --ar-list-hover: rgba(0, 0, 0, 0.05);
+  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}

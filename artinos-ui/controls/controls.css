@@ -1,0 +1,462 @@
+/* ARTINOS UI — the family: Switch · ToggleGroup · Segmented · ColorField · Select · NumberField.
+   Same well, same insert, same LED seam, same material tokens as the slider. */
+
+.ar-switch,
+.ar-toggles,
+.ar-segmented,
+.ar-color,
+.ar-select,
+.ar-number {
+  width: 100%;
+  font-family: var(--ar-control-font);
+}
+.ar-switch.is-disabled,
+.ar-select.is-disabled,
+.ar-number.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+.ar-icon > svg {
+  width: 100%;
+  height: 100%;
+}
+/* buttons inside controls carry no browser chrome — zero specificity, so the
+   insert material on a chip still wins */
+:where(.ar-toggles__chip, .ar-segmented__opt) {
+  all: unset;
+}
+.ar-toggles__chip,
+.ar-segmented__opt {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  cursor: pointer;
+  color: var(--ar-insert-ink);
+}
+.ar-toggles__chip:disabled,
+.ar-segmented__opt:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Switch: shutter ---------- */
+.ar-switch {
+  cursor: pointer;
+}
+.ar-switch__shutter {
+  position: absolute;
+  top: var(--ar-inset);
+  bottom: var(--ar-inset);
+  left: var(--ar-inset);
+  width: calc(50% - var(--ar-inset) - 1px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--ar-pad-x);
+  transition:
+    left 280ms var(--ar-ease),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-switch[data-on] .ar-switch__shutter {
+  left: calc(50% + 1px);
+}
+.ar-switch__text {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+/* ---------- Switch: compact knob ---------- */
+.ar-switch--compact {
+  --_kw: calc(var(--_h) - 2 * var(--ar-inset) + 4px);
+  width: calc(var(--ar-h) * 1.9);
+  flex: none;
+}
+.ar-switch__knob {
+  position: absolute;
+  top: var(--ar-inset);
+  bottom: var(--ar-inset);
+  left: var(--ar-inset);
+  width: var(--_kw);
+  display: grid;
+  place-items: center;
+  transition:
+    left 240ms var(--ar-ease),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-switch[data-on] .ar-switch__knob {
+  left: calc(100% - var(--ar-inset) - var(--_kw));
+}
+/* on: a vertical signal seam · off: a small ring */
+.ar-switch__mark {
+  width: 2px;
+  height: 42%;
+  border-radius: 1px;
+  background: var(--ar-seam);
+  transition: all var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-switch[data-on] .ar-switch__mark {
+  background: var(--ar-seam-active);
+  box-shadow: 0 0 5px var(--ar-signal-line);
+}
+.ar-switch:not([data-on]) .ar-switch__mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.2px var(--ar-seam);
+}
+
+/* ---------- ToggleGroup ---------- */
+.ar-toggles {
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  padding: var(--ar-inset);
+}
+.ar-toggles[data-labelled] {
+  padding-left: var(--ar-pad-x);
+}
+.ar-toggles__label {
+  margin-right: auto;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-self: center;
+  padding-right: 8px;
+}
+.ar-toggles__chip {
+  flex: 1;
+  gap: 7px;
+  padding: 0 10px;
+}
+.ar-toggles[data-labelled] .ar-toggles__chip {
+  flex: none;
+}
+.ar-toggles__chip[data-icon] {
+  flex: none;
+  width: calc(var(--_h) * 1.5);
+  padding: 0;
+}
+/* an off icon chip recedes into the well instead of draining */
+.ar-toggles__chip[data-icon][data-off] {
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: var(--ar-dim-ink);
+}
+.ar-toggles__chip:focus-visible {
+  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+}
+
+/* ---------- Segmented ---------- */
+.ar-segmented {
+  cursor: pointer;
+}
+.ar-segmented__insert {
+  --_cw: calc((100% - 2 * var(--ar-inset)) / var(--_n));
+  position: absolute;
+  top: var(--ar-inset);
+  bottom: var(--ar-inset);
+  left: calc(var(--ar-inset) + var(--_i) * var(--_cw));
+  width: var(--_cw);
+  transition:
+    left 300ms var(--ar-ease),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-segmented__row {
+  position: absolute;
+  inset: var(--ar-inset);
+  display: flex;
+}
+.ar-segmented__opt {
+  flex: 1;
+  gap: 6px;
+  padding: 0 6px;
+  color: var(--ar-dim-ink);
+  transition: color var(--ar-dur-surface) var(--ar-ease) 60ms;
+}
+.ar-segmented__opt .ar-text:not(.ar-text--over) {
+  color: var(--ar-dim-ink);
+}
+.ar-segmented__opt[data-on] {
+  color: var(--ar-insert-ink);
+}
+.ar-segmented__opt .ar-text {
+  transition: color var(--ar-dur-surface) var(--ar-ease) 60ms;
+}
+
+/* ---------- ColorField ---------- */
+.ar-color {
+  display: flex;
+  align-items: stretch;
+}
+.ar-color[data-labelled] {
+  padding-left: var(--ar-pad-x);
+}
+.ar-color__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  align-self: center;
+  padding-right: 8px;
+}
+.ar-color__swatch {
+  position: relative;
+  flex: 0 0 48%;
+  margin: var(--ar-inset);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 6px;
+  border-radius: var(--_ir);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--ar-swatch-rim);
+}
+.ar-color:not([data-labelled]) .ar-color__swatch {
+  flex: 1 1 auto;
+}
+/* checkerboard shows through when alpha < 1 */
+.ar-color__swatch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(#8a8a8a 0 25%, #c8c8c8 0 50%) 0 0 / 8px 8px;
+  opacity: calc(1 - var(--_a));
+}
+.ar-color__paint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 48%, rgba(0, 0, 0, 0.1)),
+    color-mix(in srgb, var(--_c) calc(var(--_a) * 100%), transparent);
+  transition: background 180ms var(--ar-ease);
+  pointer-events: none;
+}
+.ar-color__native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.ar-color__hex,
+.ar-color__alpha {
+  position: relative;
+  z-index: 1;
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ar-color__hex {
+  all: unset;
+  position: relative;
+  z-index: 1;
+  box-sizing: content-box;
+  width: 7ch;
+  margin: 0 auto;
+  padding: 1px 2px;
+  border-radius: 3px;
+  text-align: center;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: text;
+}
+.ar-color__hex:focus {
+  background: rgba(0, 0, 0, 0.18);
+}
+.ar-color__alpha {
+  flex: none;
+  cursor: ew-resize;
+  outline: none;
+  border-radius: 3px;
+  padding: 1px 2px;
+  font-variant-numeric: tabular-nums;
+}
+.ar-color__alpha:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-color:not([data-labelled]) .ar-color__hex {
+  margin: 0 auto 0 0;
+}
+.ar-color__swatch[data-ink='dark'] { color: #1c1c1c; }
+.ar-color__swatch[data-ink='light'] { color: #ededed; }
+.ar-color__native:focus-visible ~ .ar-color__paint,
+.ar-color__swatch:has(.ar-color__native:focus-visible) {
+  box-shadow: var(--ar-swatch-rim), var(--ar-focus-ring);
+}
+
+/* ---------- Select ---------- */
+.ar-select {
+  cursor: pointer;
+}
+.ar-select__face {
+  position: absolute;
+  inset: var(--ar-inset);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--ar-pad-x);
+  color: var(--ar-insert-ink);
+  transition:
+    opacity 120ms var(--ar-ease),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-select[data-appearance='well'] .ar-select__face {
+  color: var(--ar-value-ink);
+}
+.ar-select[data-open] .ar-select__face {
+  opacity: 0;
+}
+.ar-select__text {
+  flex: 1;
+  min-width: 0;
+}
+.ar-select__text.is-placeholder:not(.ar-text--over) {
+  color: var(--ar-dim-ink);
+}
+.ar-select[data-appearance='well'] .ar-select__text {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-family: var(--ar-font-ui);
+  font-weight: 300;
+  font-size: calc(var(--ar-value-size) + 1px);
+  color: var(--ar-value-ink);
+}
+
+/* list panel — portalled, carries its tokens inline */
+.ar-list {
+  --_h: var(--ar-h, 26px);
+  --_r: var(--ar-radius, calc(var(--_h) * 0.31));
+  position: fixed;
+  z-index: 2147482000;
+  box-sizing: border-box;
+  padding: var(--_head) 0 6px;
+  border-radius: var(--_r);
+  background: var(--ar-list-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-list-shadow);
+  font-family: var(--ar-control-font);
+}
+.ar-list__insert {
+  position: absolute;
+  inset: 1px;
+  border-radius: var(--ar-insert-radius, calc(var(--_r) - 1px));
+  background: var(--ar-list-insert);
+  mix-blend-mode: var(--ar-list-insert-blend);
+  box-shadow: var(--ar-list-insert-shadow);
+  pointer-events: none;
+}
+.ar-list__head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--_head);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 11px;
+  color: var(--ar-list-ink);
+  cursor: pointer;
+}
+.ar-list__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: max(20px, calc(var(--_h) - 6px));
+  padding: 0 11px;
+  cursor: pointer;
+  color: var(--ar-list-ink);
+  transition: background 90ms var(--ar-ease);
+}
+.ar-list__row[data-hi] {
+  background: var(--ar-list-hover);
+  color: var(--ar-list-ink-hi);
+}
+.ar-list__row[aria-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ar-list__led {
+  display: flex;
+  width: 3px;
+}
+.ar-list__text {
+  flex: 1;
+  min-width: 0;
+  color: inherit;
+  text-shadow: var(--ar-list-text-shadow);
+}
+
+/* ---------- NumberField ---------- */
+.ar-number {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--ar-pad-x);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  color: var(--ar-value-ink);
+}
+.ar-number[data-editing] {
+  cursor: text;
+}
+.ar-number__label {
+  flex: none;
+  color: var(--ar-dim-ink);
+}
+.ar-number__value,
+.ar-number__input {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-family: var(--ar-font-ui);
+  font-size: calc(var(--ar-value-size) + 2px);
+  font-weight: 300;
+}
+.ar-number[data-align='end'] :is(.ar-number__value, .ar-number__input) {
+  text-align: right;
+}
+.ar-number__value .ar-roll {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
+  font-weight: var(--ar-value-weight);
+}
+.ar-number__value .ar-roll__unit {
+  color: var(--ar-unit-ink);
+}
+.ar-number__input {
+  all: unset;
+  flex: 1;
+  min-width: 0;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
+  color: var(--ar-value-ink-hi);
+  text-align: center;
+}
+.ar-number[data-scrubbing] {
+  color: var(--ar-value-ink-hi);
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
+}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Studio shell — dock bottom (SH.01)" description="Frosted 276px bottom dock over a live canvas: tab strip, search, status cluster, three panel cards, console line." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@200;300;400;500;700&amp;family=Chivo+Mono:wght@200;300;400;500;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#080A0B}</style>
+</helmet>
+<div style="position:relative;width:1440px;height:900px;overflow:hidden;background:#080A0B" data-theme="auto" data-backdrop="bright">
+  <div style="position:absolute;inset:0;background:url('./assets/imagery/courtyard-scene.png') center/cover no-repeat"></div>
+  <div style="position:absolute;left:50%;top:31%;transform:translate(-50%,-50%);width:280px;height:280px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#DFE9E6,#5D6B6B 42%,#1A2122 78%);box-shadow:0 60px 120px -30px rgba(0,0,0,.8)"></div>
+
+  <div style="position:absolute;left:32px;top:22px;z-index:22;display:flex;align-items:center;gap:11px;height:32px;padding:0 13px;border-radius:var(--radius-card);background:var(--frost-sheen),var(--frost-tint);backdrop-filter:var(--blur-float);-webkit-backdrop-filter:var(--blur-float);box-shadow:inset 0 0 0 1px var(--line),inset 0 1px 0 var(--line-subtle)">
+    <span style="display:grid;place-items:center;width:18px;height:18px;border-radius:4px;background:#2FB39C;color:#04120F;font-family:'Chivo Mono',monospace;font-size:9.5px;font-weight:700">#</span>
+    <b style="font-family:'Chivo Mono',monospace;font-size:9.5px;font-weight:300;letter-spacing:.24em;color:#F4F4F4">ARTINOS</b>
+    <i style="width:1px;height:11px;background:rgba(255,255,255,.09)"></i>
+    <span style="font-family:'Chivo Mono',monospace;font-size:9px;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:#919191">Scene</span>
+  </div>
+
+  <div style="position:absolute;left:32px;right:32px;bottom:29px;height:276px;display:flex;flex-direction:column;border-radius:var(--radius-panel);overflow:hidden;background:var(--frost-sheen),var(--frost-tint);backdrop-filter:var(--blur-frost);-webkit-backdrop-filter:var(--blur-frost);box-shadow:var(--e2-dock)">
+
+    <div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 13px;border-bottom:1px solid rgba(255,255,255,.06)">
+      <div style="display:flex;gap:2px">
+        <span style="display:flex;align-items:center;gap:7px;height:25px;padding:0 11px;border-radius:6px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);color:#F4F4F4;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.17em">SCENE<em style="font-style:normal;font-weight:300;color:#919191">14</em></span>
+        <span style="display:flex;align-items:center;gap:7px;height:25px;padding:0 11px;border-radius:6px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);color:#F4F4F4;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.17em">RENDER<em style="font-style:normal;font-weight:300;color:#919191">09</em></span>
+        <span style="display:flex;align-items:center;gap:7px;height:25px;padding:0 11px;border-radius:6px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);color:#F4F4F4;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.17em">POSTFX<em style="font-style:normal;font-weight:300;color:#919191">44</em></span>
+        <span style="display:flex;align-items:center;gap:7px;height:25px;padding:0 11px;border-radius:6px;background:transparent;color:#919191;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:300;letter-spacing:.17em">INPUT<em style="font-style:normal;font-weight:300;color:#686868">06</em></span>
+      </div>
+      <span style="display:flex;align-items:center;gap:8px;width:272px;height:27px;margin-left:20px;padding:0 11px;border-radius:11px;background:color-mix(in srgb, var(--bg-well) 58%, transparent);box-shadow:var(--e0-well);color:#919191;font-size:11px;font-weight:300">
+        <span style="font-size:11px">⌕</span><span>Search project controls</span>
+        <span style="margin-left:auto;font-family:'Chivo Mono',monospace;font-size:9px;letter-spacing:.08em;color:#686868">⌘K</span>
+      </span>
+      <span style="margin-left:auto;display:flex;align-items:center;gap:13px;height:27px;padding:0 12px;border-radius:6px;background:color-mix(in srgb, var(--bg-well) 40%, transparent);box-shadow:inset 0 0 0 1px var(--line-subtle)">
+        <span style="display:flex;align-items:center;gap:6px"><i style="width:4px;height:4px;border-radius:50%;background:#2FB39C;box-shadow:0 0 6px rgba(47,179,156,.5)"></i><span style="font-family:'Chivo Mono',monospace;font-size:8.5px;font-weight:500;letter-spacing:.18em;color:#7FE3D4">WEBGPU</span></span>
+        <span style="font-family:'Chivo Mono',monospace;font-size:11.5px;font-weight:300;color:#F4F4F4">60<em style="font-style:normal;font-size:8.5px;letter-spacing:.1em;color:#686868;margin-left:4px">FPS</em></span>
+        <span style="font-family:'Chivo Mono',monospace;font-size:8.5px;font-weight:300;letter-spacing:.1em;color:#919191">CPU 41 · GPU 63</span>
+        <span style="display:grid;place-items:center;width:16px;height:22px;color:#919191;font-size:11px">⋯</span>
+      </span>
+    </div>
+
+    <div style="display:flex;gap:4px;flex:1;min-height:0;padding:6px">
+      <div style="display:flex;flex-direction:column;flex:1.2 1 0;min-width:0;border-radius:11px;overflow:hidden;background:var(--bg-row);box-shadow:inset 0 0 0 1px var(--line-subtle)">
+        <div style="flex:1;min-height:0;padding:11px 11px 10px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <b style="font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#BFBFBF">ENVIRONMENT</b>
+            <i style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.09),transparent)"></i>
+            <span style="font-family:'Chivo Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:#686868">14</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" variant="gradient" gradient="exposure" label="Exposure" value="{{ exposure }}" min="{{ -4 }}" max="{{ 4 }}" decimals="{{ 2 }}" unit="EV" detents="{{ zero }}" onChange="{{ setExposure }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Env Intensity" value="{{ intensity }}" max="{{ 2 }}" unit="x" detents="{{ one }}" onChange="{{ setIntensity }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Fog Density" value="{{ fog }}" max="{{ 0.2 }}" decimals="{{ 3 }}" onChange="{{ setFog }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Ground Blur" value="{{ blur }}" onChange="{{ setBlur }}" hint-size="100%,24px"></x-import>
+          </div>
+          <span style="margin-top:auto;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:300;letter-spacing:.16em;color:#686868">STUDIO · COURTYARD</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;flex:1 1 0;min-width:0;border-radius:11px;overflow:hidden;background:var(--bg-row);box-shadow:inset 0 0 0 1px var(--line-subtle)">
+        <div style="flex:1;min-height:0;padding:11px 11px 10px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <b style="font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#BFBFBF">OUTPUT</b>
+            <i style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.09),transparent)"></i>
+            <span style="font-family:'Chivo Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:#686868">09</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" steps="{{ 7 }}" label="DPR" value="{{ dpr }}" min="{{ 0.5 }}" max="{{ 2 }}" unit="x" onChange="{{ setDpr }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Shadow Bias" value="{{ bias }}" max="{{ 0.1 }}" decimals="{{ 3 }}" onChange="{{ setBias }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Tone Contrast" value="{{ contrast }}" detents="{{ half }}" onChange="{{ setContrast }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" variant="gradient" gradient="temperature" label="White Bal" value="{{ wb }}" min="{{ 0 }}" max="{{ 100 }}" onChange="{{ setWb }}" hint-size="100%,24px"></x-import>
+          </div>
+          <span style="margin-top:auto;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:300;letter-spacing:.16em;color:#686868">WEBGPU · ADAPTIVE DPR</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;flex:0.85 1 0;min-width:0;border-radius:11px;overflow:hidden;background:var(--bg-row);box-shadow:inset 0 0 0 1px var(--line-subtle)">
+        <div style="flex:1;min-height:0;padding:11px 11px 10px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <b style="font-family:'Chivo Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:#BFBFBF">STACK</b>
+            <i style="flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.09),transparent)"></i>
+            <span style="font-family:'Chivo Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:#686868">44</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Bloom" value="{{ bloom }}" onChange="{{ setBloom }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Orb Energy" value="{{ orb }}" onChange="{{ setOrb }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" label="Grain" value="{{ grain }}" default-enabled="{{ false }}" onChange="{{ setGrain }}" hint-size="100%,24px"></x-import>
+            <x-import component="ArtinosSlider" from="./ArtinosSlider.jsx" density="dense" toggleable="{{ true }}" variant="gradient" gradient="hue" label="Tint" value="{{ tint }}" min="{{ 0 }}" max="{{ 360 }}" format="angle" decimals="{{ 0 }}" onChange="{{ setTint }}" hint-size="100%,24px"></x-import>
+          </div>
+          <span style="margin-top:auto;font-family:'Chivo Mono',monospace;font-size:9px;font-weight:300;letter-spacing:.16em;color:#686868">6 ACTIVE · 2.1 MS</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:9px;height:31px;padding:0 14px;border-top:1px solid rgba(255,255,255,.05)">
+      <span style="font-family:'Chivo Mono',monospace;font-size:8.5px;font-weight:500;letter-spacing:.2em;color:#7FE3D4">CONSOLE</span>
+      <span style="font-family:'Chivo Mono',monospace;font-size:9.5px;font-weight:300;letter-spacing:.08em;color:#919191">14:22:09</span>
+      <span style="font-size:11px;font-weight:300;color:#BFBFBF">Drag a readout for precision · double-click a slider to switch it off</span>
+      <span style="margin-left:auto;font-family:'Chivo Mono',monospace;font-size:8.5px;font-weight:300;letter-spacing:.18em;color:#686868">62 ENTRIES</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { exposure: 0.4, intensity: 0.82, fog: 0.04, blur: 0.36, dpr: 1.75, bias: 0.02, contrast: 0.58, bloom: 0.24, orb: 0.71, grain: 0.08, wb: 58, tint: 172 }
+  set(key) { return value => this.setState({ [key]: value }) }
+  renderVals() {
+    return {
+      ...this.state,
+      setExposure: this.set('exposure'), setIntensity: this.set('intensity'), setFog: this.set('fog'), setBlur: this.set('blur'),
+      setDpr: this.set('dpr'), setBias: this.set('bias'), setContrast: this.set('contrast'),
+      setBloom: this.set('bloom'), setOrb: this.set('orb'), setGrain: this.set('grain'),
+      setWb: this.set('wb'), setTint: this.set('tint'), zero: [0], one: [1], half: [0.5],
+    }
+  }
+}
+
+</script>
+</body>
+</html>

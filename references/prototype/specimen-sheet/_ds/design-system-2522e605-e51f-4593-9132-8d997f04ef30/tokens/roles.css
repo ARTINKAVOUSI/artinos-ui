@@ -1,0 +1,65 @@
+/* Roles — the only vocabulary components may reference (rule 01). Dark is the
+   default cascade; themes.css reassigns these per [data-theme]. */
+:root {
+  --bg-app: var(--ink-void);
+  --bg-stage: var(--ink-stage);
+  --bg-surface: var(--ink-surface);
+  --bg-raised: var(--ink-raised);
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(255, 255, 255, 0.09);
+  --bg-well: rgba(0, 0, 0, 0.34);
+  --bg-float: rgba(25, 25, 25, 0.86);
+  --bg-scrim: rgba(9, 9, 9, 0.6);
+  /* Row rest wash — a step below --bg-hover, which is where a row goes on pointer-over. */
+  --bg-row: rgba(255, 255, 255, 0.024);
+
+  --text-hi: var(--chalk-hi);
+  --text-mid: var(--chalk-mid);
+  --text-low: var(--chalk-low);
+  --text-faint: var(--chalk-faint);
+  --text-ghost: var(--chalk-ghost);
+
+  --line-subtle: rgba(255, 255, 255, 0.06);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.14);
+
+  --sig-live: var(--teal-500);
+  --sig-live-hi: var(--teal-300);
+  --sig-live-wash: rgba(47, 179, 156, 0.16);
+  --sig-live-line: rgba(47, 179, 156, 0.5);
+  --sig-warn: var(--amber-500);
+  --sig-warn-wash: rgba(224, 163, 78, 0.14);
+  --sig-fault: var(--rose-500);
+  --sig-fault-wash: rgba(242, 96, 111, 0.12);
+  --sig-bind: var(--azure-500);
+  --sig-bind-wash: rgba(143, 184, 217, 0.14);
+  --sig-neutral: var(--chalk-ghost);
+
+  --fill-track: rgba(255, 255, 255, 0.05);
+  --fill-track-hover: rgba(255, 255, 255, 0.08);
+  --tick: rgba(255, 255, 255, 0.2);
+
+  /* elevation — one meaning each (rule 02): e0 recessed = editable, e2/e3 frost = floating chrome */
+  --e0-well: inset 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--line-subtle);
+  --e1-surface: inset 0 0 0 1px var(--line-subtle);
+  --e2-dock: inset 0 0 0 1px var(--line), inset 0 1.5px 0 rgba(255, 255, 255, 0.13), 0 24px 60px -20px rgba(0, 0, 0, 0.9), 0 2px 10px -4px rgba(0, 0, 0, 0.6);
+  --e3-float: inset 0 0 0 1px var(--line-strong), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 28px 64px -18px rgba(0, 0, 0, 0.9);
+
+  /* Clear frosted glass: near-zero tint, heavy blur doing the material work, a
+     faint grain breaking up the blur so it reads as textured glass rather than a
+     flat gaussian wash — real frosted glass is never perfectly smooth. No dark
+     veil; legibility comes from the blur radius and the grain, not from tinting
+     the pane. */
+  --frost-tint: rgba(255, 255, 255, 0.1);
+  --frost-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); /* @kind other */
+  --frost-sheen:
+    radial-gradient(120% 180% at 18% -20%, rgba(255, 255, 255, 0.16), transparent 55%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.012) 45%, transparent); /* @kind other */
+  --blur-frost: blur(76px) saturate(104%) contrast(102%); /* @kind other */
+  --blur-float: blur(58px) saturate(104%) contrast(102%); /* @kind other */
+
+  /* focus is a two-ring token — never removed, only restyled */
+  --focus-ring: 0 0 0 1px var(--sig-live-hi), 0 0 0 3px rgba(127, 227, 212, 0.16);
+
+  color-scheme: dark;
+}

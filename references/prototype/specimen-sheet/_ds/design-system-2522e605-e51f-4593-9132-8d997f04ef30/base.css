@@ -1,0 +1,16 @@
+/* Resets + document-level defaults. Not tokens, not components — the minimum
+   needed so a page using this system starts from the right ground. */
+html { color-scheme: dark; }
+body {
+  margin: 0;
+  background: var(--bg-app);
+  color: var(--text-hi);
+  font-family: var(--font-ui);
+  font-feature-settings: 'tnum' 1;
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+a { color: var(--text-mid); text-decoration: none; border-bottom: 1px solid var(--sig-live-line); }
+a:hover { color: var(--text-hi); border-bottom-color: var(--sig-live-hi); }
+button, input, select, textarea { font-family: inherit; color: inherit; }
+::selection { background: var(--sig-live-wash); color: var(--text-hi); }

@@ -1,0 +1,11 @@
+/* ARTINOS UI — single stylesheet entry. Import once, at the app root:
+     import './artinos-ui/artinos.css';
+   Order matters: tokens → themes → materials → components. */
+@import './tokens/fonts.css';
+@import './tokens/tokens.css';
+@import './tokens/themes.css';
+@import './tokens/materials.css';
+@import './core/core.css';
+@import './slider/slider.css';
+@import './controls/controls.css';
+@import './layout/layout.css';

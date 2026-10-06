@@ -1,0 +1,103 @@
+/* Four themes, all driven by [data-theme] on the root. A theme reassigns
+   roles; it never re-declares a component rule. */
+
+/* GLASS — the clearest of the four: least tint, most blur, most vibrancy. */
+[data-theme='glass'] {
+  --frost-tint: rgba(255, 255, 255, 0.06);
+  --blur-frost: blur(84px) saturate(106%) contrast(102%); /* @kind other */
+  --bg-surface: rgba(255, 255, 255, 0.045);
+  --bg-raised: rgba(255, 255, 255, 0.06);
+  --bg-well: rgba(0, 0, 0, 0.3);
+  --bg-float: rgba(255, 255, 255, 0.07);
+  --line-subtle: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --bg-row: rgba(255, 255, 255, 0.04);
+  --text-mid: #dde4e2;
+  --text-low: #a7b1ae;
+  --e1-surface: inset 0 0 0 1px var(--line-subtle);
+  --e2-dock: inset 0 0 0 1px var(--line), 0 20px 54px -22px rgba(0, 0, 0, 0.7);
+}
+
+/* DARK — the same glass, one step more veil. Default for long sessions and capture. */
+[data-theme='dark'] {
+  --bg-surface: var(--ink-surface);
+  --bg-raised: var(--ink-raised);
+  --bg-float: rgba(26, 26, 26, 0.62);
+  --frost-tint: rgba(255, 255, 255, 0.13);
+  --blur-frost: blur(72px) saturate(102%) contrast(102%); /* @kind other */
+}
+
+/* AUTO — follows the canvas behind the chrome. */
+[data-theme='auto'][data-backdrop='bright'] {
+  --bg-surface: #121212;
+  --bg-raised: #191919;
+  --bg-well: rgba(0, 0, 0, 0.42);
+  --line: rgba(255, 255, 255, 0.1);
+  --frost-tint: rgba(255, 255, 255, 0.09);
+}
+[data-theme='auto'][data-backdrop='dark'] {
+  --bg-surface: #1c1c1c;
+  --bg-raised: #232323;
+  --bg-well: rgba(0, 0, 0, 0.3);
+  --line: rgba(255, 255, 255, 0.12);
+  --frost-tint: rgba(255, 255, 255, 0.12);
+  --blur-frost: blur(74px) saturate(104%) contrast(102%); /* @kind other */
+}
+
+/* Contrast pins while a pointer interaction is live, so a dragged value never
+   loses legibility against a moving canvas. */
+[data-interacting='true'] {
+  --bg-surface: #161616;
+  --bg-raised: #1c1c1c;
+}
+
+/* LIGHT — daylight desks and printed reviews. Frost lightens, not darkens. */
+[data-theme='light'] {
+  --bg-app: var(--paper-void);
+  --bg-stage: var(--paper-stage);
+  --bg-surface: var(--paper-surface);
+  --bg-raised: var(--paper-raised);
+  --bg-hover: rgba(24, 24, 24, 0.05);
+  --bg-active: rgba(24, 24, 24, 0.1);
+  --bg-well: rgba(32, 32, 32, 0.08);
+  --bg-float: rgba(255, 255, 255, 0.9);
+  --bg-scrim: rgba(255, 255, 255, 0.7);
+
+  --frost-tint: rgba(255, 255, 255, 0.5);
+  --frost-sheen:
+    radial-gradient(120% 180% at 18% -20%, rgba(255, 255, 255, 0.55), transparent 55%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.14) 45%, rgba(255, 255, 255, 0.05)); /* @kind other */
+  --blur-frost: blur(64px) saturate(104%) brightness(1.05); /* @kind other */
+  --blur-float: blur(50px) saturate(104%) brightness(1.04); /* @kind other */
+  --e2-dock: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 18px 44px -22px rgba(28, 28, 28, 0.28);
+
+  --text-hi: var(--slate-hi);
+  --text-mid: var(--slate-mid);
+  /* Darkened one notch past the reference's slate-low so it still clears 4.5:1 on
+     our composited (washed, not flat) paper surfaces — see readme Visual Foundations. */
+  --text-low: #4d4d4d;
+  --text-faint: var(--slate-low);
+  --text-ghost: var(--slate-faint);
+
+  --line-subtle: rgba(24, 24, 24, 0.09);
+  --line: rgba(24, 24, 24, 0.14);
+  --line-strong: rgba(24, 24, 24, 0.22);
+
+  /* teal-700 reads 3.5–4.4:1 as text; the fill stays teal-700 (surfaces are judged
+     at 3:1), text-bearing roles darken one step so labels clear 4.5:1. */
+  --sig-live: #075a4d;
+  --sig-live-hi: #064a40;
+  --sig-live-wash: rgba(11, 122, 105, 0.12);
+  --sig-live-line: rgba(11, 122, 105, 0.45);
+
+  --bg-row: rgba(255, 255, 255, 0.55);
+  --fill-track: rgba(24, 24, 24, 0.08);
+  --fill-track-hover: rgba(24, 24, 24, 0.13);
+  --tick: rgba(24, 24, 24, 0.3);
+
+  --e0-well: inset 0 1px 2px rgba(28, 28, 28, 0.14), inset 0 0 0 1px var(--line-subtle);
+  --e3-float: inset 0 0 0 1px var(--line-strong), 0 24px 56px -20px rgba(28, 28, 28, 0.32);
+
+  color-scheme: light;
+}

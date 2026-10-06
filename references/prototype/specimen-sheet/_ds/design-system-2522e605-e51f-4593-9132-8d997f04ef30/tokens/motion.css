@@ -1,0 +1,24 @@
+:root {
+  /* named by what moves, not by duration */
+  --dur-value: 70ms; /* @kind other */
+  --dur-state: 130ms; /* @kind other */
+  --dur-surface: 220ms; /* @kind other */
+  --dur-layout: 380ms; /* @kind other */
+  /* Entering decelerates into place; leaving accelerates away in less time,
+     so dismissal never feels like waiting. */
+  --ease-std: cubic-bezier(0.2, 0.7, 0.2, 1); /* @kind other */
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* @kind other */
+  --dur-exit: 90ms; /* @kind other */
+}
+
+/* Motion is never load-bearing: reduced motion zeroes all four durations. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-value: 0ms; /* @kind other */
+    --dur-state: 0ms; /* @kind other */
+    --dur-surface: 0ms; /* @kind other */
+    --dur-layout: 0ms; /* @kind other */
+    --dur-exit: 0ms; /* @kind other */
+  }
+}
