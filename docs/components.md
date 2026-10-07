@@ -1,8 +1,19 @@
 # ARTINOS UI — component API
 
-Every control is **controlled** (`value` + `onChange`) or **uncontrolled** (`defaultValue`), and accepts `className`, `style`, `id` and the scope props `density` (`'dense' | 'standard' | 'comfort'`) and `material` (advanced finish override). All are named exports of the kit's `index.ts`.
+The original controls (Slider through Select) are **controlled** (`value` + `onChange`) or **uncontrolled** (`defaultValue`). They accept `className`, `style`, `id` and two scope props: `density` (`'dense' | 'standard' | 'comfort'`) and `material` (an advanced finish override).
 
-Contents: Slider · RangeSlider · NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · Panel / Section / Field · Tabs · RollingValue · ArtinosTheme · shared types · recipes
+The newer components (Knob, XYPad, TextField, the overlays, the Dock and the graph) are controlled only, and most accept `className`.
+
+Everything is a named export of the kit's `index.ts`.
+
+Contents:
+- Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
+- Layout: Panel / Section / Field · Tabs · PropertyRow
+- Actions: Button · IconButton · Toolbar · Kbd · Badge
+- Display: RollingValue · Meter · Sparkline
+- Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
+- Workspace: Dock · PanelBar · MetaBlock · NodeGraph · LiveGraphView · graph/gpu
+- Also: ArtinosTheme · shared types · recipes · requirements
 
 ## Slider
 
@@ -159,6 +170,176 @@ A tab strip with a travelling underline. Props: `items: OptionInput[]`, `value` 
 
 The odometer readout used inside the controls; only changed digits roll. Props: `text` (formatted number, required), `unit`, `dir` (1 up / -1 down), `fast`, `base` (canonical decimals, default 2).
 
+## Knob · XYPad
+
+- **Knob**: a rotary control. A tick arc and a signal arc circle a round well, the insert is the cap and a lit seam is its pointer. Drag vertically (Shift is fine), use the wheel or the arrows, and double-click to reset. Props: `label` (required), `value` / `onChange` / `onCommit`, `min` / `max` (0 / 1), `step` (0.01), `defaultValue` (the double-click target), `size` (px, default 40), `showLabel` (default true).
+- **XYPad**: two values in one well, with a hairline quarter grid, a tick crosshair and an insert puck. Props: `label` (required, drawn in the corner), `value` / `onChange` / `onCommit` as `[x, y]`, `xRange` / `yRange` (default `[-1, 1]`), `height` (default 110; width follows the container). Arrow keys nudge the puck.
+
+```tsx
+<Knob label="Mix" value={mix} onChange={setMix} defaultValue={0.5} />
+<XYPad label="Pan / Tilt" value={pt} onChange={setPt} height={140} />
+```
+
+## TextField · FileDrop
+
+- **TextField**: a single-line input cut into a well. Typed text uses the body font; the icon lights with the signal while the field has focus. Props: `value` / `onChange(string)` (both required), `label` (accessible name), `icon`, `clearable`, `size` (`'md' | 'sm'`), plus every `<input>` attribute. `type="search"` adds a magnifier and a clear button, and Escape clears the text. It forwards a ref to the `<input>`.
+- **FileDrop**: a wide well with an etched, dashed rim that lights with the signal while a file is held over it. Click it to browse. Props: `onFiles(files)` (required), `accept` (input syntax, e.g. `"image/*,.glb"`), `multiple` (default true), `title`, `hint` (written in mono caps), `disabled`.
+
+```tsx
+<TextField type="search" label="Filter" placeholder="Filter parameters…" value={q} onChange={setQ} />
+<FileDrop accept=".glb,image/*" title="Drop a model or image" hint="GLB · PNG · JPG" onFiles={load} />
+```
+
+## Button · IconButton · Toolbar · Kbd · Badge
+
+- **Button**: an insert in its well, labelled in mono caps. `variant`:
+  - `'default'`;
+  - `'primary'` lights the LED; use it for the one main action in a view;
+  - `'danger'` lights the LED in the fault colour;
+  - `'ghost'` is bare label ink.
+
+  Other props: `size` (`'md' | 'sm'`), `icon` (leading), `trailing` (a right-aligned hint, typically `<Kbd>`), `block` (full width), plus every `<button>` attribute.
+- **IconButton**: square and icon-only. The required `label` is both the accessible name and the tooltip. `active` makes it a toggle drawn as an insert while pressed; `filled` gives it a well at rest, for use over bright scenes; `size` is `'md' | 'sm'`.
+- **Toolbar**: groups actions with `role="toolbar"`. Props: `label` (required), `orientation`, `floating` (a small pane of the theme's glass, for use over a canvas). Use `<ToolbarSeparator />` for a hairline and `<ToolbarSpacer />` to push the rest to the far end.
+- **Kbd**: key caps drawn as tiny wells. `keys={['mod', 'K']}`: `mod` shows ⌘ on Apple platforms and Ctrl elsewhere (the same for `shift` and `alt`). The platform is read after hydration, so server-rendered HTML always matches.
+- **Badge**: a status tag drawn as a wash and a hairline in its state's colour. `tone`: `'neutral' | 'live' | 'warm' | 'danger'`. `dot` adds a glowing dot in front.
+
+```tsx
+<Toolbar label="Format" floating>
+  <IconButton label="Bold" icon={<BoldIcon />} active={bold} onClick={() => setBold(!bold)} />
+  <ToolbarSeparator />
+  <Button variant="primary" size="sm" trailing={<Kbd keys={['mod', 'Enter']} />}>Render</Button>
+</Toolbar>
+<Badge tone="live" dot>Live</Badge>
+```
+
+## Meter · Sparkline
+
+Read-only instruments.
+- **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
+- **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`.
+
+## PropertyRow
+
+The inspector row. It arranges a label column, the control, and a reset button and actions that appear on hover; it never owns the value.
+
+Props:
+- `label`, `children` (the control);
+- `density`:
+  - `'default'`: the control names itself, so the label is hidden;
+  - `'compact'`: the label sits in a column;
+  - `'multiline'`;
+- `binding`: names the driver, in mono caps in the bind colour;
+- `status`: `'bound' | 'warn' | 'fault'`, with `message` explaining it in words;
+- `modified`: a signal dot in the margin, which takes no width;
+- `onReset`, `actions`;
+- `highlighted`: a search reveal;
+- `dataControl`: written as `data-control`;
+- `disabled`.
+
+The label column width is the Field's `--ar-field-label-w` (104px here).
+
+```tsx
+<PropertyRow label="Gain" density="compact" modified={gain !== 0} onReset={() => setGain(0)} binding="LFO 1">
+  <Slider label="Gain" value={gain} onChange={setGain} format="db" min={-24} max={24} />
+</PropertyRow>
+```
+
+## Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
+
+Everything that floats sits on one sheet: the float surface that a Select's list opens on, with the same blur, ring and shadow. Rows are light body text; group headings and shortcuts are mono caps. Menus, toasts, tooltips and the palette portal to `<body>` through `ThemedPortal`, so they keep the theme, density and token overrides of the place they were opened.
+
+- **Menu** opens from its `trigger` (one button, wired for you). It takes `items: MenuEntry[]` and `align` (`'start' | 'end'`).
+  - A `MenuEntry` is either an item, `{ id, label, icon?, shortcut?, disabled?, danger?, checked?, onSelect }`, or `{ type: 'separator' }`, or `{ type: 'label', label }`.
+  - Keyboard: arrows, Home, End, Enter and Escape. An outside press closes it, and it stays on screen.
+- **ContextMenu** wraps any content and opens on right-click. `items` is a function, built when the menu opens. `disabled` lets the browser's own menu through. The wrapper adds no box (`display: contents`).
+- **Dialog** is the native `<dialog>` shown modal, so focus trapping and Escape work. Props: `open`, `onClose`, `title`, `description`, `footer` (right-aligned buttons, above a hairline), `width` (380), `children`.
+- **Toast**: wrap the app once in `<ToastProvider placement="bottom-right">` (also `'bottom-center' | 'top-right'`). Then `const notify = useToast()` and call `notify({ title, description?, tone?, duration?, action? })`.
+  - `tone` is `'neutral' | 'success' | 'warning' | 'error'` and is drawn as a small LED.
+  - `duration: 0` keeps the toast until it is dismissed.
+  - The call returns a dismiss function.
+- **Tooltip** takes `content`, `children` (one focusable element), `side` (`'top' | 'bottom' | 'left' | 'right'`) and `delay` (450ms). It shows on hover and on keyboard focus.
+- **CommandPalette** is a search sheet that matches fuzzily on label and keywords. Props: `commands: Command[]` (`{ id, label, group?, keywords?, shortcut?, icon?, run }`), `open` / `onOpenChange`, `hotkey` (default Ctrl/⌘ + K; `null` turns it off), `placeholder`.
+
+```tsx
+<Menu trigger={<Button icon={<MoreIcon />}>Object</Button>} items={[
+  { type: 'label', label: 'Object' },
+  { id: 'dup', label: 'Duplicate', shortcut: 'Ctrl D', onSelect: duplicate },
+  { type: 'separator' },
+  { id: 'del', label: 'Delete', danger: true, onSelect: remove },
+]} />
+<Dialog open={confirm} onClose={() => setConfirm(false)} title="Delete layer?" footer={<><Button variant="ghost" onClick={cancel}>Cancel</Button><Button variant="danger" onClick={remove}>Delete</Button></>} />
+```
+
+## Dock · PanelBar · useDock
+
+A studio workspace in one component, with no setup.
+
+- Panels sit as tabs in docks on the left, right and bottom, or float.
+- A tab can be dragged out to float it, onto an edge to dock it, or onto another dock to merge.
+- A pane can be split, maximized, sent back home or closed. Right-click a tab for every placement.
+- An optional `viewport` (a 3D canvas, a video, an image) fills the space behind the docks.
+- Panes are the theme's panel glass, tab strips use the signal underline, and the drag feedback (drop preview, intent chip, ghost) is drawn in the family's materials.
+
+Props:
+- `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer? }`;
+- `viewport`;
+- `storageKey`: saves the arrangement to localStorage, and restores it only while every saved id still exists;
+- `sizes`: fractions per edge; default left .22, right .24, bottom .36;
+- `floatBounds`;
+- `commands`: extra palette entries;
+- `palette`: the search entry plus the ⌘/Ctrl K palette; default true. It folds to a magnifier in a narrow dock;
+- `toolbar`: the right end of every strip;
+- `brand`: a corner chip;
+- `hideKey`: e.g. `'h'` hides the docks;
+- `viewProps`: engine tuning such as padding, gap and snapping;
+- `onReady(api)`;
+- `className`, `style`.
+
+Inside a panel:
+- `useDock()` returns the `DockApi`: `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible }`.
+- `<PanelBar>` holds a panel's toolbar. It rises into the dock's tab strip when there is room, and otherwise stays at the top of the panel.
+- The panel body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content.
+- A panel that throws shows a Retry card instead of taking the dock down.
+
+The Dock fills its parent, so give the parent a height.
+
+```tsx
+<div style={{ height: '100vh' }}>
+  <Dock
+    storageKey="my-app.layout"
+    viewport={<canvas ref={canvasRef} />}
+    panels={[
+      { id: 'inspector', title: 'Inspector', dock: 'left', content: <Inspector /> },
+      { id: 'layers', title: 'Layers', dock: 'right', content: <Layers /> },
+      { id: 'console', title: 'Console', dock: 'bottom', active: true, content: <Console />, footer: 'Sampling · 220 ms' },
+    ]}
+  />
+</div>
+```
+
+**MetaBlock** is the framework-free docking engine underneath. Use it directly when you need your own chrome: `new MetaBlockWorkspace(...)` with `<MetaBlockWorkspaceView workspace renderBlock renderGroupChrome …>`, `useWorkspaceRevision(workspace)`, `defaultCapabilities` and the `types` exports. Its stylesheet is `dock/metablock/WorkspaceView.css`. Its `--mb-*` / `--au-*` variables are bound to the theme only under `.ar-dock`, so set them yourself on a custom host.
+
+## NodeGraph · LiveGraphView · graph/gpu
+
+- **NodeGraph**: a node editor on a canvas well with a hairline grid. Nodes are float sheets, each with a seam in its family's colour, and fields are wells. Wired ports light like LEDs.
+  - Editing: drag from a port to wire and click a wire to cut it. On the canvas, drag to select, Alt-drag or middle-drag to pan, and Ctrl/⌘ + wheel to zoom. Double-click or right-click the canvas for the node palette.
+  - Shortcuts: ⌘/Ctrl + G groups, D duplicates, Z undoes and Y redoes.
+  - Connections are type-checked and cycles are flagged; an inspector column shows the selected node.
+  - Props: `value: GraphDefinition` / `onChange` (both required), `readouts` (each node's last output), `frames` (GPU thumbnails), `sources` (what the pickers offer), `runtimeDiagnostics`, `onDiagnostics`.
+- **LiveGraphView**: a read-only, column-laid view of a running graph with live controls. Props: `graph: LiveGraph`, `previews`, `onInspect`, `onControl` (required), `insetRight`.
+- **Graph model** (`graph/graph.ts`, exported from the index):
+  - `NODE_SCHEMAS`, `createNode`, `validateGraph`, `topologicalOrder`, `connectionError`;
+  - `evaluate(graph, context)`, which runs against any `GraphHost` (`readSignal`, `writeSignal`, `readParameter`, `writeParameter`, plus optional scene and render hooks);
+  - `useGraphEditor` (undo history and editing operations).
+  - Domains are `'signal' | 'parameter' | 'scene' | 'render' | 'gpu'`.
+- **graph/gpu**: `compileGPU(graph, host)` turns a `gpu` graph into three.js TSL nodes, and `refreshUniforms` updates the uniforms each frame. It needs `three` with `three/tsl` (tested on 0.185), so it is not in the index or in `--components all`. Include it with `--components GraphGPU` and import it by path.
+
+```tsx
+const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [], edges: [] });
+<div style={{ height: 420 }}><NodeGraph value={graph} onChange={setGraph} /></div>
+```
+
 ## ArtinosTheme
 
 Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-material` and inline tokens on one element. Props: `theme` (a built-in id **or any custom theme name** you have CSS for; default `studio`), `density`, `material`, `tokens` (overrides: `{ signal: '#ff4fa3' }` or full `--ar-*` names), `ground` (paint the theme's background and text colour — use for solid themes / full-page scopes), `as` (default `div`), plus any HTML attributes. Scopes nest. Without React: `<div data-ar-theme="frost-deep">`.
@@ -191,7 +372,8 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
 ## Requirements and performance
 
 - React 18.3+ and `react-dom` (built and tested on React 19). TypeScript source, `strict`-clean; any bundler that handles TSX and CSS `@import` works (Vite, Next, webpack).
-- Stateful component files start with `'use client'`; `ArtinosTheme` is hook-free. The precision HUD and the Select list portal to `<body>` and carry the theme's tokens with them.
+- Stateful component files start with `'use client'`; `ArtinosTheme` is hook-free. The precision HUD, the Select list, menus, toasts, tooltips and the command palette portal to `<body>` and carry the theme's tokens with them (`ThemedPortal`, also exported for your own overlays).
+- The Dock needs a sized parent, because it fills 100% of it. `graph/gpu` additionally needs `three`.
 - Evergreen browsers: the CSS uses `@property`, `color-mix()`, `:has()` and `backdrop-filter`.
 - No permanent animation loop. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
 - Respects `prefers-reduced-motion`.

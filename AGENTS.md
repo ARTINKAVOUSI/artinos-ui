@@ -1,6 +1,6 @@
 # ARTINOS UI — instructions for AI agents
 
-This folder is the whole ARTINOS UI package: a copy-paste React control system with 52 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
+This folder is the whole ARTINOS UI package: a copy-paste React control system (33 components, from sliders to a dockable workspace and a node editor) with 52 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
 
 ## Bringing ARTINOS UI into another project
 
@@ -19,7 +19,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - light app → `studio-light` or `frost-light`
    - over a 3D canvas, video or photo → any glass or frost theme
 
-   Pick the components the UI uses, plus `Panel` for grouped controls.
+   Pick the components the UI uses, plus `Panel` for grouped controls. Use `Dock` for an editor layout around a canvas. `GraphGPU` needs `three` and is only included when named.
 
 4. **Set up the project** from its root:
    ```bash
@@ -44,7 +44,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 
 ## Working on the package itself
 
-- **`src/`** is the components. Keep them portable: relative imports only, tokens instead of literal colours, and `'use client'` on stateful files. The theme registry (`THEMES` / `THEME_META`) is in `src/core/utils.ts`. A theme is a role block in `src/tokens/themes.css` plus a finish block in `src/tokens/materials.css`. After changing the registry, run `node artinos.mjs sync`.
+- **`src/`** is the components. Keep them portable: relative imports only, tokens instead of literal colours, and `'use client'` on stateful files. Build new parts from the shared anatomy in `core/core.css` (`ar-well`, `ar-insert`, `ar-led`, `ar-text`, `ar-value`). Overlays portal through `ThemedPortal`. A folder's shared sheet (`folder/folder.css`) and a component's own `Name.css` are picked up by the kit builder, in the order of `src/artinos.css`. The theme registry (`THEMES` / `THEME_META`) is in `src/core/utils.ts`. A theme is a role block in `src/tokens/themes.css` plus a finish block in `src/tokens/materials.css`. After changing the registry, run `node artinos.mjs sync`.
 - **`docs/`** holds the two guides. They ship inside every kit and the installed skill, so write them for someone using a kit.
 - **`skill/SKILL.md`** is the skill template (`{{PACKAGE}}` is filled in on install). After changing it or `docs/`, run `node artinos.mjs skill --user`.
 - **`tools/kit.mjs`** is the one kit builder, used by both `artinos.mjs export` and the showcase Export kit. It's pure: source text in, files out. **`tools/zip.mjs`** writes .zip files.

@@ -1,7 +1,8 @@
 /* ARTINOS UI — public surface. Import the stylesheet once at the app root:
      import './artinos-ui/artinos.css';
-   graph/gpu (compiles a NodeGraph to three.js TSL) needs `three` and is imported by path:
-     import { compileGPU } from './artinos-ui/graph/gpu'; */
+   graph/gpu (compiles a NodeGraph to three.js TSL) needs `three`, so it is not exported
+   here: import compileGPU from the kit's graph/gpu file directly.
+*/
 
 // design system
 export { ArtinosTheme, themeStyle } from './core/Theme';

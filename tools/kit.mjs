@@ -200,7 +200,8 @@ function trimUtils(src, ordered, materials) {
 
 function buildIndex(sources, files) {
   const lines = sources['index.ts'].split('\n').filter((line) => {
-    const m = line.match(/from '(\.\/[^']+)'/);
+    // only export statements are trimmed; a comment that quotes a path is left alone
+    const m = line.match(/^export .* from '(\.\/[^']+)'/);
     if (!m) return true;
     const r = resolve(sources, 'index.ts', m[1]);
     return !!r && files.has(r);

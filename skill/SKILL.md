@@ -1,6 +1,6 @@
 ---
 name: artinos-ui
-description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, NumberField, Switch, ToggleGroup, Segmented, ColorField, Select, Panel/Section/Field, Tabs) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
+description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, ToggleGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Meter, Sparkline, Panel/Section/Field, Tabs, PropertyRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace and a NodeGraph editor) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
 ---
 
 # ARTINOS UI in a project
@@ -35,7 +35,13 @@ Use what the user named. If they named no theme, pick one that fits the host and
 - light app → `studio-light` or `frost-light`
 - over imagery or a canvas → any glass or frost theme
 
-Pick only the components the UI uses. Add `Panel` for grouped controls. `ArtinosTheme` and the `studio` base theme are always included.
+Pick only the components the UI uses; each one brings the files it imports. `ArtinosTheme` and the `studio` base theme are always included.
+- **Grouped controls:** add `Panel`.
+- **Inspector rows** with reset, binding and status: add `PropertyRow`.
+- **A studio or editor layout** with dockable, floating and tabbed panels around a canvas: add `Dock`. It brings its engine, its menu, the command palette and `Button`/`Kbd`.
+- **Overlays:** `Menu`, `Dialog`, `Toast`, `Tooltip`, `CommandPalette`.
+- **A node editor:** `NodeGraph`.
+- `GraphGPU` (graph → three.js TSL) needs `three`. It is left out of `--components all`; ask for it by name.
 
 ### 3. Set up the project
 
@@ -112,7 +118,10 @@ Run the project's type-check and build, then look at it in the browser:
 
 - **Theme not in the kit.** Re-run `export --force` with it added. Don't paste CSS blocks by hand.
 - **Clipped dropdowns or HUD.** Select lists and the slider HUD portal to `<body>` with the theme tokens. Parents with `overflow: hidden` or `backdrop-filter` are fine, so don't try to fix it by moving them.
-- **R3F / canvas apps.** The controls are DOM. Render panels in an absolutely positioned overlay beside the `<Canvas>`, not inside it.
+- **R3F / canvas apps.** The controls are DOM. Render panels in an absolutely positioned overlay beside the `<Canvas>`, not inside it. For a full editor, pass the `<Canvas>` as the Dock's `viewport`, and the panels dock around it.
+- **Dock is blank or zero-height.** It fills its parent, so give the parent a height (`100vh`, or a sized grid cell).
+- **`useToast` throws.** Wrap the app (or the subtree) in `<ToastProvider>` once.
+- **Saved dock layout looks stale.** `storageKey` restores the last arrangement. It is skipped automatically when panel ids change; call `useDock().resetLayout()` to start over.
 - **Wheel input.** Sliders change on wheel only when focused, so page scroll isn't hijacked.
 - **Double-click on a slider body** toggles it off, keeping its value. Pass `toggleable={false}` where that must never happen.
 - **Browsers.** The CSS needs `@property`, `color-mix()`, `:has()` and `backdrop-filter`, which every evergreen browser has.

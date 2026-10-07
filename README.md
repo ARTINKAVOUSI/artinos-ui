@@ -1,8 +1,17 @@
 # ARTINOS UI
 
-A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. Sliders, ranges, number fields, switches, toggles, segmented controls, colour fields, selects, panels and tabs, on a token-based design system with **52 themes**: glass, frost, studio, atelier and luxe.
+A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 33 components, on a token-based design system with **52 themes** (glass, frost, studio, atelier and luxe):
+- sliders, ranges, knobs and XY pads;
+- number, text and colour fields, file drops, switches, toggles, segmented controls and selects;
+- buttons, toolbars, badges, meters and sparklines;
+- panels, tabs and inspector rows;
+- menus, dialogs, toasts, tooltips and a command palette;
+- a dockable studio workspace (Dock, on the MetaBlock engine);
+- a node graph editor.
 
-**copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind.
+Every component is drawn from the same few parts: the well, the insert, the seam and mono-caps control text.
+
+**copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `graph/gpu` compiler.
 
 > **AI agents:** read [`AGENTS.md`](AGENTS.md). One command sets a project up.
 
@@ -49,7 +58,7 @@ Every kit carries both guides in its own `docs/`.
 ## Showcase
 
 `showcase/artinos-ui-showcase.html` is a self-contained page: double-click it. It has three parts:
-- **Gallery:** every component in every theme, over a photo backdrop. Link straight to a look with `?theme=ice&density=dense&backdrop=monstera`.
+- **Gallery:** every component in every theme, over a photo backdrop, including a live Dock workspace and node graph. Link straight to a look with `?theme=ice&density=dense&backdrop=monstera`.
 - **Theme Studio** (`#studio`): edit every token live, click any part of a component to edit just its tokens (Inspect), and save themes. Export them as CSS, JSON or TSX.
 - **Export kit** (`#export`): pick themes, saved themes and components, then download a `.zip` or write the kit into a folder.
 
@@ -82,10 +91,17 @@ artinos-ui/
     artinos.css       single stylesheet entry
     index.ts          public exports
     tokens/           tokens.css · themes.css · materials.css · fonts.css
-    core/             ArtinosTheme · RollingValue · utils · hooks · core.css
+    core/             ArtinosTheme · ThemedPortal · RollingValue · utils · hooks · core.css
     slider/           Slider · RangeSlider · engine · HUD parts · slider.css
-    controls/         NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · controls.css
-    layout/           Panel · Section · Field · Tabs · layout.css
+    controls/         NumberField · Switch · ToggleGroup · Segmented · ColorField · Select
+                      TextField · FileDrop · Knob · XYPad · controls.css + one sheet each
+    actions/          Button · IconButton · Toolbar · Kbd · Badge · actions.css
+    display/          Meter · Sparkline · display.css
+    layout/           Panel · Section · Field · Tabs · PropertyRow · layout.css
+    overlays/         Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · overlays.css
+    dock/             Dock · PanelBar · DockMenu · Dock.css
+      metablock/        the docking engine: workspace model, layout, physics, WorkspaceView
+    graph/            NodeGraph · LiveGraphView · graph model · editor · gpu.ts (three TSL, opt-in)
   docs/             components.md · theming.md
   skill/            SKILL.md: the Claude Code skill (installed by the command)
   tools/            kit.mjs (kit builder) · zip.mjs: shared by the command and the showcase
