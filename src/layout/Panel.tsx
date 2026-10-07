@@ -56,7 +56,7 @@ export interface SectionProps {
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
   /** The group's on/off, as one slim chip in the title row: an LED and its state in words.
-   *  Off dims the body and makes it inert; values are kept. */
+   *  Off folds the body closed (the same motion as collapsing) and values are kept. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
@@ -98,8 +98,9 @@ export function Section({
   const [isOn, setOn] = useControllable(enabled, defaultEnabled ?? true, onEnabledChange);
   const bodyId = useId();
   const titleId = useId();
-  const shown = !collapsible || isOpen;
   const off = toggleable && !isOn;
+  // switching the group off folds it closed, like collapsing it; on, it unfolds to where it was
+  const shown = (!collapsible || isOpen) && !off;
   const label = (
     <>
       <span className="ar-section__title" id={titleId}>
@@ -116,7 +117,7 @@ export function Section({
       <div className="ar-section__head">
         {/* the title and its rule open and close the group; the actions beside them stay separate controls */}
         {collapsible ? (
-          <button type="button" className="ar-section__trigger" aria-expanded={isOpen} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
+          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} disabled={off} onClick={() => setOpen(!isOpen)}>
             {label}
           </button>
         ) : (
@@ -130,14 +131,14 @@ export function Section({
           </button>
         ) : null}
         {collapsible ? (
-          <button type="button" className="ar-section__chevron" tabIndex={-1} aria-hidden="true" onClick={() => setOpen(!isOpen)}>
-            <svg className="ar-chevron" data-up={isOpen ? '' : undefined} viewBox="0 0 10 6">
+          <button type="button" className="ar-section__chevron" tabIndex={-1} aria-hidden="true" disabled={off} onClick={() => setOpen(!isOpen)}>
+            <svg className="ar-chevron" data-up={shown ? '' : undefined} viewBox="0 0 10 6">
               <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         ) : null}
       </div>
-      <div className="ar-section__fold" id={bodyId} inert={!shown || off || undefined}>
+      <div className="ar-section__fold" id={bodyId} inert={!shown || undefined}>
         <div className="ar-section__body">{children}</div>
       </div>
     </div>

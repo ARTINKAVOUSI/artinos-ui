@@ -181,18 +181,18 @@ button.ar-section__trigger:focus-visible {
 .ar-section__toggle:focus-visible {
   box-shadow: var(--ar-well), var(--ar-focus-ring);
 }
-/* off: the group drains, keeps its values and takes no input */
-.ar-section > .ar-section__fold,
+/* off: the group folds closed (the fold below animates it) and its title goes quiet */
 .ar-section__title {
-  transition:
-    opacity var(--ar-dur-surface) var(--ar-ease),
-    color var(--ar-dur-surface) var(--ar-ease);
-}
-.ar-section[data-off] > .ar-section__fold {
-  opacity: 0.42;
+  transition: color var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-section[data-off] .ar-section__title {
   color: var(--ar-text-low);
+}
+.ar-section[data-off] :is(.ar-section__trigger, .ar-section__chevron) {
+  cursor: default;
+}
+.ar-section[data-off] .ar-section__chevron {
+  opacity: 0.4;
 }
 .ar-section__title {
   flex: none;
@@ -225,27 +225,38 @@ button.ar-section__trigger:focus-visible {
   letter-spacing: 0.04em;
   color: var(--ar-text-faint);
 }
+/* the fold: collapsing (or switching the group off) rolls the rows up like a closing list;
+   opening unrolls them. Closing is quicker and eases in; opening settles. */
 .ar-section__fold {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--ar-dur-layout) var(--ar-ease);
+  transition: grid-template-rows var(--ar-dur-surface) var(--ar-ease-exit);
 }
 .ar-section[data-open] > .ar-section__fold {
   grid-template-rows: 1fr;
+  transition: grid-template-rows var(--ar-dur-layout) var(--ar-ease-roll);
 }
 .ar-section__body {
   display: flex;
   flex-direction: column;
   gap: var(--ar-row-gap, 6px);
   min-height: 0;
-  overflow: hidden;
+  /* clipped top and bottom while it folds (a few px of margin keep focus rings whole);
+     open sideways, so marks in the gutter, like a PropertyRow's, are never cut */
+  overflow: visible clip;
+  overflow-clip-margin: 4px;
   opacity: 0;
-  transition: opacity var(--ar-dur-surface) var(--ar-ease-exit);
+  transform: translateY(-6px);
+  transition:
+    opacity var(--ar-dur-exit) var(--ar-ease-exit),
+    transform var(--ar-dur-surface) var(--ar-ease-exit);
 }
 .ar-section[data-open] .ar-section__body {
   opacity: 1;
-  overflow: visible;
-  transition: opacity var(--ar-dur-surface) var(--ar-ease) 80ms;
+  transform: none;
+  transition:
+    opacity var(--ar-dur-surface) var(--ar-ease) 60ms,
+    transform var(--ar-dur-layout) var(--ar-ease-roll);
 }
 
 /* ---------- Field: label column + control(s) ---------- */
