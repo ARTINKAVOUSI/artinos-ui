@@ -55,9 +55,9 @@ export interface SectionProps {
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off, carried by the title itself: an LED lights before it and the title is the
-   *  switch. Off folds the body closed (the same motion as collapsing); values are kept. A switchable
-   *  group always shows its chevron, which folds it while it is on. */
+  /** The group's on/off: a slim switch just before the title. Off folds the body closed and makes
+   *  it inert; values are kept. It is separate from collapsing: the title and the chevron (always
+   *  shown on a switchable group) fold the group without switching it off. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
@@ -97,7 +97,12 @@ export function Section({
   const off = toggleable && !isOn;
   // switching the group off folds it closed, like collapsing it; on, it unfolds to where it was
   const shown = (!foldable || isOpen) && !off;
-  const titleText = <span className="ar-section__title">{title}</span>;
+  const titleId = useId();
+  const titleText = (
+    <span className="ar-section__title" id={titleId}>
+      {title}
+    </span>
+  );
   const rest = (
     <>
       <i className="ar-section__rule" />
@@ -110,17 +115,14 @@ export function Section({
     <div className={cx('ar-section', className)} data-heading={heading} data-open={shown ? '' : undefined} data-off={off ? '' : undefined} style={style}>
       <div className="ar-section__head">
         {toggleable ? (
-          // the title is the switch: its LED lights when the group is on, and it folds the group open and closed
-          <span className="ar-section__trigger">
-            <button type="button" role="switch" aria-checked={isOn} aria-controls={bodyId} className="ar-section__switch" onClick={() => setOn(!isOn)}>
-              <i className="ar-led" data-on={isOn ? '' : undefined} />
-              {titleText}
-            </button>
-            {rest}
-          </span>
-        ) : collapsible ? (
-          // the title and its rule open and close the group
-          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
+          // the group's on/off: a slim switch that leads the title
+          <button type="button" role="switch" aria-checked={isOn} aria-labelledby={titleId} className="ar-section__switch" onClick={() => setOn(!isOn)}>
+            <i />
+          </button>
+        ) : null}
+        {foldable ? (
+          // the title and its rule open and close the group (switched off, it stays closed)
+          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} disabled={off} onClick={() => setOpen(!isOpen)}>
             {titleText}
             {rest}
           </button>
@@ -132,19 +134,8 @@ export function Section({
         )}
         {actions ? <span className="ar-section__actions">{actions}</span> : null}
         {foldable ? (
-          // with the title switching the group, the chevron is the collapse control on its own; while
-          // the group is off it stays, pointing closed
-          <button
-            type="button"
-            className="ar-section__chevron"
-            tabIndex={toggleable ? undefined : -1}
-            aria-hidden={toggleable ? undefined : true}
-            aria-label={toggleable ? (shown ? 'Collapse' : 'Expand') : undefined}
-            aria-expanded={toggleable ? shown : undefined}
-            aria-controls={toggleable ? bodyId : undefined}
-            disabled={off}
-            onClick={() => setOpen(!isOpen)}
-          >
+          // the chevron mirrors the title; switched off, it stays and points closed
+          <button type="button" className="ar-section__chevron" tabIndex={-1} aria-hidden="true" disabled={off} onClick={() => setOpen(!isOpen)}>
             <svg className="ar-chevron" data-up={shown ? '' : undefined} viewBox="0 0 10 6" aria-hidden="true">
               <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

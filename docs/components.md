@@ -146,11 +146,11 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 ## Panel · Section · Field
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
-- **Section** — titled group with a hairline. Everything about the group lives in its one title row: (LED) title · rule · count · actions · chevron. Props:
+- **Section** — titled group with a hairline. Everything about the group lives in its one title row: switch · title · rule · count · actions · chevron. Props:
   - `title` (required), `count`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
-  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, carried by the title itself. An LED lights before the title and the title is the switch; its ink goes quiet when off. Off folds the body closed with the same motion as collapsing (quicker out, settling in) and makes it inert; values are kept. A switchable group always shows its chevron, which folds the group while it is on;
-  - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title and rule open and close the group. A collapsed group that is switched off and on again comes back collapsed.
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, a slim squarish switch just before the title (shown when either value prop is given). Off folds the body closed (quicker out, settling in) and makes it inert; the title goes quiet; values are kept. On restores the group's fold state;
+  - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title, rule and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 
 ```tsx

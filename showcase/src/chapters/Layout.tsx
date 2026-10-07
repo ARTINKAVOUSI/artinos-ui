@@ -175,7 +175,7 @@ export function LayoutChapter() {
 
       <Spec
         id="property-rows"
-        text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. The group's on/off is its title: an LED lights before it, and clicking the title folds the group closed or open; the chevron folds it while it is on."
+        text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. A group has two separate controls in its title row: the slim switch before the title turns it on or off (off folds it closed and disables it), and the title or chevron folds it open or closed without switching it off."
         code={`<Section title="Material" enabled={on} onEnabledChange={setOn}>
   <PropertyRow label="Exposure" modified={v !== 0.62} onReset={reset}><Slider label="Exposure" … /></PropertyRow>
   <PropertyRow label="Gain" binding="LFO 1" status="bound"><Slider label="Gain" … /></PropertyRow>

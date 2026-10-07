@@ -128,55 +128,76 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off is its title: an LED before it, lit when on; the title's ink follows */
+/* the group's on/off: a slim, squarish switch leading the title — a tiny well, an insert knob
+   that travels, and the seam that lights on it when the group is on */
 :where(.ar-section__switch) {
   all: unset;
 }
 .ar-section__switch {
-  display: inline-flex;
+  position: relative;
   flex: none;
-  align-items: center;
-  gap: 7px;
-  padding: 2px 2px 2px 0;
-  border-radius: var(--ar-radius-control);
+  box-sizing: border-box;
+  width: 20px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
-.ar-section__switch .ar-led {
-  width: 2px;
-  height: 8px;
+.ar-section__switch i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--ar-insert);
+  box-shadow: var(--ar-insert-shadow);
+  filter: var(--ar-insert-off-filter);
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    filter var(--ar-dur-surface) var(--ar-ease);
 }
-.ar-section__switch .ar-section__title {
-  color: var(--ar-text-hi);
+/* on: the knob travels right and its seam lights */
+.ar-section__switch[aria-checked='true'] {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
 }
-.ar-section__switch:hover .ar-section__title {
-  color: var(--ar-text-hi);
-  text-shadow: 0 0 10px var(--ar-signal-wash);
+.ar-section__switch[aria-checked='true'] i {
+  transform: translateX(8px);
+  filter: none;
 }
-.ar-section__switch:active .ar-led {
-  transform: scaleY(0.7);
-}
-.ar-section__switch .ar-led {
+.ar-section__switch i::after {
+  content: '';
+  position: absolute;
+  top: 1.5px;
+  left: 3.5px;
+  width: 1px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--ar-seam);
   transition:
     background var(--ar-dur-surface) var(--ar-ease),
-    box-shadow var(--ar-dur-surface) var(--ar-ease),
-    transform var(--ar-dur-surface) var(--ar-ease-spring);
+    box-shadow var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section__switch[aria-checked='true'] i::after {
+  background: var(--ar-seam-active);
+  box-shadow: 0 0 3px var(--ar-signal-line);
 }
 .ar-section__switch:focus-visible {
-  box-shadow: var(--ar-focus-ring);
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
 }
 /* off: the group folds closed (the fold below animates it) and its title goes quiet */
 .ar-section__title {
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
-.ar-section[data-off] .ar-section__title,
-.ar-section[data-off] .ar-section__switch .ar-section__title {
+.ar-section[data-off] .ar-section__title {
   color: var(--ar-text-low);
 }
-.ar-section[data-off] .ar-section__switch:hover .ar-section__title {
-  color: var(--ar-text-mid);
-}
-.ar-section[data-off] .ar-section__chevron {
+.ar-section[data-off] :is(.ar-section__trigger, .ar-section__chevron) {
   cursor: default;
 }
 .ar-section[data-off] .ar-section__chevron {
