@@ -128,8 +128,8 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off: a slim, squarish switch leading the title — a tiny well, an insert knob
-   that travels, and the seam that lights on it when the group is on */
+/* the group's on/off: a square the size of the title's capitals, set in line with them — an
+   empty well when off; on, the insert fills it and glows with the signal */
 :where(.ar-section__switch) {
   all: unset;
 }
@@ -137,9 +137,12 @@ button.ar-section__trigger:focus-visible {
   position: relative;
   flex: none;
   box-sizing: border-box;
-  width: 18px;
-  height: 8px;
-  border-radius: 2px;
+  /* sized from the title's own type, so it matches the height of an M in every density */
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  width: 0.72em;
+  height: 0.72em;
+  border-radius: 1.5px;
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
@@ -148,44 +151,38 @@ button.ar-section__trigger:focus-visible {
   -webkit-tap-highlight-color: transparent;
   transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
+@supports (width: 1cap) {
+  .ar-section__switch {
+    width: 1cap;
+    height: 1cap;
+  }
+}
 .ar-section__switch i {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 7px;
-  height: 4px;
-  border-radius: 1.5px;
+  inset: 1px;
+  border-radius: 1px;
   background: var(--ar-insert);
   box-shadow: var(--ar-insert-shadow);
-  filter: var(--ar-insert-off-filter);
+  opacity: 0;
+  transform: scale(0.3);
   transition:
+    opacity var(--ar-dur-state) var(--ar-ease),
     transform var(--ar-dur-surface) var(--ar-ease-spring),
-    filter var(--ar-dur-surface) var(--ar-ease);
+    box-shadow var(--ar-dur-surface) var(--ar-ease);
 }
-/* on: the knob travels right and its seam lights */
 .ar-section__switch[aria-checked='true'] {
   box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
 }
 .ar-section__switch[aria-checked='true'] i {
-  transform: translateX(7px);
-  filter: none;
+  opacity: 1;
+  transform: none;
+  box-shadow: var(--ar-insert-shadow), 0 0 5px var(--ar-signal-line);
 }
-.ar-section__switch i::after {
-  content: '';
-  position: absolute;
-  top: 1px;
-  left: 3px;
-  width: 1px;
-  height: 2px;
-  border-radius: 0.5px;
-  background: var(--ar-seam);
-  transition:
-    background var(--ar-dur-surface) var(--ar-ease),
-    box-shadow var(--ar-dur-surface) var(--ar-ease);
+.ar-section__switch:hover {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-line-strong);
 }
-.ar-section__switch[aria-checked='true'] i::after {
-  background: var(--ar-seam-active);
-  box-shadow: 0 0 3px var(--ar-signal-line);
+.ar-section__switch[aria-checked='true']:hover {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal);
 }
 .ar-section__switch:focus-visible {
   box-shadow: var(--ar-well), var(--ar-focus-ring);
