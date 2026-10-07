@@ -97,9 +97,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
     note: 'The frames controls live in: glass panels, groups, rows and strips.',
     components: ['Panel', 'Section', 'Field', 'Tabs', 'PropertyRow'],
     sections: [
-      { id: 'inspector', title: 'Inspector panel' },
-      { id: 'property-rows', title: 'Property rows' },
-      { id: 'control-strip', title: 'Control strip' },
+      { id: 'inspector', title: 'Inspector' },
     ],
   },
   {

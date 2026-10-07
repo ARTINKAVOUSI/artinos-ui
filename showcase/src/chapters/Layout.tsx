@@ -1,5 +1,5 @@
-/* 06 · Layout — Panel, Section, Field and Tabs composed into an inspector; property rows;
-   and the dense control strip. */
+/* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
+   rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
 import { ColorField, Field, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
@@ -97,7 +97,8 @@ function Inspector() {
           </>
         )}
       </Panel>
-      <div className="sc-stack" style={{ flex: '1 1 260px', minWidth: 0 }}>
+      <div className="sc-stack" style={{ flex: '1 1 300px', minWidth: 0, gap: 14 }}>
+        <InspectorPanel />
         <Section title="Environment" count={4} defaultEnabled>
           <Slider label="Env Intensity" max={2} unit="x" defaultValue={0.82} detents={[1]} />
           <Slider label="Fog Density" max={0.2} decimals={3} defaultValue={0.04} />
@@ -156,41 +157,25 @@ export function LayoutChapter() {
     <Chapter id="layout">
       <Spec
         id="inspector"
-        text="Panel is a glass card with a header, a tabs slot and a foot line. Section groups controls under a hairline and can collapse. Field puts a label column beside one or more controls. Tabs underline the active one. Together they make the reference inspector."
+        text="One inspector, built from the layout parts. Panel is a glass card with a header, a tabs slot and a foot line; Tabs underline the active one; Field puts a label column beside one or more controls. Section groups controls under a hairline, with quiet info such as a count before the chevron: click the title or line to fold it, and on a switchable group double-click (or Shift+Enter) to switch it off, which folds it closed and disables it. PropertyRow wraps any control: a changed value shows a signal dot in the left gutter that turns into its reset on hover, binding names the driver of a bound value, compact puts the label in its own column. Below, the same groups as a dense control strip: toggleable sliders in three cards, density set once on the strip's scope."
         code={`
 <Panel title="Metablock" subtitle="Typography / Layout" actions={<ResetButton />}
        tabs={<Tabs items={['Scene', 'Studio', 'Detail']} value={tab} onChange={setTab} />}
        footer={<>• Ready <span>LOCAL / 01</span></>}>
-  <Slider label="Weight" min={0} max={100} decimals={0} />
   <Section title="Typography" heading="text" collapsible>
     <Field label="Width">
       <NumberField defaultValue={268} aria-label="Width" />
       <Select appearance="well" options={['Fixed', 'Fill', 'Hug']} />
     </Field>
   </Section>
-</Panel>`}
-      >
-        <Inspector />
-      </Spec>
+</Panel>
 
-      <Spec
-        id="property-rows"
-        text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. A switchable group carries its on/off in the title row's line: a brighter neutral line runs from the title while the group is on, and quiet info such as a count sits at its end, before the chevron. Click the title or line to fold the group; double-click it (or Shift+Enter) to switch it off, which folds it closed and disables it, and again to bring it back."
-        code={`<Section title="Material" count={changed ? \`\${changed} changed · 3\` : 3} enabled={on} onEnabledChange={setOn}>
+<Section title="Material" count={changed ? \`\${changed} changed · 3\` : 3} enabled={on} onEnabledChange={setOn}>
   <PropertyRow label="Exposure" modified={v !== 0.62} onReset={reset}><Slider label="Exposure" … /></PropertyRow>
   <PropertyRow label="Gain" binding="LFO 1" status="bound"><Slider label="Gain" … /></PropertyRow>
   <PropertyRow label="Mode" density="compact"><Select … /></PropertyRow>
-</Section>`}
-      >
-        <div className="sc-inspector">
-          <InspectorPanel />
-        </div>
-      </Spec>
+</Section>
 
-      <Spec
-        id="control-strip"
-        text="Dense, toggleable sliders in three cards on a glass strip: the bottom of a render studio. Every slider switches off with a double-click and keeps its value. Density is set once on the strip's scope."
-        code={`
 <div data-ar-density="dense">
   <Section title="Environment" count={14}>
     <Slider variant="gradient" gradient="exposure" label="Exposure" toggleable … />
@@ -198,7 +183,10 @@ export function LayoutChapter() {
   </Section>
 </div>`}
       >
-        <ControlStrip />
+        <div className="sc-stack" style={{ gap: 22 }}>
+          <Inspector />
+          <ControlStrip />
+        </div>
       </Spec>
     </Chapter>
   );
