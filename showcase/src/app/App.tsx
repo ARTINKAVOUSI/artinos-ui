@@ -3,9 +3,9 @@
    The app shell: theme / density / backdrop state, view routing (page · #studio),
    the top bar, the page itself and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, THEMES, GLASS_THEMES, THEME_META, DENSITIES, RollingValue, Slider, Segmented, Select } from '../../../src';
+import { ArtinosTheme, Button, THEMES, GLASS_THEMES, THEME_META, DENSITIES, RollingValue, Slider, Segmented, Select } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
-import { Swatch, THEME_OPTIONS, BACKDROPS, BACKDROP_OPTIONS, Code, Spec, Part } from '../shared';
+import { Swatch, THEME_OPTIONS, BACKDROPS, BACKDROP_OPTIONS, Code, Spec, Part, partId } from '../shared';
 import type { Backdrop } from '../shared';
 import { ComponentGallery } from '../gallery/ComponentGallery';
 import { ThemeStudio } from '../studio/ThemeStudio';
@@ -75,9 +75,14 @@ export function App() {
         </div>
         <label className="sc-pick sc-pick--theme"><span>THEME</span><Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" /></label>
         <label className="sc-pick"><span>DENSITY</span><Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" /></label>
-        <button type="button" className="sc-studio-btn" onClick={() => go('studio')}>Theme Studio →</button>
-        <button type="button" className="sc-studio-btn sc-studio-btn--ghost" onClick={() => setExporting(true)}>Export kit ↓</button>
+        <Button variant="primary" size="sm" onClick={() => go('studio')}>
+          Theme Studio
+        </Button>
+        <Button size="sm" onClick={() => setExporting(true)}>
+          Export kit
+        </Button>
         <label className="sc-pick"><span>BACKDROP</span><Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" /></label>
+        <Contents />
       </header>
 
       <main className="sc-sheet">
@@ -155,7 +160,7 @@ import { ArtinosTheme } from './artinos-ui';
 
         <Spec n="30" title="Theme Studio" text="The full theme editor: every token of a theme — ground, ink, signal, panel glass, well, insert, seam, type, size, motion — tuned live against the complete component gallery. Save as new themes, edit them later, export as CSS, JSON or TSX. Saved themes appear in the theme picker above.">
           <div className="sc-row" style={{ alignItems: 'center' }}>
-            <button type="button" className="sc-studio-btn sc-studio-btn--big" onClick={() => go('studio')}>Open Theme Studio →</button>
+            <Button variant="primary" onClick={() => go('studio')}>Open Theme Studio →</Button>
             <span className="sc-note">{customs.length ? <>You have <b>{customs.length}</b> saved theme{customs.length > 1 ? 's' : ''}.</> : 'Start from any built-in theme.'}</span>
           </div>
         </Spec>
@@ -207,4 +212,39 @@ function CountUp({ to, delay = 0 }: { to: number; delay?: number }) {
     return () => clearTimeout(timer);
   }, [to, delay]);
   return <RollingValue text={String(n).padStart(String(to).length, '0')} base={0} />;
+}
+
+/** The page's parts, in order. */
+const PARTS = ['Foundations', 'Slider', 'Controls', 'Layout', 'Actions', 'Inputs & display', 'Overlays', 'Workspace', 'Make it yours'];
+
+/** The contents nav in the bar: one mono-caps link per part; the part on screen is lit. */
+function Contents() {
+  const [active, setActive] = useState(PARTS[0]);
+  useEffect(() => {
+    const heads = PARTS.map((title) => document.getElementById(partId(title))).filter((el): el is HTMLElement => !!el);
+    if (!heads.length) return;
+    // the active part is the last heading above the top third of the viewport
+    const update = () => {
+      const line = window.innerHeight / 3;
+      let current = PARTS[0];
+      for (const head of heads) if (head.getBoundingClientRect().top <= line) current = head.dataset.part ?? current;
+      setActive(current);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+  return (
+    <nav className="sc-contents" aria-label="Contents">
+      {PARTS.map((title) => (
+        <a key={title} href={'#' + partId(title)} data-active={title === active || undefined}>
+          {title}
+        </a>
+      ))}
+    </nav>
+  );
 }

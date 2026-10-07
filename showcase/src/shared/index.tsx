@@ -106,8 +106,10 @@ export function Spec({ n, title, text, keys, code, children }: { n: string; titl
   );
 }
 
+/** A part heading. Its id (`part-<slug>`) is what the contents nav in the bar jumps to. */
+export const partId = (title: string) => 'part-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 export const Part = ({ title, note }: { title: string; note: string }) => (
-  <div className="sc-part">
+  <div className="sc-part" id={partId(title)} data-part={title}>
     <h2>{title}</h2>
     <span>{note}</span>
   </div>

@@ -9,7 +9,24 @@ A precision-instrument control system for React. Each parameter is one compact s
 - a dockable studio workspace (Dock, on the MetaBlock engine);
 - a node graph editor.
 
-Every component is drawn from the same few parts: the well, the insert, the seam and mono-caps control text.
+## Design language
+
+Every component is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices: mono caps control text for labels, rows and buttons, and light body text for prose. Every number rolls when it changes, and every motion uses the same duration and curve tokens.
+
+## Components
+
+| group | components |
+|---|---|
+| Sliders | Slider · RangeSlider · Knob · XYPad |
+| Controls | NumberField · TextField · Switch · ToggleGroup · Segmented · Select · ColorField · FileDrop |
+| Actions | Button · IconButton · Toolbar · Kbd · Badge |
+| Display | Meter · Sparkline · RollingValue |
+| Layout | Panel / Section / Field · Tabs · PropertyRow |
+| Overlays | Menu / ContextMenu · Dialog · Toast · Tooltip · CommandPalette |
+| Dock | Dock / PanelBar / useDock · MetaBlock (the docking engine) |
+| Graph | NodeGraph · LiveGraphView · GraphGPU (needs `three`) |
+
+The full API is in [`docs/components.md`](docs/components.md).
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `graph/gpu` compiler.
 

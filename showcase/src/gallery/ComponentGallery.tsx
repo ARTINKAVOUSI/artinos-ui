@@ -201,7 +201,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
         </Spec>
 
         {/* ============ FAMILY ============ */}
-        <Part title="Family" note="same well · same insert · same LED seam · same theme" />
+        <Part title="Controls" note="same well · same insert · same LED seam · same theme" />
 
         <Spec n="13" title="Switch" text="shutter: the slider insert as a two-position shutter — it travels to the active half and its LED seam lights; off, the same insert drains to grey. compact: the inspector knob. Click, Space or Enter." code={`
 <Switch label="Shadows" defaultValue />
@@ -348,7 +348,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
           </div>
         </Spec>
 
-        <Spec n="20" title="Studio dock" text="The SH.01 bottom dock: dense toggleable sliders in three cards on a frosted strip. Every slider switches off with a double-click and keeps its value." code={`
+        <Spec n="20" title="Control strip" text="The SH.01 bottom strip: dense toggleable sliders in three cards on a frosted strip. Every slider switches off with a double-click and keeps its value." code={`
 <div data-ar-density="dense">
   <Section title="Environment" count="14">
     <Slider variant="gradient" gradient="exposure" label="Exposure" toggleable … />

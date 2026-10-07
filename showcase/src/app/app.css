@@ -58,6 +58,44 @@ body { background: #090909; }
 .sc-card__head .sc-swatch { align-self: center; }
 .sc-pick > .ar-segmented { width: 220px; }
 
+/* contents: a second row of the bar, one link per part */
+.sc-contents {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ar-line-subtle);
+}
+.sc-contents a {
+  position: relative;
+  padding: 2px 0 4px;
+  font: 500 var(--ar-label-size) var(--ar-control-font);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: uppercase;
+  color: var(--ar-text-low);
+  text-decoration: none;
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.sc-contents a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+  transform: scaleX(0);
+  transition: transform var(--ar-dur-surface) var(--ar-ease-roll);
+}
+.sc-contents a:hover { color: var(--ar-text-mid); }
+.sc-contents a[data-active] { color: var(--ar-text-hi); }
+.sc-contents a[data-active]::after { transform: none; }
+.sc-part { scroll-margin-top: 110px; }
+
 /* ---------- sheet ---------- */
 .sc-sheet {
   position: relative;
@@ -193,28 +231,7 @@ body { background: #090909; }
   .sc-stats { margin-left: 0; }
 }
 
-/* Theme Studio entry points */
-.sc-studio-btn {
-  all: unset;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  padding: 0 12px;
-  border-radius: 6px;
-  background: var(--ar-signal);
-  color: var(--ar-signal-ink);
-  font: 500 9px var(--ar-font-num);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.sc-studio-btn:hover { background: var(--ar-signal-hi); }
-.sc-studio-btn:focus-visible { box-shadow: var(--ar-focus-ring); }
-.sc-studio-btn--big { height: 34px; padding: 0 18px; font-size: 10px; }
-.sc-studio-btn--ghost { background: var(--ar-trough); box-shadow: var(--ar-well); color: var(--ar-text-hi); }
-.sc-studio-btn--ghost:hover { background: var(--ar-bg-hover); }
+
 
 /* ---------- workspace demo (section 28) ---------- */
 .sc-workspace {
