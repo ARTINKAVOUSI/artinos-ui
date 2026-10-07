@@ -1,0 +1,905 @@
+/* ARTINOS graph — the node editor (.ar-graph) and the live graph view (.ar-live),
+   drawn in the family's materials: the canvas is a recessed well with a hairline
+   grid, a node is the floating sheet, a field is a well, a wired port lights like
+   an LED, and every colour comes from the theme. */
+
+.ar-graph,
+.ar-live {
+  --_label: calc(var(--ar-label-size) + var(--ar-label-bump));
+  --_value: calc(var(--ar-value-size) + var(--ar-value-bump));
+  --_grid: var(--ar-line-subtle);
+  font-family: var(--ar-font-ui);
+  color: var(--ar-text-mid);
+}
+
+/* native controls carry no browser chrome — zero specificity, before everything else */
+:where(.ar-graph__toolbar button) {
+  all: unset;
+}
+:where(.ar-graph__group header button) {
+  all: unset;
+}
+:where(.ar-graph__group header input) {
+  all: unset;
+}
+:where(.ar-graph__fold) {
+  all: unset;
+}
+:where(.ar-graph__port) {
+  all: unset;
+}
+:where(.ar-graph__palette > input) {
+  all: unset;
+}
+:where(.ar-graph__palette-group button) {
+  all: unset;
+}
+:where(.ar-graph__inspector header input) {
+  all: unset;
+}
+:where(.ar-graph__inspector header button) {
+  all: unset;
+}
+:where(.ar-graph__diagnostics button) {
+  all: unset;
+}
+:where(.ar-graph__status button) {
+  all: unset;
+}
+:where(.ar-live__head) {
+  all: unset;
+}
+:where(.ar-live__zoom button) {
+  all: unset;
+}
+
+/* shared: control-text caps, the family's way of writing a label */
+.ar-graph__node-title,
+.ar-graph__toolbar button,
+.ar-graph__toolbar-count,
+.ar-graph__group header input,
+.ar-graph__palette-group b,
+.ar-graph__status,
+.ar-live__columns span,
+.ar-live__side em,
+.ar-live__zoom button:last-child {
+  font-family: var(--ar-control-font);
+  font-size: var(--_label);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+}
+
+/* ======================= node editor ======================= */
+
+.ar-graph {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 220px;
+  height: 100%;
+  outline: none;
+}
+/* the root takes the keyboard shortcuts: show when it holds focus */
+.ar-graph:focus-visible > .ar-graph__stage > .ar-graph__surface {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+
+/* ---------- toolbar: quiet caps, the active toggle is an insert ---------- */
+.ar-graph__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ar-graph__toolbar button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--ar-insert-radius);
+  color: var(--ar-text-low);
+  cursor: pointer;
+  transition: color var(--ar-dur-state) var(--ar-ease), background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-graph__toolbar button:hover:not(:disabled) {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-graph__toolbar button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.ar-graph__toolbar button:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-graph__toolbar button.is-on {
+  background: var(--ar-insert);
+  box-shadow: var(--ar-insert-shadow);
+  color: var(--ar-insert-ink);
+  text-shadow: var(--ar-insert-text-shadow);
+}
+.ar-graph__toolbar-gap {
+  flex: 1;
+}
+.ar-graph__toolbar-count {
+  color: var(--ar-text-low);
+}
+.ar-graph__toolbar-count.is-error {
+  color: var(--ar-fault);
+}
+
+/* ---------- stage: the canvas well + the inspector ---------- */
+.ar-graph__stage {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-height: 0;
+}
+.ar-graph__surface,
+.ar-live {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--ar-radius-card);
+  background:
+    linear-gradient(var(--_grid) 1px, transparent 1px) 0 0 / 20px 20px,
+    linear-gradient(90deg, var(--_grid) 1px, transparent 1px) 0 0 / 20px 20px,
+    var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  touch-action: none;
+}
+.ar-graph__surface {
+  cursor: crosshair;
+}
+.ar-graph__world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+.ar-graph__marquee {
+  position: absolute;
+  border: 1px dashed var(--ar-signal-line);
+  border-radius: 3px;
+  background: var(--ar-signal-wash);
+  pointer-events: none;
+}
+
+/* ---------- wires: the signal ---------- */
+.ar-graph__wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.ar-graph__wires > g {
+  pointer-events: auto;
+}
+.ar-graph__wire-line {
+  fill: none;
+  stroke: var(--ar-signal);
+  stroke-width: 1.5;
+  opacity: 0.8;
+}
+.ar-graph__wire-line.is-live {
+  stroke-dasharray: 4 3;
+  opacity: 1;
+}
+.ar-graph__wire-line.is-muted {
+  opacity: 0.25;
+}
+.ar-graph__wire-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12;
+  cursor: crosshair;
+}
+.ar-graph__wire:hover .ar-graph__wire-line {
+  stroke: var(--ar-fault);
+  opacity: 1;
+}
+
+/* ---------- groups: a dashed hairline frame ---------- */
+.ar-graph__group {
+  position: absolute;
+  border: 1px dashed var(--ar-line);
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-bg-hover);
+}
+.ar-graph__group header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 6px;
+}
+.ar-graph__group header button {
+  padding: 0 3px;
+  font-size: 9px;
+  color: var(--ar-text-low);
+  cursor: pointer;
+}
+.ar-graph__group header input {
+  flex: 1;
+  min-width: 0;
+  color: var(--ar-text-low);
+}
+.ar-graph__group header input:focus {
+  color: var(--ar-text-hi);
+  box-shadow: 0 1px 0 var(--ar-signal-line);
+}
+.ar-graph__group header span {
+  font: 300 9px var(--ar-font-num);
+  color: var(--ar-text-faint);
+}
+
+/* ---------- nodes: the floating sheet ---------- */
+.ar-graph__node,
+.ar-live__node {
+  --_seam: var(--ar-line-strong);
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-float-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  color: var(--ar-float-ink);
+  text-shadow: none;
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease), opacity var(--ar-dur-state) var(--ar-ease);
+}
+/* a node's family reads as a thin seam on its leading edge, in the theme's own colours */
+.ar-graph__node::before,
+.ar-live__node::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 2px;
+  height: 14px;
+  border-radius: 0 1px 1px 0;
+  background: var(--_seam);
+}
+.ar-graph__node[data-category='source'],
+.ar-live__node.kind-signal {
+  --_seam: var(--ar-bind);
+}
+.ar-graph__node[data-category='math'],
+.ar-graph__node[data-category='shape'],
+.ar-live__node.kind-binding,
+.ar-live__node.kind-graph {
+  --_seam: var(--ar-signal);
+}
+.ar-graph__node[data-category='logic'],
+.ar-graph__node[data-category='scene'],
+.ar-live__node.kind-parameter,
+.ar-live__node.kind-object {
+  --_seam: var(--ar-warn);
+}
+.ar-graph__node[data-category='output'],
+.ar-graph__node[data-category='render'],
+.ar-live__node.kind-output {
+  --_seam: var(--ar-fault);
+}
+.ar-graph__node[data-category='gpu'],
+.ar-live__node.kind-pass,
+.ar-live__node.kind-effect {
+  --_seam: var(--ar-signal-hi);
+}
+.ar-graph__node.is-selected,
+.ar-live__node.is-selected {
+  box-shadow: var(--ar-float-ring), 0 0 0 1px var(--ar-signal-line), var(--ar-float-shadow);
+}
+.ar-graph__node.is-error {
+  box-shadow: var(--ar-float-ring), 0 0 0 1px var(--ar-fault), var(--ar-float-shadow);
+}
+.ar-graph__node.is-warning {
+  box-shadow: var(--ar-float-ring), 0 0 0 1px var(--ar-warn), var(--ar-float-shadow);
+}
+
+.ar-graph__node-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* geometry is shared with NodeGraph.tsx (HEADER_H, FIELD_H, PORT_TOP/GAP): keep in step */
+  height: 26px;
+  padding: 0 8px 0 12px;
+  border-bottom: 1px solid var(--ar-line-subtle);
+  cursor: move;
+  touch-action: none;
+}
+.ar-graph__fold {
+  font-size: 9px;
+  color: var(--ar-float-ink-low);
+  cursor: pointer;
+}
+.ar-graph__node-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-float-ink);
+}
+.ar-graph__node-readout {
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-signal-hi);
+}
+
+/* ---------- ports: dots that light when wired ---------- */
+.ar-graph__ports {
+  position: relative;
+}
+.ar-graph__port {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 14px;
+  font: 300 10.5px var(--ar-font-ui);
+  color: var(--ar-float-ink-low);
+  cursor: crosshair;
+  touch-action: none;
+}
+.ar-graph__port.is-in {
+  left: -5px;
+}
+.ar-graph__port.is-out {
+  right: -5px;
+}
+.ar-graph__port i,
+.ar-live__port {
+  flex: none;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ar-float-bg);
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong);
+  transition: background var(--ar-dur-state) var(--ar-ease), box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-graph__port.type-object i {
+  border-radius: 2px;
+}
+.ar-graph__port.type-node i {
+  rotate: 45deg;
+  border-radius: 2px;
+}
+.ar-graph__port:hover i,
+.ar-graph__port.is-wired i,
+.ar-live__port.side-out {
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+}
+.ar-graph__port.is-required:not(.is-wired) i {
+  box-shadow: inset 0 0 0 1px var(--ar-fault);
+}
+.ar-graph__port b {
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+/* ---------- fields: label · well ---------- */
+.ar-graph__fields {
+  padding: 0 8px 0 12px;
+}
+.ar-graph__field,
+.ar-live__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  font: 300 11px var(--ar-font-ui);
+  color: var(--ar-float-ink-low);
+}
+.ar-graph__field > span,
+.ar-live__field > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ar-graph__number,
+.ar-graph__field input[type='number'],
+.ar-graph__field input[type='text'],
+.ar-graph__field input[type='search'],
+.ar-graph__field select {
+  box-sizing: border-box;
+  width: 92px;
+  height: 20px;
+  margin: 0;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-float-ink);
+  color-scheme: inherit;
+  outline: none;
+}
+/* the Select's chevron, drawn in the ink colour, instead of the browser's arrow */
+.ar-graph__field select {
+  appearance: none;
+  padding-right: 18px;
+  background:
+    linear-gradient(45deg, transparent 50%, currentColor 50%) right 9px top 50% / 4px 4px no-repeat,
+    linear-gradient(135deg, currentColor 50%, transparent 50%) right 5px top 50% / 4px 4px no-repeat,
+    var(--ar-trough);
+  font-family: var(--ar-font-ui);
+  font-weight: 300;
+  cursor: pointer;
+}
+.ar-graph__field select option {
+  background: var(--ar-list-bg);
+  color: var(--ar-list-ink);
+}
+.ar-graph__number:focus,
+.ar-graph__field input:focus,
+.ar-graph__field select:focus {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-graph__vector {
+  display: flex;
+  gap: 3px;
+}
+.ar-graph__vector input {
+  width: 32px !important;
+  padding: 0 4px !important;
+}
+/* a small switch: the knob is an insert in a well */
+.ar-graph__check {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 14px;
+  margin: 0;
+  border-radius: 7px;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  cursor: pointer;
+  transition: background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-graph__check::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ar-insert);
+  box-shadow: var(--ar-insert-shadow);
+  filter: var(--ar-insert-off-filter);
+  transition: translate var(--ar-dur-state) var(--ar-ease), filter var(--ar-dur-state) var(--ar-ease);
+}
+.ar-graph__check:checked {
+  background: var(--ar-signal-wash);
+}
+.ar-graph__check:checked::after {
+  translate: 12px 0;
+  filter: none;
+}
+.ar-graph__check:focus-visible {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+
+/* ---------- previews: a small well ---------- */
+.ar-graph__preview {
+  padding: 2px 10px 0 12px;
+  color: var(--ar-signal);
+}
+.ar-graph__preview-canvas,
+.ar-graph__preview-pending {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+}
+.ar-graph__preview-pending {
+  display: grid;
+  place-items: center;
+  font: 300 10px var(--ar-font-ui);
+  color: var(--ar-float-ink-low);
+}
+
+/* ---------- palette: the floating list, like Select's ---------- */
+.ar-graph__palette {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 340px;
+  max-height: 300px;
+  padding: 8px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-float-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  color: var(--ar-float-ink);
+  text-shadow: none;
+}
+.ar-graph__palette > input {
+  box-sizing: border-box;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: 300 12px var(--ar-font-ui);
+  color: var(--ar-float-ink);
+}
+.ar-graph__palette > input:focus {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-graph__palette-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  overflow: auto;
+}
+.ar-graph__palette-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 96px;
+}
+.ar-graph__palette-group b {
+  padding: 2px 6px 4px;
+  color: var(--ar-float-ink-low);
+}
+.ar-graph__palette-group button {
+  box-sizing: border-box;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--ar-insert-radius);
+  font: 300 11.5px/24px var(--ar-font-ui);
+  color: var(--ar-float-ink);
+  cursor: pointer;
+}
+.ar-graph__palette-group button:hover,
+.ar-graph__palette-group button:focus-visible {
+  background: var(--ar-list-hover);
+}
+.ar-graph__palette-empty {
+  padding: 6px;
+  font: 300 11px var(--ar-font-ui);
+  color: var(--ar-float-ink-low);
+}
+
+/* ---------- inspector: a quiet column beside the canvas ---------- */
+.ar-graph__inspector {
+  display: flex;
+  flex: 0 0 200px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 2px 2px 12px;
+  overflow: auto;
+  border-left: 1px solid var(--ar-line-subtle);
+  font: 300 11px/1.5 var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.ar-graph__inspector header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ar-graph__inspector header input {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: 300 12px var(--ar-font-ui);
+  color: var(--ar-text-hi);
+}
+.ar-graph__inspector header input:focus {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-graph__inspector header button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  color: var(--ar-text-low);
+  cursor: pointer;
+}
+.ar-graph__inspector header button:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-graph__inspector-note {
+  margin: 0;
+}
+.ar-graph__inspector-rows {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ar-graph__inspector-rows b {
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-text-hi);
+}
+.ar-graph__inspector-empty ul {
+  margin: 6px 0 0;
+  padding-left: 14px;
+}
+.ar-graph__diagnostics {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.ar-graph__diagnostics button {
+  box-sizing: border-box;
+  padding: 4px 7px;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-bg-hover);
+  font: 300 11px var(--ar-font-ui);
+  color: var(--ar-text-mid);
+  cursor: pointer;
+}
+.ar-graph__diagnostics button.is-error {
+  background: color-mix(in srgb, var(--ar-fault) 12%, transparent);
+  color: var(--ar-fault);
+}
+.ar-graph__diagnostics button.is-warning {
+  background: color-mix(in srgb, var(--ar-warn) 12%, transparent);
+  color: var(--ar-warn);
+}
+
+/* ---------- status line ---------- */
+.ar-graph__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ar-text-low);
+}
+.ar-graph__status-hint {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--ar-font-ui);
+  font-weight: 300;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ar-graph__status-error {
+  margin-left: auto;
+  color: var(--ar-fault);
+}
+.ar-graph__status button {
+  margin-left: auto;
+  padding: 0 9px;
+  height: 20px;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-insert);
+  box-shadow: var(--ar-insert-shadow);
+  color: var(--ar-insert-ink);
+  cursor: pointer;
+}
+
+/* ======================= live view ======================= */
+
+.ar-live {
+  cursor: grab;
+}
+.ar-live:active {
+  cursor: grabbing;
+}
+.ar-live:focus-visible {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-live__viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.ar-live__wires {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.ar-live__wire {
+  fill: none;
+  stroke: var(--ar-signal);
+  stroke-width: 1.5;
+  transition: stroke var(--ar-dur-state) var(--ar-ease), opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-live__wire.is-dim {
+  stroke: var(--ar-text-faint);
+}
+.ar-live__columns {
+  position: absolute;
+  top: -34px;
+  left: 0;
+  pointer-events: none;
+}
+.ar-live__columns span {
+  position: absolute;
+  top: 0;
+  text-align: center;
+  color: var(--ar-text-faint);
+}
+.ar-live__node {
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+}
+.ar-live__node.is-dim {
+  opacity: 0.28;
+}
+.ar-live__node.is-muted {
+  opacity: 0.5;
+}
+.ar-live__port {
+  position: absolute;
+  top: 20px;
+}
+.ar-live__port.side-in {
+  left: -5px;
+}
+.ar-live__port.side-out {
+  right: -5px;
+}
+.ar-live__head {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 42px;
+  padding: 0 10px 0 12px;
+  border-radius: var(--ar-radius-card) var(--ar-radius-card) 0 0;
+  cursor: pointer;
+}
+.ar-live__head:hover {
+  background: var(--ar-list-hover);
+}
+.ar-live__head:focus-visible {
+  box-shadow: inset var(--ar-focus-ring);
+}
+.ar-live__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ar-live__main b {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 400 12px var(--ar-font-ui);
+  color: var(--ar-float-ink);
+}
+.ar-live__main small {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 300 10.5px var(--ar-font-ui);
+  color: var(--ar-float-ink-low);
+}
+.ar-live__side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.ar-live__side em {
+  font-style: normal;
+  color: var(--ar-float-ink-low);
+}
+.ar-live__side output,
+.ar-live__field output {
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-signal-hi);
+}
+.ar-live__control {
+  flex: none;
+  padding: 0 10px 0 12px;
+}
+.ar-live__field input[type='number'] {
+  box-sizing: border-box;
+  width: 84px;
+  height: 20px;
+  margin: 0;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  color: var(--ar-float-ink);
+  outline: none;
+}
+.ar-live__field input[type='number']:focus {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-live__preview {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  margin: 0 10px 10px 12px;
+  overflow: hidden;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+}
+.ar-live__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  margin: 0;
+  font: 300 11.5px var(--ar-font-ui);
+  color: var(--ar-text-low);
+  pointer-events: none;
+}
+/* zoom: a small floating sheet in the corner */
+.ar-live__zoom {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-float-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+}
+.ar-live__zoom button {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ar-insert-radius);
+  font-size: 12px;
+  color: var(--ar-float-ink-low);
+  cursor: pointer;
+}
+.ar-live__zoom button:last-child {
+  width: auto;
+  padding: 0 7px;
+}
+.ar-live__zoom button:hover {
+  background: var(--ar-list-hover);
+  color: var(--ar-float-ink);
+}
+.ar-live__zoom output {
+  min-width: 34px;
+  font: var(--ar-value-weight) 10px var(--ar-control-font);
+  text-align: center;
+  color: var(--ar-float-ink-low);
+}

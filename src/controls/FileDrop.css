@@ -1,0 +1,77 @@
+/* FileDrop — a wide well with an etched, dashed rim. The rim and the wash light with the
+   signal while a file is held over it; the title is body text, the hint is mono caps. */
+:where(.ar-filedrop) {
+  all: unset;
+}
+.ar-filedrop {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 104px;
+  padding: 16px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  font: 300 calc(var(--ar-value-size) + 2px) / 1.3 var(--ar-font-ui);
+  text-align: center;
+  color: var(--ar-text-hi);
+  text-shadow: var(--ar-base-text-shadow);
+  cursor: pointer;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+/* the etched rim, drawn inside the well */
+.ar-filedrop::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed var(--ar-line-strong);
+  border-radius: calc(var(--ar-radius-card) - 4px);
+  pointer-events: none;
+  transition: border-color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-filedrop:hover::before {
+  border-color: var(--ar-text-low);
+}
+.ar-filedrop[data-over] {
+  background: var(--ar-signal-wash), var(--ar-trough);
+}
+.ar-filedrop[data-over]::before {
+  border-color: var(--ar-signal);
+}
+.ar-filedrop:focus-visible {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-filedrop:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ar-filedrop svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--ar-dim-ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--ar-dur-state) var(--ar-ease);
+}
+.ar-filedrop[data-over] svg {
+  stroke: var(--ar-signal);
+}
+.ar-filedrop__hint {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-dim-ink);
+}

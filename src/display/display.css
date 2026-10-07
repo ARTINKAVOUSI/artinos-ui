@@ -1,0 +1,79 @@
+/* ARTINOS display — Meter · Sparkline. Read-only instruments: a thin well with a signal
+   fill and a tabular readout, and a trend line in the plot ink. */
+
+/* ---------- Meter ---------- */
+.ar-meter {
+  --_tone: var(--ar-signal);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: var(--ar-h);
+}
+.ar-meter[data-tone='warm'] {
+  --_tone: var(--ar-warn);
+}
+.ar-meter[data-tone='neutral'] {
+  --_tone: var(--ar-text-low);
+}
+.ar-meter__track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  overflow: hidden;
+}
+.ar-meter__fill {
+  position: absolute;
+  inset: 1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 45%, transparent), var(--_tone));
+  box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 40%, transparent);
+  transform-origin: left center;
+  transition: transform 60ms linear;
+}
+.ar-meter__peak {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 2px;
+  margin-left: -2px;
+  border-radius: 1px;
+  background: var(--ar-value-ink-hi);
+}
+.ar-meter__value {
+  min-width: 40px;
+  text-align: right;
+  color: var(--ar-value-ink);
+}
+
+/* ---------- Sparkline ---------- */
+.ar-sparkline {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  color: var(--ar-signal);
+}
+.ar-sparkline[data-tone='warm'] {
+  color: var(--ar-warn);
+}
+.ar-sparkline[data-tone='neutral'] {
+  color: var(--ar-text-low);
+}
+.ar-sparkline__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ar-sparkline__threshold {
+  stroke: var(--ar-tick-major);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}

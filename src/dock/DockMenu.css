@@ -1,0 +1,258 @@
+/* The dock's panel menu: the floating list sheet (the surface a Select opens on), with
+   placement drawn as small workspace diagrams in wells instead of words. */
+
+.ar-dock-menu {
+  box-sizing: border-box;
+  display: grid;
+  gap: 8px;
+  width: 244px;
+  padding: 10px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-list-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-list-shadow);
+  text-shadow: var(--ar-list-text-shadow);
+  font: 300 12px/1.3 var(--ar-font-ui);
+  color: var(--ar-float-ink);
+  animation: ar-dock-menu-in 150ms var(--ar-ease);
+}
+@keyframes ar-dock-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ar-dock-menu {
+    animation: none;
+  }
+}
+
+/* ── head: the panel's name, its posture as a tag ──────────────────────── */
+.ar-dock-menu__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 2px 8px;
+  border-bottom: 1px solid var(--ar-line);
+}
+.ar-dock-menu__head b {
+  font: 300 13.5px/1.2 var(--ar-font-ui);
+  color: var(--ar-float-ink);
+}
+.ar-dock-menu__head em,
+.ar-dock-menu__head small {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-style: normal;
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-float-ink-low);
+}
+.ar-dock-menu__head em {
+  padding: 2px 6px 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ar-signal) 14%, transparent);
+  color: var(--ar-signal);
+}
+.ar-dock-menu__head small {
+  margin-left: auto;
+}
+
+/* ── placement: label · four diagrams ──────────────────────────────────── */
+.ar-dock-menu__place {
+  display: grid;
+  gap: 5px;
+}
+.ar-dock-menu__row,
+.ar-dock-menu__attach {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.ar-dock-menu__label {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-float-ink-low);
+}
+.ar-dock-menu__tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+:where(.ar-dock-menu button) {
+  all: unset;
+  box-sizing: border-box;
+}
+.ar-dock-menu__tile {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ar-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  color: var(--ar-float-ink-low);
+  cursor: pointer;
+  transition: background var(--ar-dur-state) var(--ar-ease), color var(--ar-dur-state) var(--ar-ease), box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-dock-menu__diagram {
+  width: 30px;
+  height: 22px;
+}
+.ar-dock-menu__frame {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.45;
+}
+.ar-dock-menu__shape rect {
+  fill: currentColor;
+  opacity: 0.55;
+  transition: fill var(--ar-dur-state) var(--ar-ease), opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-dock-menu__shape rect[data-dashed] {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 2 1.5;
+  opacity: 0.8;
+}
+.ar-dock-menu__tile:hover,
+.ar-dock-menu__tile:focus-visible {
+  background: var(--ar-list-hover);
+  color: var(--ar-float-ink);
+  outline: none;
+}
+.ar-dock-menu__tile:hover .ar-dock-menu__shape rect:not([data-dashed]),
+.ar-dock-menu__tile:focus-visible .ar-dock-menu__shape rect:not([data-dashed]) {
+  fill: var(--ar-signal);
+  opacity: 1;
+}
+.ar-dock-menu__tile:hover .ar-dock-menu__shape rect[data-dashed],
+.ar-dock-menu__tile:focus-visible .ar-dock-menu__shape rect[data-dashed] {
+  stroke: var(--ar-signal);
+  opacity: 1;
+}
+.ar-dock-menu__tile:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+
+/* ── actions: icon · label · key ───────────────────────────────────────── */
+.ar-dock-menu__actions {
+  display: grid;
+  gap: 1px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ar-line);
+}
+.ar-dock-menu__action {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px 0 6px;
+  border: 0;
+  border-radius: var(--ar-insert-radius);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--ar-float-ink);
+  cursor: pointer;
+}
+.ar-dock-menu__action:hover,
+.ar-dock-menu__action:focus-visible {
+  background: var(--ar-list-hover);
+  outline: none;
+}
+.ar-dock-menu__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  color: var(--ar-float-ink-low);
+}
+.ar-dock-menu__icon svg {
+  width: 13px;
+  height: 13px;
+}
+.ar-dock-menu__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ar-dock-menu__action kbd {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-label-weight) 9px/18px var(--ar-control-font);
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--ar-float-ink-low);
+}
+.ar-dock-menu__action[data-primary],
+.ar-dock-menu__action[data-primary] .ar-dock-menu__icon {
+  color: var(--ar-signal);
+}
+.ar-dock-menu__danger {
+  margin-top: -2px;
+  color: var(--ar-fault);
+}
+.ar-dock-menu__danger .ar-dock-menu__icon {
+  color: var(--ar-fault);
+}
+.ar-dock-menu__actions + .ar-dock-menu__danger,
+.ar-dock-menu__attach + .ar-dock-menu__danger {
+  border-top: 1px solid var(--ar-line);
+  border-radius: 0 0 6px 6px;
+  padding-top: 1px;
+  height: 30px;
+}
+
+/* ── attach targets as chips ───────────────────────────────────────────── */
+.ar-dock-menu__attach {
+  padding-top: 7px;
+  border-top: 1px solid var(--ar-line);
+}
+.ar-dock-menu__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ar-dock-menu__chip {
+  height: 22px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: 300 11px var(--ar-font-ui);
+  color: var(--ar-float-ink);
+  cursor: pointer;
+}
+.ar-dock-menu__chip:hover,
+.ar-dock-menu__chip:focus-visible {
+  background: var(--ar-list-hover);
+  outline: none;
+}
+.ar-dock-menu__chip[data-primary] {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal);
+  color: var(--ar-signal);
+}
+
+.ar-dock-menu button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

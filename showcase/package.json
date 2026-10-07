@@ -14,7 +14,9 @@
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "~0.185.4",
     "@vitejs/plugin-react": "^5.0.4",
+    "three": "0.185.1",
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vite-plugin-singlefile": "^2.3.0"

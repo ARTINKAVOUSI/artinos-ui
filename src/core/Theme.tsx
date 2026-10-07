@@ -31,7 +31,10 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
  * Optional scope wrapper. It only sets data attributes and inline tokens, so the
  * same result is available without React: <div data-ar-theme="frost">.
  */
-export function ArtinosTheme({ theme = 'studio', material, density, tokens, ground, as: Tag = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+export function ArtinosTheme({ theme = 'studio', material, density, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+  // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
+  // the full ElementType union too large for TypeScript to call. Any tag renders the same.
+  const Tag = as as 'div';
   return (
     <Tag
       {...rest}

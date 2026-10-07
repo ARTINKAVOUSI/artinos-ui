@@ -1,0 +1,503 @@
+/* ARTINOS Dock — the workspace chrome, themed by the --ar-* tokens.
+   The engine (metablock/WorkspaceView.css) brings the mechanics: docking, splitting,
+   floating, resize handles, previews. This binds its variables to the theme and draws
+   the panes, tab strips, window controls and panel bodies. */
+
+.ar-dock {
+  /* engine variables ← theme tokens */
+  --mb-radius: var(--ar-radius-panel);
+  --mb-signal: var(--ar-signal);
+  --mb-frost: var(--ar-panel-blur);
+  --au-surface: var(--ar-bg-surface);
+  --au-surface-2: var(--ar-float-bg);
+  --au-line: var(--ar-line);
+  --au-text: var(--ar-text-hi);
+  --au-muted: var(--ar-text-mid);
+  --au-faint: var(--ar-text-low);
+  --au-active: var(--ar-signal);
+  --au-danger: var(--ar-fault);
+  --au-font: var(--ar-font-ui);
+  --au-mono: var(--ar-control-font);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: clip;
+  isolation: isolate;
+  font-family: var(--ar-font-ui);
+  color: var(--ar-text-mid);
+}
+.ar-dock .mb-workspace-root {
+  --mb-surface-bg: var(--ar-panel-tint);
+  --mb-surface-line: var(--ar-line-subtle);
+  --mb-surface-sheen: var(--ar-panel-sheen);
+  overflow: clip;
+}
+.ar-dock svg:not([class]) {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+/* ---------- panes: every docked or detached group is the theme's glass ---------- */
+.ar-dock .mb-group:not([data-role='viewport']) {
+  border: 0;
+  border-radius: var(--ar-radius-panel);
+  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  text-shadow: var(--ar-panel-text-shadow);
+}
+.ar-dock .mb-group[data-focused='true']:not([data-role='viewport']),
+.ar-dock .mb-group:not([data-fullscreen-locked='true']):hover {
+  box-shadow: var(--ar-panel-shadow);
+  filter: none;
+}
+.ar-dock .mb-group[data-grabbed='true'] {
+  box-shadow: var(--ar-panel-shadow), var(--ar-float-shadow);
+  filter: none;
+}
+.ar-dock .mb-group-chrome {
+  border: 0;
+  background: transparent;
+}
+.ar-dock .mb-block-scroll::-webkit-scrollbar-thumb {
+  background: var(--ar-line-strong);
+}
+/* the engine anchors its menu host at 0 height, so a percentage max-height collapses */
+.ar-dock .mb-context-menu {
+  max-height: min(430px, calc(100vh - 32px));
+}
+
+.ar-dock__viewport {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- strip: tabs · the active panel's bar · search · toolbar ---------- */
+.ar-dock__strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 10px 0 14px;
+  border-bottom: 1px solid var(--ar-line-subtle);
+  font: 300 12px var(--ar-font-ui);
+  container: ar-dock-strip / inline-size;
+}
+.ar-dock__tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  flex: 0 0 auto;
+  max-width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ar-dock__tabs::-webkit-scrollbar {
+  display: none;
+}
+.ar-dock__tabs > button {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -1px;
+  border-bottom: 1.5px solid transparent;
+  font: 300 11.5px/1 var(--ar-font-ui);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--ar-text-low);
+  cursor: pointer;
+  transition:
+    color 130ms var(--ar-ease),
+    border-color 130ms var(--ar-ease);
+}
+.ar-dock__tabs > button:hover {
+  color: var(--ar-text-mid);
+}
+.ar-dock__tabs > button.is-active {
+  border-bottom-color: var(--ar-signal);
+  color: var(--ar-text-hi);
+}
+.ar-dock__tabs > button:focus-visible {
+  border-radius: 4px;
+  box-shadow: var(--ar-focus-ring);
+}
+
+.ar-dock__slot {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.ar-dock__slot:empty {
+  display: none;
+}
+
+.ar-dock__search {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 220px;
+  min-width: 96px;
+  max-width: 260px;
+  height: var(--ar-h);
+  margin-left: auto;
+  padding: 0 9px 0 10px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  font: 300 11.5px var(--ar-font-ui);
+  color: var(--ar-text-low);
+  cursor: pointer;
+}
+.ar-dock__search > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* the shortcut reads as plain ink here: a key cap well inside the search well is one too many */
+.ar-dock__search .ar-kbd {
+  gap: 1px;
+  opacity: 0.75;
+}
+.ar-dock__search .ar-kbd kbd {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+}
+/* a narrow dock keeps its tabs and folds search down to the magnifier */
+@container ar-dock-strip (max-width: 340px) {
+  .ar-dock__search {
+    flex: none;
+    min-width: 0;
+    width: var(--ar-h);
+    padding: 0;
+    justify-content: center;
+  }
+  .ar-dock__search > span,
+  .ar-dock__search .ar-kbd {
+    display: none;
+  }
+}
+.ar-dock__search:hover {
+  color: var(--ar-text-mid);
+}
+.ar-dock__search:focus-visible {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-dock__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  margin-left: auto;
+}
+.ar-dock__search + .ar-dock__toolbar {
+  margin-left: 0;
+}
+
+/* a detached panel: its tabs and window controls */
+.ar-dock__strip--window {
+  height: 32px;
+  min-height: 32px;
+  padding-right: 6px;
+}
+.ar-dock__window-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+.ar-dock__window-actions > button {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  color: var(--ar-text-low);
+  cursor: pointer;
+}
+.ar-dock__window-actions > button:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-dock__window-actions > button:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+
+/* ---------- panel bodies ---------- */
+.ar-dock__panel {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 10px 14px 14px;
+  container-type: inline-size;
+}
+.ar-dock__error {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 28px 16px;
+  text-align: center;
+}
+.ar-dock__error h3 {
+  margin: 0;
+  font: 300 14px var(--ar-font-ui);
+  color: var(--ar-text-hi);
+}
+.ar-dock__error p {
+  margin: 0;
+  font: 300 11.5px/1.5 var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.ar-dock__footer {
+  padding: 6px 14px 8px;
+  border-top: 1px solid var(--ar-line-subtle);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-low);
+}
+
+/* ---------- PanelBar: a panel's toolbar; rides in the strip when there is room ---------- */
+.ar-panel-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 0 0 8px;
+}
+.ar-panel-bar > .ar-textfield {
+  flex: 1 1 200px;
+  min-width: 140px;
+  max-width: 420px;
+}
+.ar-panel-bar > .ar-select {
+  width: 140px;
+}
+.ar-panel-bar > .ar-segmented {
+  flex: 0 1 auto;
+  min-width: 160px;
+}
+.ar-panel-bar__spacer {
+  flex: 1;
+}
+.ar-panel-bar__summary {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 300 11px var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.ar-dock__slot > .ar-panel-bar {
+  flex-wrap: nowrap;
+  gap: 12px;
+  margin: 0;
+  min-width: 0;
+}
+.ar-dock__slot .ar-panel-bar__spacer,
+.ar-dock__slot .ar-panel-bar__summary {
+  display: none;
+}
+
+/* ---------- brand chip and the hidden interface ---------- */
+.ar-dock__brand {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-hi);
+  text-shadow: var(--ar-panel-text-shadow);
+  pointer-events: none;
+}
+.ar-dock[data-ui-hidden] .mb-group:not([data-role='viewport']),
+.ar-dock[data-ui-hidden] > .ar-dock__brand {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms;
+}
+.ar-dock__hint {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  z-index: 30;
+  translate: -50% 0;
+  font: 300 10px var(--ar-font-ui);
+  color: var(--ar-text-low);
+  pointer-events: none;
+}
+
+/* ---------- drag and dock feedback, in the family's materials ----------
+   The engine draws a drop preview, an intent chip, a drag ghost and a compass while a
+   panel moves. Here they become a signal wash with a hairline, a float sheet with mono
+   caps, and the pane's own glass. */
+.ar-dock .mb-dock-preview,
+.ar-dock .mb-dock-preview[data-kind='panel'],
+.ar-dock .mb-dock-preview[data-area='center'] {
+  border-radius: var(--ar-radius-panel);
+  background: var(--ar-signal-wash);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-signal) 32%, transparent);
+}
+.ar-dock .mb-dock-preview[data-armed='true'],
+.ar-dock .mb-dock-preview[data-area='center'][data-armed='true'] {
+  background: color-mix(in srgb, var(--ar-signal) 16%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--ar-signal-line),
+    0 0 24px -8px var(--ar-signal-line);
+}
+.ar-dock .mb-dock-preview > span,
+.ar-dock .mb-dock-intent,
+.ar-dock .mb-dock-intent > b,
+.ar-dock .mb-dock-intent small,
+.ar-dock .mb-panel-drag-ghost span,
+.ar-dock .mb-panel-drag-ghost small,
+.ar-dock .mb-context-head span,
+.ar-dock .mb-context-label {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  line-height: 1;
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+}
+.ar-dock .mb-dock-preview > span {
+  color: var(--ar-signal);
+}
+.ar-dock .mb-dock-intent,
+.ar-dock .mb-dock-intent[data-armed='true'] {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-list-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-list-shadow);
+  color: var(--ar-float-ink);
+  text-shadow: none;
+}
+.ar-dock .mb-dock-intent[data-armed='true'] {
+  box-shadow: var(--ar-list-shadow), inset 0 0 0 1px var(--ar-signal-line);
+}
+.ar-dock .mb-dock-intent > b,
+.ar-dock .mb-dock-intent small {
+  color: var(--ar-float-ink-low);
+}
+.ar-dock .mb-dock-intent[data-armed='true'] > b {
+  color: var(--ar-signal);
+}
+.ar-dock .mb-panel-drag-ghost,
+.ar-dock .mb-panel-drag-ghost[data-field-active='true'],
+.ar-dock .mb-panel-drag-ghost[data-armed='true'] {
+  border-radius: var(--ar-radius-panel);
+  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow), var(--ar-float-shadow);
+  color: var(--ar-text-hi);
+  text-shadow: var(--ar-panel-text-shadow);
+}
+.ar-dock .mb-panel-drag-ghost[data-armed='true'] {
+  box-shadow: var(--ar-panel-shadow), var(--ar-float-shadow), inset 0 0 0 1px var(--ar-signal-line);
+}
+.ar-dock .mb-panel-drag-ghost::before {
+  display: none;
+}
+.ar-dock .mb-panel-drag-ghost small {
+  color: var(--ar-signal);
+}
+.ar-dock .mb-dock-compass i {
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-list-bg);
+  box-shadow: var(--ar-float-ring);
+}
+.ar-dock .mb-dock-compass[data-area='top'] .north,
+.ar-dock .mb-dock-compass[data-area='bottom'] .south,
+.ar-dock .mb-dock-compass[data-area='left'] .west,
+.ar-dock .mb-dock-compass[data-area='right'] .east,
+.ar-dock .mb-dock-compass[data-area='center'] .center {
+  opacity: 1;
+  box-shadow: inset 0 0 0 1px var(--ar-signal-line), 0 0 10px -2px var(--ar-signal-line);
+}
+.ar-dock .mb-snap-guide {
+  background: var(--ar-signal-line);
+}
+
+/* the engine's own capability menu and tab row, when a host renders them */
+.ar-dock .mb-context-menu {
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-list-bg);
+  -webkit-backdrop-filter: var(--ar-list-backdrop);
+  backdrop-filter: var(--ar-list-backdrop);
+  box-shadow: var(--ar-list-shadow);
+  color: var(--ar-float-ink);
+  text-shadow: var(--ar-list-text-shadow);
+}
+.ar-dock .mb-context-head b {
+  font: 300 13px/1.2 var(--ar-font-ui);
+}
+.ar-dock .mb-context-head span,
+.ar-dock .mb-context-label,
+.ar-dock .mb-context-menu kbd {
+  color: var(--ar-float-ink-low);
+}
+.ar-dock .mb-context-menu > button {
+  min-height: max(22px, calc(var(--ar-h) - 2px));
+  border-radius: var(--ar-insert-radius);
+  font: 300 12px/1 var(--ar-font-ui);
+  color: var(--ar-list-ink);
+}
+.ar-dock .mb-context-menu button:hover,
+.ar-dock .mb-context-menu button:focus-visible {
+  background: var(--ar-list-hover);
+  color: var(--ar-list-ink-hi);
+}
+.ar-dock .mb-context-menu button.danger {
+  color: var(--ar-fault);
+}
+.ar-dock .mb-context-menu kbd {
+  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
+}
+.ar-dock .mb-native-tab {
+  border-radius: var(--ar-insert-radius);
+  font: 300 11.5px var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.ar-dock .mb-native-tab.active {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}

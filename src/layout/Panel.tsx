@@ -26,7 +26,10 @@ export interface PanelProps {
   id?: string;
 }
 
-export function Panel({ title, subtitle, actions, tabs, footer, children, as: Tag = 'section', className, style, id }: PanelProps) {
+export function Panel({ title, subtitle, actions, tabs, footer, children, as = 'section', className, style, id }: PanelProps) {
+  // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
+  // the full ElementType union too large for TypeScript to call. Any tag renders the same.
+  const Tag = as as 'section';
   return (
     <Tag id={id} className={cx('ar-panel', className)} style={style}>
       {title || subtitle || actions ? (

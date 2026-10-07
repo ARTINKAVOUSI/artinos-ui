@@ -1,0 +1,66 @@
+/* XYPad — a 2D field cut as a well with a hairline quarter grid, a tick crosshair and
+   an insert point with the lit seam at its centre. */
+.ar-xypad {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 25% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 75% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 0 25% / 100% 1px no-repeat,
+    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 0 75% / 100% 1px no-repeat,
+    var(--ar-trough);
+  cursor: crosshair;
+  touch-action: none;
+}
+.ar-xypad__cross {
+  position: absolute;
+  background: var(--ar-tick);
+  pointer-events: none;
+}
+.ar-xypad__cross[data-axis='x'] {
+  top: 0;
+  bottom: 0;
+  left: calc(var(--x, 0.5) * 100%);
+  width: 1px;
+}
+.ar-xypad__cross[data-axis='y'] {
+  left: 0;
+  right: 0;
+  top: calc((1 - var(--y, 0.5)) * 100%);
+  height: 1px;
+}
+.ar-xypad__point {
+  position: absolute;
+  left: calc(var(--x, 0.5) * 100%);
+  top: calc((1 - var(--y, 0.5)) * 100%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.ar-xypad__point::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--ar-seam-active);
+  box-shadow: 0 0 5px var(--ar-signal-line);
+}
+.ar-xypad__label,
+.ar-xypad__readout {
+  position: absolute;
+  pointer-events: none;
+}
+.ar-xypad__label {
+  top: 6px;
+  left: var(--ar-pad-x);
+  max-width: 60%;
+  color: var(--ar-dim-ink);
+}
+.ar-xypad__readout {
+  right: var(--ar-pad-x);
+  bottom: 5px;
+  color: var(--ar-unit-ink);
+}

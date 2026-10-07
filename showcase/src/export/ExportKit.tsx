@@ -50,12 +50,16 @@ function customCss(c: CustomTheme, names: string[]): CustomThemeCss {
   return { slug: slugify(c.name), name: c.name, css: toCss(c.name, c.base, resolved, c.tokens, scheme) };
 }
 
+const COMPONENT_GROUPS = [...new Set(KIT_COMPONENTS.map((c) => c.group))];
+/** Everything but the TSL compiler, which needs three: that one is picked by hand. */
+const ALL_COMPONENTS = KIT_COMPONENTS.filter((c) => c.id !== 'GraphGPU').map((c) => c.id);
+
 const kb = (n: number) => (n < 1024 ? n + ' B' : (n / 1024).toFixed(n < 10240 ? 1 : 0) + ' KB');
 
 export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[]; current: string; onClose: () => void }) {
   const [themes, setThemes] = useState<string[]>(() => (current.startsWith('c:') ? [] : [current]));
   const [customIds, setCustomIds] = useState<string[]>(() => (current.startsWith('c:') ? [current.slice(2)] : []));
-  const [comps, setComps] = useState<string[]>(() => KIT_COMPONENTS.map((c) => c.id));
+  const [comps, setComps] = useState<string[]>(() => ALL_COMPONENTS);
   const [folder, setFolder] = useState('artinos-ui');
   const [googleFonts, setGoogleFonts] = useState(true);
   const [materials, setMaterials] = useState(true);
@@ -201,19 +205,24 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
             <div className="xk__sub">
               Components <em>{comps.length}</em>
               <span className="xk__links">
-                <button type="button" onClick={() => setComps(KIT_COMPONENTS.map((c) => c.id))}>all</button>
+                <button type="button" onClick={() => setComps(ALL_COMPONENTS)}>all</button>
                 <button type="button" onClick={() => setComps([])}>none</button>
               </span>
             </div>
-            <div className="xk__comps">
-              {KIT_COMPONENTS.map((c) => (
-                <button key={c.id} type="button" className="xk__comp" aria-pressed={comps.includes(c.id)} onClick={() => flip(setComps, c.id)}>
-                  <i className="xk__tick" />
-                  <b>{c.label}</b>
-                  <span>{c.note}</span>
-                </button>
-              ))}
-            </div>
+            {COMPONENT_GROUPS.map((g) => (
+              <div key={g} className="xk__fam">
+                <div className="xk__famhead">{g}</div>
+                <div className="xk__comps">
+                  {KIT_COMPONENTS.filter((c) => c.group === g).map((c) => (
+                    <button key={c.id} type="button" className="xk__comp" aria-pressed={comps.includes(c.id)} onClick={() => flip(setComps, c.id)}>
+                      <i className="xk__tick" />
+                      <b>{c.label}</b>
+                      <span>{c.note}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
             <p className="xk__note">Shared helpers (hooks, formatting, the theme scope) come along automatically when a component needs them.</p>
 
             <div className="xk__sub">Options</div>

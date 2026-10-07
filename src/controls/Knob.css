@@ -1,0 +1,87 @@
+/* Knob — a rotary control: a tick arc and a signal arc around a round well, the
+   family's insert as the cap and a lit seam as its pointer. */
+.ar-knob {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.ar-knob__dial {
+  position: relative;
+  border-radius: 50%;
+  outline: none;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* the socket the cap sits in */
+.ar-knob__dial::before {
+  content: '';
+  position: absolute;
+  inset: 21%;
+  border-radius: 50%;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-knob__dial:focus-visible::before {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-knob__dial svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ar-knob__track {
+  fill: none;
+  stroke: var(--ar-tick);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.ar-knob__value {
+  fill: none;
+  stroke: var(--ar-signal);
+  stroke-width: 2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2px var(--ar-signal-line));
+}
+.ar-knob__cap {
+  position: absolute;
+  inset: calc(21% + var(--ar-inset));
+  border-radius: 50%;
+  transition: transform 60ms linear;
+}
+.ar-knob__dial:active .ar-knob__cap {
+  filter: brightness(0.96);
+}
+.ar-knob__pointer {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: 2px;
+  height: 30%;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--ar-seam-active);
+  box-shadow: 0 0 4px var(--ar-signal-line);
+}
+.ar-knob__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  max-width: 100%;
+}
+.ar-knob__text .ar-text {
+  max-width: 100%;
+}
+.ar-knob__text .ar-value {
+  color: var(--ar-value-ink-hi);
+}

@@ -4,7 +4,7 @@
     "strict": true, "noUnusedLocals": true, "noUnusedParameters": true, "forceConsistentCasingInFileNames": true,
     "module": "ESNext", "moduleResolution": "Bundler", "resolveJsonModule": true, "isolatedModules": true,
     "verbatimModuleSyntax": true, "noEmit": true, "jsx": "react-jsx", "types": ["vite/client"],
-    "baseUrl": ".", "paths": { "react": ["./node_modules/@types/react"], "react/*": ["./node_modules/@types/react/*"], "react-dom": ["./node_modules/@types/react-dom"], "react-dom/*": ["./node_modules/@types/react-dom/*"] }
+    "baseUrl": ".", "paths": { "react": ["./node_modules/@types/react"], "react/*": ["./node_modules/@types/react/*"], "react-dom": ["./node_modules/@types/react-dom"], "react-dom/*": ["./node_modules/@types/react-dom/*"], "three": ["./node_modules/@types/three"], "three/tsl": ["./node_modules/@types/three/build/three.tsl.d.ts"] }
   },
   "include": ["src", "../src", "../tools"]
 }

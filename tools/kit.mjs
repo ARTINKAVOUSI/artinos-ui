@@ -8,17 +8,39 @@
 export const BASE_THEME = 'studio';
 
 export const COMPONENTS = [
-  { id: 'Slider', label: 'Slider', file: 'slider/Slider.tsx', note: 'material · stepped · gradient · ruler · curve · wave' },
-  { id: 'RangeSlider', label: 'RangeSlider', file: 'slider/RangeSlider.tsx', note: 'two seams, one span' },
-  { id: 'NumberField', label: 'NumberField', file: 'controls/NumberField.tsx', note: 'scrub or type a number' },
-  { id: 'Switch', label: 'Switch', file: 'controls/Switch.tsx', note: 'shutter or compact' },
-  { id: 'ToggleGroup', label: 'ToggleGroup', file: 'controls/ToggleGroup.tsx', note: 'independent flags' },
-  { id: 'Segmented', label: 'Segmented', file: 'controls/Segmented.tsx', note: 'one of a few' },
-  { id: 'ColorField', label: 'ColorField', file: 'controls/ColorField.tsx', note: 'hex + alpha' },
-  { id: 'Select', label: 'Select', file: 'controls/Select.tsx', note: 'dropdown list' },
-  { id: 'Panel', label: 'Panel · Section · Field', file: 'layout/Panel.tsx', note: 'glass panel and layout' },
-  { id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
-  { id: 'RollingValue', label: 'RollingValue', file: 'core/RollingValue.tsx', note: 'rolling-digit readout' },
+  { group: 'Sliders', id: 'Slider', label: 'Slider', file: 'slider/Slider.tsx', note: 'material · stepped · gradient · ruler · curve · wave' },
+  { group: 'Sliders', id: 'RangeSlider', label: 'RangeSlider', file: 'slider/RangeSlider.tsx', note: 'two seams, one span' },
+  { group: 'Sliders', id: 'Knob', label: 'Knob', file: 'controls/Knob.tsx', note: 'rotary value' },
+  { group: 'Sliders', id: 'XYPad', label: 'XYPad', file: 'controls/XYPad.tsx', note: 'two values on one pad' },
+  { group: 'Controls', id: 'NumberField', label: 'NumberField', file: 'controls/NumberField.tsx', note: 'scrub or type a number' },
+  { group: 'Controls', id: 'TextField', label: 'TextField', file: 'controls/TextField.tsx', note: 'text input' },
+  { group: 'Controls', id: 'Switch', label: 'Switch', file: 'controls/Switch.tsx', note: 'shutter or compact' },
+  { group: 'Controls', id: 'ToggleGroup', label: 'ToggleGroup', file: 'controls/ToggleGroup.tsx', note: 'independent flags' },
+  { group: 'Controls', id: 'Segmented', label: 'Segmented', file: 'controls/Segmented.tsx', note: 'one of a few' },
+  { group: 'Controls', id: 'Select', label: 'Select', file: 'controls/Select.tsx', note: 'dropdown list' },
+  { group: 'Controls', id: 'ColorField', label: 'ColorField', file: 'controls/ColorField.tsx', note: 'hex + alpha' },
+  { group: 'Controls', id: 'FileDrop', label: 'FileDrop', file: 'controls/FileDrop.tsx', note: 'drop or pick files' },
+  { group: 'Actions', id: 'Button', label: 'Button', file: 'actions/Button.tsx', note: 'default · primary · ghost · danger' },
+  { group: 'Actions', id: 'IconButton', label: 'IconButton', file: 'actions/IconButton.tsx', note: 'square icon action' },
+  { group: 'Actions', id: 'Toolbar', label: 'Toolbar', file: 'actions/Toolbar.tsx', note: 'a row of actions' },
+  { group: 'Actions', id: 'Kbd', label: 'Kbd', file: 'actions/Kbd.tsx', note: 'key cap' },
+  { group: 'Actions', id: 'Badge', label: 'Badge', file: 'actions/Badge.tsx', note: 'status tag' },
+  { group: 'Display', id: 'Meter', label: 'Meter', file: 'display/Meter.tsx', note: 'level bar' },
+  { group: 'Display', id: 'Sparkline', label: 'Sparkline', file: 'display/Sparkline.tsx', note: 'inline trend line' },
+  { group: 'Display', id: 'RollingValue', label: 'RollingValue', file: 'core/RollingValue.tsx', note: 'rolling-digit readout' },
+  { group: 'Layout', id: 'Panel', label: 'Panel · Section · Field', file: 'layout/Panel.tsx', note: 'glass panel and layout' },
+  { group: 'Layout', id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
+  { group: 'Layout', id: 'PropertyRow', label: 'PropertyRow', file: 'layout/PropertyRow.tsx', note: 'label · control inspector row' },
+  { group: 'Overlays', id: 'Menu', label: 'Menu · ContextMenu', file: 'overlays/Menu.tsx', note: 'dropdown and right-click menus' },
+  { group: 'Overlays', id: 'Dialog', label: 'Dialog', file: 'overlays/Dialog.tsx', note: 'modal' },
+  { group: 'Overlays', id: 'Toast', label: 'Toast', file: 'overlays/Toast.tsx', note: 'notifications' },
+  { group: 'Overlays', id: 'Tooltip', label: 'Tooltip', file: 'overlays/Tooltip.tsx', note: 'hover and focus hints' },
+  { group: 'Overlays', id: 'CommandPalette', label: 'CommandPalette', file: 'overlays/CommandPalette.tsx', note: 'Ctrl/⌘ K search' },
+  { group: 'Dock', id: 'Dock', label: 'Dock', file: 'dock/Dock.tsx', note: 'studio workspace: docks, tabs, floating panels' },
+  { group: 'Dock', id: 'MetaBlock', label: 'MetaBlock engine', file: 'dock/metablock/WorkspaceView.tsx', note: 'the docking engine alone' },
+  { group: 'Graph', id: 'NodeGraph', label: 'NodeGraph', file: 'graph/NodeGraph.tsx', note: 'node editor' },
+  { group: 'Graph', id: 'LiveGraphView', label: 'LiveGraphView', file: 'graph/LiveGraphView.tsx', note: 'read-only live graph' },
+  { group: 'Graph', id: 'GraphGPU', label: 'Graph → TSL', file: 'graph/gpu.ts', note: 'compile graphs to three.js TSL (needs three)' },
 ];
 
 /** Always shipped: the theme scope and the shared helpers every component uses. */
@@ -301,8 +323,10 @@ export function buildKit(sources, o) {
   const keep = new Set(themes);
   const comps = COMPONENTS.filter((c) => o.components.includes(c.id));
   const tsFiles = closure(sources, [...CORE, ...comps.map((c) => c.file)]).sort();
-  const folders = new Set(tsFiles.map((f) => f.split('/')[0]));
-  const cssFiles = ['core/core.css', 'slider/slider.css', 'controls/controls.css', 'layout/layout.css'].filter((f) => folders.has(f.split('/')[0]));
+  // stylesheets: each included module's folder stylesheet (folder/folder.css) and its own (Name.css),
+  // in the order of src/artinos.css, the one list of every stylesheet
+  const wanted = new Set(tsFiles.flatMap((f) => [`${f.split('/')[0]}/${f.split('/')[0]}.css`, f.replace(/\.tsx?$/, '.css')]));
+  const cssFiles = [...sources['artinos.css'].matchAll(/@import '\.\/([^']+)'/g)].map((m) => m[1]).filter((f) => wanted.has(f) && f in sources);
 
   const files = {};
   const list = themes.map((t) => `${t.padEnd(14)}${meta[t]?.label ?? ''}`).join('\n *   ');

@@ -84,9 +84,13 @@ function list() {
       console.log(`    ${t.padEnd(16)} ${m.label.padEnd(16)} ${m.kind.padEnd(6)} ${m.description}`);
     }
   }
-  console.log('\nComponents');
-  for (const c of COMPONENTS) console.log(`    ${c.id.padEnd(14)} ${c.note}`);
+  console.log('\nComponents   id · what it is');
+  for (const g of [...new Set(COMPONENTS.map((c) => c.group))]) {
+    console.log(`\n  [${g}]`);
+    for (const c of COMPONENTS.filter((x) => x.group === g)) console.log(`    ${c.id.padEnd(16)} ${c.note}`);
+  }
   console.log('\nArtinosTheme (the theme scope) and the studio base theme are always included.');
+  console.log('"--components all" leaves out GraphGPU (it needs three); name it to include it.');
 }
 
 /* ---------- export ---------- */
@@ -123,6 +127,8 @@ function exportKit(project) {
   };
   const themes = pick(opt('themes'), all, 'themes');
   const components = pick(opt('components'), COMPONENTS.map((c) => c.id), 'components');
+  // "all" leaves out the TSL compiler: it needs three. Name GraphGPU to include it.
+  if (opt('components') === 'all') components.splice(components.indexOf('GraphGPU'), 1);
   const customs = opts('custom').map((f) => {
     const css = fs.readFileSync(path.resolve(f), 'utf8');
     const slug = css.match(/\[data-ar-theme='([^']+)'\]/)?.[1];
@@ -147,7 +153,7 @@ function exportKit(project) {
     if (!flag('force')) die(`${out} already exists and is not empty. Pass --force to update the kit in it.`);
     // remove only what a kit owns and this export no longer has
     const owned = new Set(Object.keys(files));
-    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|layout)\/[^/]+\.(ts|tsx|css)|docs\/(components|theming)\.md)$/;
+    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|actions|display|layout|overlays|dock|graph)\/([^/]+\/)*[^/]+\.(ts|tsx|css)|docs\/(components|theming)\.md)$/;
     (function prune(dir, rel) {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const r = rel ? rel + '/' + e.name : e.name;
@@ -155,7 +161,8 @@ function exportKit(project) {
         else if (kitFile.test(r) && !owned.has(r)) fs.unlinkSync(path.join(dir, e.name));
       }
     })(out, '');
-    for (const d of ['slider', 'controls', 'layout', 'core', 'tokens', 'docs']) {
+    // innermost first, so a folder emptied by its subfolder's removal goes too
+    for (const d of ['dock/metablock', 'dock', 'graph', 'overlays', 'display', 'actions', 'slider', 'controls', 'layout', 'core', 'tokens', 'docs']) {
       const p = path.join(out, d);
       if (fs.existsSync(p) && !fs.readdirSync(p).length) fs.rmdirSync(p);
     }

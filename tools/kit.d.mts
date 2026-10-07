@@ -1,6 +1,8 @@
 /* Types for kit.mjs, so the showcase can import it under strict TypeScript. */
 
 export interface KitComponent {
+  /** heading the component is listed under */
+  group: string;
   id: string;
   label: string;
   file: string;

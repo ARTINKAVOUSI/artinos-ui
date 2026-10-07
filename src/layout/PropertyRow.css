@@ -1,0 +1,149 @@
+/* PropertyRow — the inspector row: a label column (the Field's), the control, and a reset
+   and actions that appear on hover. The row never owns the value; it only arranges. */
+.ar-prop {
+  --_label-w: var(--ar-field-label-w, 104px);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-family: var(--ar-font-ui);
+}
+.ar-prop__main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--ar-h);
+}
+.ar-prop__control {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ar-prop__control > * {
+  flex: 1;
+  min-width: 0;
+}
+.ar-prop__control > .ar-switch--compact {
+  flex: none;
+}
+.ar-prop__label {
+  flex: 0 0 var(--_label-w);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.35;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-text-mid);
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+/* the control names itself in the default density */
+.ar-prop[data-density='default'] .ar-prop__label {
+  display: none;
+}
+.ar-prop[data-density='multiline'] .ar-prop__main {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+.ar-prop[data-density='multiline'] .ar-prop__label {
+  flex: 1 0 100%;
+}
+.ar-prop__binding {
+  flex: none;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-style: normal;
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-bind);
+}
+.ar-prop__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-prop:hover .ar-prop__actions,
+.ar-prop:focus-within .ar-prop__actions {
+  opacity: 1;
+}
+.ar-prop__reset {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: calc(var(--ar-h) - 4px);
+  height: calc(var(--ar-h) - 4px);
+  border-radius: var(--ar-insert-radius);
+  color: var(--ar-text-faint);
+  cursor: pointer;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-prop__reset:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-prop__reset:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-prop__reset svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ar-prop__message {
+  margin: 0 0 0 calc(var(--_label-w) + 10px);
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ar-text-low);
+}
+.ar-prop[data-density='default'] .ar-prop__message {
+  margin-left: 0;
+}
+.ar-prop[data-state='fault'] .ar-prop__message {
+  color: var(--ar-fault);
+}
+.ar-prop[data-state='warn'] .ar-prop__message {
+  color: var(--ar-warn);
+}
+.ar-prop[data-highlighted] {
+  border-radius: var(--ar-radius);
+  outline: 1px solid var(--ar-signal-line);
+  outline-offset: 3px;
+}
+.ar-prop[data-disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+/* modified: the label brightens and a signal dot sits in the margin, outside the row
+   box, so the control keeps its width */
+.ar-prop[data-modified] .ar-prop__label {
+  color: var(--ar-text-hi);
+}
+.ar-prop[data-modified] > .ar-prop__main::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: var(--ar-signal);
+  box-shadow: 0 0 5px var(--ar-signal-line);
+}

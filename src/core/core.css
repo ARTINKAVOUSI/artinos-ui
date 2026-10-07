@@ -168,3 +168,8 @@
 .ar-chevron[data-up] {
   transform: rotate(180deg);
 }
+
+/* ThemedPortal's wrapper: carries the theme scope into <body>, adds no box */
+.ar-portal {
+  display: contents;
+}

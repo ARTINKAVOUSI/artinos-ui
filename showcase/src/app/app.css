@@ -215,3 +215,61 @@ body { background: #090909; }
 .sc-studio-btn--big { height: 34px; padding: 0 18px; font-size: 10px; }
 .sc-studio-btn--ghost { background: var(--ar-trough); box-shadow: var(--ar-well); color: var(--ar-text-hi); }
 .sc-studio-btn--ghost:hover { background: var(--ar-bg-hover); }
+
+/* ---------- workspace demo (section 28) ---------- */
+.sc-workspace {
+  position: relative;
+  height: 600px;
+  border-radius: var(--ar-radius-panel);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+}
+.sc-workspace__view {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sc-layer {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--ar-radius);
+  font: 300 12px var(--ar-font-ui);
+  color: var(--ar-text-mid);
+  cursor: pointer;
+}
+.sc-layer:hover {
+  background: var(--ar-bg-hover);
+}
+.sc-layer[data-on] {
+  background: var(--ar-signal-wash);
+  color: var(--ar-text-hi);
+}
+.sc-layer:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.sc-layer__icons {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--ar-text-low);
+}
+.sc-layer__icons svg {
+  width: 12px;
+  height: 12px;
+}
+.sc-drop-hint {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  border-radius: var(--ar-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: 300 12px var(--ar-font-ui);
+  color: var(--ar-text-low);
+}

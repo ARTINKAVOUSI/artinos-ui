@@ -1,0 +1,271 @@
+/* ARTINOS actions — Button · IconButton · Toolbar · Kbd · Badge.
+   A button is the family's insert in its well; an icon button is bare ink that becomes an
+   insert when pressed; a key cap is a tiny well; a badge is a wash and a hairline of its
+   state's colour, never a solid fill. */
+
+/* ---------- Button: an insert in its well ---------- */
+:where(.ar-button) {
+  all: unset;
+}
+.ar-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-width: calc(var(--ar-h) * 3);
+  padding: var(--ar-inset);
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ar-button[data-size='sm'] {
+  --_h: calc(var(--ar-h) - 4px);
+  min-width: 0;
+}
+.ar-button[data-block] {
+  display: flex;
+  width: 100%;
+}
+.ar-button__face {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 0 calc(var(--ar-pad-x) + 2px);
+  transition:
+    filter var(--ar-dur-surface) var(--ar-ease),
+    transform 90ms var(--ar-ease);
+}
+.ar-button[data-size='sm'] .ar-button__face {
+  padding: 0 var(--ar-pad-x);
+}
+.ar-button:hover .ar-button__face {
+  filter: brightness(1.05);
+}
+.ar-button:active .ar-button__face {
+  filter: brightness(0.94);
+  transform: scale(0.985);
+}
+.ar-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ar-button:disabled .ar-button__face {
+  filter: var(--ar-insert-off-filter);
+  transform: none;
+}
+.ar-button__label {
+  min-width: 0;
+}
+.ar-button__icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--ar-insert-ink);
+}
+.ar-button__icon svg {
+  width: 13px;
+  height: 13px;
+}
+.ar-button__trailing {
+  display: inline-flex;
+  margin-left: auto;
+  padding-left: 4px;
+  color: var(--ar-insert-unit-ink);
+}
+.ar-button__trailing .ar-kbd kbd {
+  background: color-mix(in srgb, var(--ar-insert-ink) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-insert-ink) 14%, transparent);
+  color: var(--ar-insert-unit-ink);
+}
+/* danger lights its LED in the fault colour */
+.ar-button[data-variant='danger'] .ar-led {
+  background: var(--ar-fault);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--ar-fault) 70%, transparent);
+}
+/* ghost: bare label ink and a faint wash on hover — secondary actions in a row */
+.ar-button[data-variant='ghost'] {
+  height: var(--ar-h);
+  padding: 0;
+  border-radius: var(--ar-radius);
+  transition: background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-button[data-variant='ghost'][data-size='sm'] {
+  height: var(--_h);
+}
+.ar-button[data-variant='ghost'] .ar-button__icon,
+.ar-button[data-variant='ghost'] .ar-button__trailing {
+  color: inherit;
+}
+.ar-button[data-variant='ghost']:hover {
+  background: var(--ar-bg-hover);
+}
+.ar-button[data-variant='ghost']:hover .ar-button__label {
+  color: var(--ar-text-hi);
+}
+.ar-button[data-variant='ghost']:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+
+/* ---------- IconButton: bare ink, an insert when pressed ---------- */
+:where(.ar-icon-button) {
+  all: unset;
+}
+.ar-icon-button {
+  --_size: var(--ar-h);
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--_size);
+  height: var(--_size);
+  border-radius: var(--ar-radius);
+  color: var(--ar-label-ink);
+  text-shadow: var(--ar-base-text-shadow);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-icon-button[data-size='sm'] {
+  --_size: calc(var(--ar-h) - 4px);
+}
+.ar-icon-button svg {
+  width: 13px;
+  height: 13px;
+}
+.ar-icon-button[data-size='sm'] svg {
+  width: 12px;
+  height: 12px;
+}
+/* filled: a well at rest, for toolbars over a bright scene */
+.ar-icon-button[data-filled] {
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+}
+.ar-icon-button:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-icon-button[aria-pressed='true'] {
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-insert);
+  -webkit-backdrop-filter: var(--ar-insert-backdrop);
+  backdrop-filter: var(--ar-insert-backdrop);
+  box-shadow: var(--ar-insert-shadow);
+  color: var(--ar-insert-ink);
+  text-shadow: var(--ar-insert-text-shadow);
+}
+.ar-icon-button:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-icon-button[aria-pressed='true']:focus-visible {
+  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+}
+.ar-icon-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- Toolbar ---------- */
+.ar-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+.ar-toolbar[aria-orientation='vertical'] {
+  flex-direction: column;
+  align-items: stretch;
+}
+/* floating: a small pane of the theme's glass, for use over a canvas */
+.ar-toolbar[data-floating] {
+  padding: 4px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+}
+.ar-toolbar__separator {
+  flex: none;
+  align-self: stretch;
+  width: 1px;
+  margin: 5px 4px;
+  background: var(--ar-line-subtle);
+}
+.ar-toolbar[aria-orientation='vertical'] .ar-toolbar__separator {
+  width: auto;
+  height: 1px;
+  margin: 4px 5px;
+}
+.ar-toolbar__spacer {
+  flex: 1;
+}
+
+/* ---------- Kbd: key caps as tiny wells ---------- */
+.ar-kbd {
+  display: inline-flex;
+  gap: 3px;
+}
+.ar-kbd kbd {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
+  letter-spacing: 0.04em;
+  color: var(--ar-text-mid);
+  text-shadow: none;
+}
+
+/* ---------- Badge ---------- */
+.ar-badge {
+  --_tone: var(--ar-text-mid);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--_tone) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_tone) 30%, transparent);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  line-height: 1;
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  white-space: nowrap;
+  color: var(--_tone);
+  text-shadow: none;
+}
+.ar-badge[data-tone='live'] {
+  --_tone: var(--ar-signal);
+}
+.ar-badge[data-tone='warm'] {
+  --_tone: var(--ar-warn);
+}
+.ar-badge[data-tone='danger'] {
+  --_tone: var(--ar-fault);
+}
+.ar-badge[data-tone='neutral'] {
+  background: var(--ar-bg-hover);
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+}
+.ar-badge__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 5px currentColor;
+}

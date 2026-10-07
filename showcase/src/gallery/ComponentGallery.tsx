@@ -4,6 +4,7 @@ import {
 } from '../../../src';
 import type { RangeValue } from '../../../src';
 import { Spec, Part, ICONS, wave } from '../shared';
+import { ExtendedGallery } from './Extended';
 
 /* The complete component gallery — every component, variant and state. Rendered by the
    showcase page and, live under your edits, by the Theme Studio preview. */
@@ -56,7 +57,7 @@ export function ComponentGallery() {
         {/* ============ SLIDER ============ */}
         <Part title="Slider" note="one compact precision surface" />
 
-        <Spec n="01" title="Material" text="A body press places the value and keeps dragging. A press within 13 px of the seam grabs it without a jump. The seam sits 4 px inside the active insert; text switches ink where the insert covers it." code={`
+        <Spec n="01" title="Material" text="A body press places the value and keeps dragging. A press within 13 px of the seam grabs it without a jump. The seam sits 8 px inside the end of the insert; text switches ink where the insert covers it." code={`
 import { Slider } from './artinos-ui';
 
 const [rough, setRough] = useState(0.52);
@@ -388,6 +389,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
           </div>
         </Spec>
 
+      <ExtendedGallery />
     </>
   );
 }

@@ -12,6 +12,7 @@ import { ThemeStudio } from '../studio/ThemeStudio';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 import { ExportKit } from '../export/ExportKit';
+import { KIT_COMPONENTS } from '../export/kit';
 import { FAMILIES, ThemeBuilder, ThemeCard, TokenTable } from './foundations';
 
 export function App() {
@@ -92,7 +93,7 @@ export function App() {
           <div className="sc-stats">
             <div className="sc-stat"><b>{THEMES.length}</b><span>THEMES</span></div>
             <div className="sc-stat"><b>{GLASS_THEMES.length}</b><span>GLASS &amp; FROST</span></div>
-            <div className="sc-stat"><b>14</b><span>COMPONENTS</span></div>
+            <div className="sc-stat"><b>{KIT_COMPONENTS.length}</b><span>COMPONENTS</span></div>
           </div>
         </div>
 
@@ -152,18 +153,18 @@ import { ArtinosTheme } from './artinos-ui';
         {/* ============ THEMING ============ */}
         <Part title="Make it yours" note="custom tokens on top of any theme" />
 
-        <Spec n="21" title="Theme Studio" text="The full theme editor: every token of a theme — ground, ink, signal, panel glass, well, insert, seam, type, size, motion — tuned live against the complete component gallery. Save as new themes, edit them later, export as CSS, JSON or TSX. Saved themes appear in the theme picker above.">
+        <Spec n="30" title="Theme Studio" text="The full theme editor: every token of a theme — ground, ink, signal, panel glass, well, insert, seam, type, size, motion — tuned live against the complete component gallery. Save as new themes, edit them later, export as CSS, JSON or TSX. Saved themes appear in the theme picker above.">
           <div className="sc-row" style={{ alignItems: 'center' }}>
             <button type="button" className="sc-studio-btn sc-studio-btn--big" onClick={() => go('studio')}>Open Theme Studio →</button>
             <span className="sc-note">{customs.length ? <>You have <b>{customs.length}</b> saved theme{customs.length > 1 ? 's' : ''}.</> : 'Start from any built-in theme.'}</span>
           </div>
         </Spec>
 
-        <Spec n="21b" title="Quick tokens" text="Any role or control token can also be overridden on a scope in code — inline via ArtinosTheme tokens, or as plain CSS. Everything derived from it (seam, LED, focus ring) follows.">
+        <Spec n="31" title="Quick tokens" text="Any role or control token can also be overridden on a scope in code — inline via ArtinosTheme tokens, or as plain CSS. Everything derived from it (seam, LED, focus ring) follows.">
           <ThemeBuilder />
         </Spec>
 
-        <Spec n="22" title="Install" text="Copy the artinos-ui folder into your project, import the stylesheet once, import components. Requires React 18+ and react-dom (for portals). No provider, no build plugin, no Tailwind.">
+        <Spec n="32" title="Install" text="Copy the artinos-ui folder into your project, import the stylesheet once, import components. Requires React 18+ and react-dom (for portals). No provider, no build plugin, no Tailwind.">
           <pre className="sc-tree">{`artinos-ui/
   artinos.css            ← import once at the app root
   index.ts               ← every component + types
