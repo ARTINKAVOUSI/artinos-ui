@@ -389,11 +389,34 @@
   padding: 0 11px;
   cursor: pointer;
   color: var(--ar-list-ink);
-  transition: background 90ms var(--ar-ease);
+  transition: color var(--ar-dur-state) var(--ar-ease);
 }
 .ar-list__row[data-hi] {
-  background: var(--ar-list-hover);
   color: var(--ar-list-ink-hi);
+}
+/* one highlight glides between rows (core/motion.ts useGlide) */
+.ar-list__glide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--ar-list-hover);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-roll),
+    height var(--ar-dur-surface) var(--ar-ease-roll),
+    opacity var(--ar-dur-state) var(--ar-ease);
+}
+/* as the list unrolls, its rows arrive one after another */
+.ar-list[data-state='open'] .ar-list__row {
+  animation: ar-settle-in var(--ar-dur-surface) var(--ar-ease-roll) calc(var(--i, 0) * 16ms) backwards;
+}
+.ar-list[data-state='closing'] {
+  pointer-events: none;
+}
+/* the chosen row's LED lights as it is chosen */
+.ar-list__led .ar-led {
+  animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring) backwards;
 }
 .ar-list__row[aria-disabled] {
   opacity: 0.4;

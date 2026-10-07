@@ -93,7 +93,7 @@ const Slot = memo(function Slot({ ch, dir, dur, delay, grow }: SlotProps) {
     tgt += shift;
     pos.current = tgt;
     const travel = Math.abs(tgt - cur);
-    const T = dur + Math.min(travel, 9) * (dur >= 200 ? 30 : 10);
+    const T = dur + Math.min(travel, 9) * (dur >= 200 ? 30 : 4); // a quick roll barely lengthens with travel
     place(tgt);
     mask(true);
     const a = s.animate(
@@ -132,17 +132,33 @@ export interface RollingValueProps {
   text: string;
   /** Quieter unit rendered after the number, e.g. "dB". */
   unit?: string;
-  /** Direction of the last change: 1 rolls up, -1 rolls down. */
+  /** Direction of the last change: 1 rolls up, -1 rolls down. Default: read from the numbers. */
   dir?: number;
-  /** Short motion while the hand is on the control. */
+  /** Short motion while the hand is on the control. Default: on while the value changes rapidly. */
   fast?: boolean;
   /** Canonical decimal count — digits beyond it grow in and out. */
   base?: number;
   className?: string;
 }
 
-export function RollingValue({ text, unit, dir = 1, fast = false, base = 2, className }: RollingValueProps) {
+const numberIn = (s: string) => parseFloat(s.replace(/−/g, '-').replace(/[^d.-]/g, ''));
+
+export function RollingValue({ text, unit, dir, fast, base = 2, className }: RollingValueProps) {
   const prev = useRef(text);
+  // auto direction and pace: a value that rises rolls up; a value that streams (a meter,
+  // a live readout) rolls short so the digits stay legible
+  const auto = useRef({ dir: 1, at: 0, fast: false, seen: text });
+  if (text !== prev.current && text !== auto.current.seen) {
+    auto.current.seen = text; // once per change, even when a render repeats
+    const now = typeof performance !== 'undefined' ? performance.now() : 0;
+    const a = numberIn(text);
+    const b = numberIn(prev.current);
+    if (a !== b && !Number.isNaN(a) && !Number.isNaN(b)) auto.current.dir = a > b ? 1 : -1;
+    auto.current.fast = now - auto.current.at < 450; // sooner than a full roll would settle
+    auto.current.at = now;
+  }
+  const direction = dir ?? auto.current.dir;
+  const quick = fast ?? auto.current.fast;
   const chars = Array.from(text);
   const pc = Array.from(prev.current);
   const di = chars.indexOf('.') < 0 ? chars.length : chars.indexOf('.');
@@ -155,14 +171,14 @@ export function RollingValue({ text, unit, dir = 1, fast = false, base = 2, clas
   useEffect(() => {
     prev.current = text;
   });
-  const dur = fast ? 170 : 360;
-  const stagger = fast ? 14 : 34;
+  const dur = quick ? 140 : 360;
+  const stagger = quick ? 14 : 34;
   return (
     <span className={'ar-roll' + (className ? ' ' + className : '')}>
       <span className="ar-sr">{text + (unit ? ' ' + unit : '')}</span>
       {chars.map((c, i) => {
         const p = i - di;
-        return <Slot key={p} ch={c} dir={dir} dur={dur} delay={rc === null ? 0 : Math.max(0, rc - p) * stagger} grow={p > base} />;
+        return <Slot key={p} ch={c} dir={direction} dur={dur} delay={rc === null ? 0 : Math.max(0, rc - p) * stagger} grow={p > base} />;
       })}
       {unit ? (
         <span className="ar-roll__unit" aria-hidden="true" data-tight={unit === '°' || unit === '%' ? '' : undefined}>
@@ -171,4 +187,9 @@ export function RollingValue({ text, unit, dir = 1, fast = false, base = 2, clas
       ) : null}
     </span>
   );
+}
+
+/** Any readout text: rolls when it holds a number, plain text otherwise ("—", "true", a name). */
+export function RollingText({ text, base = 3, className }: { text: string; base?: number; className?: string }) {
+  return /\d/.test(text) ? <RollingValue text={text} base={base} className={className} /> : <span className={className}>{text}</span>;
 }

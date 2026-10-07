@@ -1,7 +1,7 @@
 /* Export kit dialog — pick themes and components, get a ready-to-paste folder. */
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Field, Switch, THEMES, THEME_META } from '../../../src';
+import { Field, RollingText, RollingValue, Switch, THEMES, THEME_META } from '../../../src';
 import type { ThemeName } from '../../../src';
 import { Swatch } from '../shared';
 import { collectTokenNames } from '../studio/spec';
@@ -203,7 +203,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
 
           <section className="xk__col">
             <div className="xk__sub">
-              Components <em>{comps.length}</em>
+              Components <em><RollingValue text={String(comps.length)} base={0} /></em>
               <span className="xk__links">
                 <button type="button" onClick={() => setComps(ALL_COMPONENTS)}>all</button>
                 <button type="button" onClick={() => setComps([])}>none</button>
@@ -242,7 +242,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
 
           <section className="xk__col xk__col--files">
             <div className="xk__sub">
-              Files <em>{Object.keys(files).length}</em> <span className="xk__size">{kb(total)}</span>
+              Files <em><RollingValue text={String(Object.keys(files).length)} base={0} /></em> <span className="xk__size"><RollingText text={kb(total)} base={1} /></span>
             </div>
             <ul className="xk__files">
               {Object.entries(files).map(([p, s]) => (

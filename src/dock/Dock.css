@@ -103,11 +103,11 @@
 .ar-dock__tabs > button {
   all: unset;
   box-sizing: border-box;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
   margin-bottom: -1px;
-  border-bottom: 1.5px solid transparent;
   font: 300 11.5px/1 var(--ar-font-ui);
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -121,8 +121,28 @@
   color: var(--ar-text-mid);
 }
 .ar-dock__tabs > button.is-active {
-  border-bottom-color: var(--ar-signal);
   color: var(--ar-text-hi);
+}
+/* the active tab's signal underline draws out from its centre */
+.ar-dock__tabs > button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-roll),
+    opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-dock__tabs > button.is-active::after {
+  transform: none;
+  opacity: 1;
 }
 .ar-dock__tabs > button:focus-visible {
   border-radius: 4px;
@@ -247,6 +267,8 @@
   min-height: 100%;
   padding: 10px 14px 14px;
   container-type: inline-size;
+  /* a panel shown by its tab settles in rather than appearing */
+  animation: ar-settle-in var(--ar-dur-surface) var(--ar-ease-roll) backwards;
 }
 .ar-dock__error {
   display: grid;
@@ -500,4 +522,18 @@
 .ar-dock .mb-native-tab.active {
   background: var(--ar-bg-hover);
   color: var(--ar-text-hi);
+}
+
+/* the window buttons and the search answer the pointer */
+.ar-dock__search {
+  transition:
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease),
+    width var(--ar-dur-surface) var(--ar-ease-roll);
+}
+.ar-dock__search svg {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-dock__search:hover svg {
+  transform: scale(1.1) rotate(-8deg);
 }

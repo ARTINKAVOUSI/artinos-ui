@@ -119,9 +119,12 @@
   --ar-dur-state: 130ms;
   --ar-dur-surface: 220ms;
   --ar-dur-layout: 380ms;
+  --ar-dur-enter: 200ms; /* an overlay or a new item arriving */
+  --ar-dur-exit: 130ms; /* leaving is always quicker than arriving */
   --ar-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ar-ease-exit: cubic-bezier(0.4, 0, 1, 1);
   --ar-ease-roll: cubic-bezier(0.22, 1, 0.36, 1);
+  --ar-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1); /* a small overshoot: pops, knobs, pucks */
 
   color-scheme: dark;
 }
@@ -157,5 +160,7 @@
     --ar-dur-state: 0ms;
     --ar-dur-surface: 0ms;
     --ar-dur-layout: 0ms;
+    --ar-dur-enter: 0ms;
+    --ar-dur-exit: 0ms;
   }
 }

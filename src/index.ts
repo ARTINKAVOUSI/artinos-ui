@@ -9,9 +9,10 @@ export { ArtinosTheme, themeStyle } from './core/Theme';
 export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
 export { THEMES, THEME_META, GLASS_THEMES, MATERIALS, DENSITIES, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
 export type { ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
-export { RollingValue } from './core/RollingValue';
+export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
 export { ThemedPortal, themeScopeOf } from './core/portal';
+export { usePresence, useGlide, useFlip } from './core/motion';
 export type { ThemeScope } from './core/portal';
 
 // continuous controls

@@ -3,7 +3,7 @@
    The app shell: theme / density / backdrop state, view routing (page · #studio),
    the top bar, the page itself and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, THEMES, GLASS_THEMES, THEME_META, DENSITIES, Slider, Segmented, Select } from '../../../src';
+import { ArtinosTheme, THEMES, GLASS_THEMES, THEME_META, DENSITIES, RollingValue, Slider, Segmented, Select } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { Swatch, THEME_OPTIONS, BACKDROPS, BACKDROP_OPTIONS, Code, Spec, Part } from '../shared';
 import type { Backdrop } from '../shared';
@@ -91,9 +91,9 @@ export function App() {
             </p>
           </div>
           <div className="sc-stats">
-            <div className="sc-stat"><b>{THEMES.length}</b><span>THEMES</span></div>
-            <div className="sc-stat"><b>{GLASS_THEMES.length}</b><span>GLASS &amp; FROST</span></div>
-            <div className="sc-stat"><b>{KIT_COMPONENTS.length}</b><span>COMPONENTS</span></div>
+            <div className="sc-stat"><b><CountUp to={THEMES.length} /></b><span>THEMES</span></div>
+            <div className="sc-stat"><b><CountUp to={GLASS_THEMES.length} delay={120} /></b><span>GLASS &amp; FROST</span></div>
+            <div className="sc-stat"><b><CountUp to={KIT_COMPONENTS.length} delay={240} /></b><span>COMPONENTS</span></div>
           </div>
         </div>
 
@@ -197,4 +197,14 @@ export function Inspector() {
       {exporting ? <ExportKit customs={customs} current={theme} onClose={() => setExporting(false)} /> : null}
     </ArtinosTheme>
   );
+}
+
+/** A hero figure that rolls up from zero shortly after the page opens. */
+function CountUp({ to, delay = 0 }: { to: number; delay?: number }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => setN(to), 350 + delay);
+    return () => clearTimeout(timer);
+  }, [to, delay]);
+  return <RollingValue text={String(n).padStart(String(to).length, '0')} base={0} />;
 }

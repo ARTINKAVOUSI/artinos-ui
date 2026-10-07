@@ -51,12 +51,27 @@
   stroke-width: 2;
   stroke-linecap: round;
   filter: drop-shadow(0 0 2px var(--ar-signal-line));
+  transition:
+    stroke-dasharray var(--ar-dur-surface) var(--ar-ease-roll),
+    opacity var(--ar-dur-state) var(--ar-ease);
 }
+/* the cap turns with a little weight: it settles past the mark and back */
 .ar-knob__cap {
   position: absolute;
   inset: calc(21% + var(--ar-inset));
   border-radius: 50%;
-  transition: transform 60ms linear;
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    filter var(--ar-dur-state) var(--ar-ease);
+}
+.ar-knob__dial[data-dragging] .ar-knob__cap,
+.ar-knob__dial[data-dragging] .ar-knob__value {
+  transition-duration: var(--ar-dur-value);
+  transition-timing-function: linear;
+}
+.ar-knob__dial:hover .ar-knob__pointer,
+.ar-knob__dial[data-dragging] .ar-knob__pointer {
+  box-shadow: 0 0 7px var(--ar-signal-line);
 }
 .ar-knob__dial:active .ar-knob__cap {
   filter: brightness(0.96);
@@ -71,6 +86,7 @@
   border-radius: 1px;
   background: var(--ar-seam-active);
   box-shadow: 0 0 4px var(--ar-signal-line);
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
 .ar-knob__text {
   display: flex;

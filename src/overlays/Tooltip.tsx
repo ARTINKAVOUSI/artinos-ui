@@ -1,4 +1,5 @@
 'use client';
+import { usePresence } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
 import { cloneElement, useEffect, useId, useLayoutEffect, useRef, useState, type ReactElement, type ReactNode } from 'react';
 
@@ -24,13 +25,17 @@ export function Tooltip({ content, children, side = 'top', delay = 450 }: Toolti
   const show = (event: { currentTarget: EventTarget }) => {
     anchor.current = event.currentTarget as HTMLElement;
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => setOpen(true), delay);
+    timer.current = setTimeout(() => {
+      setPosition(null);
+      setOpen(true);
+    }, delay);
   };
   const hide = () => {
     clearTimeout(timer.current);
     setOpen(false);
-    setPosition(null);
   };
+  // the last position is kept while the tip fades out
+  const { shown, leaving } = usePresence(open, 110);
 
   useEffect(() => () => clearTimeout(timer.current), []);
   useEffect(() => {
@@ -86,14 +91,16 @@ export function Tooltip({ content, children, side = 'top', delay = 450 }: Toolti
   return (
     <>
       {trigger}
-      {open && (
+      {shown && (
         <ThemedPortal>
           <div
             ref={tip}
             id={id}
             role="tooltip"
             className="ar-tooltip"
-            style={{ left: position?.left ?? -9999, top: position?.top ?? -9999, opacity: position ? 1 : 0 }}
+            data-side={side}
+            data-state={leaving ? 'closing' : position ? 'open' : undefined}
+            style={{ left: position?.left ?? -9999, top: position?.top ?? -9999 }}
           >
             {content}
           </div>

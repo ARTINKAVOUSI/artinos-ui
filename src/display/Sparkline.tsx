@@ -22,8 +22,8 @@ export interface SparklineProps {
 /** Sparkline — a tiny trend line for recent history (frame time, levels). */
 export function Sparkline({ values, min, max, width = 120, height = 28, fill = true, threshold, tone = 'live', label, className }: SparklineProps) {
   const gradient = useId();
-  const { line, area, thresholdY } = useMemo(() => {
-    if (values.length < 2) return { line: '', area: '', thresholdY: null as number | null };
+  const { line, area, thresholdY, head } = useMemo(() => {
+    if (values.length < 2) return { line: '', area: '', thresholdY: null as number | null, head: null as [number, number] | null };
     const lo = min ?? Math.min(...values);
     const hi = max ?? Math.max(...values);
     const range = hi - lo || 1;
@@ -34,6 +34,7 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
       line: `M${points.join('L')}`,
       area: `M0,${height}L${points.join('L')}L${width},${height}Z`,
       thresholdY: threshold === undefined ? null : y(threshold),
+      head: [width, y(values[values.length - 1])] as [number, number],
     };
   }, [values, min, max, width, height, threshold]);
 
@@ -55,8 +56,11 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
         </linearGradient>
       </defs>
       {thresholdY !== null && <line className="ar-sparkline__threshold" x1="0" x2={width} y1={thresholdY} y2={thresholdY} />}
-      {fill && area && <path d={area} fill={`url(#${gradient})`} />}
-      {line && <path className="ar-sparkline__line" d={line} />}
+      {fill && area && <path className="ar-sparkline__area" d={area} fill={`url(#${gradient})`} />}
+      {/* pathLength lets the line draw itself in on mount */}
+      {line && <path className="ar-sparkline__line" d={line} pathLength={1} />}
+      {/* the latest sample: a zero-length round-capped line stays a dot under any stretch */}
+      {head && <line className="ar-sparkline__head" x1={head[0]} y1={head[1]} x2={head[0]} y2={head[1]} />}
     </svg>
   );
 }

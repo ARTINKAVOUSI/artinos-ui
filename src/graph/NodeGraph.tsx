@@ -15,6 +15,7 @@ import {
   type GraphDiagnostic,
   type GraphNode,
 } from './graph';
+import { RollingText, RollingValue } from '../core/RollingValue';
 import { useGraphEditor } from './editor';
 import { NodeField, type GraphSources } from './NodeFields';
 import { PREVIEW_H, RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
@@ -380,7 +381,13 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
         </button>
         <span className="ar-graph__toolbar-gap" />
         <span className={`ar-graph__toolbar-count${errors.length ? ' is-error' : ''}`}>
-          {value.nodes.length} nodes · {value.edges.length} wires{errors.length ? ` · ${errors.length} error${errors.length > 1 ? 's' : ''}` : ''}
+          <RollingValue text={String(value.nodes.length)} base={0} /> nodes · <RollingValue text={String(value.edges.length)} base={0} /> wires
+          {errors.length ? (
+            <>
+              {' · '}
+              <RollingValue text={String(errors.length)} base={0} /> error{errors.length > 1 ? 's' : ''}
+            </>
+          ) : null}
         </span>
       </div>
 
@@ -418,7 +425,9 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                       onPointerDown={(event) => event.stopPropagation()}
                       aria-label={`Rename ${box.group.label}`}
                     />
-                    <span>{box.members.length}</span>
+                    <span>
+                      <RollingValue text={String(box.members.length)} base={0} />
+                    </span>
                     <button type="button" onClick={() => editor.ungroup(box.group.id)} title="Ungroup" aria-label={`Ungroup ${box.group.label}`}>
                       ✕
                     </button>
@@ -440,7 +449,7 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                 );
                 return (
                   <g key={edge.id} className="ar-graph__wire">
-                    <path className="ar-graph__wire-line" d={path} />
+                    <path className="ar-graph__wire-line" d={path} pathLength={1} />
                     {/* A fat transparent copy makes the thin wire clickable. */}
                     <path className="ar-graph__wire-hit" d={path} onClick={() => editor.disconnect(edge.id)}>
                       <title>Click to disconnect</title>
@@ -498,7 +507,9 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                       {collapsed ? '▸' : '▾'}
                     </button>
                     <span className="ar-graph__node-title">{labelOf(node)}</span>
-                    <output className="ar-graph__node-readout">{format(readout)}</output>
+                    <output className="ar-graph__node-readout">
+                      <RollingText text={format(readout)} />
+                    </output>
                   </header>
 
                   {!collapsed && (
@@ -587,7 +598,9 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                 ))}
                 <div className="ar-graph__inspector-rows">
                   <span>Output</span>
-                  <b>{format(readouts?.get(inspected.id))}</b>
+                  <b>
+                    <RollingText text={format(readouts?.get(inspected.id))} />
+                  </b>
                 </div>
                 {inputsOf(inspected).map((port) => (
                   <div key={port.id} className="ar-graph__inspector-rows">

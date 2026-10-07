@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useControllable } from '../core/hooks';
+import { RollingValue } from '../core/RollingValue';
 import { clamp, cx, luminance, scopeAttrs } from '../core/utils';
 import type { ScopeProps } from '../core/utils';
 
@@ -125,7 +126,7 @@ export function ColorField({ label, value, defaultValue = '#00C8B3', onChange, a
             onKeyDown={onAlphaKey}
             onClick={(e) => e.preventDefault()}
           >
-            {Math.round(a * 100)}%
+            <RollingValue text={String(Math.round(a * 100))} unit="%" base={0} />
           </span>
         ) : null}
       </label>

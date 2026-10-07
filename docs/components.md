@@ -10,10 +10,10 @@ Contents:
 - Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
 - Layout: Panel / Section / Field · Tabs · PropertyRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
-- Display: RollingValue · Meter · Sparkline
+- Display: RollingValue · RollingText · Meter · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - Workspace: Dock · PanelBar · MetaBlock · NodeGraph · LiveGraphView · graph/gpu
-- Also: ArtinosTheme · shared types · recipes · requirements
+- Also: Motion · ArtinosTheme · shared types · recipes · requirements
 
 ## Slider
 
@@ -168,7 +168,21 @@ A tab strip with a travelling underline. Props: `items: OptionInput[]`, `value` 
 
 ## RollingValue
 
-The odometer readout used inside the controls; only changed digits roll. Props: `text` (formatted number, required), `unit`, `dir` (1 up / -1 down), `fast`, `base` (canonical decimals, default 2).
+The odometer readout used by every number in the family: slider, range and number readouts, the Knob, the XYPad, the Meter, ColorField's opacity, Section counts and the graph's readouts. Only the digits that change roll, in the direction of the change, and a carry (59.99 → 60.00) resolves right to left.
+
+Props:
+- `text` (required): the formatted number. Any characters other than digits stay still.
+- `unit`: a quieter unit after the number.
+- `dir`: 1 rolls up, -1 rolls down. Default: read from the numbers.
+- `fast`: a short roll. Default: on while the value changes more often than every 450ms, so a streaming readout stays legible.
+- `base`: the canonical number of decimals (default 2). Digits beyond it grow in and out.
+
+`RollingText` takes any readout string: it rolls when the string holds a number and shows plain text otherwise (`—`, `true`, a name).
+
+```tsx
+<RollingValue text={fps.toFixed(0)} unit="fps" base={0} />
+<RollingText text={status} />
+```
 
 ## Knob · XYPad
 
@@ -345,6 +359,28 @@ const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [
 Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-material` and inline tokens on one element. Props: `theme` (a built-in id **or any custom theme name** you have CSS for; default `studio`), `density`, `material`, `tokens` (overrides: `{ signal: '#ff4fa3' }` or full `--ar-*` names), `ground` (paint the theme's background and text colour — use for solid themes / full-page scopes), `as` (default `div`), plus any HTML attributes. Scopes nest. Without React: `<div data-ar-theme="frost-deep">`.
 
 `themeStyle(tokens)` returns the same inline style object without the wrapper.
+
+## Motion
+
+Every component moves with the same few durations and curves, all of them tokens (see the theming guide), and nothing loops unless it means something live.
+- **Numbers roll** (RollingValue) wherever they change.
+- **Overlays arrive and leave.** Menus drop from their trigger, or rise when they open upward. Tooltips slide out of the side they point away from. Dialogs, the command palette and toasts rise in, then fade out faster than they came. A dismissed toast slides away and the stack closes the gap.
+- **One highlight glides.** In menus, the Select list and the palette, the hovered or keyboard-active row is a single wash that slides between rows.
+- **Lists unroll.** The Select list opens out of its face with its rows cascading, and rolls back up into the face on close.
+- **Presses spring.** Buttons dip and spring back, and a toggled IconButton's insert grows in. The Knob cap and the XYPad puck settle with a small overshoot when moved by the wheel, keys, a click or a reset. They follow the hand directly while dragged.
+- **Things draw themselves.** Sparklines and graph wires draw in, a dragged wire flows towards the pointer, and a newly wired port pops.
+- **The Dock moves calmly.** The active tab's underline draws out from its centre, a panel shown by its tab settles in, and the drag feedback eases into place.
+- **Live states breathe.** A `live` Badge's dot and a FileDrop holding a file breathe softly.
+- **Changes are marked.** PropertyRow's modified dot springs in and shrinks away on reset. A search reveal pulses the row once.
+
+`prefers-reduced-motion: reduce` sets the durations to 0, skips the WAAPI animations and stops the breathing.
+
+The helpers are exported for your own components:
+- `usePresence(value, exitMs)` keeps an element mounted while it plays `data-state="closing"`.
+- `useGlide(listRef, glideRef, selector?)` moves one highlight to the active row.
+- `useFlip(containerRef)` slides keyed children (`data-flip`) into their new places.
+
+The shared keyframes are `ar-rise-in`, `ar-drop-in`, `ar-fade-out`, `ar-fade-in`, `ar-pop-in`, `ar-settle-in` and `ar-breathe`.
 
 ## Shared types and constants
 

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { usePresence } from '../core/motion';
 
 export interface DialogProps {
   open: boolean;
@@ -22,17 +23,20 @@ export function Dialog({ open, onClose, title, description, footer, width = 380,
   const titleId = useId();
   const descriptionId = useId();
 
+  // Closing plays the sheet's exit first; the native close (and focus return) follows it.
+  const { shown, leaving } = usePresence(open, 150);
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
-  }, [open]);
+    if (!shown && dialog.open) dialog.close();
+  }, [open, shown]);
 
   return (
     <dialog
       ref={ref}
       className="ar-dialog"
+      data-state={leaving ? 'closing' : undefined}
       style={{ width }}
       // Named and described by its own title and description, while they are rendered.
       aria-labelledby={open ? titleId : undefined}
@@ -46,7 +50,7 @@ export function Dialog({ open, onClose, title, description, footer, width = 380,
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      {open && (
+      {shown && (
         <div className="ar-dialog__surface">
           <header className="ar-dialog__head">
             <h2 id={titleId}>{title}</h2>

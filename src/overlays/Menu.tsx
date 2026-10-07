@@ -1,4 +1,5 @@
 'use client';
+import { usePresence, useGlide } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
 import {
   cloneElement,
@@ -44,16 +45,22 @@ function MenuList({
   anchor,
   onClose,
   owner,
+  leaving = false,
 }: {
   items: readonly MenuEntry[];
   anchor: Anchor;
   onClose: (restoreFocus: boolean) => void;
   owner?: HTMLElement | null;
+  /** Playing its exit: no longer interactive. */
+  leaving?: boolean;
 }) {
   const id = useId();
   const list = useRef<HTMLDivElement>(null);
+  const glide = useRef<HTMLSpanElement>(null);
   const [active, setActive] = useState(-1);
-  const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
+  // `above`: the list opened upward, so it grows from its bottom edge
+  const [position, setPosition] = useState<{ left: number; top: number; above: boolean } | null>(null);
+  useGlide(list, glide);
   const enabled = items.map((entry, index) => (isItem(entry) && !entry.disabled ? index : -1)).filter((index) => index >= 0);
 
   useLayoutEffect(() => {
@@ -61,17 +68,24 @@ function MenuList({
     const m = list.current.getBoundingClientRect();
     let left: number;
     let top: number;
+    let above = false;
     if ('rect' in anchor) {
       left = anchor.align === 'end' ? anchor.rect.right - m.width : anchor.rect.left;
       top = anchor.rect.bottom + 4;
-      if (top + m.height > window.innerHeight - 4) top = Math.max(4, anchor.rect.top - m.height - 4);
+      if (top + m.height > window.innerHeight - 4) {
+        top = Math.max(4, anchor.rect.top - m.height - 4);
+        above = true;
+      }
     } else {
       left = anchor.x;
       top = anchor.y;
-      if (top + m.height > window.innerHeight - 4) top = Math.max(4, anchor.y - m.height);
+      if (top + m.height > window.innerHeight - 4) {
+        top = Math.max(4, anchor.y - m.height);
+        above = true;
+      }
     }
     left = Math.min(window.innerWidth - m.width - 4, Math.max(4, left));
-    setPosition({ left, top });
+    setPosition({ left, top, above });
     list.current.focus();
   }, [anchor]);
 
@@ -118,7 +132,9 @@ function MenuList({
         role="menu"
         tabIndex={-1}
         className="ar-menu"
-        style={{ left: position?.left ?? -9999, top: position?.top ?? -9999, opacity: position ? 1 : 0 }}
+        data-state={leaving ? 'closing' : position ? 'open' : undefined}
+        data-side={position?.above ? 'above' : 'below'}
+        style={{ left: position?.left ?? -9999, top: position?.top ?? -9999 }}
         // A portal's events still bubble up the React tree, to whatever rendered
         // the menu: a drag handle there (a dock strip) would start a drag.
         onPointerDown={stop}
@@ -145,6 +161,7 @@ function MenuList({
           event.preventDefault();
         }}
       >
+        <span ref={glide} className="ar-menu__glide" aria-hidden />
         {items.map((entry, index) => {
           if (entry.type === 'separator') return <div key={index} className="ar-menu__separator" role="separator" />;
           if (entry.type === 'label')
@@ -211,10 +228,11 @@ export function Menu({ trigger, items, align = 'start' }: MenuProps) {
     },
   });
 
+  const { shown, leaving } = usePresence(anchor, 140);
   return (
     <>
       {wired}
-      {anchor && <MenuList items={items} anchor={anchor} onClose={close} owner={button.current} />}
+      {shown && <MenuList items={items} anchor={shown} onClose={close} owner={button.current} leaving={leaving} />}
     </>
   );
 }
@@ -249,15 +267,17 @@ export function ContextMenu({ items, children, disabled = false }: ContextMenuPr
     setOpen({ anchor, items: items(), from: document.activeElement as HTMLElement | null });
   };
 
+  const { shown, leaving } = usePresence(open, 140);
   return (
     <div className="ar-context" onContextMenu={onContextMenu}>
       {children}
-      {open && (
+      {shown && (
         <MenuList
-          items={open.items}
-          anchor={open.anchor}
+          items={shown.items}
+          anchor={shown.anchor}
+          leaving={leaving}
           onClose={(restoreFocus) => {
-            if (restoreFocus) open.from?.focus?.();
+            if (restoreFocus) shown.from?.focus?.();
             setOpen(null);
           }}
         />

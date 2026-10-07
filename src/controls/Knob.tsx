@@ -1,5 +1,6 @@
 'use client';
-import { useRef, type KeyboardEvent, type PointerEvent } from 'react';
+import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { RollingValue } from '../core/RollingValue';
 
 export interface KnobProps {
   value: number;
@@ -30,6 +31,8 @@ export function Knob({ value, onChange, label, min = 0, max = 1, step = 0.01, de
   const span = max - min || 1;
   const t = clamp((value - min) / span, 0, 1);
   const drag = useRef<{ y: number; start: number; last: number } | null>(null);
+  // under the hand the dial follows directly; wheel, keys and resets ease into place
+  const [dragging, setDragging] = useState(false);
   const decimals = decimalsFor(step);
 
   const set = (next: number) => {
@@ -65,11 +68,13 @@ export function Knob({ value, onChange, label, min = 0, max = 1, step = 0.01, de
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={value}
+        data-dragging={dragging || undefined}
         style={{ width: size, height: size }}
         onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
           if (event.button !== 0) return;
           drag.current = { y: event.clientY, start: value, last: value };
           event.currentTarget.setPointerCapture(event.pointerId);
+          setDragging(true);
         }}
         onPointerMove={(event) => {
           const d = drag.current;
@@ -79,6 +84,7 @@ export function Knob({ value, onChange, label, min = 0, max = 1, step = 0.01, de
         onPointerUp={() => {
           const d = drag.current;
           drag.current = null;
+          setDragging(false);
           if (d && d.last !== d.start) onCommit?.(d.last);
         }}
         onWheel={(event) => commit(value - Math.sign(event.deltaY) * Math.max(step, span / 100))}
@@ -92,7 +98,8 @@ export function Knob({ value, onChange, label, min = 0, max = 1, step = 0.01, de
       >
         <svg viewBox="0 0 40 40" aria-hidden>
           <path className="ar-knob__track" d={arc(0, SWEEP)} />
-          {t > 0.002 && <path className="ar-knob__value" d={arc(0, t * SWEEP)} />}
+          {/* one fixed arc, revealed by its dash: the length can animate, a path's shape cannot */}
+          <path className="ar-knob__value" d={arc(0, SWEEP)} pathLength={1} style={{ strokeDasharray: `${t} 1`, opacity: t > 0.002 ? 1 : 0 }} />
         </svg>
         <span className="ar-insert ar-knob__cap" style={{ transform: `rotate(${angle}deg)` }}>
           <i className="ar-knob__pointer" />
@@ -101,7 +108,9 @@ export function Knob({ value, onChange, label, min = 0, max = 1, step = 0.01, de
       {showLabel && (
         <div className="ar-knob__text">
           <span className="ar-text">{label}</span>
-          <span className="ar-value">{value.toFixed(decimals)}</span>
+          <span className="ar-value">
+            <RollingValue text={value.toFixed(decimals)} base={decimals} />
+          </span>
         </div>
       )}
     </div>

@@ -18,6 +18,25 @@
   background: var(--ar-tick);
   pointer-events: none;
 }
+/* the puck and its crosshair glide to a click or a key, and follow the hand while dragging */
+.ar-xypad__cross,
+.ar-xypad__point {
+  transition:
+    left var(--ar-dur-surface) var(--ar-ease-roll),
+    top var(--ar-dur-surface) var(--ar-ease-roll),
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-xypad[data-tracking] :is(.ar-xypad__cross, .ar-xypad__point) {
+  transition-property: transform, background;
+}
+.ar-xypad[data-held] .ar-xypad__point {
+  transform: translate(-50%, -50%) scale(1.18);
+}
+.ar-xypad[data-held] .ar-xypad__cross,
+.ar-xypad:focus-visible .ar-xypad__cross {
+  background: var(--ar-signal-line);
+}
 .ar-xypad__cross[data-axis='x'] {
   top: 0;
   bottom: 0;

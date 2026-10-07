@@ -22,7 +22,7 @@ function EventLog() {
         <Slider label="Controlled" value={v} onChange={(x) => { setV(x); push('onChange', x.toFixed(4)); }} onCommit={(x) => push('onCommit', x.toFixed(4))} enabled={on} onEnabledChange={(e) => { setOn(e); push('onEnabledChange', String(e)); }} toggleable />
         <RangeSlider label="Controlled" value={range} onChange={(r) => { setRange(r); push('onChange', r.map((x) => x.toFixed(3)).join(' – ')); }} onCommit={(r) => push('onCommit', r.map((x) => x.toFixed(3)).join(' – '))} />
         <div className="sc-note">
-          state: <b>{v.toFixed(4)}</b> · enabled <b>{String(on)}</b> · range <b>{range.map((x) => x.toFixed(2)).join('–')}</b>
+          state: <b><RollingValue text={v.toFixed(4)} base={4} /></b> · enabled <b>{String(on)}</b> · range <b><RollingValue text={range[0].toFixed(2)} />–<RollingValue text={range[1].toFixed(2)} /></b>
         </div>
       </div>
       <div className="sc-log" aria-live="polite">

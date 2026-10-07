@@ -75,3 +75,36 @@
   text-transform: var(--ar-label-case);
   color: var(--ar-dim-ink);
 }
+
+/* motion: the arrow lifts towards a held file and the rim breathes in the signal colour;
+   the inner rim draws a little closer, as if the well were opening to take it */
+.ar-filedrop svg,
+.ar-filedrop__title {
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    stroke var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-filedrop:hover svg {
+  transform: translateY(-1px);
+}
+.ar-filedrop[data-over] svg {
+  transform: translateY(-4px) scale(1.12);
+}
+.ar-filedrop[data-over] .ar-filedrop__title {
+  transform: translateY(-1px);
+  color: var(--ar-signal);
+}
+.ar-filedrop::before {
+  transition:
+    border-color var(--ar-dur-state) var(--ar-ease),
+    inset var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-filedrop[data-over]::before {
+  inset: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ar-filedrop[data-over]::before {
+    animation: ar-breathe 1.4s ease-in-out infinite;
+  }
+}

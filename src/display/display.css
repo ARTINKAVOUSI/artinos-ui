@@ -1,8 +1,17 @@
 /* ARTINOS display — Meter · Sparkline. Read-only instruments: a thin well with a signal
    fill and a tabular readout, and a trend line in the plot ink. */
 
+/* the tone is a registered colour, so a meter changing state cross-fades its fill */
+@property --ar-meter-tone {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+
 /* ---------- Meter ---------- */
 .ar-meter {
+  --ar-meter-tone: var(--_tone);
+  transition: --ar-meter-tone var(--ar-dur-surface) var(--ar-ease);
   --_tone: var(--ar-signal);
   display: flex;
   align-items: center;
@@ -31,10 +40,17 @@
   position: absolute;
   inset: 1px;
   border-radius: 2px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 45%, transparent), var(--_tone));
-  box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 40%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ar-meter-tone) 45%, transparent), var(--ar-meter-tone));
+  box-shadow: 0 0 6px color-mix(in srgb, var(--ar-meter-tone) 40%, transparent);
   transform-origin: left center;
-  transition: transform 60ms linear;
+  /* a live level moves in short linear steps; it first fills in from empty */
+  transition: transform 90ms linear;
+  animation: ar-meter-fill-in var(--ar-dur-layout) var(--ar-ease-roll) backwards;
+}
+@keyframes ar-meter-fill-in {
+  from {
+    transform: scaleX(0);
+  }
 }
 .ar-meter__peak {
   position: absolute;
@@ -44,6 +60,7 @@
   margin-left: -2px;
   border-radius: 1px;
   background: var(--ar-value-ink-hi);
+  transition: left 120ms linear;
 }
 .ar-meter__value {
   min-width: 40px;
@@ -70,6 +87,27 @@
   stroke-width: 1.25;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  animation: ar-spark-draw var(--ar-dur-layout) var(--ar-ease-roll) backwards;
+}
+.ar-sparkline__area {
+  animation: ar-fade-in var(--ar-dur-layout) var(--ar-ease) 120ms backwards;
+}
+.ar-sparkline__head {
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 2px currentColor);
+  animation: ar-fade-in var(--ar-dur-state) var(--ar-ease) var(--ar-dur-layout) backwards;
+}
+@keyframes ar-spark-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.ar-sparkline {
+  transition: color var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-sparkline__threshold {
   stroke: var(--ar-tick-major);

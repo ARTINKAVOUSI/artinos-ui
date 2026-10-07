@@ -32,9 +32,10 @@
   gap: 7px;
   min-width: 0;
   padding: 0 calc(var(--ar-pad-x) + 2px);
+  /* the release springs back; the press itself is quick (below) */
   transition:
     filter var(--ar-dur-surface) var(--ar-ease),
-    transform 90ms var(--ar-ease);
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
 }
 .ar-button[data-size='sm'] .ar-button__face {
   padding: 0 var(--ar-pad-x);
@@ -44,7 +45,27 @@
 }
 .ar-button:active .ar-button__face {
   filter: brightness(0.94);
-  transform: scale(0.985);
+  transform: scale(0.975);
+  transition-duration: var(--ar-dur-state), 60ms;
+}
+/* the LED answers the hand: brighter under the pointer, a flash on press */
+.ar-button .ar-led {
+  transition:
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    filter var(--ar-dur-state) var(--ar-ease);
+}
+.ar-button:hover .ar-led {
+  filter: brightness(1.2);
+  box-shadow: 0 0 0 0.5px #757575, 0 0 9px var(--ar-led-glow);
+}
+.ar-button:active .ar-led {
+  filter: brightness(1.45);
+}
+.ar-button__icon {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-button:hover .ar-button__icon {
+  transform: translateX(1px);
 }
 .ar-button:disabled {
   opacity: 0.45;
@@ -123,10 +144,36 @@
   text-shadow: var(--ar-base-text-shadow);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  isolation: isolate;
   transition:
     background var(--ar-dur-state) var(--ar-ease),
     color var(--ar-dur-state) var(--ar-ease),
     box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+/* the pressed insert is its own layer, so it can grow in: a gradient cannot fade */
+.ar-icon-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-insert);
+  -webkit-backdrop-filter: var(--ar-insert-backdrop);
+  backdrop-filter: var(--ar-insert-backdrop);
+  box-shadow: var(--ar-insert-shadow);
+  opacity: 0;
+  transform: scale(0.78);
+  transition:
+    opacity var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-icon-button svg {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-icon-button:active svg {
+  transform: scale(0.88);
+  transition-duration: 60ms;
 }
 .ar-icon-button[data-size='sm'] {
   --_size: calc(var(--ar-h) - 4px);
@@ -151,19 +198,16 @@
   color: var(--ar-text-hi);
 }
 .ar-icon-button[aria-pressed='true'] {
-  border-radius: var(--ar-insert-radius);
-  background: var(--ar-insert);
-  -webkit-backdrop-filter: var(--ar-insert-backdrop);
-  backdrop-filter: var(--ar-insert-backdrop);
-  box-shadow: var(--ar-insert-shadow);
+  background: transparent;
   color: var(--ar-insert-ink);
   text-shadow: var(--ar-insert-text-shadow);
 }
+.ar-icon-button[aria-pressed='true']::before {
+  opacity: 1;
+  transform: none;
+}
 .ar-icon-button:focus-visible {
   box-shadow: var(--ar-focus-ring);
-}
-.ar-icon-button[aria-pressed='true']:focus-visible {
-  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
 }
 .ar-icon-button:disabled {
   opacity: 0.35;
@@ -248,6 +292,10 @@
   white-space: nowrap;
   color: var(--_tone);
   text-shadow: none;
+  transition:
+    color var(--ar-dur-surface) var(--ar-ease),
+    background var(--ar-dur-surface) var(--ar-ease),
+    box-shadow var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-badge[data-tone='live'] {
   --_tone: var(--ar-signal);
@@ -268,4 +316,10 @@
   border-radius: 50%;
   background: currentColor;
   box-shadow: 0 0 5px currentColor;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* live means live: the dot breathes */
+  .ar-badge[data-tone='live'] .ar-badge__dot {
+    animation: ar-breathe 2.4s ease-in-out infinite;
+  }
 }

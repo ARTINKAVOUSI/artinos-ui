@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, type CSSProperties } from 'react';
+import { RollingValue } from '../core/RollingValue';
 
 export interface MeterProps {
   /** Current level. */
@@ -55,7 +56,7 @@ export function Meter({ value, min = 0, max = 1, label, valueText, peak = false,
         <span className="ar-meter__fill" style={{ transform: `scaleX(${t})` }} />
         {peak && <span ref={peakRef} className="ar-meter__peak" />}
       </span>
-      {text !== null && <span className="ar-value ar-meter__value">{text}</span>}
+      {text !== null && <span className="ar-value ar-meter__value"><RollingValue text={text} /></span>}
     </div>
   );
 }

@@ -125,6 +125,17 @@
   border-radius: var(--ar-radius);
   outline: 1px solid var(--ar-signal-line);
   outline-offset: 3px;
+  animation: ar-prop-reveal 900ms var(--ar-ease-roll);
+}
+/* a search reveal: the ring closes in on the row and the row glows once */
+@keyframes ar-prop-reveal {
+  0% {
+    outline-offset: 9px;
+    outline-color: transparent;
+  }
+  35% {
+    background: var(--ar-signal-wash);
+  }
 }
 .ar-prop[data-disabled] {
   opacity: 0.45;
@@ -135,7 +146,9 @@
 .ar-prop[data-modified] .ar-prop__label {
   color: var(--ar-text-hi);
 }
-.ar-prop[data-modified] > .ar-prop__main::before {
+/* the dot is always there, at nothing: it springs in when the value leaves its default
+   and shrinks away when it is reset */
+.ar-prop > .ar-prop__main::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -146,4 +159,29 @@
   border-radius: 50%;
   background: var(--ar-signal);
   box-shadow: 0 0 5px var(--ar-signal-line);
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    opacity var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-prop[data-modified] > .ar-prop__main::before {
+  opacity: 1;
+  transform: none;
+}
+/* a message appears beneath the row, it never snaps in */
+.ar-prop__message {
+  animation: ar-settle-in var(--ar-dur-surface) var(--ar-ease-roll);
+  transition: color var(--ar-dur-surface) var(--ar-ease);
+}
+/* reset turns back as it is pressed */
+.ar-prop__reset svg {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-prop__reset:hover svg {
+  transform: rotate(-40deg);
+}
+.ar-prop__reset:active svg {
+  transform: rotate(-200deg);
+  transition-duration: var(--ar-dur-surface);
 }

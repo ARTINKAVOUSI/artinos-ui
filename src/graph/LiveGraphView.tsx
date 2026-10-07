@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { RollingText } from '../core/RollingValue';
 import { wirePath } from './view';
 import { RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
 
@@ -189,7 +190,7 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
             const to = byId.get(edge.to);
             if (!from || !to) return null;
             const dim = connected && !(connected.has(edge.from) && connected.has(edge.to));
-            return <path key={edge.id} className={`ar-live__wire ${dim ? 'is-dim' : ''}`} d={wirePath(anchor(from, 'out'), anchor(to, 'in'))} />;
+            return <path key={edge.id} className={`ar-live__wire ${dim ? 'is-dim' : ''}`} d={wirePath(anchor(from, 'out'), anchor(to, 'in'))} pathLength={1} />;
           })}
         </svg>
 
@@ -218,7 +219,11 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
               </span>
               <span className="ar-live__side">
                 <em>{node.subtitle}</em>
-                {node.value !== undefined && <output>{node.value}</output>}
+                {node.value !== undefined && (
+                  <output>
+                    <RollingText text={String(node.value)} />
+                  </output>
+                )}
               </span>
             </button>
 
@@ -254,7 +259,9 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
                 ) : (
                   <label className="ar-live__field">
                     <span>{control.label}</span>
-                    <output>{control.value}</output>
+                    <output>
+                      <RollingText text={String(control.value)} />
+                    </output>
                   </label>
                 )}
               </div>

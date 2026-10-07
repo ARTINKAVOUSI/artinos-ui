@@ -1,5 +1,6 @@
 'use client';
 import { useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { RollingValue } from '../core/RollingValue';
 
 export interface XYPadProps {
   /** [x, y], each within its range. */
@@ -62,14 +63,20 @@ export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 
         if (event.button !== 0) return;
         dragging.current = true;
         event.currentTarget.setPointerCapture(event.pointerId);
+        // the press glides the puck to the pointer; once the hand moves, it follows directly
+        event.currentTarget.dataset.held = '';
         place(event);
       }}
       onPointerMove={(event) => {
-        if (dragging.current) place(event);
+        if (!dragging.current) return;
+        event.currentTarget.dataset.tracking = '';
+        place(event);
       }}
       onPointerUp={(event) => {
         if (!dragging.current) return;
         dragging.current = false;
+        delete event.currentTarget.dataset.held;
+        delete event.currentTarget.dataset.tracking;
         const placed = place(event);
         onCommit?.(placed);
       }}
@@ -82,7 +89,7 @@ export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 
         {label}
       </span>
       <span className="ar-value ar-xypad__readout">
-        {value[0].toFixed(2)} · {value[1].toFixed(2)}
+        <RollingValue text={value[0].toFixed(2)} /> · <RollingValue text={value[1].toFixed(2)} />
       </span>
     </div>
   );

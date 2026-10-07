@@ -2,6 +2,7 @@
 import { useId } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
+import { RollingText } from '../core/RollingValue';
 import { cx } from '../core/utils';
 
 /* ARTINOS layout — the frames controls live in.
@@ -71,7 +72,9 @@ export function Section({ title, count, collapsible = false, open, defaultOpen =
     <>
       <span className="ar-section__title">{title}</span>
       <i className="ar-section__rule" />
-      {count != null ? <span className="ar-section__count">{count}</span> : null}
+      {count != null ? (
+        <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
+      ) : null}
       {collapsible ? (
         <svg className="ar-chevron" data-up={isOpen ? '' : undefined} viewBox="0 0 10 6" aria-hidden="true">
           <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />

@@ -2,6 +2,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
+import { useGlide, usePresence } from '../core/motion';
 import { useControllable, useSafeId } from '../core/hooks';
 import { cx, normalizeOptions, reducedMotion, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
@@ -81,12 +82,19 @@ export function Select<V extends string = string>({ label, options, value, defau
       window.removeEventListener('scroll', close, true);
     };
   }, [open]);
+  // The list unrolls from the face downward, and rolls back up into it on close.
+  const { shown, leaving } = usePresence(open, 170);
+  const glide = useRef<HTMLSpanElement>(null);
+  useGlide(panel, glide, '[data-hi]');
   useLayoutEffect(() => {
     const p = panel.current;
-    if (!open || !p?.animate || reducedMotion() || !rect) return;
+    if (!shown || !p?.animate || reducedMotion() || !rect) return;
     const r = getComputedStyle(p).borderRadius;
-    p.animate([{ clipPath: `inset(0 0 calc(100% - ${rect.height}px) 0 round ${r})` }, { clipPath: `inset(0 0 0 0 round ${r})` }], { duration: 240, easing: 'cubic-bezier(.2,.7,.2,1)' });
-  }, [open, rect]);
+    const folded = `inset(0 0 calc(100% - ${rect.height}px) 0 round ${r})`;
+    const unfolded = `inset(0 0 0 0 round ${r})`;
+    if (leaving) p.animate([{ clipPath: unfolded }, { clipPath: folded }], { duration: 170, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' });
+    else p.animate([{ clipPath: folded }, { clipPath: unfolded }], { duration: 240, easing: 'cubic-bezier(.2,.7,.2,1)' });
+  }, [shown, leaving, rect]);
 
   const move = (i: number) => {
     const n = opts.length;
@@ -141,16 +149,18 @@ export function Select<V extends string = string>({ label, options, value, defau
 
   const text = current?.label ?? label;
   const pnl =
-    open && rect ? (
+    shown && rect ? (
       <div
         ref={panel}
         id={listId}
         role="listbox"
         aria-label={label}
         className="ar-list"
+        data-state={leaving ? 'closing' : 'open'}
         style={{ ...tokens.current, left: rect.left, top: rect.top, width: rect.width, '--_head': rect.height + 'px' } as CSSProperties}
       >
         <span className="ar-list__insert" />
+        <span ref={glide} className="ar-list__glide" aria-hidden />
         <div className="ar-list__head" onClick={close}>
           <span className="ar-text ar-list__text">{text}</span>
           <Chevron up />
@@ -165,6 +175,7 @@ export function Select<V extends string = string>({ label, options, value, defau
             onPointerEnter={() => !o.disabled && setHi(i)}
             onClick={() => !o.disabled && pick(o.value)}
             className="ar-list__row"
+            style={{ '--i': i } as CSSProperties}
           >
             <span className="ar-list__led">{o.value === cur ? <i className="ar-led" data-on="" /> : null}</span>
             {o.icon ? <span className="ar-icon">{o.icon}</span> : null}

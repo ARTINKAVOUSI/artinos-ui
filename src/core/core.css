@@ -173,3 +173,50 @@
 .ar-portal {
   display: contents;
 }
+
+/* ---------- motion: the family's shared entrances and exits ----------
+   Arrivals ease out over --ar-dur-enter, departures ease in over the shorter
+   --ar-dur-exit. Components name these; prefers-reduced-motion zeroes the durations. */
+@keyframes ar-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+@keyframes ar-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+}
+@keyframes ar-fade-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes ar-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ar-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+/* content that replaces content: a short lift and a sharpening */
+@keyframes ar-settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+    filter: blur(1.5px);
+  }
+}
+/* a live LED: one soft breath every two seconds (use inside prefers-reduced-motion: no-preference) */
+@keyframes ar-breathe {
+  50% {
+    opacity: 0.45;
+  }
+}

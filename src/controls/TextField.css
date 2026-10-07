@@ -80,3 +80,20 @@
   stroke-width: 1.5;
   stroke-linecap: round;
 }
+
+/* motion: the clear button arrives with a small pop; the magnifier leans in on focus */
+.ar-textfield__clear {
+  animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-textfield__icon svg {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-textfield:focus-within .ar-textfield__icon svg {
+  transform: scale(1.08) rotate(-6deg);
+}
+.ar-textfield input::placeholder {
+  transition: opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-textfield:focus-within input::placeholder {
+  opacity: 0.6;
+}

@@ -1,6 +1,8 @@
 'use client';
+import { useFlip } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { reducedMotion } from '../core/utils';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 export interface ToastOptions {
   title: ReactNode;
@@ -13,7 +15,12 @@ export interface ToastOptions {
 
 interface ToastEntry extends ToastOptions {
   id: number;
+  /** Playing its exit; removed when it ends. */
+  leaving?: boolean;
 }
+
+/** How long a toast takes to leave, before the ones around it close the gap. */
+const EXIT_MS = 180;
 
 type Notify = (options: ToastOptions) => () => void;
 
@@ -27,8 +34,14 @@ const ToastContext = createContext<Notify | null>(null);
 export function ToastProvider({ children, placement = 'bottom-right' }: { children?: ReactNode; placement?: 'bottom-right' | 'bottom-center' | 'top-right' }) {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);
   const next = useRef(0);
+  const stack = useRef<HTMLDivElement>(null);
+  useFlip(stack);
 
-  const dismiss = useCallback((id: number) => setToasts((list) => list.filter((toast) => toast.id !== id)), []);
+  // leave first, then free the space: the rest of the stack slides into it
+  const dismiss = useCallback((id: number) => {
+    setToasts((list) => list.map((toast) => (toast.id === id ? { ...toast, leaving: true } : toast)));
+    setTimeout(() => setToasts((list) => list.filter((toast) => toast.id !== id)), reducedMotion() ? 0 : EXIT_MS);
+  }, []);
   const notify = useCallback<Notify>(
     (options) => {
       const id = ++next.current;
@@ -42,7 +55,7 @@ export function ToastProvider({ children, placement = 'bottom-right' }: { childr
     <ToastContext.Provider value={notify}>
       {children}
       <ThemedPortal>
-        <div className="ar-toasts" data-placement={placement} role="status" aria-live="polite">
+        <div ref={stack} className="ar-toasts" data-placement={placement} role="status" aria-live="polite">
           {toasts.map((toast) => (
             <ToastItem key={toast.id} toast={toast} onDismiss={dismiss} />
           ))}
@@ -53,16 +66,32 @@ export function ToastProvider({ children, placement = 'bottom-right' }: { childr
 }
 
 function ToastItem({ toast, onDismiss }: { toast: ToastEntry; onDismiss: (id: number) => void }) {
-  const { id } = toast;
+  const { id, leaving } = toast;
   const [paused, setPaused] = useState(false);
   const duration = toast.duration ?? 3500;
+  // Hovering pauses the clock where it is, as the time bar shows; leaving resumes the rest.
+  const remaining = useRef(duration);
   useEffect(() => {
-    if (!duration || paused) return;
-    const timer = setTimeout(() => onDismiss(id), duration);
-    return () => clearTimeout(timer);
-  }, [duration, paused, onDismiss, id]);
+    if (!duration || paused || leaving) return;
+    const start = performance.now();
+    const timer = setTimeout(() => onDismiss(id), remaining.current);
+    return () => {
+      clearTimeout(timer);
+      remaining.current = Math.max(0, remaining.current - (performance.now() - start));
+    };
+  }, [duration, paused, leaving, onDismiss, id]);
   return (
-    <div className="ar-toast" data-tone={toast.tone ?? 'neutral'} onPointerEnter={() => setPaused(true)} onPointerLeave={() => setPaused(false)}>
+    <div
+      className="ar-toast"
+      data-flip={id}
+      data-tone={toast.tone ?? 'neutral'}
+      data-state={leaving ? 'closing' : 'open'}
+      data-paused={paused || undefined}
+      style={{ '--_life': `${duration}ms` } as CSSProperties}
+      onPointerEnter={() => setPaused(true)}
+      onPointerLeave={() => setPaused(false)}
+    >
+      {duration > 0 && <span className="ar-toast__time" aria-hidden />}
       <span className="ar-toast__dot" aria-hidden />
       <div className="ar-toast__text">
         <strong>{toast.title}</strong>

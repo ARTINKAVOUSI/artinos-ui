@@ -903,3 +903,66 @@
   text-align: center;
   color: var(--ar-float-ink-low);
 }
+
+/* ======================= motion =======================
+   A node arrives with a small lift, a wire draws itself from its output to its input,
+   the wire being dragged flows towards the pointer, and a port that gets wired lights
+   with a pop. Positions are left/top, so transforms here never fight the layout. */
+.ar-graph__node,
+.ar-live__node {
+  animation: ar-node-in var(--ar-dur-surface) var(--ar-ease-roll) backwards;
+}
+@keyframes ar-node-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+}
+.ar-graph__wire-line:not(.is-live),
+.ar-live__wire {
+  stroke-dasharray: 1;
+  animation: ar-wire-draw var(--ar-dur-layout) var(--ar-ease-roll) backwards;
+}
+@keyframes ar-wire-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.ar-graph__wire-line {
+  transition:
+    stroke var(--ar-dur-state) var(--ar-ease),
+    opacity var(--ar-dur-state) var(--ar-ease),
+    stroke-width var(--ar-dur-state) var(--ar-ease);
+}
+.ar-graph__wire:hover .ar-graph__wire-line {
+  stroke-width: 2;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ar-graph__wire-line.is-live {
+    animation: ar-wire-flow 0.5s linear infinite;
+  }
+}
+@keyframes ar-wire-flow {
+  to {
+    stroke-dashoffset: -7;
+  }
+}
+.ar-graph__port i {
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-graph__port:hover i {
+  transform: scale(1.3);
+}
+.ar-graph__port.is-wired i {
+  animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring) backwards;
+}
+.ar-graph__palette {
+  animation: ar-drop-in var(--ar-dur-enter) var(--ar-ease-roll);
+  transform-origin: top left;
+}
+.ar-graph__inspector > * {
+  animation: ar-settle-in var(--ar-dur-surface) var(--ar-ease-roll) backwards;
+}

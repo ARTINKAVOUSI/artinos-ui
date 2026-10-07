@@ -15,18 +15,26 @@
   text-shadow: var(--ar-list-text-shadow);
   font: 300 12px/1.3 var(--ar-font-ui);
   color: var(--ar-float-ink);
-  animation: ar-dock-menu-in 150ms var(--ar-ease);
+  animation: ar-drop-in var(--ar-dur-enter) var(--ar-ease-roll);
+  transform-origin: top left;
 }
-@keyframes ar-dock-menu-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.98);
-  }
+/* the placement diagrams: a tile dips under the press and springs back */
+.ar-dock-menu__tile {
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
 }
-@media (prefers-reduced-motion: reduce) {
-  .ar-dock-menu {
-    animation: none;
-  }
+.ar-dock-menu__tile:active {
+  transform: scale(0.94);
+  transition-duration: var(--ar-dur-state), var(--ar-dur-state), var(--ar-dur-state), 60ms;
+}
+.ar-dock-menu__action .ar-dock-menu__icon {
+  transition: transform var(--ar-dur-surface) var(--ar-ease-spring), color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-dock-menu__action:hover .ar-dock-menu__icon {
+  transform: translateX(1px) scale(1.06);
 }
 
 /* ── head: the panel's name, its posture as a tag ──────────────────────── */
@@ -101,7 +109,6 @@
   box-shadow: var(--ar-well);
   color: var(--ar-float-ink-low);
   cursor: pointer;
-  transition: background var(--ar-dur-state) var(--ar-ease), color var(--ar-dur-state) var(--ar-ease), box-shadow var(--ar-dur-state) var(--ar-ease);
 }
 .ar-dock-menu__diagram {
   width: 30px;

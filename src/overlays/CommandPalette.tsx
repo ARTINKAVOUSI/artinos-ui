@@ -1,4 +1,5 @@
 'use client';
+import { useGlide, usePresence } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
@@ -93,7 +94,10 @@ export function CommandPalette({ commands, open, onOpenChange, hotkey = DEFAULT_
     list.current?.querySelector('[data-active]')?.scrollIntoView({ block: 'nearest' });
   }, [active]);
 
-  if (!open) return null;
+  const { shown, leaving } = usePresence(open, 140);
+  const glide = useRef<HTMLSpanElement>(null);
+  useGlide(list, glide);
+  if (!shown) return null;
 
   const run = (command: Command | undefined) => {
     if (!command) return;
@@ -105,7 +109,11 @@ export function CommandPalette({ commands, open, onOpenChange, hotkey = DEFAULT_
   let lastGroup: string | undefined;
   return (
     <ThemedPortal>
-      <div className="ar-palette" onPointerDown={(event) => event.target === event.currentTarget && onOpenChange(false)}>
+      <div
+        className="ar-palette"
+        data-state={leaving ? 'closing' : 'open'}
+        onPointerDown={(event) => event.target === event.currentTarget && onOpenChange(false)}
+      >
         <div className="ar-palette__dialog" role="dialog" aria-modal="true" aria-label="Command palette">
           <div className="ar-palette__search">
             <svg viewBox="0 0 16 16" aria-hidden>
@@ -135,6 +143,7 @@ export function CommandPalette({ commands, open, onOpenChange, hotkey = DEFAULT_
             />
           </div>
           <div ref={list} id="ar-palette-list" role="listbox" className="ar-palette__list">
+            <span ref={glide} className="ar-palette__glide" aria-hidden />
             {results.length === 0 && <div className="ar-palette__empty">No matching commands</div>}
             {results.map((command, index) => {
               const heading = !query && command.group !== lastGroup ? command.group : undefined;
