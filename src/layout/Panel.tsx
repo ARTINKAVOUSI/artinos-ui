@@ -56,8 +56,8 @@ export interface SectionProps {
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off, carried by the title row's rule: on, a soft signal light runs along it;
-   *  off, it drains to a plain hairline. One click on the title or rule folds the group open or
+  /** The group's on/off, carried by the title row's rule (a plain 1px hairline): the line ink when
+   *  on, the subtle line ink when off. One click on the title or rule folds the group open or
    *  closed; a double-click (or Shift+Enter) switches it on or off. Off folds it closed and makes it
    *  inert; values are kept, and on restores the fold it had. The chevron always shows. */
   enabled?: boolean;
@@ -125,8 +125,8 @@ export function Section({
   );
   const rest = (
     <>
-      {/* the rule carries the on/off: a light runs along it while the group is on */}
-      <i className="ar-section__rule" data-lit={toggleable && isOn ? '' : undefined} />
+      {/* the rule carries the on/off: the line ink when on, the subtle line ink when off */}
+      <i className="ar-section__rule" />
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
       ) : null}
