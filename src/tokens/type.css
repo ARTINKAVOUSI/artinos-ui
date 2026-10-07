@@ -5,6 +5,27 @@
    portalled overlays. The registry (TYPE_COLLECTIONS, TYPE_META) is in core/utils.ts and the
    faces load in tokens/fonts.css. `instrument` is what tokens.css already gives. */
 
+/* A type scope that is not also a theme scope sits inside one, where the inherited font-family
+   and the control face were already resolved from the outer faces. The scope re-points both,
+   so a bare <div data-ar-type="…"> inside a theme sets its components too. (On a theme scope
+   the theme resolves them itself from the collection's tokens.) */
+[data-ar-type] {
+  font-family: var(--ar-font-ui);
+}
+[data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
+  --ar-control-font: var(--ar-font-num);
+}
+/* themes whose control text is the sans keep that inside a nested type scope, in the collection's sans */
+[data-ar-theme='lagoon'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]),
+[data-ar-theme='ivory'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]),
+[data-ar-theme='wisteria'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
+  --ar-control-font: var(--ar-font-ui);
+}
+/* the reference theme's controls stay in Roboto Mono, its source material */
+[data-ar-theme='reference'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
+  --ar-control-font: 'Roboto Mono', var(--ar-font-num);
+}
+
 [data-ar-type='instrument'] {
   --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;

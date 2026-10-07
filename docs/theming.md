@@ -118,7 +118,7 @@ Type is one superfamily in two voices: a sans that speaks (titles, prose, menus)
 | `red-hat` | Red Hat Text · Red Hat Mono · Red Hat Display | a three-voice superfamily, friendly and crisp, with its own display face |
 | `luxe` | Inter · JetBrains Mono · Cormorant Garamond | a serif display over a neutral sans: editorial luxury, made for the luxe themes |
 
-Set one on the theme scope or on any element; it inherits, carries through nested themes and follows portalled overlays (lists, menus, the palette, tooltips, the slider HUD):
+Set one on the theme scope or on any element; it inherits, carries through nested themes and follows portalled overlays (lists, menus, the palette, tooltips, the slider HUD). A bare `data-ar-type` element inside a theme re-points the components inside it too (their control text takes the collection's mono, or the sans in the themes that set their controls proportionally):
 
 ```tsx
 <ArtinosTheme theme="onyx" type="luxe"> … </ArtinosTheme>
