@@ -137,7 +137,7 @@ Props: `label` (omit for a full-width swatch), `value` / `defaultValue` ('#00C8B
 
 ## Select
 
-Insert face or `appearance="well"`. The list portals to `<body>` (carrying the theme's tokens), with keyboard and type-ahead.
+Insert face or `appearance="well"`. The list portals to `<body>` (carrying the theme's tokens), with keyboard and type-ahead. A long list scrolls within what is left of the viewport under the face, on the family's thin scrollbar, and the keyboard keeps the highlighted row in view.
 
 Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value` / `defaultValue` / `onChange`, `appearance` (`'insert' | 'well'`, default insert), `disabled`.
 

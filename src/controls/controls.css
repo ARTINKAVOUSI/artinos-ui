@@ -380,6 +380,13 @@
   color: var(--ar-list-ink);
   cursor: pointer;
 }
+/* the rows scroll when the list is taller than what is left of the viewport under the face */
+.ar-list__rows {
+  position: relative;
+  max-height: calc(100vh - var(--_top, 0px) - var(--_head, 0px) - 14px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 .ar-list__row {
   position: relative;
   display: flex;

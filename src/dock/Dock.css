@@ -60,9 +60,6 @@
   border: 0;
   background: transparent;
 }
-.ar-dock .mb-block-scroll::-webkit-scrollbar-thumb {
-  background: var(--ar-line-strong);
-}
 /* the engine anchors its menu host at 0 height, so a percentage max-height collapses */
 .ar-dock .mb-context-menu {
   max-height: min(430px, calc(100vh - 32px));
