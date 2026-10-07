@@ -16,8 +16,6 @@
   --au-faint: var(--ar-text-low);
   --au-active: var(--ar-signal);
   --au-danger: var(--ar-fault);
-  --au-font: var(--ar-font-ui);
-  --au-mono: var(--ar-control-font);
 
   position: relative;
   width: 100%;
@@ -84,7 +82,7 @@
   min-height: 36px;
   padding: 0 10px 0 14px;
   border-bottom: 1px solid var(--ar-line-subtle);
-  font: 300 var(--ar-text-md) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-md) var(--ar-font-ui);
   container: ar-dock-strip / inline-size;
 }
 .ar-dock__tabs {
@@ -108,8 +106,8 @@
   align-items: center;
   gap: 6px;
   margin-bottom: -1px;
-  font: 300 var(--ar-text-sm)/1 var(--ar-font-ui);
-  letter-spacing: 0.01em;
+  font: var(--ar-weight-light) var(--ar-text-sm)/var(--ar-leading-none) var(--ar-font-ui);
+  letter-spacing: var(--ar-track-text);
   white-space: nowrap;
   color: var(--ar-text-low);
   cursor: pointer;
@@ -176,7 +174,7 @@
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  font: 300 var(--ar-text-sm) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-low);
   cursor: pointer;
 }
@@ -270,12 +268,12 @@
 }
 .ar-dock__error h3 {
   margin: 0;
-  font: 300 var(--ar-text-lg) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-lg) var(--ar-font-ui);
   color: var(--ar-text-hi);
 }
 .ar-dock__error p {
   margin: 0;
-  font: 300 var(--ar-text-sm)/1.5 var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-sm)/var(--ar-leading-text) var(--ar-font-ui);
   color: var(--ar-text-low);
 }
 .ar-dock__footer {
@@ -317,7 +315,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: 300 var(--ar-text-sm) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-low);
 }
 .ar-dock__slot > .ar-panel-bar {
@@ -368,7 +366,7 @@
   left: 50%;
   z-index: 30;
   translate: -50% 0;
-  font: 300 var(--ar-text-xs) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-xs) var(--ar-font-ui);
   color: var(--ar-text-low);
   pointer-events: none;
 }
@@ -404,7 +402,7 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-weight: var(--ar-label-weight);
-  line-height: 1;
+  line-height: var(--ar-leading-none);
   letter-spacing: var(--ar-label-tracking);
   text-transform: var(--ar-label-case);
 }
@@ -481,7 +479,7 @@
   text-shadow: var(--ar-list-text-shadow);
 }
 .ar-dock .mb-context-head b {
-  font: 300 var(--ar-text-lg)/1.2 var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-lg)/var(--ar-leading-snug) var(--ar-font-ui);
 }
 .ar-dock .mb-context-head span,
 .ar-dock .mb-context-label,
@@ -491,7 +489,7 @@
 .ar-dock .mb-context-menu > button {
   min-height: max(22px, calc(var(--ar-h) - 2px));
   border-radius: var(--ar-insert-radius);
-  font: 300 var(--ar-text-md)/1 var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-md)/var(--ar-leading-none) var(--ar-font-ui);
   color: var(--ar-list-ink);
 }
 .ar-dock .mb-context-menu button:hover,
@@ -503,11 +501,11 @@
   color: var(--ar-fault);
 }
 .ar-dock .mb-context-menu kbd {
-  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
+  font: var(--ar-label-weight) var(--ar-caps-sm)/var(--ar-leading-none) var(--ar-control-font);
 }
 .ar-dock .mb-native-tab {
   border-radius: var(--ar-insert-radius);
-  font: 300 var(--ar-text-sm) var(--ar-font-ui);
+  font: var(--ar-weight-light) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-low);
 }
 .ar-dock .mb-native-tab.active {

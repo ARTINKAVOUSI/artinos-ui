@@ -307,7 +307,7 @@
 .ar-slider__track--gradient [data-ink='light'] { color: var(--ar-grad-ink-light); text-shadow: none; }
 .ar-slider__track--gradient .ar-roll__unit { color: inherit; }
 .ar-slider__track--gradient .ar-slider__readout { font-weight: var(--ar-value-weight); }
-.ar-slider[data-mode='scrub'] .ar-slider__track--gradient .ar-slider__readout { font-weight: max(500, var(--ar-value-weight)); }
+.ar-slider[data-mode='scrub'] .ar-slider__track--gradient .ar-slider__readout { font-weight: max(var(--ar-weight-medium), var(--ar-value-weight)); }
 .ar-slider[data-off] .ar-slider__track--gradient .ar-slider__label { color: var(--ar-text-mid); }
 
 /* ---------- ruler variant: the scale moves beneath a fixed index ---------- */
@@ -356,7 +356,7 @@
 .ar-ruler__num {
   fill: var(--ar-ruler-ink);
   font-family: var(--ar-control-font);
-  font-size: 8.5px;
+  font-size: var(--ar-caps-xs);
   font-weight: var(--ar-value-weight);
 }
 .ar-ruler__index,
@@ -480,14 +480,14 @@
   -webkit-backdrop-filter: var(--ar-sheet-blur, blur(14px));
   backdrop-filter: var(--ar-sheet-blur, blur(14px));
   box-shadow: var(--ar-sheet-shadow, inset 0 0 0 1px rgba(255, 255, 255, 0.1));
-  font-family: var(--ar-font-num, ui-monospace, monospace);
+  font-family: var(--ar-font-num);
 }
 .ar-hud__pill--swatch { padding: 3px 8px 3px 3px; gap: 7px; }
-.ar-hud__text { font-size: 11px; font-weight: 300; color: var(--ar-float-ink, #f4f4f4); }
-.ar-hud__ratio { font-size: 9px; font-weight: 500; letter-spacing: 0.08em; color: var(--ar-float-ink-low, #919191); }
+.ar-hud__text { font-size: var(--ar-text-sm); font-weight: var(--ar-weight-light); color: var(--ar-float-ink, #f4f4f4); }
+.ar-hud__ratio { font-size: var(--ar-caps-sm); font-weight: var(--ar-weight-medium); letter-spacing: var(--ar-track-caps); color: var(--ar-float-ink-low, #919191); }
 .ar-hud__ratio[data-fine] { color: var(--ar-signal-hi, #7fe3d4); }
 .ar-hud__swatch { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
-.ar-hud__caption { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; color: var(--ar-float-ink, #f4f4f4); }
+.ar-hud__caption { font-size: var(--ar-text-xs); font-weight: var(--ar-weight-medium); letter-spacing: var(--ar-track-text); color: var(--ar-float-ink, #f4f4f4); }
 
 /* ---------- typed entry: the readout as a field (double-click the value, or Enter / F2) ---------- */
 .ar-slider__edit {

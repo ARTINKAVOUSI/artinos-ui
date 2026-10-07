@@ -104,16 +104,44 @@
   --ar-float-ink: #ededed;
   --ar-float-ink-low: #858585;
 
-  /* type */
+  /* ---- type ----
+     One superfamily in two voices: Chivo, the sans, speaks (titles, prose, menus); Chivo Mono,
+     its monospaced sibling, measures (labels, readouts, marks). They share skeleton, x-height
+     and weights, so the two voices sit on one line without a seam. */
   --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  /* body text: five steps, always in --ar-font-ui at weight 300. Control text (labels, rows,
-     buttons) uses the --ar-label-* and --ar-value-* tokens instead. */
+
+  /* weights — the families are loaded at exactly these; anything between is faked by the browser */
+  --ar-weight-thin: 200; /* display: hero figures, big readouts */
+  --ar-weight-light: 300; /* the default: prose, titles, values */
+  --ar-weight-regular: 400; /* emphasis inside prose; a theme's firmer values */
+  --ar-weight-medium: 500; /* caps: labels, kickers, marks */
+
+  /* the sans voice: weight 300 unless noted. Control text (labels, rows, buttons) uses the
+     --ar-label-* and --ar-value-* tokens instead, which density and themes tune. */
   --ar-text-xs: 10.5px; /* hints, captions, port names */
-  --ar-text-sm: 11.5px; /* secondary lines, tabs, field labels in tight places */
+  --ar-text-sm: 11.5px; /* secondary lines, tabs, menu rows */
   --ar-text-md: 12px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
   --ar-text-xl: 17px; /* panel titles */
+  --ar-text-2xl: 22px; /* page section titles */
+  --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */
+
+  /* the mono caps voice outside a control: uppercase, weight 500, tracked */
+  --ar-caps-xs: 8px; /* the smallest mark: keycaps, port tags, drop hints */
+  --ar-caps-sm: 9px; /* kickers, foot lines, counts, badges, section numbers */
+
+  /* tracking: caps open up, large sans closes in, everything else is set as drawn */
+  --ar-track-caps: 0.16em;
+  --ar-track-text: 0;
+  --ar-track-title: -0.01em; /* 17px and up */
+  --ar-track-display: -0.025em; /* 30px and up */
+
+  /* leading */
+  --ar-leading-none: 1; /* single-line marks and readouts */
+  --ar-leading-snug: 1.3; /* titles, menu rows */
+  --ar-leading-text: 1.5; /* prose */
+  --ar-leading-code: 1.65; /* code and long-form reading */
 
   /* radii — four steps only */
   --ar-radius-control: 5px;

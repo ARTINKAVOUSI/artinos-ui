@@ -261,7 +261,7 @@
   z-index: 1;
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ar-track-caps);
   text-transform: uppercase;
 }
 .ar-color__hex {
@@ -269,7 +269,7 @@
   position: relative;
   z-index: 1;
   box-sizing: content-box;
-  width: 7ch;
+  width: calc(7ch + 0.5em); /* room for six caps at --ar-track-caps */
   margin: 0 auto;
   padding: 1px 2px;
   border-radius: 3px;
@@ -277,7 +277,7 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ar-track-caps);
   text-transform: uppercase;
   cursor: text;
 }
@@ -336,9 +336,9 @@
 }
 .ar-select[data-appearance='well'] .ar-select__text {
   text-transform: none;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ar-track-text);
   font-family: var(--ar-font-ui);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
   font-size: calc(var(--ar-value-size) + 1px);
   color: var(--ar-value-ink);
 }
@@ -457,7 +457,7 @@
   text-align: center;
   font-family: var(--ar-font-ui);
   font-size: calc(var(--ar-value-size) + 2px);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
 }
 .ar-number[data-align='end'] :is(.ar-number__value, .ar-number__input) {
   text-align: right;

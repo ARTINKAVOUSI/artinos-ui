@@ -30,10 +30,13 @@ export const UI_FONTS = [
   { value: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif", label: 'System UI' },
   { value: "'Chivo Mono', ui-monospace, monospace", label: 'Chivo Mono' },
 ];
+// the weights the families are loaded at; 700 exists only in Roboto Mono (the reference finish)
 const WEIGHTS = [
+  { value: '200', label: 'Thin 200' },
   { value: '300', label: 'Light 300' },
+  { value: '400', label: 'Regular 400' },
   { value: '500', label: 'Medium 500' },
-  { value: '700', label: 'Bold 700' },
+  { value: '700', label: 'Bold 700 · Roboto Mono' },
 ];
 
 export const GROUPS: Group[] = [
@@ -148,6 +151,10 @@ export const GROUPS: Group[] = [
       { kind: 'length', token: '--ar-label-tracking', label: 'Tracking', min: 0, max: 0.3, step: 0.005, unit: 'em', decimals: 3 },
       px('label-size', 'Label size', 7, 14, 0.5, 1),
       px('value-size', 'Value size', 8, 16, 0.5, 1),
+      px('text-md', 'Body size', 10, 16, 0.5, 1),
+      px('text-xl', 'Title size', 13, 26, 0.5, 1),
+      px('caps-sm', 'Mark size', 7, 12, 0.5, 1),
+      { kind: 'length', token: '--ar-track-caps', label: 'Mark tracking', min: 0, max: 0.3, step: 0.005, unit: 'em', decimals: 3 },
     ],
   },
   {

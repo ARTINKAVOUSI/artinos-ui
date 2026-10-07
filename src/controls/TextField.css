@@ -39,7 +39,7 @@
   height: 100%;
   font-family: var(--ar-font-ui);
   font-size: calc(var(--ar-value-size) + 2px);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
   color: var(--ar-value-ink-hi);
   text-shadow: var(--ar-base-text-shadow);
   caret-color: var(--ar-signal);

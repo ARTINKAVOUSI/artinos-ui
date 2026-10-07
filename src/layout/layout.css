@@ -29,13 +29,13 @@
 }
 .ar-panel__title {
   font-size: var(--ar-text-xl);
-  font-weight: 300;
-  letter-spacing: -0.01em;
+  font-weight: var(--ar-weight-light);
+  letter-spacing: var(--ar-track-title);
   color: var(--ar-text-hi);
 }
 .ar-panel__subtitle {
   font-size: var(--ar-text-sm);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
   color: var(--ar-text-low);
 }
 .ar-panel__actions {
@@ -163,8 +163,8 @@ button.ar-section__trigger:focus-visible {
 .ar-section[data-heading='text'] .ar-section__title {
   font-family: var(--ar-font-ui);
   font-size: var(--ar-text-lg);
-  font-weight: 300;
-  letter-spacing: 0;
+  font-weight: var(--ar-weight-light);
+  letter-spacing: var(--ar-track-text);
   text-transform: none;
   color: var(--ar-text-hi);
 }
@@ -185,9 +185,9 @@ button.ar-section__trigger:focus-visible {
   text-overflow: ellipsis;
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-value-weight);
+  font-weight: var(--ar-weight-medium);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ar-track-caps);
   text-transform: var(--ar-label-case);
   color: var(--ar-text-faint);
   transition:
@@ -253,7 +253,7 @@ button.ar-section__trigger:focus-visible {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--ar-text-md);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
   color: var(--ar-text-mid);
 }
 .ar-field__control {
@@ -285,7 +285,7 @@ button.ar-section__trigger:focus-visible {
   padding: 8px 0 9px;
   font-family: var(--ar-font-ui);
   font-size: var(--ar-text-sm);
-  font-weight: 300;
+  font-weight: var(--ar-weight-light);
   color: var(--ar-text-low);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);

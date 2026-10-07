@@ -174,8 +174,8 @@ Roles (theme level):
 - accents: `--ar-signal`, `--ar-signal-hi`, `--ar-signal-line`, `--ar-signal-wash`, `--ar-signal-ink`, `--ar-bind`, `--ar-warn`, `--ar-fault`, `--ar-focus-ring`
 - panel glass: `--ar-panel-tint`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`
 - floating ink and the typed-entry field: `--ar-float-bg`, `--ar-float-ring`, `--ar-float-shadow`, `--ar-float-ink`, `--ar-float-ink-low`
-- type and radii: `--ar-font-ui`, `--ar-font-num`, `--ar-radius-control`, `--ar-radius-card`, `--ar-radius-panel`, `--ar-radius-shell`
-- body text scale (UI font, weight 300): `--ar-text-xs` (10.5px, hints and captions), `--ar-text-sm` (11.5px, secondary lines and tabs), `--ar-text-md` (12px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles). Labels, rows and buttons use the control-text tokens below instead.
+- radii: `--ar-radius-control`, `--ar-radius-card`, `--ar-radius-panel`, `--ar-radius-shell`
+- typography (see [Typography](#typography) below): `--ar-font-ui`, `--ar-font-num`, `--ar-weight-*`, `--ar-text-*`, `--ar-caps-*`, `--ar-track-*`, `--ar-leading-*`
 - size (density-driven): `--ar-h`, `--ar-label-size`, `--ar-value-size`, `--ar-pad-x`, `--ar-gap`
 - motion:
   - durations: `--ar-dur-value` (70ms, a value following the hand), `--ar-dur-state` (130ms, hover and press), `--ar-dur-surface` (220ms, a material changing), `--ar-dur-layout` (380ms, things moving apart), `--ar-dur-enter` (200ms, an overlay arriving), `--ar-dur-exit` (130ms, leaving, always quicker);
@@ -191,3 +191,20 @@ Control finish (materials level):
 - typography of controls: `--ar-control-font`, `--ar-label-weight`, `--ar-value-weight`, `--ar-label-tracking`, `--ar-label-case`
 - frosted sheet, shared by everything that floats (the Select list, menus, the command palette, dialogs, toasts, tooltips, the slider HUD, the dock menu) and by graph nodes: `--ar-sheet-bg` (grain, a milky veil and the theme's ground at half strength), `--ar-sheet-blur`, `--ar-sheet-shadow`
 - Select list (defaults to the sheet): `--ar-list-bg`, `--ar-list-backdrop`, `--ar-list-shadow`, `--ar-list-insert`, `--ar-list-hover`, `--ar-list-ink`
+
+### Typography
+
+One superfamily in two voices. **Chivo**, the sans, speaks: titles, prose, menus, field labels. **Chivo Mono**, its monospaced sibling, measures: control labels, readouts, counts and marks. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
+
+- families: `--ar-font-ui` (Chivo), `--ar-font-num` (Chivo Mono). A theme's controls read `--ar-control-font` (usually Chivo Mono; Roboto Mono in `reference`).
+- weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, the default for prose, titles and values), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps).
+- the sans scale, weight 300: `--ar-text-xs` (10.5px, hints and captions), `--ar-text-sm` (11.5px, secondary lines, tabs, menu rows), `--ar-text-md` (12px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.
+- the mono caps voice outside a control (kickers, foot lines, counts, badges, keycaps, port tags), always weight 500, uppercase, `--ar-track-caps`: `--ar-caps-sm` (9px) and `--ar-caps-xs` (8px, the smallest mark). The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
+- control text (labels, rows, buttons) is the third use of the mono voice and is tuned by density and theme: `--ar-label-size`, `--ar-value-size`, and the control-typography tokens under Control finish.
+- tracking: `--ar-track-caps` (0.16em, caps open up), `--ar-track-text` (0, set as drawn), `--ar-track-title` (-0.01em, 17px and up), `--ar-track-display` (-0.025em, 30px and up).
+- leading: `--ar-leading-none` (1, single-line marks), `--ar-leading-snug` (1.3, titles and menu rows), `--ar-leading-text` (1.5, prose), `--ar-leading-code` (1.65, code and long reading).
+
+```css
+.my-kicker { font: var(--ar-weight-medium) var(--ar-caps-sm) / 1 var(--ar-font-num); letter-spacing: var(--ar-track-caps); text-transform: uppercase; }
+.my-title  { font: var(--ar-weight-light) var(--ar-text-xl) / var(--ar-leading-snug) var(--ar-font-ui); letter-spacing: var(--ar-track-title); }
+```

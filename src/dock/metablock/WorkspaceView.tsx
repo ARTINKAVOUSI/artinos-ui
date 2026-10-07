@@ -1550,7 +1550,7 @@ export function MetaBlockWorkspaceView({
           data-active="true"
           data-armed={interaction.armed ? 'true' : 'false'}
           style={{
-            left: clamp(interaction.pointer.x + 18, 12, Math.max(12, size.width - 190)),
+            left: clamp(interaction.pointer.x + 18, 12, Math.max(12, size.width - 230)),
             top: clamp(interaction.pointer.y + 18, 12, Math.max(12, size.height - 38)),
           }}
         >

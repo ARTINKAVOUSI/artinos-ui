@@ -271,7 +271,7 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-weight: var(--ar-label-weight);
-  line-height: 1;
+  line-height: var(--ar-leading-none);
   letter-spacing: var(--ar-label-tracking);
   text-transform: var(--ar-label-case);
   white-space: nowrap;

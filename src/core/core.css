@@ -3,9 +3,29 @@
 
 .ar-theme {
   font-family: var(--ar-font-ui);
+  font-weight: var(--ar-weight-light);
+  font-kerning: normal;
+  font-synthesis: none; /* never fake a weight or an italic the families don't have */
+  text-rendering: optimizeLegibility;
   color: var(--ar-text-mid);
   text-shadow: var(--ar-panel-text-shadow);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* emphasis inside text is the medium weight: the families stop at 500 */
+.ar-theme :where(b, strong) {
+  font-weight: var(--ar-weight-medium);
+}
+
+/* the mono caps voice outside a control: kickers, foot lines, counts, marks */
+.ar-caps {
+  font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
+  text-transform: uppercase;
+}
+.ar-caps--xs {
+  font-size: var(--ar-caps-xs);
 }
 .ar-theme--ground {
   background: var(--ar-bg-app);
@@ -103,7 +123,7 @@
   font-weight: var(--ar-label-weight);
   letter-spacing: var(--ar-label-tracking);
   text-transform: var(--ar-label-case);
-  line-height: 1.3;
+  line-height: var(--ar-leading-snug);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -119,7 +139,7 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
   font-weight: var(--ar-value-weight);
-  line-height: 1.3;
+  line-height: var(--ar-leading-snug);
   font-variant-numeric: tabular-nums;
   white-space: pre;
 }
@@ -245,8 +265,9 @@
   border-radius: calc(var(--ar-insert-radius) - 2px);
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
-  letter-spacing: 0.04em;
+  font: var(--ar-label-weight) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-control-font);
+  letter-spacing: var(--ar-track-caps);
+  text-transform: uppercase;
   color: var(--ar-text-mid);
   text-shadow: none;
 }

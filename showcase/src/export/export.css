@@ -40,8 +40,8 @@
   border-bottom: 1px solid var(--ar-line-subtle);
 }
 .xk__head > div { display: flex; flex-direction: column; gap: 4px; margin-right: auto; }
-.xk__head b { font: 300 22px var(--ar-font-ui); color: var(--ar-text-hi); letter-spacing: -0.01em; }
-.xk__head span { font: 300 12.5px var(--ar-font-ui); color: var(--ar-text-low); }
+.xk__head b { font: var(--ar-weight-light) var(--ar-text-2xl) var(--ar-font-ui); color: var(--ar-text-hi); letter-spacing: var(--ar-track-title); }
+.xk__head span { font: var(--ar-weight-light) var(--ar-text-md) var(--ar-font-ui); color: var(--ar-text-low); }
 .xk__x {
   all: unset;
   cursor: pointer;
@@ -75,34 +75,34 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font: 500 9px var(--ar-font-num);
-  letter-spacing: 0.2em;
+  font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
   text-transform: uppercase;
   color: var(--ar-text-hi);
 }
-.xk__sub em { font-style: normal; color: var(--ar-text-low); letter-spacing: 0.1em; }
+.xk__sub em { font-style: normal; color: var(--ar-text-low); }
 .xk__sub:not(:first-child) { margin-top: 8px; }
-.xk__size { margin-left: auto; font-weight: 300; color: var(--ar-text-low); letter-spacing: 0.1em; }
+.xk__size { margin-left: auto; color: var(--ar-text-low); }
 .xk__links { margin-left: auto; display: inline-flex; gap: 10px; }
 .xk__links button {
   all: unset;
   cursor: pointer;
-  font: 500 8.5px var(--ar-font-num);
-  letter-spacing: 0.16em;
+  font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
   text-transform: uppercase;
   color: var(--ar-text-low);
 }
 .xk__links button:hover { color: var(--ar-text-hi); }
 .xk__links button:focus-visible { box-shadow: var(--ar-focus-ring); border-radius: 3px; }
-.xk__note { margin: 0; font: 300 11.5px/1.5 var(--ar-font-ui); color: var(--ar-text-low); }
-.xk__note b { font-weight: 500; color: var(--ar-text-mid); }
-.xk__note code { font: 400 11px var(--ar-font-num); color: var(--ar-text-mid); }
+.xk__note { margin: 0; font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-text) var(--ar-font-ui); color: var(--ar-text-low); }
+.xk__note b { font-weight: var(--ar-weight-medium); color: var(--ar-text-mid); }
+.xk__note code { font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-num); color: var(--ar-text-mid); }
 
 .xk__fam { display: flex; flex-direction: column; gap: 6px; }
 .xk__famhead {
   display: flex;
   align-items: baseline;
-  font: 400 11px var(--ar-font-ui);
+  font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-mid);
 }
 .xk__chips { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -118,7 +118,7 @@
   border-radius: var(--ar-radius);
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font: 400 11.5px var(--ar-font-ui);
+  font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-low);
   transition: color 120ms, background 120ms;
 }
@@ -147,8 +147,8 @@
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
 }
-.xk__comp b { font: 500 12px var(--ar-font-ui); color: var(--ar-text-mid); white-space: nowrap; }
-.xk__comp span { font: 300 11px var(--ar-font-ui); color: var(--ar-text-low); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+.xk__comp b { font: var(--ar-weight-medium) var(--ar-text-md) var(--ar-font-ui); color: var(--ar-text-mid); white-space: nowrap; }
+.xk__comp span { font: var(--ar-weight-light) var(--ar-text-sm) var(--ar-font-ui); color: var(--ar-text-low); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
 .xk__tick {
   width: 12px;
   height: 12px;
@@ -173,7 +173,7 @@
 .xk__comp:focus-visible { box-shadow: var(--ar-focus-ring); }
 
 .xk__field { display: flex; align-items: center; gap: 10px; }
-.xk__field span { font: 400 11px var(--ar-font-ui); color: var(--ar-text-mid); white-space: nowrap; }
+.xk__field span { font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-ui); color: var(--ar-text-mid); white-space: nowrap; }
 .xk__field input {
   all: unset;
   flex: 1;
@@ -183,7 +183,7 @@
   border-radius: var(--ar-radius);
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font: 400 12px var(--ar-font-num);
+  font: var(--ar-weight-regular) var(--ar-text-md) var(--ar-font-num);
   color: var(--ar-text-hi);
 }
 .xk__field input:focus { box-shadow: var(--ar-well), var(--ar-focus-ring); }
@@ -200,14 +200,14 @@
   align-items: center;
   gap: 8px;
   padding: 6px 2px;
-  font: 400 11.5px var(--ar-font-num);
+  font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-num);
   color: var(--ar-text-hi);
 }
 .xk__files button:hover { background: var(--ar-bg-hover); }
 .xk__files button:focus-visible { box-shadow: var(--ar-focus-ring); }
 .xk__path { margin-right: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .xk__path i { font-style: normal; color: var(--ar-text-low); }
-.xk__kb { flex: none; font-size: 10px; color: var(--ar-text-low); }
+.xk__kb { flex: none; font-size: var(--ar-text-xs); color: var(--ar-text-low); }
 .xk__pre {
   margin: 0 0 8px;
   max-height: 260px;
@@ -217,7 +217,7 @@
   background: var(--ar-float-bg);
   box-shadow: var(--ar-float-ring);
   color: var(--ar-float-ink);
-  font: 400 10.5px/1.55 var(--ar-font-num);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / var(--ar-leading-text) var(--ar-font-num);
   text-shadow: none;
   white-space: pre;
 }
@@ -229,7 +229,7 @@
   padding: 14px 20px;
   border-top: 1px solid var(--ar-line-subtle);
 }
-.xk__status { margin-right: auto; font: 300 12px var(--ar-font-ui); color: var(--ar-text-mid); }
+.xk__status { margin-right: auto; font: var(--ar-weight-light) var(--ar-text-md) var(--ar-font-ui); color: var(--ar-text-mid); }
 .xk__btn {
   all: unset;
   box-sizing: border-box;
@@ -241,8 +241,8 @@
   border-radius: var(--ar-radius);
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font: 500 9.5px var(--ar-font-num);
-  letter-spacing: 0.14em;
+  font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
   text-transform: uppercase;
   color: var(--ar-text-hi);
 }

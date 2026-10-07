@@ -37,8 +37,8 @@
   min-width: 0;
   overflow: hidden;
   font-size: var(--ar-text-md);
-  font-weight: 300;
-  line-height: 1.35;
+  font-weight: var(--ar-weight-light);
+  line-height: var(--ar-leading-snug);
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--ar-text-mid);
@@ -79,8 +79,8 @@
 .ar-prop__message {
   margin: 0 0 0 calc(var(--_label-w) + 10px);
   font-size: var(--ar-text-sm);
-  font-weight: 300;
-  line-height: 1.5;
+  font-weight: var(--ar-weight-light);
+  line-height: var(--ar-leading-text);
   color: var(--ar-text-low);
 }
 .ar-prop[data-density='default'] .ar-prop__message {

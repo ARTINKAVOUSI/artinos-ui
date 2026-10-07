@@ -96,7 +96,7 @@ function TypeScale() {
         <span className="sc-subhead">Body text · UI 300</span>
         {steps.map(([k, use]) => (
           <div key={k} className="sc-voice__row">
-            <span style={{ font: `300 var(--ar-text-${k}) var(--ar-font-ui)`, color: 'var(--ar-text-hi)' }}>{use}</span>
+            <span style={{ font: `var(--ar-weight-light) var(--ar-text-${k}) var(--ar-font-ui)`, color: 'var(--ar-text-hi)' }}>{use}</span>
             <code>--ar-text-{k}</code>
           </div>
         ))}
@@ -116,7 +116,7 @@ function TypeScale() {
           <code>--ar-value-*</code>
         </div>
         <div className="sc-voice__row">
-          <span style={{ font: '200 34px/1 var(--ar-font-ui)', color: 'var(--ar-text-hi)' }}>Display</span>
+          <span style={{ font: 'var(--ar-weight-thin) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-ui)', letterSpacing: 'var(--ar-track-display)', color: 'var(--ar-text-hi)' }}>Display</span>
           <code>200 · page titles</code>
         </div>
       </div>
