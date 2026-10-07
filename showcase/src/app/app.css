@@ -113,7 +113,7 @@ body { background: #090909; }
 .sc-hero p { margin: 10px 0 0; max-width: 620px; font: 300 13px/1.6 var(--ar-font-ui); color: var(--ar-text-mid); }
 .sc-stats { margin-left: auto; display: flex; gap: 22px; }
 .sc-stat b { display: block; font: 200 28px/1 var(--ar-font-num); color: var(--ar-text-hi); }
-.sc-stat span { font: 300 8.5px var(--ar-font-num); letter-spacing: 0.18em; color: var(--ar-text-mid); }
+.sc-stat > span { font: 300 8.5px var(--ar-font-num); letter-spacing: 0.18em; color: var(--ar-text-mid); }
 
 .sc-part {
   display: flex; align-items: baseline; gap: 16px; padding: 38px 0 4px;

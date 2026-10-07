@@ -150,7 +150,20 @@
   display: block;
   line-height: 1.3em;
 }
-.ar-roll__unit {
+/* The drum's geometry is shared with RollingValue.tsx (CELL = 1.3em per digit). A host rule
+   such as `.stat span { font: … }` reaches these spans too, and the font shorthand resets
+   line-height: the strip's lines then drift from the slot and the digits land off-centre.
+   So the drum's size and pitch always come from the readout itself. */
+.ar-roll .ar-roll__slot,
+.ar-roll .ar-roll__strip,
+.ar-roll .ar-roll__char {
+  font: inherit !important;
+  line-height: 1.3em !important;
+}
+.ar-roll .ar-roll__slot {
+  height: 1.3em !important;
+}
+.ar-roll .ar-roll__unit {
   margin-left: 0.45em;
   font-size: 0.8em;
 }
