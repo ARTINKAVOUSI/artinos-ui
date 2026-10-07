@@ -75,7 +75,7 @@ Every kit carries both guides in its own `docs/`.
 ## Showcase
 
 `showcase/artinos-ui-showcase.html` is a self-contained page: double-click it. It has three parts:
-- **Gallery:** every component in every theme, over a photo backdrop, including a live Dock workspace and node graph. Link straight to a look with `?theme=ice&density=dense&backdrop=monstera`.
+- **Gallery:** nine chapters: Foundations (themes, the five materials, tokens and type, density, motion), then Sliders, Controls, Actions, Display, Layout, Overlays, Workspace, and Make it yours. A sticky index follows your place. Every component is live, in every theme, over a photo backdrop. Link straight to a look with `?theme=ice&density=dense&backdrop=monstera`, or to a section with `#s-meters` / a chapter with `#c-overlays`.
 - **Theme Studio** (`#studio`): edit every token live, click any part of a component to edit just its tokens (Inspect), and save themes. Export them as CSS, JSON or TSX.
 - **Export kit** (`#export`): pick themes, saved themes and components, then download a `.zip` or write the kit into a folder.
 
@@ -122,7 +122,7 @@ artinos-ui/
   docs/             components.md · theming.md
   skill/            SKILL.md: the Claude Code skill (installed by the command)
   tools/            kit.mjs (kit builder) · zip.mjs: shared by the command and the showcase
-  showcase/         Vite app: gallery · Theme Studio · Export kit, plus the built page
+  showcase/         Vite app: the chaptered gallery · Theme Studio · Export kit, plus the built page
   design/           design references, the original prototype and the written spec
 ```
 

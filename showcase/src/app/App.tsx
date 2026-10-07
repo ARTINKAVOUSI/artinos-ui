@@ -1,19 +1,21 @@
 /* ARTINOS UI — full showcase. Every control on this page is live and comes from
    ../src (the package) exactly as a consuming app would import it.
    The app shell: theme / density / backdrop state, view routing (page · #studio),
-   the top bar, the page itself and the Export kit dialog (#export). */
+   the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, Button, THEMES, GLASS_THEMES, THEME_META, DENSITIES, RollingValue, Slider, Segmented, Select } from '../../../src';
+import { ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
-import { Swatch, THEME_OPTIONS, BACKDROPS, BACKDROP_OPTIONS, Code, Spec, Part, partId } from '../shared';
+import { ComponentChapters } from '../chapters';
+import { FoundationsChapter } from '../chapters/Foundations';
+import { MakeItYoursChapter } from '../chapters/MakeItYours';
+import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
+import { ExportKit } from '../export/ExportKit';
+import { KIT_COMPONENTS } from '../export/kit';
+import { BACKDROPS, BACKDROP_OPTIONS, Swatch, THEME_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
-import { ComponentGallery } from '../gallery/ComponentGallery';
 import { ThemeStudio } from '../studio/ThemeStudio';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
-import { ExportKit } from '../export/ExportKit';
-import { KIT_COMPONENTS } from '../export/kit';
-import { FAMILIES, ThemeBuilder, ThemeCard, TokenTable } from './foundations';
 
 export function App() {
   // ?theme=frost&density=dense&backdrop=monstera — links straight to a look
@@ -44,6 +46,14 @@ export function App() {
   const baseTheme: ThemeName = custom ? custom.base : (THEMES as readonly string[]).includes(theme) ? (theme as ThemeName) : 'frost-deep';
   const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...THEME_OPTIONS];
 
+  // A link straight to a chapter or section (#c-sliders, #s-meters): the browser tries to scroll
+  // before the page has rendered, so scroll once the anchor exists.
+  useEffect(() => {
+    const id = location.hash.slice(1);
+    if (view !== 'showcase' || !/^[cs]-/.test(id)) return;
+    const frame = requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: 'instant' as ScrollBehavior }));
+    return () => cancelAnimationFrame(frame);
+  }, [view]);
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera'] as const, 'garden'));
@@ -67,140 +77,114 @@ export function App() {
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
 
       <header className="sc-bar">
-        <div className="sc-brand">
+        <a className="sc-brand" href="#top" aria-label="ARTINOS UI, back to the top">
           <span className="sc-mark">#</span>
           <span className="sc-word">ARTINOS</span>
           <i className="sc-rule" />
           <span className="sc-sub">UI · Showcase</span>
-        </div>
-        <label className="sc-pick sc-pick--theme"><span>THEME</span><Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" /></label>
-        <label className="sc-pick"><span>DENSITY</span><Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" /></label>
-        <Button variant="primary" size="sm" onClick={() => go('studio')}>
-          Theme Studio
-        </Button>
-        <Button size="sm" onClick={() => setExporting(true)}>
-          Export kit
-        </Button>
-        <label className="sc-pick"><span>BACKDROP</span><Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" /></label>
-        <Contents />
+        </a>
+        <label className="sc-pick sc-pick--theme">
+          <span>THEME</span>
+          <Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" />
+        </label>
+        <label className="sc-pick">
+          <span>DENSITY</span>
+          <Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" />
+        </label>
+        <label className="sc-pick">
+          <span>BACKDROP</span>
+          <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
+        </label>
+        <span className="sc-bar__actions">
+          <Button size="sm" onClick={() => setExporting(true)}>
+            Export kit
+          </Button>
+          <Button variant="primary" size="sm" onClick={() => go('studio')}>
+            Theme Studio
+          </Button>
+        </span>
       </header>
 
-      <main className="sc-sheet">
-        <div className="sc-hero">
-          <div>
-            <h1>ARTINOS UI</h1>
-            <p>
-              A precision-instrument control system. One compact surface per parameter: the capsule is the control, the seam is the
-              handle, the readout is the precision zone. Pick one of {THEMES.length} complete themes — studio, signature, glass, frost, untinted, atelier, optical or luxe — and every control follows:{' '}
-              ground, ink, signal, panel glass and the finish of each control. Switch in the bar above, or build your own in the Theme Studio; everything on this page is live.
-            </p>
-          </div>
-          <div className="sc-stats">
-            <div className="sc-stat"><b><CountUp to={THEMES.length} /></b><span>THEMES</span></div>
-            <div className="sc-stat"><b><CountUp to={GLASS_THEMES.length} delay={120} /></b><span>GLASS &amp; FROST</span></div>
-            <div className="sc-stat"><b><CountUp to={KIT_COMPONENTS.length} delay={240} /></b><span>COMPONENTS</span></div>
+      <main className="sc-sheet" id="top">
+        <Hero onStudio={() => go('studio')} onExport={() => setExporting(true)} />
+
+        <div className="sc-layout">
+          <PageIndex />
+          <div className="sc-content">
+            <FoundationsChapter theme={theme} onPickTheme={setTheme} />
+            <ComponentChapters />
+            <MakeItYoursChapter customs={customs.length} onStudio={() => go('studio')} onExport={() => setExporting(true)} />
           </div>
         </div>
 
-        {/* ============ FOUNDATIONS ============ */}
-        <Part title="Foundations" note="one theme · tokens · density" />
-
-        <Spec n="F1" title="Themes" text="A theme is the whole look: ground, ink, signal, panel glass and a control finish tuned for it. You pick one — nothing else. Solid themes paint their own ground; glass themes are panes over whatever is behind them (try the backdrops in the bar). Click a card to apply it; each card is its own data-ar-theme scope, so themes nest." code={`
-import { ArtinosTheme } from './artinos-ui';
-
-<ArtinosTheme theme="frost">   {/* studio · studio-light · glass · glass-dark · frost · frost-light */}
-  <Slider label="Roughness" defaultValue={0.52} />
-</ArtinosTheme>
-
-// or with no React at all:
-<div data-ar-theme="studio-light"> … </div>`}>
-          {FAMILIES.map(([title, fams]) => (
-            <div key={title} className="sc-family">
-              <div className="sc-subhead">{title}</div>
-              <div className="sc-grid sc-grid--cards">
-                {THEMES.filter((t) => fams.includes(THEME_META[t].family)).map((t) => (
-                  <ThemeCard key={t} t={t} active={t === theme} onPick={() => setTheme(t)} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </Spec>
-
-        <Spec n="F2" title="Tokens" text="Components read tokens, never literal colours. These are the live values of the current theme. Override any of them on a scope to restyle without touching a component — see Make it yours below." code={`
-/* three layers */
---ar-ink-*, --ar-teal-*            primitives   tokens.css
---ar-bg-well, --ar-text-hi, …      roles        tokens.css + themes.css
---ar-insert, --ar-seam, …          control      materials.css (each theme's finish)
-
-/* density */
---ar-h: 24 · 26 · 30px   --ar-label-size   --ar-value-size   --ar-pad-x`}>
-          <TokenTable deps={[theme]} />
-          <div className="sc-subhead">Type</div>
-          <div className="sc-type">
-            <span style={{ font: '200 34px var(--ar-font-ui)' }}>Display 200</span>
-            <span style={{ font: '300 14px var(--ar-font-ui)' }}>Body 300 — Chivo</span>
-            <span style={{ font: '500 10px var(--ar-font-num)', letterSpacing: '.2em' }}>MONO CAPS 500</span>
-            <span style={{ font: '300 14px var(--ar-font-num)' }}>0123456789.−</span>
-          </div>
-        </Spec>
-
-        <Spec n="F3" title="Density" text="Three control heights: dense 24 · standard 26 · comfort 30. Type size, padding and radius follow. Set it per control or on any scope." code={`<Slider density="dense" />   <div data-ar-density="comfort"> … </div>`}>
-          <div className="sc-grid">
-            {DENSITIES.map((d) => <Slider key={d} density={d} label={d} defaultValue={0.34 + DENSITIES.indexOf(d) * 0.16} />)}
-          </div>
-          <div className="sc-grid">
-            {DENSITIES.map((d) => <Segmented key={d} density={d} options={['LOW', 'MED', 'HIGH']} defaultValue="MED" label={d} />)}
-          </div>
-        </Spec>
-
-        <ComponentGallery />
-
-        {/* ============ THEMING ============ */}
-        <Part title="Make it yours" note="custom tokens on top of any theme" />
-
-        <Spec n="30" title="Theme Studio" text="The full theme editor: every token of a theme — ground, ink, signal, panel glass, well, insert, seam, type, size, motion — tuned live against the complete component gallery. Save as new themes, edit them later, export as CSS, JSON or TSX. Saved themes appear in the theme picker above.">
-          <div className="sc-row" style={{ alignItems: 'center' }}>
-            <Button variant="primary" onClick={() => go('studio')}>Open Theme Studio →</Button>
-            <span className="sc-note">{customs.length ? <>You have <b>{customs.length}</b> saved theme{customs.length > 1 ? 's' : ''}.</> : 'Start from any built-in theme.'}</span>
-          </div>
-        </Spec>
-
-        <Spec n="31" title="Quick tokens" text="Any role or control token can also be overridden on a scope in code — inline via ArtinosTheme tokens, or as plain CSS. Everything derived from it (seam, LED, focus ring) follows.">
-          <ThemeBuilder />
-        </Spec>
-
-        <Spec n="32" title="Install" text="Copy the artinos-ui folder into your project, import the stylesheet once, import components. Requires React 18+ and react-dom (for portals). No provider, no build plugin, no Tailwind.">
-          <pre className="sc-tree">{`artinos-ui/
-  artinos.css            ← import once at the app root
-  index.ts               ← every component + types
-  tokens/   tokens.css · themes.css · materials.css · fonts.css
-  core/     RollingValue · ArtinosTheme · utils · hooks · core.css
-  slider/   Slider · RangeSlider · engine · HUD · slider.css
-  controls/ NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · controls.css
-  layout/   Panel · Section · Field · Tabs · layout.css`}</pre>
-          <Code>{`// main.tsx
-import './artinos-ui/artinos.css';
-import { ArtinosTheme, Slider, Switch } from './artinos-ui';
-
-export function Inspector() {
-  const [rough, setRough] = useState(0.52);
-  return (
-    <ArtinosTheme theme="studio">
-      <Slider label="Roughness" value={rough} onChange={setRough} toggleable />
-      <Switch label="Shadows" defaultValue />
-    </ArtinosTheme>
-  );
-}`}</Code>
-        </Spec>
-
-        <div className="sc-foot">
-          <span>ARTINOS UI · {custom ? custom.name : THEME_META[baseTheme].label} · {THEME_META[baseTheme].kind} · {density}</span>
+        <footer className="sc-foot">
+          <span>
+            ARTINOS UI · {custom ? custom.name : THEME_META[baseTheme].label} · {THEME_META[baseTheme].kind} · {density}
+          </span>
           <span>copy → paste → import → use</span>
-        </div>
+        </footer>
       </main>
 
       {exporting ? <ExportKit customs={customs} current={theme} onClose={() => setExporting(false)} /> : null}
     </ArtinosTheme>
+  );
+}
+
+/* ---------- hero ---------- */
+
+function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => void }) {
+  const componentChapters = CHAPTERS.filter((c) => !c.meta);
+  return (
+    <section className="sc-hero">
+      <div className="sc-hero__lede">
+        <span className="sc-hero__kicker">A precision-instrument control system for React</span>
+        <h1>ARTINOS UI</h1>
+        <p>
+          One compact surface per parameter: the capsule is the control, the seam is the handle, the readout is the precision zone. Every component is made of the same five materials and
+          follows any of {THEMES.length} themes. Everything on this page is live — switch the theme in the bar, or build your own.
+        </p>
+        <div className="sc-hero__actions">
+          <Button variant="primary" onClick={onStudio}>
+            Open Theme Studio
+          </Button>
+          <Button onClick={onExport}>Export a kit</Button>
+          <a className="sc-hero__link" href={'#' + chapterAnchor('foundations')}>
+            Start with the foundations
+          </a>
+        </div>
+      </div>
+      <div className="sc-hero__side">
+        <div className="sc-stats">
+          <div className="sc-stat">
+            <b>
+              <CountUp to={THEMES.length} />
+            </b>
+            <span>THEMES</span>
+          </div>
+          <div className="sc-stat">
+            <b>
+              <CountUp to={GLASS_THEMES.length} delay={120} />
+            </b>
+            <span>GLASS &amp; FROST</span>
+          </div>
+          <div className="sc-stat">
+            <b>
+              <CountUp to={KIT_COMPONENTS.length} delay={240} />
+            </b>
+            <span>COMPONENTS</span>
+          </div>
+        </div>
+        <nav className="sc-hero__map" aria-label="Component chapters">
+          {componentChapters.map((c) => (
+            <a key={c.id} href={'#' + chapterAnchor(c.id)}>
+              <span className="sc-num">{chapterNumber(c.id)}</span>
+              <b>{c.title}</b>
+              <span className="sc-hero__count">{c.components?.length ?? 0}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+    </section>
   );
 }
 
@@ -214,37 +198,73 @@ function CountUp({ to, delay = 0 }: { to: number; delay?: number }) {
   return <RollingValue text={String(n).padStart(String(to).length, '0')} base={0} />;
 }
 
-/** The page's parts, in order. */
-const PARTS = ['Foundations', 'Slider', 'Controls', 'Layout', 'Actions', 'Inputs & display', 'Overlays', 'Workspace', 'Make it yours'];
+/* ---------- index ---------- */
 
-/** The contents nav in the bar: one mono-caps link per part; the part on screen is lit. */
-function Contents() {
-  const [active, setActive] = useState(PARTS[0]);
+/**
+ * The page index: every chapter, and the sections of the one you are reading. The section on
+ * screen is lit with the signal LED; the index scrolls itself to keep it in view.
+ */
+function PageIndex() {
+  const [active, setActive] = useState<string>(CHAPTERS[0].sections[0].id);
   useEffect(() => {
-    const heads = PARTS.map((title) => document.getElementById(partId(title))).filter((el): el is HTMLElement => !!el);
-    if (!heads.length) return;
-    // the active part is the last heading above the top third of the viewport
+    let frame = 0;
     const update = () => {
-      const line = window.innerHeight / 3;
-      let current = PARTS[0];
-      for (const head of heads) if (head.getBoundingClientRect().top <= line) current = head.dataset.part ?? current;
-      setActive(current);
+      frame = 0;
+      const line = Math.min(220, window.innerHeight * 0.3);
+      // in document order a chapter comes before its sections; a chapter heading that has
+      // reached the line already counts as its first section
+      const marks = document.querySelectorAll<HTMLElement>('.sc-content [data-chapter], .sc-content [data-section]');
+      let current: string | undefined;
+      for (const el of marks) {
+        if (el.getBoundingClientRect().top > line) break;
+        current = el.dataset.section ?? CHAPTERS.find((c) => c.id === el.dataset.chapter)?.sections[0].id;
+      }
+      setActive(current ?? CHAPTERS[0].sections[0].id);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
     };
     update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
   }, []);
+  // keep the lit row visible inside the index's own scroll
+  useEffect(() => {
+    document.querySelector('.sc-index [data-active-section]')?.scrollIntoView({ block: 'nearest' });
+  }, [active]);
+  const activeChapter = SECTIONS.get(active)?.chapter.id;
   return (
-    <nav className="sc-contents" aria-label="Contents">
-      {PARTS.map((title) => (
-        <a key={title} href={'#' + partId(title)} data-active={title === active || undefined}>
-          {title}
-        </a>
-      ))}
+    <nav className="sc-index" aria-label="Contents">
+      {CHAPTERS.map((chapter) => {
+        const open = chapter.id === activeChapter;
+        return (
+          <div key={chapter.id} className="sc-index__chapter" data-open={open || undefined}>
+            <a href={'#' + chapterAnchor(chapter.id)} className="sc-index__head">
+              <span className="sc-num">{chapterNumber(chapter.id)}</span>
+              <b>{chapter.title}</b>
+            </a>
+            <div className="sc-index__fold">
+              <div className="sc-index__sections">
+                {chapter.sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={'#' + sectionAnchor(section.id)}
+                    data-active-section={section.id === active || undefined}
+                    tabIndex={open ? undefined : -1}
+                  >
+                    {section.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </nav>
   );
 }

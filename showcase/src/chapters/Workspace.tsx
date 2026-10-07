@@ -1,0 +1,73 @@
+/* 08 · Workspace — the Dock around a viewport, and the node graph. */
+import { useMemo } from 'react';
+import { Dock } from '../../../src';
+import type { DockPanel } from '../../../src';
+import { BACKDROPS, Chapter, Spec } from '../shared';
+import { ConsolePanel, GraphPanel, InspectorPanel, LayersPanel } from './demos';
+
+function WorkspaceDemo() {
+  const panels = useMemo<DockPanel[]>(
+    () => [
+      { id: 'inspector', title: 'Inspector', description: 'Material controls', dock: 'left', content: <InspectorPanel /> },
+      { id: 'layers', title: 'Layers', description: 'Scene layers — right-click one', dock: 'right', content: <LayersPanel /> },
+      { id: 'console', title: 'Console', description: 'Live readouts', active: true, content: <ConsolePanel />, footer: 'Sampling · 220 ms' },
+      { id: 'graph', title: 'Graph', description: 'Node editor', keywords: ['nodes', 'wires'], content: <GraphPanel /> },
+      {
+        id: 'notes',
+        title: 'Notes',
+        description: 'A floating panel',
+        dock: 'float',
+        content: <p className="sc-text">Drag a tab out to float it, onto an edge to dock it, onto another dock to merge. Right-click a tab for every placement.</p>,
+      },
+    ],
+    [],
+  );
+  return (
+    <div className="sc-workspace">
+      <Dock
+        panels={panels}
+        viewport={<img className="sc-workspace__view" src={BACKDROPS.garden} alt="" />}
+        storageKey="artinos-showcase.dock.v2"
+        sizes={{ left: 0.28, right: 0.25, bottom: 0.38 }}
+        floatBounds={{ x: 380, y: 60, width: 300, height: 170 }}
+        viewProps={{ padding: 8, gap: 6 }}
+      />
+    </div>
+  );
+}
+
+export function WorkspaceChapter() {
+  return (
+    <Chapter id="workspace">
+      <Spec
+        id="dock"
+        text="A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float. Drag a tab out to float it, onto an edge to dock it, onto another dock to merge; right-click a tab for every placement. A panel's PanelBar rises into the tab strip when there is room. storageKey keeps the arrangement. Built on the MetaBlock engine."
+        keys={[
+          ['DRAG TAB', 'float · dock · merge · split'],
+          ['RIGHT-CLICK TAB', 'snap · dock · pin · auto-hide · attach'],
+          ['CTRL/⌘ K', 'search panels and commands'],
+        ]}
+        code={`<Dock
+  viewport={<Canvas>…</Canvas>}
+  storageKey="my-app.dock"
+  panels={[
+    { id: 'inspector', title: 'Inspector', dock: 'left', content: <Inspector /> },
+    { id: 'console', title: 'Console', content: <Console />, footer: 'Ready' },
+    { id: 'notes', title: 'Notes', dock: 'float', content: <Notes /> },
+  ]}
+/>`}
+      >
+        <WorkspaceDemo />
+      </Spec>
+
+      <Spec
+        id="node-graph"
+        text="A node editor on a dot-grid well. A node is a small Panel built from the family's own controls; its ports light like LEDs when wired and its preview is a Sparkline. Drag from a port to wire, click a wire to cut it, drag the canvas to select, Alt-drag to pan, Ctrl/⌘ + wheel to zoom, right-click for the node palette. graph/gpu compiles a graph to three.js TSL."
+        code={`const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [], edges: [] });
+<NodeGraph value={graph} onChange={setGraph} />`}
+      >
+        <GraphPanel height={430} />
+      </Spec>
+    </Chapter>
+  );
+}

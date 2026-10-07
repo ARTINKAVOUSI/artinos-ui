@@ -4,7 +4,7 @@ import { ArtinosTheme, THEMES, THEME_META, DENSITIES, Slider, Segmented, Select,
 import type { Density, ThemeName } from '../../../src';
 import { BACKDROPS, BACKDROP_OPTIONS, GalleryMode, Swatch } from '../shared';
 import type { Backdrop } from '../shared';
-import { ComponentGallery } from '../gallery/ComponentGallery';
+import { ComponentChapters } from '../chapters';
 import { GROUPS, collectTokenNames } from './spec';
 import type { Param } from './spec';
 import { inspectAt } from './inspect';
@@ -33,7 +33,7 @@ interface Draft {
 const Gallery = memo(function Gallery() {
   return (
     <GalleryMode.Provider value={{ code: false, compact: true }}>
-      <ComponentGallery />
+      <ComponentChapters />
     </GalleryMode.Provider>
   );
 });

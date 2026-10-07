@@ -49,6 +49,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 - **`skill/SKILL.md`** is the skill template (`{{PACKAGE}}` is filled in on install). After changing it or `docs/`, run `node artinos.mjs skill --user`.
 - **`tools/kit.mjs`** is the one kit builder, used by both `artinos.mjs export` and the showcase Export kit. It's pure: source text in, files out. **`tools/zip.mjs`** writes .zip files.
 - **`showcase/`** is the Vite app.
-  - Its source is laid out as `src/app` (shell and page), `gallery`, `shared`, `studio` (Theme Studio), `export` (Export kit) and `assets`.
+  - Its source is laid out as `src/app` (shell, hero and page index), `chapters` (one file per chapter, plus `registry.ts`), `shared`, `studio` (Theme Studio), `export` (Export kit) and `assets`.
+  - `chapters/registry.ts` is the page's structure: chapters, their sections, and the components each covers. The page, the sidebar index and every section number read from it, so add or move a section there first, then give its `<Spec id=…>` content in the chapter file.
   - Use `pnpm dev` while working, and `pnpm build` to type-check and rebuild `artinos-ui-showcase.html`.
 - **`design/`** holds references only; nothing imports it.

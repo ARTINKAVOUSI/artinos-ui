@@ -1,11 +1,13 @@
 import { createContext, useContext, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { THEMES, THEME_META } from '../../../src';
+import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import type { ThemeName } from '../../../src';
 import persianGarden from '../assets/persian-garden.jpg';
 import monstera from '../assets/monstera.jpg';
 
-/* Shared showcase parts: swatches, backdrops, icons, and the Spec / Code / Part layout. */
+/* Shared showcase parts: swatches, backdrops, icons, and the Chapter / Spec / Code layout.
+   Chapters and sections take their numbers and titles from ../chapters/registry. */
 
 /** How specs render: the showcase shows code and full notes; the Theme Studio preview is compact. */
 export const GalleryMode = createContext({ code: true, compact: false });
@@ -69,23 +71,26 @@ export function Code({ children }: { children: string }) {
   );
 }
 
-export function Spec({ n, title, text, keys, code, children }: { n: string; title: string; text: ReactNode; keys?: Array<[string, string]>; code?: string; children: ReactNode }) {
+/** One section: the registry gives its number and title; the left column explains, the right one shows. */
+export function Spec({ id, text, keys, code, children }: { id: string; text: ReactNode; keys?: Array<[string, string]>; code?: string; children: ReactNode }) {
   const mode = useContext(GalleryMode);
+  const def = SECTIONS.get(id);
+  if (!def) throw new Error(`Section "${id}" is not in chapters/registry.ts`);
   if (mode.compact)
     return (
       <section className="sc-spec sc-spec--compact">
         <div className="sc-about">
-          <span className="sc-num">{n}</span>
-          <b className="sc-title">{title}</b>
+          <span className="sc-num">{def.n}</span>
+          <b className="sc-title">{def.title}</b>
         </div>
         <div className="sc-demo">{children}</div>
       </section>
     );
   return (
-    <section className="sc-spec" id={'s' + n}>
+    <section className="sc-spec" id={sectionAnchor(id)} data-section={id}>
       <div className="sc-about">
-        <span className="sc-num">{n}</span>
-        <b className="sc-title">{title}</b>
+        <span className="sc-num">{def.n}</span>
+        <b className="sc-title">{def.title}</b>
         <p className="sc-text">{text}</p>
         {keys ? (
           <div className="sc-keys">
@@ -106,11 +111,28 @@ export function Spec({ n, title, text, keys, code, children }: { n: string; titl
   );
 }
 
-/** A part heading. Its id (`part-<slug>`) is what the contents nav in the bar jumps to. */
-export const partId = (title: string) => 'part-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-export const Part = ({ title, note }: { title: string; note: string }) => (
-  <div className="sc-part" id={partId(title)} data-part={title}>
-    <h2>{title}</h2>
-    <span>{note}</span>
-  </div>
-);
+/** A chapter: its opener (number, title, note, the components it covers), then its sections. */
+export function Chapter({ id, children }: { id: string; children: ReactNode }) {
+  const mode = useContext(GalleryMode);
+  const def = CHAPTERS.find((c) => c.id === id);
+  if (!def) throw new Error(`Chapter "${id}" is not in chapters/registry.ts`);
+  return (
+    <section className="sc-chapter" id={chapterAnchor(id)} data-chapter={id}>
+      <header className="sc-chapter__head">
+        <span className="sc-chapter__num">{chapterNumber(id)}</span>
+        <div className="sc-chapter__titles">
+          <h2>{def.title}</h2>
+          {mode.compact ? null : <p>{def.note}</p>}
+        </div>
+        {def.components && !mode.compact ? (
+          <div className="sc-chapter__parts" aria-label="Components in this chapter">
+            {def.components.map((name) => (
+              <code key={name}>{name}</code>
+            ))}
+          </div>
+        ) : null}
+      </header>
+      {children}
+    </section>
+  );
+}
