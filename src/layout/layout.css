@@ -128,18 +128,18 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off lives in the rule, in neutral ink only: on, a brighter line runs from the
-   title (it sweeps in when switched on and drains back when off); off, only a faint hairline
-   remains, so an off group still reads as a group. */
+/* the group's on/off lives in the rule, a 1px hairline in neutral ink: on, the strong line ink
+   runs from the title (it sweeps in when switched on and drains back when off); off, only the
+   faint hairline remains, so an off group still reads as a group. */
 .ar-section__rule {
   position: relative;
 }
 .ar-section__rule::after {
   content: '';
   position: absolute;
-  inset: -0.5px 0;
-  border-radius: 1px;
-  background: linear-gradient(90deg, var(--ar-text-mid), color-mix(in srgb, var(--ar-text-mid) 30%, transparent) 55%, transparent);
+  inset: 0;
+  /* the same 1px hairline as every rule in the family, in the strong line ink */
+  background: linear-gradient(90deg, var(--ar-line-strong), transparent);
   transform: scaleX(0);
   transform-origin: left center;
   opacity: 0;
@@ -205,12 +205,31 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-section__count {
   flex: none;
+  max-width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-weight: var(--ar-value-weight);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
+  text-transform: var(--ar-label-case);
   color: var(--ar-text-faint);
+  transition:
+    color var(--ar-dur-state) var(--ar-ease),
+    opacity var(--ar-dur-surface) var(--ar-ease);
+}
+/* a word that matters inside the note can lift itself: <b>1 changed</b> */
+.ar-section__count b {
+  font-weight: inherit;
+  color: var(--ar-text-mid);
+}
+.ar-section__trigger:hover .ar-section__count {
+  color: var(--ar-text-low);
+}
+.ar-section[data-off] .ar-section__count {
+  opacity: 0.5;
 }
 /* the fold: collapsing (or switching the group off) rolls the rows up like a closing list;
    opening unrolls them. Closing is quicker and eases in; opening settles. */

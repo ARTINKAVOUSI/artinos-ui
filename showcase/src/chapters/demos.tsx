@@ -61,8 +61,9 @@ export function InspectorPanel() {
   const [exposure, setExposure] = useState(0.71);
   const [gain, setGain] = useState(-4.5);
   const [live, setLive] = useState(true);
+  const changed = Number(exposure !== 0.62) + Number(gain !== -4.5);
   return (
-    <Section title="Material" enabled={live} onEnabledChange={setLive}>
+    <Section title="Material" count={changed ? `${changed} changed · 3` : 3} enabled={live} onEnabledChange={setLive}>
       <PropertyRow label="Exposure" modified={exposure !== 0.62} onReset={() => setExposure(0.62)}>
         <Slider label="Exposure" value={exposure} onChange={setExposure} />
       </PropertyRow>

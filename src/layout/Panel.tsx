@@ -51,7 +51,8 @@ export function Panel({ title, subtitle, actions, tabs, footer, children, as = '
 
 export interface SectionProps {
   title: ReactNode;
-  /** Quiet count or note at the end of the header rule. */
+  /** Quiet info at the end of the rule, before any actions and the chevron: a count (numbers roll)
+   *  or a short note such as "1 changed · 3". Clicking it folds the group like the title. */
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;

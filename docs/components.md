@@ -147,9 +147,10 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
 - **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule (which carries on/off) · count · actions · chevron. Props:
-  - `title` (required), `count`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
+  - `title` (required), `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
+  - `count`: quiet info at the end of the line, before any actions and the chevron — a number (it rolls when it changes) or a short note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it). It dims with the group when off;
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
-  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, carried by the title row's line in neutral ink: on, a brighter line runs from the title (it sweeps in when switched on and drains back when off); off, a faint hairline and a quiet title. **One click** on the title or line folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, carried by the title row's 1px hairline in neutral ink: on, the strong line ink runs from the title (it sweeps in when switched on and drains back when off); off, a faint hairline and a quiet title. **One click** on the title or line folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
   - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title, rule and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 

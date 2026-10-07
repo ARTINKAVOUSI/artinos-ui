@@ -175,8 +175,8 @@ export function LayoutChapter() {
 
       <Spec
         id="property-rows"
-        text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. A switchable group carries its on/off in the title row's line: a soft signal light runs along it while the group is on. Click the title or line to fold the group; double-click it (or Shift+Enter) to switch it off, which folds it closed and disables it, and again to bring it back."
-        code={`<Section title="Material" enabled={on} onEnabledChange={setOn}>
+        text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. A switchable group carries its on/off in the title row's line: a brighter neutral line runs from the title while the group is on, and quiet info such as a count sits at its end, before the chevron. Click the title or line to fold the group; double-click it (or Shift+Enter) to switch it off, which folds it closed and disables it, and again to bring it back."
+        code={`<Section title="Material" count={changed ? \`\${changed} changed · 3\` : 3} enabled={on} onEnabledChange={setOn}>
   <PropertyRow label="Exposure" modified={v !== 0.62} onReset={reset}><Slider label="Exposure" … /></PropertyRow>
   <PropertyRow label="Gain" binding="LFO 1" status="bound"><Slider label="Gain" … /></PropertyRow>
   <PropertyRow label="Mode" density="compact"><Select … /></PropertyRow>
