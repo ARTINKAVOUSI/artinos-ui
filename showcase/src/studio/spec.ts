@@ -19,16 +19,33 @@ const c = (token: string, label: string): Param => ({ kind: 'color', token: '--a
 const px = (token: string, label: string, min: number, max: number, step = 1, decimals = 0): Param => ({ kind: 'length', token: '--ar-' + token, label, min, max, step, unit: 'px', decimals });
 const k = (kind: Exclude<Param['kind'], 'color' | 'length' | 'select'>, token: string, label: string): Param => ({ kind, token: '--ar-' + token, label });
 
+// the faces of every type collection (tokens/type.css), all loaded by the showcase
 export const MONO_FONTS = [
   { value: "'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'Chivo Mono' },
+  { value: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'IBM Plex Mono' },
+  { value: "'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'Geist Mono' },
+  { value: "'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'JetBrains Mono' },
+  { value: "'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'DM Mono' },
+  { value: "'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace", label: 'Red Hat Mono' },
   { value: "'Roboto Mono', 'Chivo Mono', ui-monospace, monospace", label: 'Roboto Mono' },
   { value: 'ui-monospace, SFMono-Regular, Consolas, monospace', label: 'System mono' },
   { value: "Chivo, system-ui, sans-serif", label: 'Chivo (proportional)' },
 ];
 export const UI_FONTS = [
   { value: "Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'Chivo' },
+  { value: "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'IBM Plex Sans' },
+  { value: "Geist, system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'Geist' },
+  { value: "Inter, system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'Inter' },
+  { value: "'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'DM Sans' },
+  { value: "'Red Hat Text', system-ui, -apple-system, 'Segoe UI', sans-serif", label: 'Red Hat Text' },
   { value: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif", label: 'System UI' },
   { value: "'Chivo Mono', ui-monospace, monospace", label: 'Chivo Mono' },
+];
+export const DISPLAY_FONTS = [
+  { value: 'var(--ar-font-ui)', label: 'Same as UI' },
+  { value: "'Cormorant Garamond', Georgia, 'Times New Roman', serif", label: 'Cormorant Garamond' },
+  { value: "'Red Hat Display', 'Red Hat Text', system-ui, sans-serif", label: 'Red Hat Display' },
+  ...UI_FONTS.slice(0, 6),
 ];
 // the weights the families are loaded at; 700 exists only in Roboto Mono (the reference finish)
 const WEIGHTS = [
@@ -144,6 +161,7 @@ export const GROUPS: Group[] = [
     params: [
       { kind: 'select', token: '--ar-font-ui', label: 'UI face', options: UI_FONTS },
       { kind: 'select', token: '--ar-font-num', label: 'Numeral face', options: MONO_FONTS },
+      { kind: 'select', token: '--ar-font-display', label: 'Display face', options: DISPLAY_FONTS },
       { kind: 'select', token: '--ar-control-font', label: 'Control face', options: MONO_FONTS },
       { kind: 'select', token: '--ar-label-weight', label: 'Label weight', options: WEIGHTS },
       { kind: 'select', token: '--ar-value-weight', label: 'Value weight', options: WEIGHTS },

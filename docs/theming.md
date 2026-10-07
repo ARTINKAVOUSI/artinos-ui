@@ -104,6 +104,29 @@ For React Three Fiber, the controls are DOM. Put them in an HTML overlay above t
 
 `dense` (24px) · `standard` (26px, default) · `comfort` (30px). Per control: `density="dense"`. Per scope: `<ArtinosTheme density="comfort">` or `data-ar-density="comfort"`. Type size, padding and radii follow.
 
+## Type collections
+
+Type is one superfamily in two voices: a sans that speaks (titles, prose, menus) and a mono that measures (labels, readouts, marks), tuned so a title, a label and a readout sit on one line without a seam. A **type collection** swaps the faces and re-tunes only what the faces change (caps tracking, the control-label tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).
+
+| collection | sans · mono (· display) | character |
+|---|---|---|
+| `instrument` (default) | Chivo · Chivo Mono | one grotesk superfamily with an engineering edge: crisp caps, even numerals |
+| `editorial` | IBM Plex Sans · IBM Plex Mono | drawn, editorial; open counters, a mono with character |
+| `geist` | Geist · Geist Mono | quiet, contemporary, exact; the most neutral |
+| `modern` | Inter · JetBrains Mono | the proven pairing of modern tools; tall x-height, a wide legible mono |
+| `atelier` | DM Sans · DM Mono | warm geometric, soft terminals, a lighter touch |
+| `red-hat` | Red Hat Text · Red Hat Mono · Red Hat Display | a three-voice superfamily, friendly and crisp, with its own display face |
+| `luxe` | Inter · JetBrains Mono · Cormorant Garamond | a serif display over a neutral sans: editorial luxury, made for the luxe themes |
+
+Set one on the theme scope or on any element; it inherits, carries through nested themes and follows portalled overlays (lists, menus, the palette, tooltips, the slider HUD):
+
+```tsx
+<ArtinosTheme theme="onyx" type="luxe"> … </ArtinosTheme>
+<div data-ar-type="editorial"> … </div>
+```
+
+A kit ships the collections it was exported with (`--type luxe,editorial`; `instrument` always comes along) and `tokens/fonts.css` loads exactly their faces from Google Fonts. The registry is `TYPE_COLLECTIONS` / `TYPE_META[id]` (`label`, `ui`, `mono`, `display`, `description`). To self-host, delete the import from `artinos.css` and declare the same families at 200 · 300 · 400 · 500 with `@font-face`. Theme Studio's Typography group can also set the faces token by token.
+
 ## Token layers
 
 Three layers, each reading only the one above it:
@@ -196,7 +219,7 @@ Control finish (materials level):
 
 One superfamily in two voices. **Chivo**, the sans, speaks: titles, prose, menus, field labels. **Chivo Mono**, its monospaced sibling, measures: control labels, readouts, counts and marks. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
-- families: `--ar-font-ui` (Chivo), `--ar-font-num` (Chivo Mono). A theme's controls read `--ar-control-font` (usually Chivo Mono; Roboto Mono in `reference`).
+- families: `--ar-font-ui` (the sans), `--ar-font-num` (the mono), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the mono; Roboto Mono in `reference`).
 - weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, the default for prose, titles and values), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps).
 - the sans scale, weight 300: `--ar-text-xs` (10.5px, hints and captions), `--ar-text-sm` (11.5px, secondary lines, tabs, menu rows), `--ar-text-md` (12px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.
 - the mono caps voice outside a control (kickers, foot lines, counts, badges, keycaps, port tags), always weight 500, uppercase, `--ar-track-caps`: `--ar-caps-sm` (9px) and `--ar-caps-xs` (8px, the smallest mark). The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.

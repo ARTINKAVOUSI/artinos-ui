@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { THEMES, THEME_META } from '../../../src';
+import { THEMES, THEME_META, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import type { ThemeName } from '../../../src';
 import persianGarden from '../assets/persian-garden.jpg';
@@ -18,6 +18,7 @@ export const Swatch = ({ t }: { t: ThemeName }) => {
   return <i className="sc-swatch" style={{ '--a': a, '--b': b, '--c': c } as CSSProperties} />;
 };
 export const THEME_OPTIONS = THEMES.map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> }));
+export const TYPE_OPTIONS = TYPE_COLLECTIONS.map((t) => ({ value: t, label: TYPE_META[t].label }));
 export const BACKDROPS = { none: '', garden: persianGarden, monstera } as const;
 export const BACKDROP_OPTIONS = [{ value: 'garden', label: 'Persian garden' }, { value: 'monstera', label: 'Monstera' }, { value: 'none', label: 'None' }] as const;
 export type Backdrop = keyof typeof BACKDROPS;

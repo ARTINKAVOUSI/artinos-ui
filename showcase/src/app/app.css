@@ -144,7 +144,7 @@ html::-webkit-scrollbar-thumb:hover {
   width: 180px;
 }
 .sc-pick > .ar-segmented {
-  width: 220px;
+  width: 240px; /* room for the widest collection's mono */
 }
 .sc-bar__actions {
   display: flex;
@@ -196,7 +196,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-hero h1 {
   margin: 0;
-  font: var(--ar-weight-thin) var(--sc-text-hero) / var(--ar-leading-none) var(--ar-font-ui);
+  font: var(--ar-weight-thin) var(--sc-text-hero) / var(--ar-leading-none) var(--ar-font-display);
   letter-spacing: var(--ar-track-display);
   color: var(--ar-text-hi);
 }
@@ -415,7 +415,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-chapter__titles h2 {
   margin: 0;
-  font: var(--ar-weight-thin) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-ui);
+  font: var(--ar-weight-thin) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-display);
   letter-spacing: var(--ar-track-display);
   color: var(--ar-text-hi);
 }
@@ -665,6 +665,51 @@ html::-webkit-scrollbar-thumb:hover {
   letter-spacing: var(--ar-track-caps);
   color: var(--ar-text-low);
   text-transform: uppercase;
+}
+
+/* type collection cards: each a data-ar-type scope, so the specimen is set in its own faces */
+.sc-grid--type {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+.sc-type {
+  margin: 0;
+  font-family: var(--ar-font-ui);
+}
+.sc-type__display {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font: var(--ar-weight-thin) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-display);
+  letter-spacing: var(--ar-track-display);
+  color: var(--ar-text-hi);
+}
+.sc-type__display span {
+  font: var(--ar-weight-light) var(--ar-text-lg) var(--ar-font-num);
+  letter-spacing: var(--ar-track-text);
+  color: var(--ar-text-low);
+}
+.sc-type__faces {
+  text-transform: none;
+  letter-spacing: var(--ar-track-text);
+  text-align: right;
+}
+.sc-type__specimen {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 4px;
+  border-top: 1px solid var(--ar-line-subtle);
+}
+.sc-type__title {
+  font: var(--ar-weight-light) var(--ar-text-xl) / var(--ar-leading-snug) var(--ar-font-ui);
+  letter-spacing: var(--ar-track-title);
+  color: var(--ar-text-hi);
+}
+.sc-type__caps {
+  font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
+  text-transform: uppercase;
+  color: var(--ar-text-low);
 }
 .sc-card__text {
   margin: 0;

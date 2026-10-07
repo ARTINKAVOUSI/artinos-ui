@@ -1,7 +1,7 @@
 /* Export kit dialog — pick themes and components, get a ready-to-paste folder. */
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { Field, RollingText, RollingValue, Switch, THEMES, THEME_META } from '../../../src';
+import { Field, RollingText, RollingValue, Switch, THEMES, THEME_META, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
 import type { ThemeName } from '../../../src';
 import { Swatch } from '../shared';
 import { collectTokenNames } from '../studio/spec';
@@ -60,6 +60,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const [themes, setThemes] = useState<string[]>(() => (current.startsWith('c:') ? [] : [current]));
   const [customIds, setCustomIds] = useState<string[]>(() => (current.startsWith('c:') ? [current.slice(2)] : []));
   const [comps, setComps] = useState<string[]>(() => ALL_COMPONENTS);
+  const [types, setTypes] = useState<string[]>(['instrument']);
   const [folder, setFolder] = useState('artinos-ui');
   const [googleFonts, setGoogleFonts] = useState(true);
   const [materials, setMaterials] = useState(true);
@@ -77,8 +78,8 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const customCssList = useMemo(() => customs.filter((c) => customIds.includes(c.id)).map((c) => customCss(c, tokenNames)), [customs, customIds, tokenNames]);
   const safeFolder = folder.trim().replace(/[^\w.-]+/g, '-') || 'artinos-ui';
   const files = useMemo(
-    () => buildKit({ folder: safeFolder, themes, components: comps, customs: customCssList, googleFonts, materials, docs }),
-    [safeFolder, themes, comps, customCssList, googleFonts, materials, docs],
+    () => buildKit({ folder: safeFolder, themes, components: comps, customs: customCssList, types, googleFonts, materials, docs }),
+    [safeFolder, themes, comps, customCssList, types, googleFonts, materials, docs],
   );
   const total = Object.values(files).reduce((n, s) => n + new Blob([s]).size, 0);
   const nThemes = new Set([BASE_THEME, ...themes]).size + customCssList.length;
@@ -225,6 +226,20 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
             ))}
             <p className="xk__note">Shared helpers (hooks, formatting, the theme scope) come along automatically when a component needs them.</p>
 
+            <div className="xk__sub">
+              Type collections <em><RollingValue text={String(new Set(['instrument', ...types]).size)} base={0} /></em>
+            </div>
+            <div className="xk__comps">
+              {TYPE_COLLECTIONS.map((t) => (
+                <button key={t} type="button" className="xk__comp" aria-pressed={t === 'instrument' || types.includes(t)} disabled={t === 'instrument'} onClick={() => flip(setTypes, t)}>
+                  <i className="xk__tick" />
+                  <b>{TYPE_META[t].label}</b>
+                  <span>{[TYPE_META[t].ui, TYPE_META[t].mono, TYPE_META[t].display].filter(Boolean).join(' · ')}</span>
+                </button>
+              ))}
+            </div>
+            <p className="xk__note">A collection is a font pairing with its own tuning, set with <code>type="…"</code> on the theme scope. Instrument is what the tokens give and always comes along; the faces of every picked collection load from Google Fonts.</p>
+
             <div className="xk__sub">Options</div>
             <label className="xk__field">
               <span>Folder name</span>
@@ -236,7 +251,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
               <Field label="Guides" labelWidth={120}><Switch variant="compact" label="Guides" value={docs} onChange={setDocs} /></Field>
             </div>
             <p className="xk__note">
-              Google Fonts loads Chivo and Chivo Mono; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop. Guides add <code>docs/</code>: the component API, the catalogue of every kind and the theming guide.
+              Google Fonts loads the picked collections' faces; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop. Guides add <code>docs/</code>: the component API, the catalogue of every kind and the theming guide.
             </p>
           </section>
 

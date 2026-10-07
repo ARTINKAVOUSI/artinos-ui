@@ -2,10 +2,10 @@
    quick-token builder. */
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArtinosTheme, GLASS_THEMES, THEME_META,
+  ArtinosTheme, GLASS_THEMES, THEME_META, TYPE_META,
   Slider, RangeSlider, NumberField, Switch, Segmented, ColorField, Select, Field,
 } from '../../../src';
-import type { ThemeName } from '../../../src';
+import type { ThemeName, TypeCollection } from '../../../src';
 import { Swatch, THEME_OPTIONS, Code } from '../shared';
 
 /* ---------- foundations ---------- */
@@ -52,6 +52,39 @@ export const FAMILIES: Array<[string, string[]]> = [
 
 const isGlass = (t: ThemeName) => (GLASS_THEMES as readonly string[]).includes(t);
 
+/** A type collection as a specimen: the display face, the sans title, the mono caps and a live
+ *  control, each card its own data-ar-type scope inside the page's theme. */
+export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boolean; onPick: () => void }) {
+  const m = TYPE_META[t];
+  const faces = [m.ui, m.mono, m.display].filter(Boolean).join(' · ');
+  return (
+    <figure
+      data-ar-type={t}
+      className="sc-card sc-type"
+      data-active={active ? '' : undefined}
+      role="button"
+      tabIndex={0}
+      aria-pressed={active}
+      onClick={onPick}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPick())}
+    >
+      <div className="sc-type__display">
+        Aa<span>Rr 0123 kHz</span>
+      </div>
+      <div className="sc-card__head">
+        <span className="sc-card__name">{m.label}</span>
+        <span className="sc-card__meta sc-type__faces">{faces}</span>
+      </div>
+      <p className="sc-card__text">{m.description}</p>
+      <div className="sc-type__specimen" onClick={(e) => e.stopPropagation()}>
+        <b className="sc-type__title">Material · Optical body</b>
+        <span className="sc-type__caps">Frequency · 440 Hz · 3 changed</span>
+        <Slider label="Exposure" defaultValue={0.62} format="percent" decimals={0} density="dense" />
+      </div>
+    </figure>
+  );
+}
+
 export function ThemeCard({ t, active, onPick }: { t: ThemeName; active: boolean; onPick: () => void }) {
   const glass = isGlass(t);
   return (
@@ -92,7 +125,8 @@ export function ThemeBuilder() {
   const [ground, setGround] = useState('#120E14');
   const [radius, setRadius] = useState(9);
   const [well, setWell] = useState(0.42);
-  const [font, setFont] = useState('Chivo Mono');
+  // the mono face is the page's type collection unless a face is picked here
+  const [font, setFont] = useState('Inherit');
   const [base, setBase] = useState<ThemeName>('studio');
   const tokens = {
     signal,
@@ -102,7 +136,7 @@ export function ThemeBuilder() {
     'bg-app': ground,
     trough: `rgba(0, 0, 0, ${well.toFixed(2)})`,
     radius: radius + 'px',
-    'font-num': `'${font}', ui-monospace, monospace`,
+    ...(font === 'Inherit' ? {} : { 'font-num': `'${font}', ui-monospace, monospace` }),
   };
   const code = `<ArtinosTheme
   theme="${base}"
@@ -125,7 +159,7 @@ ${Object.entries(tokens).map(([k, v]) => `  --ar-${k}: ${v};`).join('\n')}
           <Field label="Ground"><ColorField value={ground} onChange={setGround} /></Field>
           <Field label="Radius"><NumberField value={radius} onChange={setRadius} min={0} max={14} unit="px" aria-label="Radius" /></Field>
           <Field label="Well"><Slider label="Depth" value={well} onChange={setWell} max={0.8} toggleable={false} /></Field>
-          <Field label="Numerals"><Select options={['Chivo Mono', 'Roboto Mono', 'ui-monospace']} value={font} onChange={setFont} appearance="well" label="Numerals" /></Field>
+          <Field label="Numerals"><Select options={['Inherit', 'Chivo Mono', 'IBM Plex Mono', 'Geist Mono', 'JetBrains Mono', 'DM Mono', 'Red Hat Mono', 'Roboto Mono']} value={font} onChange={setFont} appearance="well" label="Numerals" /></Field>
           <Field label="Base theme"><Select options={THEME_OPTIONS} value={base} onChange={setBase} appearance="well" label="Base theme" /></Field>
         </div>
         <ArtinosTheme theme={base} tokens={tokens} ground style={{ flex: '1 1 320px', minWidth: 0, padding: 16, borderRadius: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>

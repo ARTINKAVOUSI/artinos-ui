@@ -62,6 +62,41 @@ export function readRegistry(sources) {
   return { themes, meta };
 }
 
+/* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
+
+export const BASE_TYPE = 'instrument';
+const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
+
+/** TYPE_COLLECTIONS in registry order and TYPE_META, parsed from the package source. */
+export function readTypes(sources) {
+  const utils = sources['core/utils.ts'];
+  const types = [...utils.match(/export const TYPE_COLLECTIONS = \[([\s\S]*?)\] as const;/)[1].matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  const meta = {};
+  for (const line of utils.split('\n')) {
+    const m = line.match(TYPE_RE);
+    if (m) meta[m[1] ?? m[2]] = { label: m[3], ui: m[4], mono: m[5], display: m[6], description: m[7].replace(/\\'/g, "'"), fonts: m[8] };
+  }
+  return { types, meta };
+}
+
+/** The faces a set of collections uses, in order, each once. */
+export const facesOf = (types, tmeta) => [...new Set(types.flatMap((t) => [tmeta[t].ui, tmeta[t].mono, tmeta[t].display].filter(Boolean)))];
+
+/** tokens/fonts.css for a kit: one Google Fonts request naming each family once. */
+function buildFontsCss(types, tmeta) {
+  const params = new Map();
+  for (const t of types) for (const p of tmeta[t].fonts.split('&')) params.set(p.split(':')[0], p);
+  params.set('family=Roboto+Mono', 'family=Roboto+Mono:wght@500;700');
+  const list = types.map((t) => `${t.padEnd(12)}${facesOf([t], tmeta).join(' · ')}`).join('\n *   ');
+  return `/* ARTINOS UI — typefaces for the type collections in this kit (tokens/type.css):
+ *   ${list}
+ * plus Roboto Mono for the reference theme. Loaded from Google Fonts at the weights the type
+ * tokens name. To self-host, delete this import from artinos.css and declare the same families
+ * with @font-face; every stack falls back to system fonts. */
+@import url('https://fonts.googleapis.com/css2?${[...params.values()].join('&')}&display=swap');
+`;
+}
+
 /* ---------- dependency graph ---------- */
 
 const IMPORT_RE = /(?:import|export)\s[^'"]*?from\s+'(\.{1,2}\/[^']+)'/g;
@@ -95,6 +130,7 @@ function closure(sources, entries) {
 
 const themesIn = (s) => [...s.matchAll(/data-ar-theme='([^']+)'/g)].map((m) => m[1]);
 const materialsIn = (s) => [...s.matchAll(/data-ar-material='([^']+)'/g)].map((m) => m[1]);
+const typesIn = (s) => [...s.matchAll(/data-ar-type='([^']+)'/g)].map((m) => m[1]);
 
 /** Split on commas that are not inside parentheses. */
 function splitTop(s) {
@@ -113,10 +149,8 @@ function splitTop(s) {
   return out;
 }
 
-/** Keep a selector only if every theme (and material) it names is in the kit; trims :is() lists. */
-function filterSelector(sel, keep, materials) {
-  // `:not([data-ar-material])` names no material, so theme finishes survive without the overrides
-  const ok = (s) => themesIn(s).every((t) => keep.has(t)) && (materials || materialsIn(s).length === 0);
+/** Keep a selector only if `ok` accepts every item it names; trims :is() lists. */
+function filterSelector(sel, ok) {
   const kept = [];
   let changed = false;
   for (const raw of splitTop(sel)) {
@@ -139,8 +173,8 @@ function filterSelector(sel, keep, materials) {
   return changed ? kept.map((s) => s.trim()).join(',\n') : sel;
 }
 
-/** Filter rule by rule; a comment travels with the rule after it; the file header is replaced. */
-function trimCss(css, keep, materials, header) {
+/** Filter rule by rule with `ok(selector)`; a comment travels with the rule after it; the file header is replaced. */
+function trimCss(css, ok, header) {
   const out = [];
   let i = 0;
   let pending = '';
@@ -170,7 +204,7 @@ function trimCss(css, keep, materials, header) {
     const sel = css.slice(i, open);
     const body = css.slice(open, close + 1);
     i = close + 1;
-    const next = filterSelector(sel.trim(), keep, materials);
+    const next = filterSelector(sel.trim(), ok);
     if (next) out.push(pending.replace(/^\n{3,}/, '\n\n') + next + ' ' + body);
     pending = '';
   }
@@ -224,6 +258,7 @@ function buildCssEntry(o, cssFiles) {
     './tokens/tokens.css',
     './tokens/themes.css',
     './tokens/materials.css',
+    './tokens/type.css',
     o.customs.length ? './tokens/custom-themes.css' : null,
     ...cssFiles.map((f) => './' + f),
   ].filter(Boolean);
@@ -234,8 +269,10 @@ ${imports.map((p) => `@import '${p}';`).join('\n')}
 `;
 }
 
-function buildReadme(o, meta, themes, comps, files) {
+function buildReadme(o, meta, themes, comps, files, types, tmeta) {
   const firstTheme = o.themes.find((t) => t !== BASE_THEME) ?? o.customs[0]?.slug ?? BASE_THEME;
+  const firstType = types.find((t) => t !== BASE_TYPE);
+  const faces = facesOf(types, tmeta);
   const has = (id) => comps.some((c) => c.id === id);
   const demo = [];
   if (has('Slider')) demo.push(`      <Slider label="Roughness" defaultValue={0.52} />`);
@@ -279,7 +316,7 @@ import { ${importNames.join(', ')} } from './${o.folder}';
 
 export function Controls() {
   return (
-    <ArtinosTheme theme="${firstTheme}">
+    <ArtinosTheme theme="${firstTheme}"${firstType ? ` type="${firstType}"` : ''}>
 ${inner || '      {/* controls */}'}
     </ArtinosTheme>
   );
@@ -291,9 +328,17 @@ Without React, any element with \`data-ar-theme="${firstTheme}"\` scopes the loo
 Notes:
 - TypeScript source (\`.tsx\`), \`strict\`-clean. Any bundler that handles TSX and CSS \`@import\` works (Vite, Next, webpack).
 - Component files start with \`'use client'\`; they are interactive and need the DOM.
-${o.googleFonts ? "- `tokens/fonts.css` loads Chivo, Chivo Mono and Roboto Mono from Google Fonts. To self-host, delete that `@import` from `artinos.css`; every font stack falls back to system fonts." : '- No web fonts are loaded; the font stacks fall back to system fonts. Declare Chivo / Chivo Mono with @font-face to get the original faces.'}
+${o.googleFonts ? `- \`tokens/fonts.css\` loads ${faces.join(', ')} and Roboto Mono from Google Fonts. To self-host, delete that \`@import\` from \`artinos.css\`; every font stack falls back to system fonts.` : `- No web fonts are loaded; the font stacks fall back to system fonts. Declare ${faces.join(' / ')} with @font-face to get the original faces.`}
 ${o.materials ? '' : '- Finish overrides (`material` prop) were left out; each theme keeps its own finish.\n'}
-${guides}## Themes
+${guides}## Type collections
+
+One superfamily in two voices, a sans that speaks and a mono that measures, tuned for the family's sizes. \`${BASE_TYPE}\` is what the tokens give; another is set with \`<ArtinosTheme type="…">\` or \`data-ar-type\` on any element, and carries through nested themes and portalled overlays.
+
+| collection | faces |
+|---|---|
+${types.map((t) => `| \`${t}\`${t === BASE_TYPE ? ' (default)' : ''} | ${facesOf([t], tmeta).join(' · ')} — ${tmeta[t]?.description ?? ''} |`).join('\n')}
+
+## Themes
 
 | theme | look |
 |---|---|
@@ -316,13 +361,18 @@ ${files.map((f) => `${o.folder}/${f}`).join('\n')}
 
 /**
  * @param sources  src-relative path → text, for every .ts / .tsx / .css file in src/
- * @param o        { folder, themes, components, customs, googleFonts, materials, docs?, pkgRoot? }
+ * @param o        { folder, themes, components, customs, googleFonts, materials, types?, docs?, pkgRoot? }
  * @returns        kit-relative path → text, README.md first
  */
 export function buildKit(sources, o) {
   const { themes: all, meta } = readRegistry(sources);
+  const { meta: tmeta } = readTypes(sources);
   const themes = [BASE_THEME, ...o.themes.filter((t) => t !== BASE_THEME)];
   const keep = new Set(themes);
+  // `:not([data-ar-material])` names no material, so theme finishes survive without the overrides
+  const themeOk = (s) => themesIn(s).every((t) => keep.has(t)) && (o.materials || materialsIn(s).length === 0);
+  const types = [BASE_TYPE, ...(o.types ?? []).filter((t) => t !== BASE_TYPE && t in tmeta)];
+  const keepTypes = new Set(types);
   const comps = COMPONENTS.filter((c) => o.components.includes(c.id));
   const tsFiles = closure(sources, [...CORE, ...comps.map((c) => c.file)]).sort();
   // stylesheets: each included module's folder stylesheet (folder/folder.css) and its own (Name.css),
@@ -334,19 +384,23 @@ export function buildKit(sources, o) {
   const list = themes.map((t) => `${t.padEnd(14)}${meta[t]?.label ?? ''}`).join('\n *   ');
   files['artinos.css'] = buildCssEntry(o, cssFiles);
   files['index.ts'] = buildIndex(sources, new Set(tsFiles));
-  if (o.googleFonts) files['tokens/fonts.css'] = sources['tokens/fonts.css'];
+  if (o.googleFonts) files['tokens/fonts.css'] = buildFontsCss(types, tmeta);
   files['tokens/tokens.css'] = sources['tokens/tokens.css'];
   files['tokens/themes.css'] = trimCss(
     sources['tokens/themes.css'],
-    keep,
-    o.materials,
+    themeOk,
     `/* ARTINOS UI — themes in this kit. Pick one with <ArtinosTheme theme="…"> or data-ar-theme.\n *   ${list}\n * A theme sets roles here and its control finish in materials.css. Anything a\n * theme leaves out keeps the studio value from tokens.css.\n */`,
   );
   files['tokens/materials.css'] = trimCss(
     sources['tokens/materials.css'],
-    keep,
-    o.materials,
+    themeOk,
     `/* ARTINOS UI — control finishes: the default (studio) block, ${o.materials ? 'the optional\n * data-ar-material / `material` overrides, ' : ''}and the finish of each theme in this kit.\n * \`initial\` on a token means "not set here": components derive it from density.\n */`,
+  );
+  const typeList = types.map((t) => `${t.padEnd(12)}${facesOf([t], tmeta).join(' · ')}`).join('\n *   ');
+  files['tokens/type.css'] = trimCss(
+    sources['tokens/type.css'],
+    (s) => typesIn(s).every((t) => keepTypes.has(t)),
+    `/* ARTINOS UI — type collections in this kit. Pick one with <ArtinosTheme type="…"> or data-ar-type:\n *   ${typeList}\n * A collection sets the faces and re-tunes tracking; sizes, weights and leading stay (tokens.css).\n * ${BASE_TYPE} is what tokens.css already gives. The faces load in fonts.css.\n */`,
   );
   if (o.customs.length) files['tokens/custom-themes.css'] = o.customs.map((c) => c.css.trim()).join('\n\n') + '\n';
   for (const f of tsFiles) files[f] = f === 'core/utils.ts' ? trimUtils(sources[f], all.filter((t) => keep.has(t)), o.materials) : sources[f];
@@ -354,6 +408,6 @@ export function buildKit(sources, o) {
   if (o.docs) for (const [name, text] of Object.entries(o.docs)) files['docs/' + name] = text;
 
   const order = Object.keys(files).sort((a, b) => (a.includes('/') ? 1 : 0) - (b.includes('/') ? 1 : 0) || a.localeCompare(b));
-  files['README.md'] = buildReadme(o, meta, themes, comps, ['README.md', ...order]);
+  files['README.md'] = buildReadme(o, meta, themes, comps, ['README.md', ...order], types, tmeta);
   return Object.fromEntries(['README.md', ...order].map((k) => [k, files[k]]));
 }

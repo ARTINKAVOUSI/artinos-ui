@@ -30,7 +30,7 @@ Each of these changes the steps below:
 node "{{PACKAGE}}/artinos.mjs" list
 ```
 
-Use what the user named. If they named no theme, pick one that fits the host and say which you picked:
+Use what the user named. If they named no theme, pick one that fits the host and say which you picked (and, when the brand calls for it, a type collection: see `--type` in step 3):
 - dark app → `frost-deep` or `studio`
 - light app → `studio-light` or `frost-light`
 - over imagery or a canvas → any glass or frost theme
@@ -64,6 +64,7 @@ Options:
 - `--dry-run` previews the files.
 - `--force` updates an existing kit; files it no longer needs are removed.
 - `--custom my-theme.css` adds a Theme Studio export (repeatable).
+- `--type luxe,editorial` adds type collections (font pairings with their own tuning; `instrument`, Chivo and Chivo Mono, always comes along). Use them with `<ArtinosTheme type="luxe">`. Pick one that suits the brand: `luxe` (a serif display over Inter) for the luxe themes and premium products, `editorial` (IBM Plex) for a drawn, editorial tone, `geist` or `modern` for neutral modern tools, `atelier` (DM) for warm creative tools, `red-hat` for a friendly three-voice family. See `references/theming.md` → Type collections.
 - `--no-fonts` drops the Google Fonts import, for offline apps or a strict CSP; system fonts are the fallback.
 - `--no-materials` drops the optional `material` overrides.
 - `--no-docs` leaves out the guides. Keep them unless asked: they let later sessions work without the package.

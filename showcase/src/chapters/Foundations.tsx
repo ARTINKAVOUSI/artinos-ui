@@ -1,8 +1,8 @@
 /* 01 · Foundations — the themes, the five materials every part is made of, the tokens and the
    two voices of text, density, and the motion tokens. */
 import { useEffect, useRef, useState } from 'react';
-import { Badge, Button, DENSITIES, NumberField, Segmented, Slider, Switch, TextField, THEME_META, THEMES } from '../../../src';
-import { FAMILIES, ThemeCard, TokenTable } from '../app/foundations';
+import { Badge, Button, DENSITIES, NumberField, Segmented, Slider, Switch, TextField, THEME_META, THEMES, TYPE_COLLECTIONS } from '../../../src';
+import { FAMILIES, ThemeCard, TokenTable, TypeCard } from '../app/foundations';
 import { Chapter, Spec } from '../shared';
 
 /* ---------- materials ---------- */
@@ -207,7 +207,7 @@ function MotionTokens() {
   );
 }
 
-export function FoundationsChapter({ theme, onPickTheme }: { theme: string; onPickTheme: (t: string) => void }) {
+export function FoundationsChapter({ theme, onPickTheme, type, onPickType }: { theme: string; onPickTheme: (t: string) => void; type: string; onPickType: (t: string) => void }) {
   return (
     <Chapter id="foundations">
       <Spec
@@ -256,6 +256,25 @@ import { ArtinosTheme } from './artinos-ui';
       >
         <TokenTable deps={[theme]} />
         <TypeScale />
+      </Spec>
+
+      <Spec
+        id="type"
+        text={`Type is one superfamily in two voices, a sans that speaks and a mono that measures, tuned so a title, a label and a readout sit on one line without a seam. A collection swaps the faces and re-tunes the tracking; the sizes, weights and leading stay, so every component keeps its proportions. Some add a display face for the biggest titles. There are ${TYPE_COLLECTIONS.length}; Instrument is the default. Click one to set it for the page. Each card is its own data-ar-type scope, so collections nest like themes and carry through portalled overlays.`}
+        code={`
+<ArtinosTheme theme="frost-deep" type="editorial"> … </ArtinosTheme>
+
+// or on any element, inside any theme:
+<div data-ar-type="luxe"> … </div>
+
+// a kit carries the collections it was exported with:
+node artinos.mjs export --project . --themes onyx --components all --type luxe,editorial`}
+      >
+        <div className="sc-grid sc-grid--cards sc-grid--type">
+          {TYPE_COLLECTIONS.map((t) => (
+            <TypeCard key={t} t={t} active={t === type} onPick={() => onPickType(t)} />
+          ))}
+        </div>
       </Spec>
 
       <Spec id="density" text="Three control heights: dense 24 · standard 26 · comfort 30. Type size, padding and radius follow. Set it per control or on any scope." code={`<Slider density="dense" />   <div data-ar-density="comfort"> … </div>`}>

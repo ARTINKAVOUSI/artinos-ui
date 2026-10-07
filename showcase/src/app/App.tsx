@@ -3,7 +3,7 @@
    The app shell: theme / density / backdrop state, view routing (page · #studio),
    the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META } from '../../../src';
+import { ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { ComponentChapters } from '../chapters';
 import { FoundationsChapter } from '../chapters/Foundations';
@@ -11,7 +11,7 @@ import { MakeItYoursChapter } from '../chapters/MakeItYours';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import { ExportKit } from '../export/ExportKit';
 import { KIT_COMPONENTS } from '../export/kit';
-import { BACKDROPS, BACKDROP_OPTIONS, Swatch, THEME_OPTIONS } from '../shared';
+import { BACKDROPS, BACKDROP_OPTIONS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
 import { loadThemes, saveThemes } from '../studio/store';
@@ -56,6 +56,7 @@ export function App() {
   }, [view]);
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
+  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'instrument'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');
 
@@ -65,6 +66,7 @@ export function App() {
         customs={customs}
         onCustomsChange={updateCustoms}
         initial={theme}
+        type={type}
         onExit={(use) => {
           if (use) setTheme(use);
           go('showcase');
@@ -73,7 +75,7 @@ export function App() {
     );
 
   return (
-    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} ground className="sc-root">
+    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
 
       <header className="sc-bar">
@@ -86,6 +88,10 @@ export function App() {
         <label className="sc-pick sc-pick--theme">
           <span>THEME</span>
           <Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" />
+        </label>
+        <label className="sc-pick">
+          <span>TYPE</span>
+          <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
         </label>
         <label className="sc-pick">
           <span>DENSITY</span>
@@ -111,7 +117,7 @@ export function App() {
         <div className="sc-layout">
           <PageIndex />
           <div className="sc-content">
-            <FoundationsChapter theme={theme} onPickTheme={setTheme} />
+            <FoundationsChapter theme={theme} onPickTheme={setTheme} type={type} onPickType={setType} />
             <ComponentChapters />
             <MakeItYoursChapter customs={customs.length} onStudio={() => go('studio')} onExport={() => setExporting(true)} />
           </div>

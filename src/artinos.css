@@ -1,11 +1,12 @@
 /* ARTINOS UI — single stylesheet entry. Import once, at the app root:
      import './artinos-ui/artinos.css';
-   Order matters: tokens → themes → materials → components. A folder's shared
+   Order matters: tokens → themes → materials → type → components. A folder's shared
    stylesheet (folder/folder.css) comes before its components' own. */
 @import './tokens/fonts.css';
 @import './tokens/tokens.css';
 @import './tokens/themes.css';
 @import './tokens/materials.css';
+@import './tokens/type.css';
 @import './core/core.css';
 @import './slider/slider.css';
 @import './controls/controls.css';

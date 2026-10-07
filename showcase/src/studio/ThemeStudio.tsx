@@ -99,9 +99,11 @@ export interface ThemeStudioProps {
   onExit: (use?: string) => void;
   /** Initial selection: a built-in name or `c:<id>`. */
   initial?: string;
+  /** the page's type collection, so the editor and its preview are set in the same faces */
+  type?: string;
 }
 
-export function ThemeStudio({ customs, onCustomsChange, onExit, initial }: ThemeStudioProps) {
+export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }: ThemeStudioProps) {
   const open = (sel: string | undefined): Draft => {
     const c = sel?.startsWith('c:') ? customs.find((t) => t.id === sel.slice(2)) : undefined;
     if (c) return { id: c.id, name: c.name, base: c.base, tokens: { ...c.tokens } };
@@ -477,7 +479,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial }: Theme
   };
 
   return (
-    <ArtinosTheme theme="studio" density="dense" ground className="ed">
+    <ArtinosTheme theme="studio" density="dense" type={type} ground className="ed">
       {/* ---------- header ---------- */}
       <header className="ed-head">
         <button type="button" className="ed-btn ed-btn--ghost" onClick={() => onExit()}>

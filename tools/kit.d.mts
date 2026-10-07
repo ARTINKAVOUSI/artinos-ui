@@ -27,12 +27,25 @@ export interface KitOptions {
   customs: CustomThemeCss[];
   googleFonts: boolean;
   materials: boolean;
+  /** type collections to include; `instrument` always comes along */
+  types?: string[];
   /** guide name → markdown, written to docs/ in the kit */
   docs?: Record<string, string> | null;
   /** absolute path of the package folder, for the re-export hint in the README */
   pkgRoot?: string;
 }
+export interface TypeInfo {
+  label: string;
+  ui: string;
+  mono: string;
+  display: string;
+  description: string;
+  fonts: string;
+}
 export const BASE_THEME: string;
+export const BASE_TYPE: string;
 export const COMPONENTS: KitComponent[];
 export function readRegistry(sources: Record<string, string>): { themes: string[]; meta: Record<string, ThemeInfo> };
+export function readTypes(sources: Record<string, string>): { types: string[]; meta: Record<string, TypeInfo> };
+export function facesOf(types: string[], meta: Record<string, TypeInfo>): string[];
 export function buildKit(sources: Record<string, string>, o: KitOptions): Record<string, string>;

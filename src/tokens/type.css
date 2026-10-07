@@ -1,0 +1,70 @@
+/* ARTINOS UI — type collections. One superfamily in two voices, tuned for the family's sizes:
+   a collection swaps the faces and re-tunes what the faces change (caps tracking, the control
+   label tracking, the thinnest weight a face has); sizes, weights and leading stay. Pick one with
+   <ArtinosTheme type="…"> or data-ar-type on any element; it carries through nested themes and
+   portalled overlays. The registry (TYPE_COLLECTIONS, TYPE_META) is in core/utils.ts and the
+   faces load in tokens/fonts.css. `instrument` is what tokens.css already gives. */
+
+[data-ar-type='instrument'] {
+  --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.16em;
+}
+
+/* IBM Plex: a wider mono, so the caps breathe less */
+[data-ar-type='editorial'] {
+  --ar-font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.12em;
+  --ar-label-tracking: 0.1em;
+}
+
+[data-ar-type='geist'] {
+  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.14em;
+  --ar-label-tracking: 0.12em;
+}
+
+/* Inter's tall x-height asks for a touch tighter titles; JetBrains Mono is wide */
+[data-ar-type='modern'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.1em;
+  --ar-label-tracking: 0.09em;
+  --ar-track-title: -0.015em;
+}
+
+/* DM Mono comes in 300 · 400 · 500 only: a thin mono figure falls to 300 */
+[data-ar-type='atelier'] {
+  --ar-font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.14em;
+  --ar-label-tracking: 0.12em;
+}
+
+/* three voices: Text for prose, Display for titles, Mono to measure; the family starts at 300 */
+[data-ar-type='red-hat'] {
+  --ar-font-ui: 'Red Hat Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Red Hat Display', 'Red Hat Text', system-ui, sans-serif;
+  --ar-weight-thin: 300;
+  --ar-track-caps: 0.12em;
+  --ar-label-tracking: 0.11em;
+}
+
+/* a serif display over a neutral sans: titles set as drawn, never tightened */
+[data-ar-type='luxe'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --ar-weight-thin: 300;
+  --ar-track-caps: 0.1em;
+  --ar-label-tracking: 0.09em;
+  --ar-track-display: 0.005em;
+}
