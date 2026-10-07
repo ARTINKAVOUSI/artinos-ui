@@ -146,7 +146,11 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 ## Panel · Section · Field
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
-- **Section** — titled group with a hairline. Props: `title` (required), `count`, `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font).
+- **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule · count · actions · on/off · chevron. Props:
+  - `title` (required), `count`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
+  - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: a slim switch in the title row (shown when either value prop is given). Off dims the body and makes it inert; values are kept;
+  - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title and rule open and close the group.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 
 ```tsx
@@ -245,13 +249,16 @@ Props:
   - `'multiline'`;
 - `binding`: names the driver, in mono caps in the bind colour;
 - `status`: `'bound' | 'warn' | 'fault'`, with `message` explaining it in words;
-- `modified`: a signal dot in the margin, which takes no width;
-- `onReset`, `actions`;
+- `modified`: a signal dot in the left gutter, outside the row, so it takes no width;
+- `onReset`: with `modified`, the dot becomes the reset under the pointer or keyboard focus, in the same gutter spot, so the control keeps its full width and rows stay aligned;
+- `actions`: extra affordances at the right end, shown on hover or focus (these do take width; prefer the Section's `actions` for state that belongs to the group);
 - `highlighted`: a search reveal;
 - `dataControl`: written as `data-control`;
 - `disabled`.
 
 The label column width is the Field's `--ar-field-label-w` (104px here).
+
+The gutter mark needs about 14px of space to the left of the row; every Panel, Section and Dock panel provides it.
 
 ```tsx
 <PropertyRow label="Gain" density="compact" modified={gain !== 0} onReset={() => setGain(0)} binding="LFO 1">

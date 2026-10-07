@@ -76,22 +76,120 @@
   flex-direction: column;
   min-width: 0;
 }
+/* the title row: [title — rule — count] · actions · toggle · chevron, all on one thin line */
 .ar-section__head {
-  all: unset;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   width: 100%;
+  min-height: 24px;
   padding: 4px 0 8px;
   color: var(--ar-text-mid);
 }
-button.ar-section__head {
+:where(.ar-section__trigger, .ar-section__toggle, .ar-section__chevron) {
+  all: unset;
+}
+.ar-section__trigger {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+button.ar-section__trigger,
+.ar-section__chevron {
   cursor: pointer;
 }
-button.ar-section__head:focus-visible {
+button.ar-section__trigger:focus-visible {
   border-radius: var(--ar-radius-control);
   box-shadow: var(--ar-focus-ring);
+}
+.ar-section__chevron {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--ar-text-mid);
+}
+/* slim actions: whatever sits here is trimmed to the title row's height */
+.ar-section__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+.ar-section__actions .ar-badge {
+  height: 16px;
+  padding: 0 6px;
+}
+.ar-section__actions .ar-icon-button {
+  --_size: 18px;
+}
+/* the group's on/off: a tiny well, an insert knob, and the seam that lights when on */
+.ar-section__toggle {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 24px;
+  height: 13px;
+  border-radius: 999px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  cursor: pointer;
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-section__toggle i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ar-insert);
+  box-shadow: var(--ar-insert-shadow);
+  filter: var(--ar-insert-off-filter);
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section__toggle[aria-checked='true'] {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
+}
+.ar-section__toggle[aria-checked='true'] i {
+  transform: translateX(11px);
+  filter: none;
+}
+.ar-section__toggle[aria-checked='true'] i::after {
+  content: '';
+  position: absolute;
+  top: 2.5px;
+  left: 4px;
+  width: 1px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--ar-seam-active);
+  box-shadow: 0 0 3px var(--ar-signal-line);
+}
+.ar-section__toggle:focus-visible {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+/* off: the group drains, keeps its values and takes no input */
+.ar-section > .ar-section__fold,
+.ar-section__title {
+  transition:
+    opacity var(--ar-dur-surface) var(--ar-ease),
+    color var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section[data-off] > .ar-section__fold {
+  opacity: 0.42;
+}
+.ar-section[data-off] .ar-section__title {
+  color: var(--ar-text-low);
 }
 .ar-section__title {
   flex: none;

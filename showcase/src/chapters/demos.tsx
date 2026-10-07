@@ -1,7 +1,7 @@
 /* Live pieces several chapters share: stroke icons, a wandering data series, and the
    workspace's panels (the Dock demo uses them, and the Layout chapter shows the inspector). */
 import { useEffect, useState } from 'react';
-import { Badge, Button, ContextMenu, IconButton, Meter, NodeGraph, PanelBar, PropertyRow, Select, Slider, Sparkline, Switch, Toolbar, ToolbarSpacer, createNode, useDock } from '../../../src';
+import { Badge, Button, ContextMenu, IconButton, Meter, NodeGraph, PropertyRow, Section, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, useDock } from '../../../src';
 import type { GraphDefinition } from '../../../src';
 
 const icon = (d: string) => (
@@ -55,29 +55,37 @@ export function GraphPanel({ height }: { height?: number }) {
   );
 }
 
-/** Property rows around real controls, as an inspector panel's body. */
+/** Property rows around real controls, as an inspector group: its state and its on/off sit in
+ *  the title row; a changed row shows a dot in the gutter that turns into its reset. */
 export function InspectorPanel() {
-  const [exposure, setExposure] = useState(0.62);
+  const [exposure, setExposure] = useState(0.71);
+  const [gain, setGain] = useState(-4.5);
   const [live, setLive] = useState(true);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <PanelBar>
-        <Badge tone="live" dot>
-          Live
-        </Badge>
-        <span className="ar-panel-bar__spacer" />
-        <Switch variant="compact" label="Live update" value={live} onChange={setLive} />
-      </PanelBar>
+    <Section
+      title="Material"
+      actions={
+        live ? (
+          <Badge tone="live" dot>
+            Live
+          </Badge>
+        ) : (
+          <Badge>Paused</Badge>
+        )
+      }
+      enabled={live}
+      onEnabledChange={setLive}
+    >
       <PropertyRow label="Exposure" modified={exposure !== 0.62} onReset={() => setExposure(0.62)}>
         <Slider label="Exposure" value={exposure} onChange={setExposure} />
       </PropertyRow>
-      <PropertyRow label="Gain" binding="LFO 1" status="bound">
-        <Slider label="Gain" format="db" min={-60} max={12} decimals={1} defaultValue={-4.5} detents={[0]} status="bound" />
+      <PropertyRow label="Gain" binding="LFO 1" status="bound" modified={gain !== -4.5} onReset={() => setGain(-4.5)}>
+        <Slider label="Gain" format="db" min={-60} max={12} decimals={1} value={gain} onChange={setGain} detents={[0]} status="bound" />
       </PropertyRow>
       <PropertyRow label="Mode" density="compact">
         <Select options={['Neutral', 'Warm', 'Cool']} defaultValue="Neutral" appearance="well" label="Mode" />
       </PropertyRow>
-    </div>
+    </Section>
   );
 }
 

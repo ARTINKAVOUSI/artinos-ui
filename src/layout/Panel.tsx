@@ -53,6 +53,12 @@ export interface SectionProps {
   title: ReactNode;
   /** Quiet count or note at the end of the header rule. */
   count?: ReactNode;
+  /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
+  actions?: ReactNode;
+  /** The group's on/off, as a slim switch in the title row. Off dims the body and makes it inert. */
+  enabled?: boolean;
+  defaultEnabled?: boolean;
+  onEnabledChange?: (on: boolean) => void;
   collapsible?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -64,34 +70,66 @@ export interface SectionProps {
   style?: CSSProperties;
 }
 
-export function Section({ title, count, collapsible = false, open, defaultOpen = true, onOpenChange, heading = 'caps', children, className, style }: SectionProps) {
+export function Section({
+  title,
+  count,
+  actions,
+  enabled,
+  defaultEnabled,
+  onEnabledChange,
+  collapsible = false,
+  open,
+  defaultOpen = true,
+  onOpenChange,
+  heading = 'caps',
+  children,
+  className,
+  style,
+}: SectionProps) {
   const [isOpen, setOpen] = useControllable(open, defaultOpen, onOpenChange);
+  const toggleable = enabled !== undefined || defaultEnabled !== undefined;
+  const [isOn, setOn] = useControllable(enabled, defaultEnabled ?? true, onEnabledChange);
   const bodyId = useId();
+  const titleId = useId();
   const shown = !collapsible || isOpen;
-  const head = (
+  const off = toggleable && !isOn;
+  const label = (
     <>
-      <span className="ar-section__title">{title}</span>
+      <span className="ar-section__title" id={titleId}>
+        {title}
+      </span>
       <i className="ar-section__rule" />
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
       ) : null}
-      {collapsible ? (
-        <svg className="ar-chevron" data-up={isOpen ? '' : undefined} viewBox="0 0 10 6" aria-hidden="true">
-          <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : null}
     </>
   );
   return (
-    <div className={cx('ar-section', className)} data-heading={heading} data-open={shown ? '' : undefined} style={style}>
-      {collapsible ? (
-        <button type="button" className="ar-section__head" aria-expanded={isOpen} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
-          {head}
-        </button>
-      ) : (
-        <div className="ar-section__head">{head}</div>
-      )}
-      <div className="ar-section__fold" id={bodyId} inert={!shown || undefined}>
+    <div className={cx('ar-section', className)} data-heading={heading} data-open={shown ? '' : undefined} data-off={off ? '' : undefined} style={style}>
+      <div className="ar-section__head">
+        {/* the title and its rule open and close the group; the actions beside them stay separate controls */}
+        {collapsible ? (
+          <button type="button" className="ar-section__trigger" aria-expanded={isOpen} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
+            {label}
+          </button>
+        ) : (
+          <span className="ar-section__trigger">{label}</span>
+        )}
+        {actions ? <span className="ar-section__actions">{actions}</span> : null}
+        {toggleable ? (
+          <button type="button" role="switch" aria-checked={isOn} aria-labelledby={titleId} className="ar-section__toggle" onClick={() => setOn(!isOn)}>
+            <i />
+          </button>
+        ) : null}
+        {collapsible ? (
+          <button type="button" className="ar-section__chevron" tabIndex={-1} aria-hidden="true" onClick={() => setOpen(!isOpen)}>
+            <svg className="ar-chevron" data-up={isOpen ? '' : undefined} viewBox="0 0 10 6">
+              <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        ) : null}
+      </div>
+      <div className="ar-section__fold" id={bodyId} inert={!shown || off || undefined}>
         <div className="ar-section__body">{children}</div>
       </div>
     </div>
