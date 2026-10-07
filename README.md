@@ -26,7 +26,7 @@ Every component is built from five materials. **Panel glass** holds things (Pane
 | Dock | Dock / PanelBar / useDock · MetaBlock (the docking engine) |
 | Graph | NodeGraph · LiveGraphView · GraphGPU (needs `three`) |
 
-The full API is in [`docs/components.md`](docs/components.md).
+The full API is in [`docs/components.md`](docs/components.md). Every kind of every component (the six slider faces, the control shapes, the row states) and which to pick for a parameter is in [`docs/catalogue.md`](docs/catalogue.md).
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `graph/gpu` compiler.
 

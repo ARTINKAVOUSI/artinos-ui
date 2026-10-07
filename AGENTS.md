@@ -6,7 +6,7 @@ This folder is the whole ARTINOS UI package: a copy-paste React control system (
 
 Do the work in the **target project**. Only read from this folder, don't modify it.
 
-1. **Read the workflow:** [`skill/SKILL.md`](skill/SKILL.md). It covers framework detection, stylesheet wiring for Vite and Next.js, and common mistakes. `{{PACKAGE}}` in it means this folder. The component API is in [`docs/components.md`](docs/components.md); themes and tokens are in [`docs/theming.md`](docs/theming.md).
+1. **Read the workflow:** [`skill/SKILL.md`](skill/SKILL.md). It covers framework detection, stylesheet wiring for Vite and Next.js, and common mistakes. `{{PACKAGE}}` in it means this folder. The component API is in [`docs/components.md`](docs/components.md); every kind of every component and which to pick for a parameter is in [`docs/catalogue.md`](docs/catalogue.md); themes and tokens are in [`docs/theming.md`](docs/theming.md).
 
 2. **Look at the target project:**
    - React 18.3+ and `react-dom` in `package.json`;
@@ -37,7 +37,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 5. **Wire it and build the UI:**
    - Import `<kit>/artinos.css` once at the app root.
    - Import components from the kit and wrap the UI in `<ArtinosTheme theme="…">`.
-   - Follow `docs/components.md` for props such as `format`, `mapping`, `detents`, `onCommit`, `bipolar` and the variants.
+   - Pick each control's kind from `docs/catalogue.md` (a frequency is a log slider, a focal length a ruler, white balance a gradient, a count a stepped slider, an interval a RangeSlider…), then follow `docs/components.md` for props such as `format`, `mapping`, `detents`, `onCommit` and `bipolar`. Don't make every number a plain slider.
    - Restyle with tokens (`tokens={{ … }}` or CSS custom properties), never by editing kit files, because a re-export overwrites them.
 
 6. **Verify:** run the project's type-check and build, then look in the browser. Check that the theme id you used exists in the kit's `tokens/themes.css`; an unknown id silently falls back to the studio look.
@@ -45,7 +45,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 ## Working on the package itself
 
 - **`src/`** is the components. Keep them portable: relative imports only, tokens instead of literal colours, and `'use client'` on stateful files. Build new parts from the shared anatomy in `core/core.css` (`ar-well`, `ar-insert`, `ar-led`, `ar-text`, `ar-value`). Overlays portal through `ThemedPortal`. A folder's shared sheet (`folder/folder.css`) and a component's own `Name.css` are picked up by the kit builder, in the order of `src/artinos.css`. The theme registry (`THEMES` / `THEME_META`) is in `src/core/utils.ts`. A theme is a role block in `src/tokens/themes.css` plus a finish block in `src/tokens/materials.css`. After changing the registry, run `node artinos.mjs sync`.
-- **`docs/`** holds the two guides. They ship inside every kit and the installed skill, so write them for someone using a kit.
+- **`docs/`** holds the three guides: `components.md` (the prop reference), `catalogue.md` (every kind of every component, and which to pick) and `theming.md`. They ship inside every kit and the installed skill, so write them for someone using a kit. A new variant or state goes into the catalogue as well as the API guide.
 - **`skill/SKILL.md`** is the skill template (`{{PACKAGE}}` is filled in on install). After changing it or `docs/`, run `node artinos.mjs skill --user`.
 - **`tools/kit.mjs`** is the one kit builder, used by both `artinos.mjs export` and the showcase Export kit. It's pure: source text in, files out. **`tools/zip.mjs`** writes .zip files.
 - **`showcase/`** is the Vite app.

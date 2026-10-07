@@ -236,7 +236,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
               <Field label="Guides" labelWidth={120}><Switch variant="compact" label="Guides" value={docs} onChange={setDocs} /></Field>
             </div>
             <p className="xk__note">
-              Google Fonts loads Chivo and Chivo Mono; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop. Guides add <code>docs/</code>: the component API and theming guide.
+              Google Fonts loads Chivo and Chivo Mono; off, the kit uses system fonts. Finish overrides keep the optional <code>material</code> prop. Guides add <code>docs/</code>: the component API, the catalogue of every kind and the theming guide.
             </p>
           </section>
 

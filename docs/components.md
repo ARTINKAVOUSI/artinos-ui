@@ -6,6 +6,8 @@ The newer components (Knob, XYPad, TextField, the overlays, the Dock and the gra
 
 Everything is a named export of the kit's `index.ts`.
 
+This is the prop reference. For *which kind* to use — the six slider faces, the control shapes, the row states, and a lookup from parameter to control — read `catalogue.md` first.
+
 Contents:
 - Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
 - Layout: Panel / Section / Field · Tabs · PropertyRow

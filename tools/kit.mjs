@@ -254,6 +254,7 @@ function buildReadme(o, meta, themes, comps, files) {
     ? `## Guides
 
 - \`docs/components.md\` — every component: props, defaults, examples, interaction, recipes.
+- \`docs/catalogue.md\` — every kind of every component (the six slider faces, the control shapes, row states, overlays, the dock and graph), and which to pick for a given parameter. Read it before building a panel.
 - \`docs/theming.md\` — choosing themes, glass vs solid, density, token overrides, custom themes, the theme list, key tokens.
 
 The guides cover the whole ARTINOS UI package; this kit contains the components and themes listed here. To add themes or components, re-export into this folder from the project root:

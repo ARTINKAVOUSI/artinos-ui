@@ -35,7 +35,7 @@ Use what the user named. If they named no theme, pick one that fits the host and
 - light app → `studio-light` or `frost-light`
 - over imagery or a canvas → any glass or frost theme
 
-Pick only the components the UI uses; each one brings the files it imports. `ArtinosTheme` and the `studio` base theme are always included.
+Pick only the components the UI uses; each one brings the files it imports. `ArtinosTheme` and the `studio` base theme are always included. Decide what each parameter *is* before deciding which component shows it: `references/catalogue.md` has the lookup table (parameter → component → kind), and the short version is in step 5.
 - **Grouped controls:** add `Panel`.
 - **Inspector rows** with reset, binding and status: add `PropertyRow`.
 - **A studio or editor layout** with dockable, floating and tabbed panels around a canvas: add `Dock`. It brings its engine, its menu, the command palette and `Button`/`Kbd`.
@@ -56,7 +56,7 @@ This writes the kit to `src/artinos-ui/`, or to `artinos-ui/` when there is no `
 - the chosen themes;
 - `index.ts` and `artinos.css`;
 - `README.md`;
-- `docs/components.md` and `docs/theming.md`.
+- `docs/components.md`, `docs/catalogue.md` and `docs/theming.md`.
 
 `setup` also installs this skill into the project's `.claude/skills/`, and prints the import lines for the detected entry file. `export` does the kit alone.
 
@@ -97,13 +97,34 @@ Next.js App Router: every stateful component file starts with `'use client'`, an
 
 ### 5. Build the UI
 
-Read `references/components.md` before writing controls. It has every prop, default and example, and the API has conveniences that are easy to miss:
-- `format` (`percent`, `db`, `hz`, `angle`, `time`) instead of hand-formatting;
-- `mapping="log"` for frequencies and exposures;
-- `detents` for meaningful points like 0 dB;
+Read `references/catalogue.md` first: it lists every *kind* of every component and which to use for a given parameter. Then `references/components.md` for every prop, default and example. The family is wide, and a panel that shows every number as a plain slider wastes most of it.
+
+**Pick the face from the parameter**, not from habit:
+
+| the value is… | use |
+|---|---|
+| a continuous amount | `Slider` (`format="percent"` if it reads as one) |
+| signed, around a neutral point (pan, bias, EV) | `Slider bipolar detents={[0]}` |
+| a small count or level (samples, quality 1–5) | `Slider variant="stepped" steps={n} decimals={0}` |
+| a loudness | `Slider format="db" detents={[0]}` |
+| a frequency, duration or exposure (spans decades) | `Slider mapping="log" format="hz"` / `"time"` |
+| a colour-scale parameter (white balance, hue, saturation) | `Slider variant="gradient" gradient="temperature" \| "hue" \| "saturate" \| "exposure"` |
+| a camera-style setting (focal length, focus, tempo, yaw) | `Slider variant="ruler" span marks snapStep` |
+| a response or easing to look at | `Slider variant="curve"` |
+| a position in a clip or buffer | `Slider variant="wave" samples` |
+| an interval | `RangeSlider minSpan` |
+| a dial in a tight spot · two coupled values | `Knob` · `XYPad` |
+| an exact number people type | `NumberField` |
+| on/off · flags · one of 2–4 · one of many · a colour · a file | `Switch` · `ToggleGroup` · `Segmented` · `Select` · `ColorField` · `FileDrop` |
+| a read-only level · trend · figure | `Meter` · `Sparkline` · `RollingValue` |
+
+Conveniences that are easy to miss:
+- `format` (`percent`, `db`, `hz`, `angle`, `time`) and `unit` instead of hand-formatting;
+- `mapping="log"` / `"exp"`: geometry only, the value stays exact;
+- `detents` for meaningful points like 0 dB or the default;
 - `onCommit` for expensive work (it fires once, on release);
-- `bipolar` for ± values;
-- `steps` for discrete choices.
+- `toggleable` (on by default): double-click switches a parameter off and keeps its value; `Section enabled` switches a whole group;
+- `PropertyRow modified onReset binding status` for inspector rows that can change or are driven.
 
 `references/theming.md` covers themes, `tokens={{ signal: '#…' }}` overrides, density, custom themes and every token.
 
@@ -124,4 +145,5 @@ Run the project's type-check and build, then look at it in the browser:
 - **Saved dock layout looks stale.** `storageKey` restores the last arrangement. It is skipped automatically when panel ids change; call `useDock().resetLayout()` to start over.
 - **Wheel input.** Sliders change on wheel only when focused, so page scroll isn't hijacked.
 - **Double-click on a slider body** toggles it off, keeping its value. Pass `toggleable={false}` where that must never happen.
+- **Everything is a plain slider.** Frequencies without `mapping="log"`, focal lengths that aren't rulers, white balance that isn't a gradient, counts that aren't stepped, intervals as two sliders. Go back through `references/catalogue.md`'s checklist.
 - **Browsers.** The CSS needs `@property`, `color-mix()`, `:has()` and `backdrop-filter`, which every evergreen browser has.

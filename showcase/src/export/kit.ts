@@ -12,7 +12,7 @@ const strip = (prefix: string, raw: Record<string, string>) => Object.fromEntrie
 /** src-relative path → source text, exactly as shipped */
 const SOURCES = strip('../../../src/', import.meta.glob('../../../src/**/*.{ts,tsx,css}', { query: '?raw', import: 'default', eager: true }) as Record<string, string>);
 /** the guides every kit can carry in docs/ */
-const DOCS = strip('../../../docs/', import.meta.glob('../../../docs/{components,theming}.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>);
+const DOCS = strip('../../../docs/', import.meta.glob('../../../docs/{components,catalogue,theming}.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>);
 
 export function buildKit(o: Omit<KitOptions, 'docs'> & { docs: boolean }): Record<string, string> {
   return build(SOURCES, { ...o, docs: o.docs ? DOCS : null });

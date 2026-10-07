@@ -28,7 +28,7 @@
  *   --custom <file.css>     add a theme exported from the Theme Studio (repeatable)
  *   --no-fonts              leave out the Google Fonts import (system fonts)
  *   --no-materials          leave out the optional `material` prop finish overrides
- *   --no-docs               leave out docs/ (component API and theming guides)
+ *   --no-docs               leave out docs/ (component API, catalogue and theming guides)
  *   --force                 update an existing kit in place (files it no longer needs are removed)
  *   --dry-run               print the files and sizes, write nothing
  */
@@ -43,7 +43,7 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(ROOT, 'src');
 const DOCS = path.join(ROOT, 'docs');
 const SKILL = path.join(ROOT, 'skill', 'SKILL.md');
-const GUIDES = ['components.md', 'theming.md'];
+const GUIDES = ['components.md', 'catalogue.md', 'theming.md'];
 const slash = (p) => p.split(path.sep).join('/');
 
 /* ---------- args ---------- */
@@ -153,7 +153,7 @@ function exportKit(project) {
     if (!flag('force')) die(`${out} already exists and is not empty. Pass --force to update the kit in it.`);
     // remove only what a kit owns and this export no longer has
     const owned = new Set(Object.keys(files));
-    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|actions|display|layout|overlays|dock|graph)\/([^/]+\/)*[^/]+\.(ts|tsx|css)|docs\/(components|theming)\.md)$/;
+    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|actions|display|layout|overlays|dock|graph)\/([^/]+\/)*[^/]+\.(ts|tsx|css)|docs\/(components|catalogue|theming)\.md)$/;
     (function prune(dir, rel) {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const r = rel ? rel + '/' + e.name : e.name;
@@ -202,7 +202,7 @@ Next steps
        import { ArtinosTheme, Slider } from '${spec}';
   3. Wrap the UI:
        <ArtinosTheme theme="…">…</ArtinosTheme>
-  Guide: ${rel}/README.md${flag('no-docs') ? '' : ` · ${rel}/docs/components.md · ${rel}/docs/theming.md`}`);
+  Guide: ${rel}/README.md${flag('no-docs') ? '' : ` · ${rel}/docs/components.md · ${rel}/docs/catalogue.md · ${rel}/docs/theming.md`}`);
 }
 
 /* ---------- skill ---------- */
