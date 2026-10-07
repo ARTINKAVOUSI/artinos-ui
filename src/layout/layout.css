@@ -128,52 +128,55 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off: a tiny well, an insert knob, and the seam that lights when on */
+/* the group's on/off: one slim, squarish chip — a well holding the LED and the state in words.
+   On, the LED lights and a hairline of the signal rims the chip; off, both go quiet. */
 .ar-section__toggle {
-  position: relative;
-  flex: none;
   box-sizing: border-box;
-  width: 24px;
-  height: 13px;
-  border-radius: 999px;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 16px;
+  padding: 0 6px 0 5px;
+  border-radius: calc(var(--ar-insert-radius) - 2px);
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
   cursor: pointer;
-  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
-}
-.ar-section__toggle i {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--ar-insert);
-  box-shadow: var(--ar-insert-shadow);
-  filter: var(--ar-insert-off-filter);
   transition:
-    transform var(--ar-dur-surface) var(--ar-ease-spring),
-    filter var(--ar-dur-surface) var(--ar-ease);
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-section__toggle .ar-led {
+  width: 2px;
+  height: 7px;
+}
+.ar-section__state {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  line-height: 1;
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-low);
+  transition: color var(--ar-dur-state) var(--ar-ease);
 }
 .ar-section__toggle[aria-checked='true'] {
-  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
+  background: color-mix(in srgb, var(--ar-signal) 10%, var(--ar-trough));
+  box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-signal) 38%, transparent);
 }
-.ar-section__toggle[aria-checked='true'] i {
-  transform: translateX(11px);
-  filter: none;
+.ar-section__toggle[aria-checked='true'] .ar-section__state {
+  color: var(--ar-signal);
 }
-.ar-section__toggle[aria-checked='true'] i::after {
-  content: '';
-  position: absolute;
-  top: 2.5px;
-  left: 4px;
-  width: 1px;
-  height: 4px;
-  border-radius: 1px;
-  background: var(--ar-seam-active);
-  box-shadow: 0 0 3px var(--ar-signal-line);
+.ar-section__toggle:hover .ar-section__state {
+  color: var(--ar-text-hi);
+}
+.ar-section__toggle[aria-checked='true']:hover .ar-section__state {
+  color: var(--ar-signal-hi);
+}
+.ar-section__toggle:active {
+  transform: scale(0.96);
 }
 .ar-section__toggle:focus-visible {
   box-shadow: var(--ar-well), var(--ar-focus-ring);

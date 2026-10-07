@@ -146,10 +146,10 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 ## Panel · Section · Field
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
-- **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule · count · actions · on/off · chevron. Props:
+- **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule · count · actions · on/off chip · chevron. Props:
   - `title` (required), `count`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
-  - `enabled` / `defaultEnabled` / `onEnabledChange`: a slim switch in the title row (shown when either value prop is given). Off dims the body and makes it inert; values are kept;
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off as one slim, squarish chip in the title row — an LED and the state in words (shown when either value prop is given). `enabledLabel` / `disabledLabel` set the words (default "On" / "Off"; e.g. "Live" / "Paused"), so a group's status and its switch are a single control. Off dims the body and makes it inert; values are kept;
   - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title and rule open and close the group.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 

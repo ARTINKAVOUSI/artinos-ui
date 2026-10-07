@@ -55,10 +55,15 @@ export interface SectionProps {
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off, as a slim switch in the title row. Off dims the body and makes it inert. */
+  /** The group's on/off, as one slim chip in the title row: an LED and its state in words.
+   *  Off dims the body and makes it inert; values are kept. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
+  /** The chip's word when on, e.g. "Live". Default "On". */
+  enabledLabel?: ReactNode;
+  /** The chip's word when off, e.g. "Paused". Default "Off". */
+  disabledLabel?: ReactNode;
   collapsible?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -77,6 +82,8 @@ export function Section({
   enabled,
   defaultEnabled,
   onEnabledChange,
+  enabledLabel = 'On',
+  disabledLabel = 'Off',
   collapsible = false,
   open,
   defaultOpen = true,
@@ -118,7 +125,8 @@ export function Section({
         {actions ? <span className="ar-section__actions">{actions}</span> : null}
         {toggleable ? (
           <button type="button" role="switch" aria-checked={isOn} aria-labelledby={titleId} className="ar-section__toggle" onClick={() => setOn(!isOn)}>
-            <i />
+            <i className="ar-led" data-on={isOn ? '' : undefined} />
+            <span className="ar-section__state">{isOn ? enabledLabel : disabledLabel}</span>
           </button>
         ) : null}
         {collapsible ? (

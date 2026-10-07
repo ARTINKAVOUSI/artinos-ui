@@ -1,7 +1,7 @@
 /* 06 · Layout — Panel, Section, Field and Tabs composed into an inspector; property rows;
    and the dense control strip. */
 import { useState } from 'react';
-import { Badge, ColorField, Field, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
+import { ColorField, Field, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { InspectorPanel } from './demos';
 
@@ -98,7 +98,7 @@ function Inspector() {
         )}
       </Panel>
       <div className="sc-stack" style={{ flex: '1 1 260px', minWidth: 0 }}>
-        <Section title="Environment" count={4} defaultEnabled actions={<Badge tone="warm">Bound</Badge>}>
+        <Section title="Environment" count={4} defaultEnabled enabledLabel="Live" disabledLabel="Off">
           <Slider label="Env Intensity" max={2} unit="x" defaultValue={0.82} detents={[1]} />
           <Slider label="Fog Density" max={0.2} decimals={3} defaultValue={0.04} />
         </Section>
@@ -176,7 +176,7 @@ export function LayoutChapter() {
       <Spec
         id="property-rows"
         text="An inspector row around any control. A changed value shows a signal dot in the left gutter; hover the row (or tab to it) and the dot turns into its reset, so nothing takes width from the control and rows stay aligned. binding names the driver of a bound value; status and message explain a fault in words; compact puts the label in its own column. The group's state and on/off live in the Section's title row."
-        code={`<Section title="Material" actions={<Badge tone="live" dot>Live</Badge>} enabled={on} onEnabledChange={setOn}>
+        code={`<Section title="Material" enabled={on} onEnabledChange={setOn} enabledLabel="Live" disabledLabel="Paused">
   <PropertyRow label="Exposure" modified={v !== 0.62} onReset={reset}><Slider label="Exposure" … /></PropertyRow>
   <PropertyRow label="Gain" binding="LFO 1" status="bound"><Slider label="Gain" … /></PropertyRow>
   <PropertyRow label="Mode" density="compact"><Select … /></PropertyRow>
