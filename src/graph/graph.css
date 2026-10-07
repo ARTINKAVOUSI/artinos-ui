@@ -190,7 +190,9 @@
   fill: none;
   stroke: var(--ar-signal);
   stroke-width: 1.5;
-  opacity: 0.8;
+  opacity: 0.9;
+  /* a wire is a lit trace: a soft halo of the signal colour under the line */
+  filter: drop-shadow(0 0 2.5px var(--ar-signal-line));
 }
 .ar-graph__wire-line.is-live {
   stroke-dasharray: 4 3;
@@ -245,37 +247,38 @@
   color: var(--ar-text-faint);
 }
 
-/* ---------- nodes: small panes of the theme's glass, like the Panel and the Dock ---------- */
+/* ---------- nodes: the frosted sheet, the material every list and menu floats on ---------- */
 .ar-graph__node,
 .ar-live__node {
-  --_seam: var(--ar-line-strong);
-  --_ring: var(--ar-panel-shadow);
+  --_seam: var(--ar-text-faint);
+  --_ring: var(--ar-sheet-shadow);
   position: absolute;
   box-sizing: border-box;
-  border-radius: var(--ar-radius-card);
-  /* a node is a small Panel: the theme's glass, lifted one step above the canvas well */
-  background:
-    var(--ar-panel-sheen),
-    linear-gradient(var(--ar-bg-raised), var(--ar-bg-raised)),
-    var(--ar-panel-tint);
-  -webkit-backdrop-filter: var(--ar-panel-blur);
-  backdrop-filter: var(--ar-panel-blur);
+  border-radius: calc(var(--ar-radius-card) + 2px);
+  /* a node floats over the canvas well, so it is the sheet (grain, a milky veil, the ground at
+     half strength) rather than panel glass: panel glass over the dark well would come out dark */
+  background: var(--ar-sheet-bg);
+  -webkit-backdrop-filter: var(--ar-sheet-blur);
+  backdrop-filter: var(--ar-sheet-blur);
   box-shadow: var(--_ring);
   color: var(--ar-text-hi);
-  text-shadow: var(--ar-panel-text-shadow);
+  text-shadow: none;
   transition: box-shadow var(--ar-dur-state) var(--ar-ease), opacity var(--ar-dur-state) var(--ar-ease);
 }
-/* a node's family reads as a thin seam on its leading edge, in the theme's own colours */
-.ar-graph__node::before,
-.ar-live__node::before {
+/* a node's family is an LED before its title, in the theme's own colours */
+.ar-graph__node-title::before,
+.ar-live__main b::before {
   content: '';
-  position: absolute;
-  top: 6px;
-  left: 0;
-  width: 2px;
-  height: 14px;
-  border-radius: 0 1px 1px 0;
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-right: 7px;
+  border-radius: 50%;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
   background: var(--_seam);
+  box-shadow: 0 0 5px color-mix(in srgb, var(--_seam) 60%, transparent);
 }
 .ar-graph__node[data-category='source'],
 .ar-live__node.kind-signal {
@@ -630,6 +633,7 @@
   fill: none;
   stroke: var(--ar-signal);
   stroke-width: 1.5;
+  filter: drop-shadow(0 0 2.5px var(--ar-signal-line));
   transition: stroke var(--ar-dur-state) var(--ar-ease), opacity var(--ar-dur-state) var(--ar-ease);
 }
 .ar-live__wire.is-dim {
@@ -855,11 +859,13 @@
    PREVIEW_H) is shared with NodeGraph.tsx and LiveGraphView.tsx. */
 .ar-graph__node-head {
   gap: 7px;
-  padding: 0 10px 0 8px;
+  padding: 0 7px 0 10px;
 }
+/* the fold chevron ends the row, as on a Section's title line: LED · title … readout · chevron */
 .ar-graph__fold {
   --_tool: 18px;
-  color: var(--ar-text-low);
+  order: 1;
+  color: var(--ar-float-ink-low);
 }
 .ar-graph__fold .ar-chevron {
   width: 8px;
@@ -887,19 +893,43 @@
 }
 .ar-graph__port i,
 .ar-live__port {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   background: var(--ar-trough);
-  box-shadow: var(--ar-well);
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-line-strong);
 }
+.ar-graph__port.is-in {
+  left: -4px;
+}
+.ar-graph__port.is-out {
+  right: -4px;
+}
+.ar-live__port.side-in {
+  left: -4px;
+}
+.ar-live__port.side-out {
+  right: -4px;
+}
+/* wired, the well fills as the family's LED */
 .ar-graph__port.is-wired i,
 .ar-graph__port:hover i,
 .ar-live__port.side-out {
-  background: var(--ar-signal);
-  box-shadow: 0 0 0 0.5px #757575, 0 0 6px var(--ar-led-glow);
+  background: var(--ar-led-on);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ar-led-on) 35%, transparent), 0 0 7px var(--ar-led-glow);
 }
 .ar-graph__port.is-required:not(.is-wired) i {
   box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-fault);
+}
+/* the sheet is lighter than panel glass, so a node's ink is the sheet's */
+.ar-graph__node-title,
+.ar-live__main b {
+  color: var(--ar-float-ink);
+}
+.ar-graph__port,
+.ar-graph__fields .ar-field__label,
+.ar-live__main small,
+.ar-live__side em {
+  color: var(--ar-float-ink-low);
 }
 
 /* fields: a column of dense controls */

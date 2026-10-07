@@ -340,7 +340,7 @@ The framework-free docking engine under the Dock, for when you need your own chr
 
 ### NodeGraph
 
-A node editor on a dot-grid well. A node is a small Panel: its fields are the family's own controls at dense density, its ports light like LEDs when wired, and its preview is a Sparkline.
+A node editor on a dot-grid well. A node is a small frosted sheet (the material of every list and menu) with an LED in its family's colour before the title: its fields are the family's own controls at dense density, its ports light like LEDs when wired, wires glow in the signal colour, and its preview is a Sparkline.
 
 - **Editing**: drag from a port to wire, click a wire to cut it; drag the canvas to select, Alt-drag or middle-drag to pan, Ctrl/⌘ + wheel to zoom; double-click or right-click the canvas for the node palette. ⌘/Ctrl + G groups, D duplicates, Z / Y undo and redo. Connections are type-checked and cycles flagged; an inspector column shows the selected node.
 - **Domains** (`GraphDefinition.domain`): `signal` (values over time), `parameter` (drive parameters), `scene` (objects, transforms, materials), `render` (post effects), `gpu` (compiles to TSL).

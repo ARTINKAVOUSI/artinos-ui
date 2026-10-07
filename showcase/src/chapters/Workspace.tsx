@@ -62,7 +62,7 @@ export function WorkspaceChapter() {
 
       <Spec
         id="node-graph"
-        text="A node editor on a dot-grid well. A node is a small Panel built from the family's own controls; its ports light like LEDs when wired and its preview is a Sparkline. Drag from a port to wire, click a wire to cut it, drag the canvas to select, Alt-drag to pan, Ctrl/⌘ + wheel to zoom, right-click for the node palette. graph/gpu compiles a graph to three.js TSL."
+        text="A node editor on a dot-grid well. A node is a small frosted sheet, the material every list and menu floats on, with an LED in its family's colour before the title and the family's own controls inside; its ports light like LEDs when wired, wires glow, and its preview is a Sparkline. Drag from a port to wire, click a wire to cut it, drag the canvas to select, Alt-drag to pan, Ctrl/⌘ + wheel to zoom, right-click for the node palette. graph/gpu compiles a graph to three.js TSL."
         code={`const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [], edges: [] });
 <NodeGraph value={graph} onChange={setGraph} />`}
       >
