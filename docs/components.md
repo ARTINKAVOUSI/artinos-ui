@@ -349,7 +349,7 @@ The Dock fills its parent, so give the parent a height.
 - **NodeGraph**: a node editor on a canvas well with a dot grid. Nodes are the frosted sheet (the material every list and menu floats on), each with an LED before its title in its family's colour and the fold chevron at the end of the title row; fields are wells. Wired ports light like LEDs and wires glow in the signal colour.
   - Editing: drag from a port to wire and click a wire to cut it. On the canvas, drag to select, Alt-drag or middle-drag to pan, and Ctrl/⌘ + wheel to zoom. Double-click or right-click the canvas for the node palette.
   - Shortcuts: ⌘/Ctrl + G groups, D duplicates, Z undoes and Y redoes.
-  - A node's fields are the family's own controls (NumberField, Switch, Select, TextField) at dense density, its ports light like LEDs when wired, and its preview is a Sparkline in a well.
+  - A node's fields are the family's own controls at dense density: a bounded number (a field with both `min` and `max`) is a Slider capsule, an open number a NumberField cell, a flag a Switch, a choice a Select, text a TextField. Its ports light like LEDs when wired, and its preview is a Sparkline in a well. The same rule applies to a `LiveGraphView` control.
   - Connections are type-checked and cycles are flagged; an inspector column shows the selected node with the same controls.
   - Props: `value: GraphDefinition` / `onChange` (both required), `readouts` (each node's last output), `frames` (GPU thumbnails), `sources` (what the pickers offer), `runtimeDiagnostics`, `onDiagnostics`.
 - **LiveGraphView**: a read-only, column-laid view of a running graph with live controls. Props: `graph: LiveGraph`, `previews`, `onInspect`, `onControl` (required), `insetRight`.

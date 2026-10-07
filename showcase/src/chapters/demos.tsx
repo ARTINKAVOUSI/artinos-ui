@@ -35,8 +35,8 @@ export const SAMPLE_GRAPH: GraphDefinition = {
   domain: 'signal',
   nodes: [
     { ...createNode('constant', 20, 40, { value: 0.5 }), id: 'rate' },
-    { ...createNode('oscillator', 240, 30), id: 'osc' },
-    { ...createNode('smooth', 470, 50), id: 'smooth' },
+    { ...createNode('oscillator', 240, 30, { frequency: 6, phase: 0.25 }), id: 'osc' },
+    { ...createNode('smooth', 470, 50, { amount: 0.6 }), id: 'smooth' },
     { ...createNode('remap', 690, 40), id: 'remap' },
   ],
   edges: [

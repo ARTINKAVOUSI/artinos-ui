@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import { NumberField } from '../controls/NumberField';
 import { Switch } from '../controls/Switch';
 import { RollingText } from '../core/RollingValue';
+import { Slider } from '../slider/Slider';
 import { wirePath } from './view';
 import { RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
 
@@ -238,6 +239,18 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
               <div key={control.id} className="ar-live__control" data-ar-density="dense" onPointerDown={(event) => event.stopPropagation()}>
                 {control.kind === 'boolean' ? (
                   <Switch label={control.label} value={control.value} onChange={(next) => onControl(node, control, next)} />
+                ) : control.kind === 'number' && control.min !== undefined && control.max !== undefined ? (
+                  // a bounded number is the family's capsule
+                  <Slider
+                    label={control.label}
+                    value={control.value}
+                    min={control.min}
+                    max={control.max}
+                    step={control.step ?? 0.01}
+                    decimals={(control.step ?? 0.01) >= 1 ? 0 : 2}
+                    toggleable={false}
+                    onChange={(next) => onControl(node, control, next)}
+                  />
                 ) : control.kind === 'number' ? (
                   <NumberField
                     label={control.label}

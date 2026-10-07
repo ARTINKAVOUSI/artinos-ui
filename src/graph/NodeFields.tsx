@@ -5,6 +5,7 @@ import { Select } from '../controls/Select';
 import { Switch } from '../controls/Switch';
 import { TextField } from '../controls/TextField';
 import { Field } from '../layout/Panel';
+import { Slider } from '../slider/Slider';
 import type { GraphField } from './graph';
 
 /** What the host can offer the pickers. Empty lists degrade to free text. */
@@ -25,9 +26,9 @@ const decimalsFor = (step: number) => (step >= 1 ? 0 : Math.min(4, (String(step)
 const LABEL_W = 58;
 
 /**
- * One field on a node, by kind, built from the family's own controls: a number is a
- * NumberField with its label in the well, a flag is a Switch, a choice is a Select in a
- * Field row. Pickers fall back to a text box when the host has nothing to offer, so a
+ * One field on a node, by kind, built from the family's own controls: a bounded number is a
+ * Slider, an open number a NumberField with its label in the well, a flag is a Switch, a
+ * choice is a Select in a Field row. Pickers fall back to a text box when the host has nothing to offer, so a
  * graph stays editable in any context.
  */
 export function NodeField({
@@ -56,6 +57,22 @@ export function NodeField({
 
   if (field.kind === 'number') {
     const step = field.step ?? 0.01;
+    // a bounded number is the family's capsule; an open one is a cell to scrub or type into
+    if (field.min !== undefined && field.max !== undefined) {
+      return (
+        <Slider
+          className="ar-graph__field"
+          label={field.label}
+          value={Number(value ?? 0)}
+          min={field.min}
+          max={field.max}
+          step={step}
+          decimals={decimalsFor(step)}
+          toggleable={false}
+          onChange={(next) => onChange(next)}
+        />
+      );
+    }
     return (
       <NumberField
         className="ar-graph__field"
