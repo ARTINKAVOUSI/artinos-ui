@@ -55,15 +55,12 @@ export interface SectionProps {
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off, as one slim chip in the title row: an LED and its state in words.
-   *  Off folds the body closed (the same motion as collapsing) and values are kept. */
+  /** The group's on/off, carried by the title itself: an LED lights before it and the title is the
+   *  switch. Off folds the body closed (the same motion as collapsing); values are kept. A switchable
+   *  group always shows its chevron, which folds it while it is on. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
-  /** The chip's word when on, e.g. "Live". Default "On". */
-  enabledLabel?: ReactNode;
-  /** The chip's word when off, e.g. "Paused". Default "Off". */
-  disabledLabel?: ReactNode;
   collapsible?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -82,8 +79,6 @@ export function Section({
   enabled,
   defaultEnabled,
   onEnabledChange,
-  enabledLabel = 'On',
-  disabledLabel = 'Off',
   collapsible = false,
   open,
   defaultOpen = true,
@@ -96,16 +91,15 @@ export function Section({
   const [isOpen, setOpen] = useControllable(open, defaultOpen, onOpenChange);
   const toggleable = enabled !== undefined || defaultEnabled !== undefined;
   const [isOn, setOn] = useControllable(enabled, defaultEnabled ?? true, onEnabledChange);
+  // a switchable group always shows its chevron, so it can always be folded too
+  const foldable = collapsible || toggleable;
   const bodyId = useId();
-  const titleId = useId();
   const off = toggleable && !isOn;
   // switching the group off folds it closed, like collapsing it; on, it unfolds to where it was
-  const shown = (!collapsible || isOpen) && !off;
-  const label = (
+  const shown = (!foldable || isOpen) && !off;
+  const titleText = <span className="ar-section__title">{title}</span>;
+  const rest = (
     <>
-      <span className="ar-section__title" id={titleId}>
-        {title}
-      </span>
       <i className="ar-section__rule" />
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
@@ -115,24 +109,43 @@ export function Section({
   return (
     <div className={cx('ar-section', className)} data-heading={heading} data-open={shown ? '' : undefined} data-off={off ? '' : undefined} style={style}>
       <div className="ar-section__head">
-        {/* the title and its rule open and close the group; the actions beside them stay separate controls */}
-        {collapsible ? (
-          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} disabled={off} onClick={() => setOpen(!isOpen)}>
-            {label}
+        {toggleable ? (
+          // the title is the switch: its LED lights when the group is on, and it folds the group open and closed
+          <span className="ar-section__trigger">
+            <button type="button" role="switch" aria-checked={isOn} aria-controls={bodyId} className="ar-section__switch" onClick={() => setOn(!isOn)}>
+              <i className="ar-led" data-on={isOn ? '' : undefined} />
+              {titleText}
+            </button>
+            {rest}
+          </span>
+        ) : collapsible ? (
+          // the title and its rule open and close the group
+          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
+            {titleText}
+            {rest}
           </button>
         ) : (
-          <span className="ar-section__trigger">{label}</span>
+          <span className="ar-section__trigger">
+            {titleText}
+            {rest}
+          </span>
         )}
         {actions ? <span className="ar-section__actions">{actions}</span> : null}
-        {toggleable ? (
-          <button type="button" role="switch" aria-checked={isOn} aria-labelledby={titleId} className="ar-section__toggle" onClick={() => setOn(!isOn)}>
-            <i className="ar-led" data-on={isOn ? '' : undefined} />
-            <span className="ar-section__state">{isOn ? enabledLabel : disabledLabel}</span>
-          </button>
-        ) : null}
-        {collapsible ? (
-          <button type="button" className="ar-section__chevron" tabIndex={-1} aria-hidden="true" disabled={off} onClick={() => setOpen(!isOpen)}>
-            <svg className="ar-chevron" data-up={shown ? '' : undefined} viewBox="0 0 10 6">
+        {foldable ? (
+          // with the title switching the group, the chevron is the collapse control on its own; while
+          // the group is off it stays, pointing closed
+          <button
+            type="button"
+            className="ar-section__chevron"
+            tabIndex={toggleable ? undefined : -1}
+            aria-hidden={toggleable ? undefined : true}
+            aria-label={toggleable ? (shown ? 'Collapse' : 'Expand') : undefined}
+            aria-expanded={toggleable ? shown : undefined}
+            aria-controls={toggleable ? bodyId : undefined}
+            disabled={off}
+            onClick={() => setOpen(!isOpen)}
+          >
+            <svg className="ar-chevron" data-up={shown ? '' : undefined} viewBox="0 0 10 6" aria-hidden="true">
               <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>

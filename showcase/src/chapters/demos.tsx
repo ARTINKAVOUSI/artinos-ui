@@ -62,7 +62,7 @@ export function InspectorPanel() {
   const [gain, setGain] = useState(-4.5);
   const [live, setLive] = useState(true);
   return (
-    <Section title="Material" enabled={live} onEnabledChange={setLive} enabledLabel="Live" disabledLabel="Paused">
+    <Section title="Material" enabled={live} onEnabledChange={setLive}>
       <PropertyRow label="Exposure" modified={exposure !== 0.62} onReset={() => setExposure(0.62)}>
         <Slider label="Exposure" value={exposure} onChange={setExposure} />
       </PropertyRow>

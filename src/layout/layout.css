@@ -87,7 +87,7 @@
   padding: 4px 0 8px;
   color: var(--ar-text-mid);
 }
-:where(.ar-section__trigger, .ar-section__toggle, .ar-section__chevron) {
+:where(.ar-section__trigger, .ar-section__chevron) {
   all: unset;
 }
 .ar-section__trigger {
@@ -128,67 +128,55 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off: one slim, squarish chip — a well holding the LED and the state in words.
-   On, the LED lights and a hairline of the signal rims the chip; off, both go quiet. */
-.ar-section__toggle {
-  box-sizing: border-box;
+/* the group's on/off is its title: an LED before it, lit when on; the title's ink follows */
+:where(.ar-section__switch) {
+  all: unset;
+}
+.ar-section__switch {
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 5px;
-  height: 16px;
-  padding: 0 6px 0 5px;
-  border-radius: calc(var(--ar-insert-radius) - 2px);
-  background: var(--ar-trough);
-  -webkit-backdrop-filter: var(--ar-trough-backdrop);
-  backdrop-filter: var(--ar-trough-backdrop);
-  box-shadow: var(--ar-well);
+  gap: 7px;
+  padding: 2px 2px 2px 0;
+  border-radius: var(--ar-radius-control);
   cursor: pointer;
-  transition:
-    box-shadow var(--ar-dur-state) var(--ar-ease),
-    background var(--ar-dur-state) var(--ar-ease);
+  -webkit-tap-highlight-color: transparent;
 }
-.ar-section__toggle .ar-led {
+.ar-section__switch .ar-led {
   width: 2px;
-  height: 7px;
+  height: 8px;
 }
-.ar-section__state {
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  line-height: 1;
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
-  color: var(--ar-text-low);
-  transition: color var(--ar-dur-state) var(--ar-ease);
-}
-.ar-section__toggle[aria-checked='true'] {
-  background: color-mix(in srgb, var(--ar-signal) 10%, var(--ar-trough));
-  box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-signal) 38%, transparent);
-}
-.ar-section__toggle[aria-checked='true'] .ar-section__state {
-  color: var(--ar-signal);
-}
-.ar-section__toggle:hover .ar-section__state {
+.ar-section__switch .ar-section__title {
   color: var(--ar-text-hi);
 }
-.ar-section__toggle[aria-checked='true']:hover .ar-section__state {
-  color: var(--ar-signal-hi);
+.ar-section__switch:hover .ar-section__title {
+  color: var(--ar-text-hi);
+  text-shadow: 0 0 10px var(--ar-signal-wash);
 }
-.ar-section__toggle:active {
-  transform: scale(0.96);
+.ar-section__switch:active .ar-led {
+  transform: scaleY(0.7);
 }
-.ar-section__toggle:focus-visible {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+.ar-section__switch .ar-led {
+  transition:
+    background var(--ar-dur-surface) var(--ar-ease),
+    box-shadow var(--ar-dur-surface) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-section__switch:focus-visible {
+  box-shadow: var(--ar-focus-ring);
 }
 /* off: the group folds closed (the fold below animates it) and its title goes quiet */
 .ar-section__title {
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
-.ar-section[data-off] .ar-section__title {
+.ar-section[data-off] .ar-section__title,
+.ar-section[data-off] .ar-section__switch .ar-section__title {
   color: var(--ar-text-low);
 }
-.ar-section[data-off] :is(.ar-section__trigger, .ar-section__chevron) {
+.ar-section[data-off] .ar-section__switch:hover .ar-section__title {
+  color: var(--ar-text-mid);
+}
+.ar-section[data-off] .ar-section__chevron {
   cursor: default;
 }
 .ar-section[data-off] .ar-section__chevron {
