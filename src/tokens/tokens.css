@@ -107,6 +107,13 @@
   /* type */
   --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* body text: five steps, always in --ar-font-ui at weight 300. Control text (labels, rows,
+     buttons) uses the --ar-label-* and --ar-value-* tokens instead. */
+  --ar-text-xs: 10.5px; /* hints, captions, port names */
+  --ar-text-sm: 11.5px; /* secondary lines, tabs, field labels in tight places */
+  --ar-text-md: 12px; /* body: field labels, rows of prose, messages */
+  --ar-text-lg: 14px; /* sheet titles, the palette's query */
+  --ar-text-xl: 17px; /* panel titles */
 
   /* radii — four steps only */
   --ar-radius-control: 5px;

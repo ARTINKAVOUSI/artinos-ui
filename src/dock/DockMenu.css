@@ -13,7 +13,7 @@
   backdrop-filter: var(--ar-list-backdrop);
   box-shadow: var(--ar-list-shadow);
   text-shadow: var(--ar-list-text-shadow);
-  font: 300 12px/1.3 var(--ar-font-ui);
+  font: 300 var(--ar-text-md)/1.3 var(--ar-font-ui);
   color: var(--ar-float-ink);
   animation: ar-drop-in var(--ar-dur-enter) var(--ar-ease-roll);
   transform-origin: top left;
@@ -46,7 +46,7 @@
   border-bottom: 1px solid var(--ar-line);
 }
 .ar-dock-menu__head b {
-  font: 300 13.5px/1.2 var(--ar-font-ui);
+  font: 300 var(--ar-text-lg)/1.2 var(--ar-font-ui);
   color: var(--ar-float-ink);
 }
 .ar-dock-menu__head em,
@@ -164,12 +164,17 @@
   align-items: center;
   gap: 9px;
   width: 100%;
-  height: 28px;
+  height: max(22px, calc(var(--ar-h) - 4px));
   padding: 0 8px 0 6px;
   border: 0;
   border-radius: var(--ar-insert-radius);
   background: none;
-  font: inherit;
+  /* the Select list's row text */
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
   text-align: left;
   color: var(--ar-float-ink);
   cursor: pointer;
@@ -196,18 +201,6 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-.ar-dock-menu__action kbd {
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 4px;
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-label-weight) 9px/18px var(--ar-control-font);
-  letter-spacing: 0.04em;
-  text-align: center;
-  color: var(--ar-float-ink-low);
 }
 .ar-dock-menu__action[data-primary],
 .ar-dock-menu__action[data-primary] .ar-dock-menu__icon {
@@ -245,7 +238,11 @@
   border-radius: 999px;
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font: 300 11px var(--ar-font-ui);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
   color: var(--ar-float-ink);
   cursor: pointer;
 }

@@ -109,7 +109,7 @@ function ToastItem({ toast, onDismiss }: { toast: ToastEntry; onDismiss: (id: nu
           {toast.action.label}
         </button>
       )}
-      <button type="button" className="ar-toast__close" aria-label="Dismiss" onClick={() => onDismiss(id)}>
+      <button type="button" className="ar-tool ar-toast__close" aria-label="Dismiss" onClick={() => onDismiss(id)}>
         <svg viewBox="0 0 10 10" aria-hidden>
           <path d="M2.5 2.5l5 5M7.5 2.5l-5 5" />
         </svg>

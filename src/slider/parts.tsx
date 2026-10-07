@@ -10,7 +10,7 @@ export type HudState =
   | { kind: 'swatch'; sx: number; sy: number; color: string; caption: string; leaving?: boolean };
 
 /** Tokens the portalled HUD carries out of its theme scope. */
-export const HUD_TOKENS = ['--ar-signal-hi', '--ar-float-bg', '--ar-float-ring', '--ar-float-shadow', '--ar-float-ink', '--ar-float-ink-low', '--ar-font-num', '--ar-ease', '--ar-ease-exit'] as const;
+export const HUD_TOKENS = ['--ar-signal-hi', '--ar-sheet-bg', '--ar-sheet-blur', '--ar-sheet-shadow', '--ar-float-ink', '--ar-float-ink-low', '--ar-font-num', '--ar-ease', '--ar-ease-exit'] as const;
 
 /**
  * Precision HUD — small, quiet, local, temporary. Origin point on the readout,

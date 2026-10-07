@@ -93,7 +93,7 @@
   padding-left: 4px;
   color: var(--ar-insert-unit-ink);
 }
-.ar-button__trailing .ar-kbd kbd {
+.ar-button__trailing .ar-keycap {
   background: color-mix(in srgb, var(--ar-insert-ink) 7%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-insert-ink) 14%, transparent);
   color: var(--ar-insert-unit-ink);
@@ -254,21 +254,6 @@
 .ar-kbd {
   display: inline-flex;
   gap: 3px;
-}
-.ar-kbd kbd {
-  box-sizing: border-box;
-  display: inline-grid;
-  place-items: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 4px;
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
-  letter-spacing: 0.04em;
-  color: var(--ar-text-mid);
-  text-shadow: none;
 }
 
 /* ---------- Badge ---------- */

@@ -64,7 +64,7 @@ export function PropertyRow({
         {(onReset || actions) && (
           <div className="ar-prop__actions">
             {onReset && (
-              <button type="button" className="ar-prop__reset" onClick={onReset} aria-label={`Reset ${label}`} title="Reset to default">
+              <button type="button" className="ar-tool ar-prop__reset" onClick={onReset} aria-label={`Reset ${label}`} title="Reset to default">
                 <svg viewBox="0 0 12 12" aria-hidden>
                   <path d="M2.6 4.4A3.8 3.8 0 1 1 2.2 7" />
                   <path d="M2.4 1.8v2.7h2.7" />

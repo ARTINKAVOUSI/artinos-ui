@@ -183,13 +183,8 @@ function MenuList({
               onClick={() => select(index)}
             >
               <span className="ar-menu__icon">
-                {entry.checked ? (
-                  <svg viewBox="0 0 12 12" aria-hidden>
-                    <path d="M2.5 6.2l2.3 2.3 4.7-5" />
-                  </svg>
-                ) : (
-                  entry.icon
-                )}
+                {/* a checkable item shows the Select's LED: lit when on */}
+                {entry.checked !== undefined ? <i className="ar-led" data-on={entry.checked ? '' : undefined} /> : entry.icon}
               </span>
               <span className="ar-menu__text">{entry.label}</span>
               {entry.shortcut && <span className="ar-menu__shortcut">{entry.shortcut}</span>}

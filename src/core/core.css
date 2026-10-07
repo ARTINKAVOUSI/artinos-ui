@@ -220,3 +220,78 @@
     opacity: 0.45;
   }
 }
+
+/* ---------- key cap: a shortcut, as a tiny well (Kbd, the palette, the dock menu) ---------- */
+.ar-keycap {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: calc(var(--ar-insert-radius) - 2px);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-label-weight) 9px/1 var(--ar-control-font);
+  letter-spacing: 0.04em;
+  color: var(--ar-text-mid);
+  text-shadow: none;
+}
+
+/* ---------- tool: a small bare icon button (close, clear, reset, window controls) ---------- */
+:where(.ar-tool) {
+  all: unset;
+}
+.ar-tool {
+  --_tool: 20px;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--_tool);
+  height: var(--_tool);
+  border-radius: var(--ar-insert-radius);
+  color: var(--ar-text-low);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-tool:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-tool:active {
+  transform: scale(0.9);
+  transition-duration: var(--ar-dur-state), var(--ar-dur-state), 60ms;
+}
+.ar-tool:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-tool svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* reduced motion, everywhere: the tokens already zero their durations; this also reaches
+   the few hand-tuned timings (a switch's travel, the slider's choreography) and stops loops.
+   A toast's time bar keeps running: it shows time, not motion. */
+@media (prefers-reduced-motion: reduce) {
+  [data-ar-theme] *,
+  .ar-theme *,
+  .ar-portal * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .ar-toast__time {
+    animation-duration: var(--_life) !important;
+  }
+}

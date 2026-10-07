@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import { RollingText } from '../core/RollingValue';
 import { wirePath } from './view';
 import { RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
@@ -170,7 +170,12 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
   }, [graph.edges, hover, selected]);
 
   return (
-    <div ref={surfaceRef} className="ar-live" onPointerDown={pan}>
+    <div
+      ref={surfaceRef}
+      className="ar-live"
+      style={{ '--_gx': `${viewport.x}px`, '--_gy': `${viewport.y}px`, '--_gs': `${20 * viewport.zoom}px` } as CSSProperties}
+      onPointerDown={pan}
+    >
       <div className="ar-live__viewport" style={{ transform: `translate(${viewport.x}px,${viewport.y}px) scale(${viewport.zoom})` }}>
         <div className="ar-live__columns" style={{ width: bounds.width, height: bounds.height }}>
           {graph.columns.map((label, index) => (

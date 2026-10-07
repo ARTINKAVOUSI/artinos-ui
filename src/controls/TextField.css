@@ -52,25 +52,8 @@
   background: var(--ar-signal-wash);
 }
 .ar-textfield__clear {
-  all: unset;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: calc(var(--_h) - 2 * var(--ar-inset) - 4px);
-  height: calc(var(--_h) - 2 * var(--ar-inset) - 4px);
-  border-radius: var(--ar-insert-radius);
+  --_tool: calc(var(--_h) - 2 * var(--ar-inset) - 4px);
   color: var(--ar-dim-ink);
-  cursor: pointer;
-  transition:
-    background var(--ar-dur-state) var(--ar-ease),
-    color var(--ar-dur-state) var(--ar-ease);
-}
-.ar-textfield__clear:hover {
-  background: var(--ar-bg-hover);
-  color: var(--ar-text-hi);
-}
-.ar-textfield__clear:focus-visible {
-  box-shadow: var(--ar-focus-ring);
 }
 .ar-textfield__clear svg {
   width: 8px;

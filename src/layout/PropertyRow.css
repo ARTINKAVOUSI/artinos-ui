@@ -36,7 +36,7 @@
   gap: 6px;
   min-width: 0;
   overflow: hidden;
-  font-size: 12px;
+  font-size: var(--ar-text-md);
   font-weight: 300;
   line-height: 1.35;
   white-space: nowrap;
@@ -77,24 +77,8 @@
   opacity: 1;
 }
 .ar-prop__reset {
-  all: unset;
-  display: grid;
-  place-items: center;
-  width: calc(var(--ar-h) - 4px);
-  height: calc(var(--ar-h) - 4px);
-  border-radius: var(--ar-insert-radius);
+  --_tool: calc(var(--ar-h) - 4px);
   color: var(--ar-text-faint);
-  cursor: pointer;
-  transition:
-    background var(--ar-dur-state) var(--ar-ease),
-    color var(--ar-dur-state) var(--ar-ease);
-}
-.ar-prop__reset:hover {
-  background: var(--ar-bg-hover);
-  color: var(--ar-text-hi);
-}
-.ar-prop__reset:focus-visible {
-  box-shadow: var(--ar-focus-ring);
 }
 .ar-prop__reset svg {
   width: 12px;
@@ -107,7 +91,7 @@
 }
 .ar-prop__message {
   margin: 0 0 0 calc(var(--_label-w) + 10px);
-  font-size: 11px;
+  font-size: var(--ar-text-sm);
   font-weight: 300;
   line-height: 1.5;
   color: var(--ar-text-low);

@@ -28,7 +28,7 @@ export function Kbd({ keys, className }: KbdProps) {
   return (
     <span className={className ? `ar-kbd ${className}` : 'ar-kbd'}>
       {keys.map((key, i) => (
-        <kbd key={i}>{glyph(key, isApple)}</kbd>
+        <kbd key={i} className="ar-keycap">{glyph(key, isApple)}</kbd>
       ))}
     </span>
   );

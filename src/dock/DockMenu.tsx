@@ -155,7 +155,7 @@ export function DockMenu({ model, close }: MetaBlockContextMenuRenderContext) {
             >
               <span className="ar-dock-menu__icon">{iconOf(item)}</span>
               <span className="ar-dock-menu__text">{item.label}</span>
-              {item.shortcut && <kbd>{item.shortcut}</kbd>}
+              {item.shortcut && <kbd className="ar-keycap">{item.shortcut}</kbd>}
             </button>
           ))}
         </div>

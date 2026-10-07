@@ -395,15 +395,16 @@ export function Dock({
             <>
               <button
                 type="button"
+                className="ar-tool"
                 title={c.group.posture === 'maximized' ? 'Restore' : 'Maximize'}
                 onClick={() => (c.group.posture === 'maximized' ? c.restore() : c.maximize())}
               >
                 {c.group.posture === 'maximized' ? DockIcons.minimize : DockIcons.maximize}
               </button>
-              <button type="button" title="Return to its dock" onClick={() => c.blockActions.returnHome(c.activeBlock!.id)}>
+              <button type="button" className="ar-tool" title="Return to its dock" onClick={() => c.blockActions.returnHome(c.activeBlock!.id)}>
                 {DockIcons.returnHome}
               </button>
-              <button type="button" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
+              <button type="button" className="ar-tool" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
                 {DockIcons.close}
               </button>
             </>

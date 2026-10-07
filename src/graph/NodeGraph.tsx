@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import {
   GRAPH_CATEGORIES,
   edgesInto,
@@ -395,6 +395,8 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
         <div
           ref={surface}
           className="ar-graph__surface"
+          // the dot grid lives in graph space: it pans and zooms with the nodes
+          style={{ '--_gx': `${view.scale * view.x}px`, '--_gy': `${view.scale * view.y}px`, '--_gs': `${20 * view.scale}px` } as CSSProperties}
           onPointerDown={startSurface}
           onPointerMove={onPointerMove}
           onPointerUp={finishDrag}

@@ -19,6 +19,15 @@
   color: var(--ar-float-ink);
   text-shadow: var(--ar-list-text-shadow);
 }
+/* list rows are the Select list's: mono caps control text, full-width hover bands */
+.ar-menu__item,
+.ar-palette__item {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+}
 /* mono caps: group headings, the toast's action */
 .ar-menu__label,
 .ar-palette__group,
@@ -32,27 +41,6 @@
   color: var(--ar-float-ink-low);
 }
 /* small icon-only buttons inside a sheet */
-.ar-toast__close {
-  all: unset;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--ar-insert-radius);
-  color: var(--ar-float-ink-low);
-  cursor: pointer;
-  transition:
-    background var(--ar-dur-state) var(--ar-ease),
-    color var(--ar-dur-state) var(--ar-ease);
-}
-.ar-toast__close:hover {
-  background: var(--ar-list-hover);
-  color: var(--ar-float-ink);
-}
-.ar-toast__close:focus-visible {
-  box-shadow: var(--ar-focus-ring);
-}
 /* motion: a sheet arrives from where it was opened over --ar-dur-enter and leaves faster,
    over --ar-dur-exit (the shared keyframes live in core.css). A highlight glides between
    rows rather than jumping, so the eye can follow the keyboard. */
@@ -65,7 +53,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: var(--ar-insert-radius);
   background: var(--ar-list-hover);
   opacity: 0;
   pointer-events: none;
@@ -82,10 +69,9 @@
   z-index: 10000;
   min-width: 184px;
   max-height: 70vh;
-  padding: 5px;
+  padding: 4px 0 6px;
   overflow: auto;
   border-radius: var(--ar-radius);
-  font-size: 12px;
   outline: none;
   transform-origin: top left;
 }
@@ -107,9 +93,8 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  height: max(22px, calc(var(--ar-h) - 2px));
-  padding: 0 9px 0 7px;
-  border-radius: var(--ar-insert-radius);
+  height: max(20px, calc(var(--ar-h) - 6px));
+  padding: 0 12px 0 11px;
   color: var(--ar-list-ink);
   cursor: default;
   user-select: none;
@@ -130,7 +115,7 @@
   display: grid;
   place-items: center;
   flex: none;
-  width: 14px;
+  width: 12px;
   color: var(--ar-float-ink-low);
   transition:
     color var(--ar-dur-state) var(--ar-ease),
@@ -140,15 +125,9 @@
 .ar-menu__item[data-active] .ar-menu__icon {
   transform: translateX(1px) scale(1.06);
 }
-/* a checkmark is drawn, not switched on */
-.ar-menu__icon path {
-  stroke-dasharray: 12;
-  animation: ar-draw-check var(--ar-dur-surface) var(--ar-ease-roll) both;
-}
-@keyframes ar-draw-check {
-  from {
-    stroke-dashoffset: 12;
-  }
+/* a checked item carries the Select's lit LED */
+.ar-menu__icon .ar-led {
+  animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring) backwards;
 }
 .ar-menu__item[data-active] .ar-menu__icon {
   color: inherit;
@@ -171,18 +150,17 @@
 }
 .ar-menu__shortcut {
   padding-left: 18px;
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-size: 9px;
   letter-spacing: 0.04em;
   color: var(--ar-float-ink-low);
 }
 .ar-menu__separator {
   height: 1px;
-  margin: 4px 3px;
-  background: var(--ar-line);
+  margin: 4px 0;
+  background: var(--ar-line-subtle);
 }
 .ar-menu__label {
-  padding: 8px 8px 4px 30px;
+  padding: 8px 12px 4px 32px;
 }
 /* ContextMenu adds no box of its own: wrapping a row never changes the layout */
 .ar-context {
@@ -197,7 +175,7 @@
   padding: 0;
   border: 0;
   border-radius: var(--ar-radius-panel);
-  font-size: 12px;
+  font-size: var(--ar-text-md);
   line-height: 1.5;
 }
 .ar-dialog[open]:not([data-state='closing']) {
@@ -225,7 +203,7 @@
 }
 .ar-dialog__head h2 {
   margin: 0;
-  font: 300 15px/1.3 var(--ar-font-ui);
+  font: 300 var(--ar-text-lg)/1.3 var(--ar-font-ui);
   letter-spacing: 0.005em;
   color: var(--ar-float-ink);
 }
@@ -340,7 +318,7 @@
   flex-direction: column;
   gap: 2px;
   min-width: 0;
-  font-size: 12px;
+  font-size: var(--ar-text-md);
   line-height: 1.4;
 }
 .ar-toast__text strong {
@@ -389,7 +367,7 @@
   max-width: 260px;
   padding: 5px 9px;
   border-radius: var(--ar-insert-radius);
-  font-size: 11.5px;
+  font-size: var(--ar-text-sm);
   line-height: 1.4;
   pointer-events: none;
 }
@@ -423,6 +401,7 @@
   inset: 0;
   z-index: 9999;
   display: flex;
+  align-items: flex-start; /* the sheet is as tall as its results, up to its max-height */
   justify-content: center;
   padding: 14vh 16px 16px;
   background: rgba(0, 0, 0, 0.3);
@@ -431,8 +410,8 @@
 .ar-palette__dialog {
   display: flex;
   flex-direction: column;
-  width: min(560px, 100%);
-  max-height: 60vh;
+  width: min(520px, 100%);
+  max-height: min(60vh, 460px);
   overflow: hidden;
   border-radius: var(--ar-radius-panel);
   animation: ar-drop-in var(--ar-dur-enter) var(--ar-ease-roll);
@@ -459,8 +438,9 @@
 .ar-palette__search input {
   all: unset;
   flex: 1;
-  height: 46px;
-  font: 300 14px var(--ar-font-ui);
+  height: 44px;
+  font: var(--ar-value-weight) calc(var(--ar-value-size) + var(--ar-value-bump) + 1px) var(--ar-control-font);
+  letter-spacing: 0.02em;
   color: var(--ar-float-ink);
   caret-color: var(--ar-signal);
 }
@@ -470,20 +450,18 @@
 }
 .ar-palette__list {
   position: relative; /* the glide's offset parent */
-  padding: 6px;
+  padding: 4px 0 8px;
   overflow: auto;
 }
 .ar-palette__group {
-  padding: 10px 10px 4px;
+  padding: 12px 16px 5px;
 }
 .ar-palette__item {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: var(--ar-insert-radius);
-  font-size: 12.5px;
+  height: var(--ar-h);
+  padding: 0 16px;
   color: var(--ar-list-ink);
   cursor: default;
 }
@@ -513,28 +491,18 @@
   width: 16px;
   color: var(--ar-float-ink-low);
 }
+.ar-palette__icon:empty {
+  display: none;
+}
 .ar-palette__icon svg {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 }
 .ar-palette__label {
   flex: 1;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-.ar-palette__item kbd {
-  box-sizing: border-box;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 4px;
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-label-weight) 9px/18px var(--ar-control-font);
-  letter-spacing: 0.04em;
-  text-align: center;
-  color: var(--ar-float-ink-low);
 }
 .ar-palette__empty {
   padding: 24px;

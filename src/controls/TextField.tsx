@@ -48,7 +48,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         {...rest}
       />
       {showClear && (
-        <button type="button" className="ar-textfield__clear" aria-label="Clear" onClick={() => onChange('')}>
+        <button type="button" className="ar-tool ar-textfield__clear" aria-label="Clear" onClick={() => onChange('')}>
           <svg viewBox="0 0 10 10" aria-hidden>
             <path d="M2.5 2.5l5 5M7.5 2.5l-5 5" />
           </svg>

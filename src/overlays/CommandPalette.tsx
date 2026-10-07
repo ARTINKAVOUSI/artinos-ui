@@ -163,7 +163,7 @@ export function CommandPalette({ commands, open, onOpenChange, hotkey = DEFAULT_
                     <span className="ar-palette__icon">{command.icon}</span>
                     <span className="ar-palette__label">{command.label}</span>
                     {query && command.group && <span className="ar-palette__meta">{command.group}</span>}
-                    {command.shortcut && <kbd>{command.shortcut}</kbd>}
+                    {command.shortcut && <kbd className="ar-keycap">{command.shortcut}</kbd>}
                   </div>
                 </div>
               );

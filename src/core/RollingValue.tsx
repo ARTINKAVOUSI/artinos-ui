@@ -171,7 +171,7 @@ export function RollingValue({ text, unit, dir, fast, base = 2, className }: Rol
   useEffect(() => {
     prev.current = text;
   });
-  const dur = quick ? 140 : 360;
+  const dur = quick ? 110 : 360;
   const stagger = quick ? 14 : 34;
   return (
     <span className={'ar-roll' + (className ? ' ' + className : '')}>
