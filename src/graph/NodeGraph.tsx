@@ -17,7 +17,7 @@ import {
 } from './graph';
 import { RollingText, RollingValue } from '../core/RollingValue';
 import { useGraphEditor } from './editor';
-import { NodeField, type GraphSources } from './NodeFields';
+import { fieldRows, NodeField, type GraphSources } from './NodeFields';
 import { PREVIEW_H, RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
 import { usePanZoom, wirePath, type Point } from './view';
 
@@ -25,8 +25,9 @@ const NODE_WIDTH = 188;
 const HEADER_H = 26;
 const PORT_TOP = 15;
 const PORT_GAP = 17;
-const FIELD_H = 24;
-const BODY_PAD = 8;
+/* a field row is a dense control (24px) plus its gap; the fields block is padded top and bottom */
+const FIELD_H = 28;
+const BODY_PAD = 10;
 const GROUP_PAD = 16;
 const GROUP_HEAD = 18;
 /** The default for `runtimeDiagnostics`: one shared array, so the diagnostics memo holds. */
@@ -49,7 +50,7 @@ const previewKind = (node: GraphNode, domain: string): 'value' | 'render' | 'non
 const nodeHeight = (node: GraphNode, domain: string, collapsed: boolean) => {
   if (collapsed) return HEADER_H;
   const preview = previewKind(node, domain) === 'none' ? 0 : PREVIEW_H + 6;
-  return HEADER_H + PORT_TOP + portRows(node) * PORT_GAP + fieldsOf(node).length * FIELD_H + preview + BODY_PAD;
+  return HEADER_H + PORT_TOP + portRows(node) * PORT_GAP + fieldsOf(node).reduce((rows, field) => rows + fieldRows(field), 0) * FIELD_H + preview + BODY_PAD;
 };
 
 const anchor = (node: GraphNode, side: Side, portId: string, collapsed: boolean): Point => {
@@ -497,7 +498,7 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                   <header className="ar-graph__node-head" onPointerDown={(event) => startNodeDrag(event, node)} title={schema?.description}>
                     <button
                       type="button"
-                      className="ar-graph__fold"
+                      className="ar-tool ar-graph__fold"
                       onPointerDown={(event) => event.stopPropagation()}
                       onClick={() =>
                         setCollapsedNodes((current) => (current.includes(node.id) ? current.filter((id) => id !== node.id) : [...current, node.id]))
@@ -506,7 +507,9 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                       aria-label={`${collapsed ? 'Expand' : 'Collapse'} ${labelOf(node)}`}
                       aria-expanded={!collapsed}
                     >
-                      {collapsed ? '▸' : '▾'}
+                      <svg className="ar-chevron" data-up={collapsed ? undefined : ''} viewBox="0 0 10 6" aria-hidden>
+                        <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     </button>
                     <span className="ar-graph__node-title">{labelOf(node)}</span>
                     <output className="ar-graph__node-readout">
@@ -547,7 +550,13 @@ export function NodeGraph({ value, onChange, readouts, frames, sources = {}, run
                         ))}
                       </div>
 
-                      <div className="ar-graph__fields">
+                      {/* the family's controls, dense; their pointer and key events stay inside the node */}
+                      <div
+                        className="ar-graph__fields"
+                        data-ar-density="dense"
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onKeyDown={(event) => event.stopPropagation()}
+                      >
                         {fieldsOf(node).map((field) => (
                           <NodeField
                             key={field.id}

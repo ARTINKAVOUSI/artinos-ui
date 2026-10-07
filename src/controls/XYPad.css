@@ -1,14 +1,11 @@
-/* XYPad — a 2D field cut as a well with a hairline quarter grid, a tick crosshair and
-   an insert point with the lit seam at its centre. */
+/* XYPad — a 2D field cut as a well with the family's dot grid (the node canvas uses the
+   same), a tick crosshair and an insert point with the lit seam at its centre. */
 .ar-xypad {
   display: block;
   width: 100%;
   overflow: hidden;
   background:
-    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 25% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 75% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 0 25% / 100% 1px no-repeat,
-    linear-gradient(var(--ar-line-subtle), var(--ar-line-subtle)) 0 75% / 100% 1px no-repeat,
+    radial-gradient(circle, var(--ar-line) 0.8px, transparent 1.3px) 10px 10px / 20px 20px,
     var(--ar-trough);
   cursor: crosshair;
   touch-action: none;

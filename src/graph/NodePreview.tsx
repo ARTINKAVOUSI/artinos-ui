@@ -1,5 +1,6 @@
 'use client';
 import { memo, useEffect, useState } from 'react';
+import { Sparkline } from '../display/Sparkline';
 
 export const PREVIEW_W = 168;
 export const PREVIEW_H = 44;
@@ -34,16 +35,11 @@ export const ValuePreview = memo(function ValuePreview({ value }: { value: numbe
     min -= 0.5;
     max += 0.5;
   }
-  const span = max - min;
-  const points = history
-    .map((item, index) => `${(index / (history.length - 1)) * PREVIEW_W},${PREVIEW_H - ((item - min) / span) * (PREVIEW_H - 3) - 1.5}`)
-    .join(' ');
+  // the same Sparkline as everywhere else in the family, in a well
   return (
-    <svg className="ar-graph__preview-canvas" viewBox={`0 0 ${PREVIEW_W} ${PREVIEW_H}`} preserveAspectRatio="none">
-      <line x1="0" x2={PREVIEW_W} y1={PREVIEW_H / 2} y2={PREVIEW_H / 2} stroke="currentColor" opacity=".12" />
-      <polygon points={`0,${PREVIEW_H} ${points} ${PREVIEW_W},${PREVIEW_H}`} fill="currentColor" opacity=".16" />
-      <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-    </svg>
+    <div className="ar-graph__preview-canvas">
+      <Sparkline label="Recent values" values={history} min={min} max={max} width={PREVIEW_W} height={PREVIEW_H - 8} />
+    </div>
   );
 });
 

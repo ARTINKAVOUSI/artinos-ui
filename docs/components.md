@@ -339,7 +339,8 @@ The Dock fills its parent, so give the parent a height.
 - **NodeGraph**: a node editor on a canvas well with a hairline grid. Nodes are float sheets, each with a seam in its family's colour, and fields are wells. Wired ports light like LEDs.
   - Editing: drag from a port to wire and click a wire to cut it. On the canvas, drag to select, Alt-drag or middle-drag to pan, and Ctrl/⌘ + wheel to zoom. Double-click or right-click the canvas for the node palette.
   - Shortcuts: ⌘/Ctrl + G groups, D duplicates, Z undoes and Y redoes.
-  - Connections are type-checked and cycles are flagged; an inspector column shows the selected node.
+  - A node is a small Panel: its fields are the family's own controls (NumberField, Switch, Select, TextField) at dense density, its ports light like LEDs when wired, and its preview is a Sparkline in a well.
+  - Connections are type-checked and cycles are flagged; an inspector column shows the selected node with the same controls.
   - Props: `value: GraphDefinition` / `onChange` (both required), `readouts` (each node's last output), `frames` (GPU thumbnails), `sources` (what the pickers offer), `runtimeDiagnostics`, `onDiagnostics`.
 - **LiveGraphView**: a read-only, column-laid view of a running graph with live controls. Props: `graph: LiveGraph`, `previews`, `onInspect`, `onControl` (required), `insetRight`.
 - **Graph model** (`graph/graph.ts`, exported from the index):

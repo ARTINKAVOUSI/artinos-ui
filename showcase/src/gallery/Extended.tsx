@@ -156,7 +156,7 @@ function WorkspaceDemo() {
         panels={panels}
         viewport={<img className="sc-workspace__view" src={BACKDROPS.garden} alt="" />}
         storageKey="artinos-showcase.dock.v1"
-        sizes={{ left: 0.26, right: 0.24, bottom: 0.38 }}
+        sizes={{ left: 0.3, right: 0.22, bottom: 0.38 }}
         floatBounds={{ x: 380, y: 60, width: 300, height: 170 }}
         viewProps={{ padding: 8, gap: 6 }}
       />

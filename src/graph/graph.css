@@ -22,9 +22,6 @@
 :where(.ar-graph__group header input) {
   all: unset;
 }
-:where(.ar-graph__fold) {
-  all: unset;
-}
 :where(.ar-graph__port) {
   all: unset;
 }
@@ -252,15 +249,17 @@
 .ar-graph__node,
 .ar-live__node {
   --_seam: var(--ar-line-strong);
-  --_ring: var(--ar-sheet-shadow);
+  --_ring: var(--ar-panel-shadow);
   position: absolute;
   box-sizing: border-box;
   border-radius: var(--ar-radius-card);
-  /* frosted glass: the grid and wires melt behind it (the canvas well does not blur
-     itself, or a node's blur would have nothing to frost) */
-  background: var(--ar-sheet-bg);
-  -webkit-backdrop-filter: var(--ar-sheet-blur);
-  backdrop-filter: var(--ar-sheet-blur);
+  /* a node is a small Panel: the theme's glass, lifted one step above the canvas well */
+  background:
+    var(--ar-panel-sheen),
+    linear-gradient(var(--ar-bg-raised), var(--ar-bg-raised)),
+    var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--_ring);
   color: var(--ar-text-hi);
   text-shadow: var(--ar-panel-text-shadow);
@@ -325,11 +324,6 @@
   border-bottom: 1px solid var(--ar-line-subtle);
   cursor: move;
   touch-action: none;
-}
-.ar-graph__fold {
-  font-size: 9px;
-  color: var(--ar-text-low);
-  cursor: pointer;
 }
 .ar-graph__node-title {
   flex: 1;
@@ -398,119 +392,6 @@
   white-space: nowrap;
 }
 
-/* ---------- fields: label · well ---------- */
-.ar-graph__fields {
-  padding: 0 8px 0 12px;
-}
-.ar-graph__field,
-.ar-live__field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 24px;
-  font: 300 var(--ar-text-sm) var(--ar-font-ui);
-  color: var(--ar-text-low);
-}
-.ar-graph__field > span,
-.ar-live__field > span {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.ar-graph__number,
-.ar-graph__field input[type='number'],
-.ar-graph__field input[type='text'],
-.ar-graph__field input[type='search'],
-.ar-graph__field select {
-  box-sizing: border-box;
-  width: 92px;
-  height: 20px;
-  margin: 0;
-  padding: 0 7px;
-  border: 0;
-  border-radius: var(--ar-insert-radius);
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
-  font-variant-numeric: tabular-nums;
-  color: var(--ar-text-hi);
-  color-scheme: inherit;
-  outline: none;
-}
-/* the Select's chevron, drawn in the ink colour, instead of the browser's arrow */
-.ar-graph__field select {
-  appearance: none;
-  padding-right: 18px;
-  background:
-    linear-gradient(45deg, transparent 50%, currentColor 50%) right 9px top 50% / 4px 4px no-repeat,
-    linear-gradient(135deg, currentColor 50%, transparent 50%) right 5px top 50% / 4px 4px no-repeat,
-    var(--ar-trough);
-  font-family: var(--ar-font-ui);
-  font-weight: 300;
-  cursor: pointer;
-}
-.ar-graph__field select option {
-  background: var(--ar-list-bg);
-  color: var(--ar-list-ink);
-}
-.ar-graph__number:focus,
-.ar-graph__field input:focus,
-.ar-graph__field select:focus {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
-}
-.ar-graph__vector {
-  display: flex;
-  gap: 3px;
-}
-.ar-graph__vector input {
-  width: 32px !important;
-  padding: 0 4px !important;
-}
-/* a small switch: the knob is an insert in a well */
-.ar-graph__check {
-  appearance: none;
-  position: relative;
-  flex: none;
-  width: 26px;
-  height: 14px;
-  margin: 0;
-  border-radius: 7px;
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  cursor: pointer;
-  transition: background var(--ar-dur-state) var(--ar-ease);
-}
-.ar-graph__check::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--ar-insert);
-  box-shadow: var(--ar-insert-shadow);
-  filter: var(--ar-insert-off-filter);
-  transition: translate var(--ar-dur-state) var(--ar-ease), filter var(--ar-dur-state) var(--ar-ease);
-}
-.ar-graph__check:checked {
-  background: var(--ar-signal-wash);
-}
-.ar-graph__check:checked::after {
-  translate: 12px 0;
-  filter: none;
-}
-.ar-graph__check:focus-visible {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
-}
-
-/* ---------- previews: a small well ---------- */
-.ar-graph__preview {
-  padding: 2px 10px 0 12px;
-  color: var(--ar-signal);
-}
 .ar-graph__preview-canvas,
 .ar-graph__preview-pending {
   display: block;
@@ -842,27 +723,6 @@
   font-variant-numeric: tabular-nums;
   color: var(--ar-signal-hi);
 }
-.ar-live__control {
-  flex: none;
-  padding: 0 10px 0 12px;
-}
-.ar-live__field input[type='number'] {
-  box-sizing: border-box;
-  width: 84px;
-  height: 20px;
-  margin: 0;
-  padding: 0 7px;
-  border: 0;
-  border-radius: var(--ar-insert-radius);
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
-  color: var(--ar-text-hi);
-  outline: none;
-}
-.ar-live__field input[type='number']:focus {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
-}
 .ar-live__preview {
   display: flex;
   flex: 1;
@@ -985,4 +845,132 @@
 }
 .ar-graph__inspector > * {
   animation: ar-settle-in var(--ar-dur-surface) var(--ar-ease-roll) backwards;
+}
+
+/* ======================= node body: the family's own controls =======================
+   Fields are NumberField, Switch, Select and TextField at dense density, stacked with the
+   family's gap; ports are mono-caps labels with a well that lights like an LED; the
+   preview is a well holding a plot in the plot inks. Geometry (FIELD_H 28, PORT_GAP 17,
+   PREVIEW_H) is shared with NodeGraph.tsx and LiveGraphView.tsx. */
+.ar-graph__node-head {
+  gap: 7px;
+  padding: 0 10px 0 8px;
+}
+.ar-graph__fold {
+  --_tool: 18px;
+  color: var(--ar-text-low);
+}
+.ar-graph__fold .ar-chevron {
+  width: 8px;
+  height: 5px;
+}
+.ar-graph__node-readout {
+  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-signal);
+}
+
+/* ports: a tiny well that fills with the signal when wired, labelled in control text */
+.ar-graph__port {
+  gap: 6px;
+  height: 14px;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-low);
+}
+.ar-graph__port b {
+  font-weight: inherit;
+}
+.ar-graph__port i,
+.ar-live__port {
+  width: 9px;
+  height: 9px;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+}
+.ar-graph__port.is-wired i,
+.ar-graph__port:hover i,
+.ar-live__port.side-out {
+  background: var(--ar-signal);
+  box-shadow: 0 0 0 0.5px #757575, 0 0 6px var(--ar-led-glow);
+}
+.ar-graph__port.is-required:not(.is-wired) i {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-fault);
+}
+
+/* fields: a column of dense controls */
+.ar-graph__fields,
+.ar-live__control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px 10px 0;
+}
+.ar-live__control {
+  flex: none;
+  padding-bottom: 4px;
+}
+.ar-graph__fields .ar-field {
+  gap: 8px;
+}
+.ar-graph__fields .ar-field__label {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-label-ink);
+}
+/* a vector: its label line, then three cells sharing the row */
+.ar-graph__vector {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ar-graph__vector > .ar-text {
+  padding-left: 2px;
+  color: var(--ar-label-ink);
+}
+.ar-graph__vector-cells {
+  display: flex;
+  gap: 4px;
+}
+.ar-graph__vector-cells > * {
+  flex: 1;
+  min-width: 0;
+}
+/* text and select inside a node: the well face */
+.ar-graph__fields .ar-textfield input {
+  font-size: var(--ar-text-sm);
+}
+
+/* preview: a well holding a plot in the plot inks */
+.ar-graph__preview {
+  padding: 4px 10px 0;
+  color: var(--ar-plot-hi);
+}
+.ar-graph__preview-canvas,
+.ar-graph__preview-pending {
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-radius: var(--ar-insert-radius);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+}
+.ar-graph__preview-canvas .ar-sparkline {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 4px 6px;
+  box-sizing: border-box;
+}
+.ar-graph__preview-pending {
+  display: grid;
+  place-items: center;
+  font: 300 var(--ar-text-xs) var(--ar-font-ui);
+  color: var(--ar-text-low);
 }

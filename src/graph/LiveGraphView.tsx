@@ -1,5 +1,7 @@
 'use client';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
+import { NumberField } from '../controls/NumberField';
+import { Switch } from '../controls/Switch';
 import { RollingText } from '../core/RollingValue';
 import { wirePath } from './view';
 import { RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
@@ -8,7 +10,7 @@ export const LIVE_NODE_WIDTH = 252;
 const COLUMN_GAP = 88;
 export const LIVE_COLUMN_STEP = LIVE_NODE_WIDTH + COLUMN_GAP;
 const HEADER_H = 42;
-const ROW_H = 25;
+const ROW_H = 28; // a dense control (24px) and its gap
 const PREVIEW_H = 62;
 const PAD = 10;
 const MIN_ZOOM = 0.25;
@@ -233,34 +235,20 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
             </button>
 
             {node.controls.map((control) => (
-              <div key={control.id} className="ar-live__control">
+              <div key={control.id} className="ar-live__control" data-ar-density="dense" onPointerDown={(event) => event.stopPropagation()}>
                 {control.kind === 'boolean' ? (
-                  <label className="ar-live__field">
-                    <span>{control.label}</span>
-                    <input
-                      type="checkbox"
-                      role="switch"
-                      className="ar-graph__check"
-                      checked={control.value}
-                      onChange={(event) => onControl(node, control, event.target.checked)}
-                    />
-                  </label>
+                  <Switch label={control.label} value={control.value} onChange={(next) => onControl(node, control, next)} />
                 ) : control.kind === 'number' ? (
-                  <label className="ar-live__field">
-                    <span>{control.label}</span>
-                    <input
-                      type="number"
-                      className="ar-graph__number"
-                      value={control.value}
-                      min={control.min}
-                      max={control.max}
-                      step={control.step ?? 0.01}
-                      onChange={(event) => {
-                        const next = event.target.valueAsNumber;
-                        if (Number.isFinite(next)) onControl(node, control, next);
-                      }}
-                    />
-                  </label>
+                  <NumberField
+                    label={control.label}
+                    value={control.value}
+                    min={control.min}
+                    max={control.max}
+                    step={control.step ?? 0.01}
+                    decimals={(control.step ?? 0.01) >= 1 ? 0 : 2}
+                    align="end"
+                    onChange={(next) => onControl(node, control, next)}
+                  />
                 ) : (
                   <label className="ar-live__field">
                     <span>{control.label}</span>
