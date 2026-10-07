@@ -146,10 +146,10 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 ## Panel · Section · Field
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
-- **Section** — titled group with a hairline. Everything about the group lives in its one title row: switch · title · rule · count · actions · chevron. Props:
+- **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule (which carries on/off) · count · actions · chevron. Props:
   - `title` (required), `count`, `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
-  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, a square the size of the title's capitals just before it (an empty well when off; the insert fills it and glows when on) (shown when either value prop is given). Off folds the body closed (quicker out, settling in) and makes it inert; the title goes quiet; values are kept. On restores the group's fold state;
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, carried by the title row's line in neutral ink: on, a brighter line runs from the title (it sweeps in when switched on and drains back when off); off, a faint hairline and a quiet title. **One click** on the title or line folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
   - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title, rule and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 

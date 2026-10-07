@@ -1,5 +1,5 @@
 'use client';
-import { useId } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
 import { RollingText } from '../core/RollingValue';
@@ -55,9 +55,10 @@ export interface SectionProps {
   count?: ReactNode;
   /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off: a slim switch just before the title. Off folds the body closed and makes
-   *  it inert; values are kept. It is separate from collapsing: the title and the chevron (always
-   *  shown on a switchable group) fold the group without switching it off. */
+  /** The group's on/off, carried by the title row's rule: on, a soft signal light runs along it;
+   *  off, it drains to a plain hairline. One click on the title or rule folds the group open or
+   *  closed; a double-click (or Shift+Enter) switches it on or off. Off folds it closed and makes it
+   *  inert; values are kept, and on restores the fold it had. The chevron always shows. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
@@ -98,6 +99,24 @@ export function Section({
   // switching the group off folds it closed, like collapsing it; on, it unfolds to where it was
   const shown = (!foldable || isOpen) && !off;
   const titleId = useId();
+  const hintId = useId();
+  // On a switchable group a click waits a moment for a possible second click: a double-click
+  // switches the group, a single click folds it. Plain collapsible groups fold at once.
+  const pending = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(pending.current), []);
+  const onTriggerClick = (event: { detail: number; shiftKey: boolean }) => {
+    if (!toggleable) return setOpen(!isOpen);
+    clearTimeout(pending.current);
+    if (event.detail === 0) {
+      // the keyboard: Enter / Space fold, Shift+Enter switches
+      if (event.shiftKey) setOn(!isOn);
+      else if (!off) setOpen(!isOpen);
+      return;
+    }
+    if (event.detail >= 2) return setOn(!isOn);
+    if (off) return;
+    pending.current = setTimeout(() => setOpen(!isOpen), 220);
+  };
   const titleText = (
     <span className="ar-section__title" id={titleId}>
       {title}
@@ -105,26 +124,39 @@ export function Section({
   );
   const rest = (
     <>
-      <i className="ar-section__rule" />
+      {/* the rule carries the on/off: a light runs along it while the group is on */}
+      <i className="ar-section__rule" data-lit={toggleable && isOn ? '' : undefined} />
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
       ) : null}
     </>
   );
   return (
-    <div className={cx('ar-section', className)} data-heading={heading} data-open={shown ? '' : undefined} data-off={off ? '' : undefined} style={style}>
+    <div
+      className={cx('ar-section', className)}
+      data-heading={heading}
+      data-open={shown ? '' : undefined}
+      data-off={off ? '' : undefined}
+      data-switchable={toggleable ? '' : undefined}
+      style={style}
+    >
       <div className="ar-section__head">
-        {toggleable ? (
-          // the group's on/off: a slim switch that leads the title
-          <button type="button" role="switch" aria-checked={isOn} aria-labelledby={titleId} className="ar-section__switch" onClick={() => setOn(!isOn)}>
-            <i />
-          </button>
-        ) : null}
         {foldable ? (
-          // the title and its rule open and close the group (switched off, it stays closed)
-          <button type="button" className="ar-section__trigger" aria-expanded={shown} aria-controls={bodyId} disabled={off} onClick={() => setOpen(!isOpen)}>
+          <button
+            type="button"
+            className="ar-section__trigger"
+            aria-expanded={shown}
+            aria-controls={bodyId}
+            aria-describedby={toggleable ? hintId : undefined}
+            onClick={onTriggerClick}
+          >
             {titleText}
             {rest}
+            {toggleable ? (
+              <span className="ar-sr" id={hintId}>
+                {isOn ? 'On' : 'Off'}. Double-click or Shift+Enter to switch {isOn ? 'off' : 'on'}.
+              </span>
+            ) : null}
           </button>
         ) : (
           <span className="ar-section__trigger">
