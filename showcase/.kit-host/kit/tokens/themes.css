@@ -1,0 +1,53 @@
+/* ARTINOS UI — themes in this kit. Pick one with <ArtinosTheme theme="…"> or data-ar-theme.
+ *   studio        Studio
+ *   onyx          Onyx
+ * A theme sets roles here and its control finish in materials.css. Anything a
+ * theme leaves out keeps the studio value from tokens.css.
+ */
+
+/* =====================================================================
+   LUXE — premium panes. Same restraint as the glass and frost families,
+   with metallic hairlines and wider tracking.
+   ===================================================================== */
+
+/* ONYX — black smoked glass, fine gold hairlines, warm ivory ink. A watch dial at night. */
+[data-ar-theme='onyx'] {
+  --ar-bg-app: #07070a;
+  --ar-bg-well: rgba(0, 0, 0, 0.35);
+  --ar-bg-hover: rgba(212, 175, 106, 0.06);
+  --ar-bg-active: rgba(212, 175, 106, 0.1);
+
+  --ar-text-hi: #f6f1e7;
+  --ar-text-mid: rgba(246, 241, 231, 0.8);
+  --ar-text-low: rgba(246, 241, 231, 0.58);
+  --ar-text-faint: rgba(246, 241, 231, 0.4);
+  --ar-text-ghost: rgba(246, 241, 231, 0.26);
+
+  --ar-line-subtle: rgba(212, 175, 106, 0.12);
+  --ar-line: rgba(212, 175, 106, 0.2);
+  --ar-line-strong: rgba(212, 175, 106, 0.32);
+
+  --ar-signal: #d4af6a;
+  --ar-signal-hi: #f0d9a4;
+  --ar-signal-line: rgba(212, 175, 106, 0.5);
+  --ar-signal-wash: rgba(212, 175, 106, 0.14);
+  --ar-signal-ink: #1a1408;
+  --ar-bind: #a9c4e8;
+
+  --ar-tick: rgba(240, 217, 164, 0.3);
+  --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(212, 175, 106, 0.1);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1px #f0d9a4, 0 0 0 3px rgba(212, 175, 106, 0.22);
+
+  --ar-panel-tint: rgba(8, 8, 10, 0.62);
+  --ar-panel-sheen:
+    linear-gradient(135deg, rgba(240, 217, 164, 0.08), rgba(255, 255, 255, 0) 35%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 30%);
+  --ar-panel-blur: blur(40px) saturate(1.2) brightness(0.85);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.28), inset 0 1px 0 rgba(240, 217, 164, 0.22), 0 30px 70px -28px rgba(0, 0, 0, 0.85);
+
+  --ar-float-bg: rgba(10, 10, 12, 0.92);
+  --ar-float-ring: inset 0 0 0 1px rgba(212, 175, 106, 0.26);
+  --ar-float-ink: #f6f1e7;
+  --ar-float-ink-low: rgba(246, 241, 231, 0.58);
+}

@@ -312,7 +312,7 @@ Props:
 - `sizes`: fractions per edge; default left .22, right .24, bottom .36;
 - `floatBounds`;
 - `commands`: extra palette entries;
-- `palette`: the search entry plus the ⌘/Ctrl K palette; default true. It folds to a magnifier in a narrow dock;
+- `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip; a strip under 520px wide (a side dock) puts the tabs on a row of their own and the panel bar, search and toolbar on the row below, and under 340px search folds to a magnifier;
 - `toolbar`: the right end of every strip;
 - `brand`: a corner chip;
 - `hideKey`: e.g. `'h'` hides the docks;

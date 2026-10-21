@@ -1,0 +1,34 @@
+/* ARTINOS UI — type collections in this kit. Pick one with <ArtinosTheme type="…"> or data-ar-type:
+ *   instrument  Chivo · Chivo Mono
+ *   luxe        Inter · JetBrains Mono · Cormorant Garamond
+ *   editorial   IBM Plex Sans · IBM Plex Mono
+ * A collection sets the faces and re-tunes tracking; sizes, weights and leading stay (tokens.css).
+ * instrument is what tokens.css already gives. The faces load in fonts.css.
+ */
+
+[data-ar-type='instrument'] {
+  --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.16em;
+}
+
+/* IBM Plex: a wider mono, so the caps breathe less */
+[data-ar-type='editorial'] {
+  --ar-font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.12em;
+  --ar-label-tracking: 0.1em;
+}
+
+/* a serif display over a neutral sans: titles set as drawn, never tightened */
+[data-ar-type='luxe'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --ar-weight-thin: 300;
+  --ar-track-caps: 0.1em;
+  --ar-label-tracking: 0.09em;
+  --ar-track-display: 0.005em;
+}

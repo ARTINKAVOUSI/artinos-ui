@@ -1,0 +1,372 @@
+/* ARTINOS UI — shared anatomy: the well, the insert, the LED and control text.
+   Every control in the family is built from these four parts. */
+
+.ar-theme {
+  font-family: var(--ar-font-ui);
+  font-weight: var(--ar-weight-light);
+  font-kerning: normal;
+  font-synthesis: none; /* never fake a weight or an italic the families don't have */
+  text-rendering: optimizeLegibility;
+  color: var(--ar-text-mid);
+  text-shadow: var(--ar-panel-text-shadow);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* emphasis inside text is the medium weight: the families stop at 500 */
+.ar-theme :where(b, strong) {
+  font-weight: var(--ar-weight-medium);
+}
+
+/* the mono caps voice outside a control: kickers, foot lines, counts, marks */
+.ar-caps {
+  font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
+  letter-spacing: var(--ar-track-caps);
+  text-transform: uppercase;
+}
+.ar-caps--xs {
+  font-size: var(--ar-caps-xs);
+}
+.ar-theme--ground {
+  background: var(--ar-bg-app);
+  color: var(--ar-text-hi);
+}
+
+/* ---------- scrollbars: one thin bar for everything that scrolls in a theme ----------
+   No buttons, no track: a rounded thumb in the scroller's own ink, 4px at rest inside a 10px
+   gutter, firmer under the pointer. Portalled overlays carry the scope (the Select list is
+   named, as it portals bare), so they get it too.
+   Chromium and WebKit take the pseudo-elements; Firefox takes the standard properties. */
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-track,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-track,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-corner,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-corner {
+  background: transparent;
+}
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-button,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-thumb,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 10px;
+  background: color-mix(in srgb, currentColor 30%, transparent);
+  background-clip: padding-box;
+}
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-thumb:hover,
+:where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, currentColor 50%, transparent);
+}
+@supports not selector(::-webkit-scrollbar) {
+  :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list),
+  :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, currentColor 30%, transparent) transparent;
+  }
+}
+
+.ar-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- the well: a recessed trough, the editable surface ---------- */
+.ar-well {
+  --_h: var(--ar-h);
+  --_r: var(--ar-radius, calc(var(--_h) * 0.31));
+  --_ir: var(--ar-insert-radius, calc(var(--_r) - var(--ar-inset)));
+  position: relative;
+  box-sizing: border-box;
+  height: var(--_h);
+  min-width: 0;
+  border-radius: var(--_r);
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-well:focus-visible,
+.ar-well:has(:focus-visible),
+.ar-focus-host:focus-visible .ar-well {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+
+/* ---------- the insert: the polished material sitting in the well ---------- */
+.ar-insert {
+  box-sizing: border-box;
+  border-radius: var(--_ir);
+  background: var(--ar-insert);
+  mix-blend-mode: var(--ar-insert-blend);
+  -webkit-backdrop-filter: var(--ar-insert-backdrop);
+  backdrop-filter: var(--ar-insert-backdrop);
+  box-shadow: var(--ar-insert-shadow);
+  transition: filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-insert[data-off] {
+  filter: var(--ar-insert-off-filter);
+  transition-timing-function: var(--ar-ease-exit);
+}
+
+/* ---------- the LED: a switch's seam ---------- */
+.ar-led {
+  flex: none;
+  width: 3px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--ar-led-off);
+  box-shadow: 0 0 0 0.5px #757575;
+  transition: background var(--ar-dur-surface) var(--ar-ease), box-shadow var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-led[data-on] {
+  background: var(--ar-led-on);
+  box-shadow: 0 0 0 0.5px #757575, 0 0 6px var(--ar-led-glow);
+}
+
+/* the round enable indicator in front of a label */
+.ar-dot {
+  flex: none;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ar-off-ink);
+  transition: background var(--ar-dur-surface) var(--ar-ease), box-shadow var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-dot[data-on] {
+  background: var(--ar-signal);
+  box-shadow: 0 0 5px var(--ar-signal-line);
+}
+
+/* ---------- control text: mono caps label, tabular value ---------- */
+.ar-text {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  line-height: var(--ar-leading-snug);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ar-label-ink);
+  text-shadow: var(--ar-base-text-shadow);
+  transition: color var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-text--over {
+  color: var(--ar-insert-ink);
+  text-shadow: var(--ar-insert-text-shadow);
+}
+.ar-value {
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
+  font-weight: var(--ar-value-weight);
+  line-height: var(--ar-leading-snug);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+/* ---------- rolling readout ---------- */
+.ar-roll {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: pre;
+  font-variant-numeric: tabular-nums;
+}
+.ar-roll__slot {
+  position: relative;
+  display: inline-block;
+  width: 1ch;
+  height: 1.3em;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: top;
+}
+.ar-roll__strip {
+  display: block;
+  white-space: pre;
+  line-height: 1.3em;
+  will-change: transform;
+}
+.ar-roll__char {
+  display: block;
+  line-height: 1.3em;
+}
+/* The drum's geometry is shared with RollingValue.tsx (CELL = 1.3em per digit). A host rule
+   such as `.stat span { font: … }` reaches these spans too, and the font shorthand resets
+   line-height: the strip's lines then drift from the slot and the digits land off-centre.
+   So the drum's size and pitch always come from the readout itself. */
+.ar-roll .ar-roll__slot,
+.ar-roll .ar-roll__strip,
+.ar-roll .ar-roll__char {
+  font: inherit !important;
+  line-height: 1.3em !important;
+}
+.ar-roll .ar-roll__slot {
+  height: 1.3em !important;
+}
+.ar-roll .ar-roll__unit {
+  margin-left: 0.45em;
+  font-size: 0.8em;
+}
+.ar-roll__unit[data-tight] {
+  margin-left: 0.12em;
+}
+
+/* ---------- chevron ---------- */
+.ar-chevron {
+  flex: none;
+  width: 10px;
+  height: 6px;
+  transition: transform var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-chevron[data-up] {
+  transform: rotate(180deg);
+}
+
+/* ThemedPortal's wrapper: carries the theme scope into <body>, adds no box */
+.ar-portal {
+  display: contents;
+}
+
+/* ---------- motion: the family's shared entrances and exits ----------
+   Arrivals ease out over --ar-dur-enter, departures ease in over the shorter
+   --ar-dur-exit. Components name these; prefers-reduced-motion zeroes the durations. */
+@keyframes ar-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+@keyframes ar-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+}
+@keyframes ar-fade-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes ar-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ar-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+/* content that replaces content: a short lift and a sharpening */
+@keyframes ar-settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+    filter: blur(1.5px);
+  }
+}
+/* a live LED: one soft breath every two seconds (use inside prefers-reduced-motion: no-preference) */
+@keyframes ar-breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- key cap: a shortcut, as a tiny well (Kbd, the palette, the dock menu) ---------- */
+.ar-keycap {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: calc(var(--ar-insert-radius) - 2px);
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  font: var(--ar-label-weight) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-control-font);
+  letter-spacing: var(--ar-track-caps);
+  text-transform: uppercase;
+  color: var(--ar-text-mid);
+  text-shadow: none;
+}
+
+/* ---------- tool: a small bare icon button (close, clear, reset, window controls) ---------- */
+:where(.ar-tool) {
+  all: unset;
+}
+.ar-tool {
+  --_tool: 20px;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--_tool);
+  height: var(--_tool);
+  border-radius: var(--ar-insert-radius);
+  color: var(--ar-text-low);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-tool:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-tool:active {
+  transform: scale(0.9);
+  transition-duration: var(--ar-dur-state), var(--ar-dur-state), 60ms;
+}
+.ar-tool:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-tool svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* reduced motion, everywhere: the tokens already zero their durations; this also reaches
+   the few hand-tuned timings (a switch's travel, the slider's choreography) and stops loops.
+   A toast's time bar keeps running: it shows time, not motion. */
+@media (prefers-reduced-motion: reduce) {
+  [data-ar-theme] *,
+  .ar-theme *,
+  .ar-portal * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .ar-toast__time {
+    animation-duration: var(--_life) !important;
+  }
+}

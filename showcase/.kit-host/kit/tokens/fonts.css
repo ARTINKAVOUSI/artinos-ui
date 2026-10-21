@@ -1,0 +1,8 @@
+/* ARTINOS UI — typefaces for the type collections in this kit (tokens/type.css):
+ *   instrument  Chivo · Chivo Mono
+ *   luxe        Inter · JetBrains Mono · Cormorant Garamond
+ *   editorial   IBM Plex Sans · IBM Plex Mono
+ * plus Roboto Mono for the reference theme. Loaded from Google Fonts at the weights the type
+ * tokens name. To self-host, delete this import from artinos.css and declare the same families
+ * with @font-face; every stack falls back to system fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Chivo:wght@200;300;400;500&family=Chivo+Mono:wght@200;300;400;500&family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@200;300;400;500&family=IBM+Plex+Sans:wght@200;300;400;500&family=IBM+Plex+Mono:wght@200;300;400;500&family=Roboto+Mono:wght@500;700&display=swap');

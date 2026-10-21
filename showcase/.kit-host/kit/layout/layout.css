@@ -1,0 +1,317 @@
+/* ARTINOS UI — layout: Panel · Section · Field · Tabs. */
+
+/* ---------- Panel: the frosted card controls live on ---------- */
+.ar-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--ar-radius-shell);
+  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  color: var(--ar-text-mid);
+  font-family: var(--ar-font-ui);
+  text-shadow: var(--ar-panel-text-shadow);
+}
+.ar-panel__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px 20px 12px;
+}
+.ar-panel__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.ar-panel__title {
+  font-size: var(--ar-text-xl);
+  font-weight: var(--ar-weight-light);
+  letter-spacing: var(--ar-track-title);
+  color: var(--ar-text-hi);
+}
+.ar-panel__subtitle {
+  font-size: var(--ar-text-sm);
+  font-weight: var(--ar-weight-light);
+  color: var(--ar-text-low);
+}
+.ar-panel__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ar-text-low);
+}
+.ar-panel__tabs {
+  padding: 0 20px;
+  border-bottom: 1px solid var(--ar-line-subtle);
+}
+.ar-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-row-gap, 6px);
+  padding: 14px 20px 16px;
+  min-height: 0;
+}
+.ar-panel__foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px 11px;
+  border-top: 1px solid var(--ar-line-subtle);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-low);
+}
+
+/* ---------- Section ---------- */
+.ar-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+/* the title row: [title — rule — count] · actions · toggle · chevron, all on one thin line */
+.ar-section__head {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 24px;
+  padding: 4px 0 8px;
+  color: var(--ar-text-mid);
+}
+:where(.ar-section__trigger, .ar-section__chevron) {
+  all: unset;
+}
+.ar-section__trigger {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+button.ar-section__trigger,
+.ar-section__chevron {
+  cursor: pointer;
+}
+button.ar-section__trigger:focus-visible {
+  border-radius: var(--ar-radius-control);
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-section__chevron {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--ar-text-mid);
+}
+/* slim actions: whatever sits here is trimmed to the title row's height */
+.ar-section__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+.ar-section__actions .ar-badge {
+  height: 16px;
+  padding: 0 6px;
+}
+.ar-section__actions .ar-icon-button {
+  --_size: 18px;
+}
+/* the group's on/off lives in the rule: the family's plain 1px hairline, solid like every other
+   divider. On, it is the line ink; off, the subtle line ink. A switchable row's line darkens a
+   touch under the pointer. */
+.ar-section[data-switchable] .ar-section__trigger:hover .ar-section__rule {
+  background: var(--ar-line-strong);
+}
+.ar-section[data-switchable] .ar-section__trigger {
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* off: the group folds closed (the fold below animates it) and its title goes quiet */
+.ar-section__title {
+  transition: color var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section[data-off] .ar-section__title {
+  color: var(--ar-text-low);
+}
+.ar-section[data-off] .ar-section__chevron {
+  cursor: default;
+}
+.ar-section[data-off] .ar-section__chevron {
+  opacity: 0.4;
+}
+.ar-section__title {
+  flex: none;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  font-weight: var(--ar-label-weight);
+  letter-spacing: var(--ar-label-tracking);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-mid);
+}
+.ar-section[data-heading='text'] .ar-section__title {
+  font-family: var(--ar-font-ui);
+  font-size: var(--ar-text-lg);
+  font-weight: var(--ar-weight-light);
+  letter-spacing: var(--ar-track-text);
+  text-transform: none;
+  color: var(--ar-text-hi);
+}
+.ar-section__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--ar-line);
+  transition: background var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section[data-off] .ar-section__rule {
+  background: var(--ar-line-subtle);
+}
+.ar-section__count {
+  flex: none;
+  max-width: 50%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-weight: var(--ar-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ar-track-caps);
+  text-transform: var(--ar-label-case);
+  color: var(--ar-text-faint);
+  transition:
+    color var(--ar-dur-state) var(--ar-ease),
+    opacity var(--ar-dur-surface) var(--ar-ease);
+}
+/* a word that matters inside the note can lift itself: <b>1 changed</b> */
+.ar-section__count b {
+  font-weight: inherit;
+  color: var(--ar-text-mid);
+}
+.ar-section__trigger:hover .ar-section__count {
+  color: var(--ar-text-low);
+}
+.ar-section[data-off] .ar-section__count {
+  opacity: 0.5;
+}
+/* the fold: collapsing (or switching the group off) rolls the rows up like a closing list;
+   opening unrolls them. Closing is quicker and eases in; opening settles. */
+.ar-section__fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ar-dur-surface) var(--ar-ease-exit);
+}
+.ar-section[data-open] > .ar-section__fold {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--ar-dur-layout) var(--ar-ease-roll);
+}
+.ar-section__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-row-gap, 6px);
+  min-height: 0;
+  /* clipped top and bottom while it folds (a few px of margin keep focus rings whole);
+     open sideways, so marks in the gutter, like a PropertyRow's, are never cut */
+  overflow: visible clip;
+  overflow-clip-margin: 4px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--ar-dur-exit) var(--ar-ease-exit),
+    transform var(--ar-dur-surface) var(--ar-ease-exit);
+}
+.ar-section[data-open] .ar-section__body {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--ar-dur-surface) var(--ar-ease) 60ms,
+    transform var(--ar-dur-layout) var(--ar-ease-roll);
+}
+
+/* ---------- Field: label column + control(s) ---------- */
+.ar-field {
+  display: grid;
+  grid-template-columns: var(--ar-field-label-w, 72px) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.ar-field__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--ar-text-md);
+  font-weight: var(--ar-weight-light);
+  color: var(--ar-text-mid);
+}
+.ar-field__control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.ar-field__control > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.ar-field__control > .ar-switch--compact {
+  flex: none;
+  margin-left: auto;
+}
+
+/* ---------- Tabs ---------- */
+.ar-tabs {
+  position: relative;
+  display: flex;
+  gap: 18px;
+}
+.ar-tabs__tab {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 9px;
+  font-family: var(--ar-font-ui);
+  font-size: var(--ar-text-sm);
+  font-weight: var(--ar-weight-light);
+  color: var(--ar-text-low);
+  cursor: pointer;
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-tabs__tab:hover {
+  color: var(--ar-text-mid);
+}
+.ar-tabs__tab[aria-selected='true'] {
+  color: var(--ar-text-hi);
+}
+.ar-tabs__tab:focus-visible {
+  border-radius: 3px;
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-tabs__tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ar-tabs__bar {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--ar-text-hi);
+  transition:
+    transform var(--ar-dur-layout) var(--ar-ease),
+    width var(--ar-dur-layout) var(--ar-ease);
+}
