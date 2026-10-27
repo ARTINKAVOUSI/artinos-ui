@@ -11,7 +11,7 @@ A precision-instrument control system for React. Each parameter is one compact s
 
 ## Design language
 
-Every component is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices: mono caps control text for labels, rows and buttons, and light body text for prose, from one superfamily; seven **type collections** (Chivo, IBM Plex, Geist, Inter + JetBrains Mono, DM, Red Hat, and a Cormorant display over Inter) swap the faces with their own tuning. Every number rolls when it changes, and every motion uses the same duration and curve tokens.
+Every component is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices from one superfamily: the sans for labels, buttons, chips and prose, in sentence case, and the mono for every number; seven **type collections** (Chivo, IBM Plex, Geist, Inter + JetBrains Mono, DM, Red Hat, and a Cormorant display over Inter) swap the faces with their own tuning. Every number rolls when it changes, and every motion uses the same duration and curve tokens.
 
 ## Components
 

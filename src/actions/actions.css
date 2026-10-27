@@ -268,12 +268,12 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--_tone) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_tone) 30%, transparent);
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
   line-height: var(--ar-leading-none);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   white-space: nowrap;
   color: var(--_tone);
   text-shadow: none;

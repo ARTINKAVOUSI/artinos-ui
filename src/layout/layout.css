@@ -62,11 +62,11 @@
   gap: 10px;
   padding: 9px 20px 11px;
   border-top: 1px solid var(--ar-line-subtle);
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-text-low);
 }
 

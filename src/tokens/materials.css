@@ -23,6 +23,13 @@
   --ar-value-weight: 400;
   --ar-label-tracking: 0.13em;
   --ar-label-case: uppercase;
+  /* the voice of control text — labels, buttons, chips, segments, menu actions: the sans in
+     sentence case. Numbers keep --ar-control-font; capitals are kept for small headings. */
+  --ar-voice-font: var(--ar-font-ui);
+  --ar-voice-case: none;
+  --ar-voice-tracking: 0;
+  --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump) + 1px);
+  --ar-voice-weight: var(--ar-weight-regular);
   --ar-label-bump: 0px;
   --ar-value-bump: 0px;
 
@@ -588,6 +595,12 @@
 [data-ar-material='reference'],
 [data-ar-theme='reference']:not([data-ar-material]) {
   --ar-control-font: 'Roboto Mono', var(--ar-font-num);
+  /* the reference copies its source: control text stays in its Roboto Mono caps */
+  --ar-voice-font: var(--ar-control-font);
+  --ar-voice-case: uppercase;
+  --ar-voice-tracking: var(--ar-label-tracking);
+  --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump));
+  --ar-voice-weight: var(--ar-label-weight);
   --ar-label-weight: 700;
   --ar-value-weight: 700;
   --ar-label-tracking: 0;

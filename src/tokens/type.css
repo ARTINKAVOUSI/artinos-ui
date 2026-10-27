@@ -14,6 +14,7 @@
 }
 [data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
   --ar-control-font: var(--ar-font-num);
+  --ar-voice-font: var(--ar-font-ui);
 }
 /* themes whose control text is the sans keep that inside a nested type scope, in the collection's sans */
 [data-ar-theme='lagoon'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]),

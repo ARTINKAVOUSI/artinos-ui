@@ -22,22 +22,22 @@
 /* list rows are the Select list's: mono caps control text, full-width hover bands */
 .ar-menu__item,
 .ar-palette__item {
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: var(--ar-voice-size);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
 }
 /* mono caps: group headings, the toast's action */
 .ar-menu__label,
 .ar-palette__group,
 .ar-palette__meta,
 .ar-toast__action {
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-float-ink-low);
 }
 /* small icon-only buttons inside a sheet */
@@ -339,11 +339,11 @@
   border-radius: var(--ar-insert-radius);
   background: var(--ar-list-insert);
   box-shadow: var(--ar-list-insert-shadow);
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   line-height: 22px;
   color: var(--ar-list-ink-hi);
   cursor: pointer;

@@ -60,11 +60,11 @@
 .ar-live__columns span,
 .ar-live__side em,
 .ar-live__zoom button:last-child {
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-voice-font);
   font-size: var(--_label);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
 }
 
 /* ======================= node editor ======================= */
@@ -466,11 +466,11 @@
   height: max(20px, calc(var(--ar-h) - 6px));
   padding: 0 8px;
   border-radius: var(--ar-insert-radius);
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: var(--ar-voice-size);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-list-ink);
   cursor: pointer;
   transition: background var(--ar-dur-state) var(--ar-ease), color var(--ar-dur-state) var(--ar-ease);
@@ -881,11 +881,11 @@
 .ar-graph__port {
   gap: 6px;
   height: 14px;
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-text-low);
 }
 .ar-graph__port b {
@@ -948,11 +948,11 @@
   gap: 8px;
 }
 .ar-graph__fields .ar-field__label {
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: var(--ar-voice-size);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-label-ink);
 }
 /* a vector: its label line, then three cells sharing the row */

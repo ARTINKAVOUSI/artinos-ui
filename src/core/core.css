@@ -159,11 +159,11 @@
 
 /* ---------- control text: mono caps label, tabular value ---------- */
 .ar-text {
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: var(--ar-voice-size);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   line-height: var(--ar-leading-snug);
   white-space: nowrap;
   overflow: hidden;
@@ -171,6 +171,10 @@
   color: var(--ar-label-ink);
   text-shadow: var(--ar-base-text-shadow);
   transition: color var(--ar-dur-surface) var(--ar-ease);
+}
+/* sentence case from any data: an id such as "fixed" or "exposure" still reads as a label */
+.ar-text::first-letter {
+  text-transform: var(--ar-voice-first, uppercase);
 }
 .ar-text--over {
   color: var(--ar-insert-ink);

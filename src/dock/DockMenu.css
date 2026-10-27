@@ -170,11 +170,11 @@
   border-radius: var(--ar-insert-radius);
   background: none;
   /* the Select list's row text */
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: var(--ar-voice-size);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   text-align: left;
   color: var(--ar-float-ink);
   cursor: pointer;
@@ -238,11 +238,11 @@
   border-radius: 999px;
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1px);
+  font-weight: var(--ar-voice-weight);
+  letter-spacing: var(--ar-voice-tracking);
+  text-transform: var(--ar-voice-case);
   color: var(--ar-float-ink);
   cursor: pointer;
 }
