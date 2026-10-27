@@ -58,12 +58,13 @@ export const CHAPTERS: readonly ChapterDef[] = [
     id: 'controls',
     title: 'Controls',
     note: 'The same well, the same insert, the same LED seam, in every shape a parameter takes.',
-    components: ['NumberField', 'TextField', 'Switch', 'ToggleGroup', 'Segmented', 'Select', 'ColorField', 'FileDrop'],
+    components: ['NumberField', 'TextField', 'Switch', 'ToggleGroup', 'ChipGroup', 'Segmented', 'Select', 'ColorField', 'FileDrop'],
     sections: [
       { id: 'number-field', title: 'Number field' },
       { id: 'text-field', title: 'Text field' },
       { id: 'switch', title: 'Switch' },
       { id: 'toggle-group', title: 'Toggle group' },
+      { id: 'chips', title: 'Chips' },
       { id: 'segmented', title: 'Segmented' },
       { id: 'select', title: 'Select' },
       { id: 'color', title: 'Color' },
@@ -96,9 +97,10 @@ export const CHAPTERS: readonly ChapterDef[] = [
     id: 'layout',
     title: 'Layout',
     note: 'The frames controls live in: glass panels, groups, rows and strips.',
-    components: ['Panel', 'Section', 'Field', 'Tabs', 'PropertyRow'],
+    components: ['Panel', 'Section', 'Field', 'Tabs', 'PropertyRow', 'ItemList', 'ItemRow'],
     sections: [
       { id: 'inspector', title: 'Inspector' },
+      { id: 'item-rows', title: 'Item rows' },
     ],
   },
   {

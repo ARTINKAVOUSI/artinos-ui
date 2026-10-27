@@ -1,7 +1,7 @@
 /* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
    rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
-import { ColorField, Field, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
+import { Badge, Button, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { InspectorPanel } from './demos';
 
@@ -152,12 +152,54 @@ function ControlStrip() {
   );
 }
 
+const LAYERS = [
+  { id: 'orb', title: 'Orb', meta: 'Glass shell · 12,480 tris', swatch: '#4fd1ba', live: true },
+  { id: 'dye', title: 'Dye stream', meta: 'Fluid · magenta · joined', swatch: '#d0307a', live: false },
+  { id: 'rim', title: 'Rim light', meta: 'Area light · 4.2 lm', swatch: '#f2e8d5', live: false },
+  { id: 'backdrop', title: 'Backdrop', meta: 'Image · 2048 × 1365 px', swatch: '#8a7a5c', live: false },
+];
+
+function Items() {
+  const [picked, setPicked] = useState('orb');
+  const [on, setOn] = useState<Record<string, boolean>>({ orb: true, dye: true, rim: true, backdrop: false });
+  return (
+    <Panel title="Layers" subtitle="4 of 8">
+      <Section title="Scene" count={LAYERS.length} actions={<Button size="sm" variant="ghost" icon={<span aria-hidden>+</span>}>Add</Button>}>
+        <ItemList label="Layers">
+          {LAYERS.map((l) => (
+            <ItemRow
+              key={l.id}
+              title={l.title}
+              meta={l.meta}
+              swatch={l.swatch}
+              selected={picked === l.id}
+              onSelect={() => setPicked(l.id)}
+              disabled={!on[l.id]}
+              trailing={
+                <>
+                  {l.live ? (
+                    <Badge tone="live" dot>
+                      Live
+                    </Badge>
+                  ) : null}
+                  <Switch variant="compact" aria-label={`Show ${l.title}`} value={on[l.id]} onChange={(v) => setOn({ ...on, [l.id]: v })} />
+                  <IconButton label={`${l.title} actions`} size="sm" icon={<span aria-hidden>⋯</span>} />
+                </>
+              }
+            />
+          ))}
+        </ItemList>
+      </Section>
+    </Panel>
+  );
+}
+
 export function LayoutChapter() {
   return (
     <Chapter id="layout">
       <Spec
         id="inspector"
-        text="One inspector, built from the layout parts. Panel is a glass card with a header, a tabs slot and a foot line; Tabs underline the active one; Field puts a label column beside one or more controls. Section groups controls under a hairline, with quiet info such as a count before the chevron: click the title or line to fold it, and on a switchable group double-click (or Shift+Enter) to switch it off, which folds it closed and disables it. PropertyRow wraps any control: a changed value shows a signal dot in the left gutter that turns into its reset on hover, binding names the driver of a bound value, compact puts the label in its own column. Below, the same groups as a dense control strip: toggleable sliders in three cards, density set once on the strip's scope."
+        text="One inspector, built from the layout parts. Panel is a glass card with a header, a tabs slot and a foot line; Tabs underline the active one; Field puts a label column beside one or more controls. Section groups controls under a quiet capitals heading with its count beside it and a chevron at the end, no line across: click the heading to fold it, and a switchable group carries an LED before its title; and on a switchable group double-click (or Shift+Enter) to switch it off, which folds it closed and disables it. PropertyRow wraps any control: a changed value shows a signal dot in the left gutter that turns into its reset on hover, binding names the driver of a bound value, compact puts the label in its own column. Below, the same groups as a dense control strip: toggleable sliders in three cards, density set once on the strip's scope."
         code={`
 <Panel title="Metablock" subtitle="Typography / Layout" actions={<ResetButton />}
        tabs={<Tabs items={['Scene', 'Studio', 'Detail']} value={tab} onChange={setTab} />}
@@ -186,6 +228,22 @@ export function LayoutChapter() {
         <div className="sc-stack" style={{ gap: 22 }}>
           <Inspector />
           <ControlStrip />
+        </div>
+      </Spec>
+
+      <Spec
+        id="item-rows"
+        text="One thing in a list: a layer, a body, a preset, a file. A swatch or icon, a name in the sans, a quiet line of detail under it, and tools at the end (a badge, a switch, a menu) that never select the row. Hover gives a wash; the selected row takes the active wash and the signal edge on its left. No dividers: the rows stand in an ItemList, 2px apart."
+        code={`
+<ItemList label="Layers">
+  <ItemRow title="Orb" meta="Glass shell · 12,480 tris" swatch="#4fd1ba"
+           selected={picked === 'orb'} onSelect={() => setPicked('orb')}
+           trailing={<><Badge tone="live" dot>Live</Badge><Switch variant="compact" … /><IconButton … /></>} />
+  <ItemRow title="Rim light" meta="Area light · 4.2 lm" swatch="#f2e8d5" … />
+</ItemList>`}
+      >
+        <div style={{ maxWidth: 380 }}>
+          <Items />
         </div>
       </Spec>
     </Chapter>

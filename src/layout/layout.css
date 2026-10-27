@@ -76,7 +76,8 @@
   flex-direction: column;
   min-width: 0;
 }
-/* the title row: [title — rule — count] · actions · toggle · chevron, all on one thin line */
+/* the title row: [led · title · count] · actions · chevron. No line: a quiet small heading,
+   and the space after the count is still the fold's hit area */
 .ar-section__head {
   box-sizing: border-box;
   display: flex;
@@ -84,7 +85,7 @@
   gap: 8px;
   width: 100%;
   min-height: 24px;
-  padding: 4px 0 8px;
+  padding: 2px 0 6px;
   color: var(--ar-text-mid);
 }
 :where(.ar-section__trigger, .ar-section__chevron) {
@@ -95,7 +96,7 @@
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
   min-width: 0;
 }
 button.ar-section__trigger,
@@ -112,6 +113,10 @@ button.ar-section__trigger:focus-visible {
   flex: none;
   width: 14px;
   height: 14px;
+  color: var(--ar-text-faint);
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-section__head:hover .ar-section__chevron {
   color: var(--ar-text-mid);
 }
 /* slim actions: whatever sits here is trimmed to the title row's height */
@@ -128,12 +133,6 @@ button.ar-section__trigger:focus-visible {
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
 }
-/* the group's on/off lives in the rule: the family's plain 1px hairline, solid like every other
-   divider. On, it is the line ink; off, the subtle line ink. A switchable row's line darkens a
-   touch under the pointer. */
-.ar-section[data-switchable] .ar-section__trigger:hover .ar-section__rule {
-  background: var(--ar-line-strong);
-}
 .ar-section[data-switchable] .ar-section__trigger {
   user-select: none;
   -webkit-user-select: none;
@@ -143,7 +142,10 @@ button.ar-section__trigger:focus-visible {
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-section[data-off] .ar-section__title {
-  color: var(--ar-text-low);
+  color: var(--ar-text-ghost);
+}
+.ar-section__head:hover .ar-section__title {
+  color: var(--ar-text-mid);
 }
 .ar-section[data-off] .ar-section__chevron {
   cursor: default;
@@ -152,13 +154,18 @@ button.ar-section__trigger:focus-visible {
   opacity: 0.4;
 }
 .ar-section__title {
-  flex: none;
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: var(--ar-label-case);
-  color: var(--ar-text-mid);
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* a small heading: the one place control text keeps capitals */
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1.5px);
+  font-weight: var(--ar-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ar-text-low);
 }
 .ar-section[data-heading='text'] .ar-section__title {
   font-family: var(--ar-font-ui);
@@ -170,12 +177,10 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-section__rule {
   flex: 1;
-  height: 1px;
-  background: var(--ar-line);
-  transition: background var(--ar-dur-surface) var(--ar-ease);
+  align-self: stretch;
 }
-.ar-section[data-off] .ar-section__rule {
-  background: var(--ar-line-subtle);
+.ar-section__led {
+  height: 8px;
 }
 .ar-section__count {
   flex: none;
@@ -187,8 +192,7 @@ button.ar-section__trigger:focus-visible {
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-weight: var(--ar-weight-medium);
   font-variant-numeric: tabular-nums;
-  letter-spacing: var(--ar-track-caps);
-  text-transform: var(--ar-label-case);
+  letter-spacing: 0;
   color: var(--ar-text-faint);
   transition:
     color var(--ar-dur-state) var(--ar-ease),

@@ -285,7 +285,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
         </div>
         <div className="sc-grid">
           {DENSITIES.map((d) => (
-            <Segmented key={d} density={d} options={['LOW', 'MED', 'HIGH']} defaultValue="MED" label={d} />
+            <Segmented key={d} density={d} options={['Low', 'Med', 'High']} defaultValue="MED" label={d} />
           ))}
         </div>
       </Spec>

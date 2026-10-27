@@ -51,15 +51,15 @@ export function Panel({ title, subtitle, actions, tabs, footer, children, as = '
 
 export interface SectionProps {
   title: ReactNode;
-  /** Quiet info at the end of the rule, before any actions and the chevron: a count (numbers roll)
-   *  or a short note such as "1 changed · 3". Clicking it folds the group like the title. */
+  /** Quiet info right after the title: a count (numbers roll) or a short note such as
+   *  "1 changed · 3". Clicking it folds the group like the title. */
   count?: ReactNode;
-  /** Slim things that belong to the group, in the title row after the count: a status Badge, a tool. */
+  /** Slim things that belong to the group, at the end of the title row before the chevron: a status Badge, a tool. */
   actions?: ReactNode;
-  /** The group's on/off, carried by the title row's rule (a plain 1px hairline): the line ink when
-   *  on, the subtle line ink when off. One click on the title or rule folds the group open or
-   *  closed; a double-click (or Shift+Enter) switches it on or off. Off folds it closed and makes it
-   *  inert; values are kept, and on restores the fold it had. The chevron always shows. */
+  /** The group's on/off, shown by an LED before the title. One click on the title row folds the
+   *  group open or closed; a double-click (or Shift+Enter) switches it on or off. Off folds it
+   *  closed and makes it inert; values are kept, and on restores the fold it had. The chevron
+   *  always shows. */
   enabled?: boolean;
   defaultEnabled?: boolean;
   onEnabledChange?: (on: boolean) => void;
@@ -119,17 +119,21 @@ export function Section({
     pending.current = setTimeout(() => setOpen(!isOpen), 220);
   };
   const titleText = (
-    <span className="ar-section__title" id={titleId}>
-      {title}
-    </span>
+    <>
+      {/* a switchable group says on or off with an LED before its title */}
+      {toggleable ? <i className="ar-led ar-section__led" data-on={isOn ? '' : undefined} /> : null}
+      <span className="ar-section__title" id={titleId}>
+        {title}
+      </span>
+    </>
   );
   const rest = (
     <>
-      {/* the rule carries the on/off: the line ink when on, the subtle line ink when off */}
-      <i className="ar-section__rule" />
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
       ) : null}
+      {/* no line: the space between the title and the chevron is still the fold's hit area */}
+      <i className="ar-section__rule" />
     </>
   );
   return (

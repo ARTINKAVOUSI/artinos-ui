@@ -1,6 +1,6 @@
 /* 03 · Controls — every other shape a parameter takes, on the same well and insert. */
 import { useState } from 'react';
-import { ColorField, FileDrop, NumberField, Segmented, Select, Switch, TextField, ToggleGroup } from '../../../src';
+import { ChipGroup, ColorField, FileDrop, NumberField, Segmented, Select, Switch, TextField, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 
 function TextFields() {
@@ -80,9 +80,9 @@ export function ControlsChapter() {
 <ToggleGroup options={[{ value: 'bold', icon: <Bold />, title: 'Bold' }, …]} />`}
       >
         <div className="sc-grid">
-          <ToggleGroup label="Passes" options={['DIFFUSE', 'SPEC']} defaultValue={['DIFFUSE']} />
+          <ToggleGroup label="Passes" options={['Diffuse', 'Spec']} defaultValue={['Diffuse']} />
           <ToggleGroup label="Axis" options={['X', 'Y', 'Z']} defaultValue={['X', 'Z']} />
-          <ToggleGroup options={['FRONT', 'TOP']} defaultValue={['FRONT']} />
+          <ToggleGroup options={['Front', 'Top']} defaultValue={['Front']} />
           <ToggleGroup label="Solo" options={['A', 'B', 'C']} defaultValue={['B']} multiple={false} />
           <ToggleGroup
             label="Style"
@@ -107,16 +107,42 @@ export function ControlsChapter() {
       </Spec>
 
       <Spec
+        id="chips"
+        text="A wrapping set of choices: moods, tags, categories, filters. Off, a chip is a quiet outlined pill; on, it is the family's polished insert. Many can be on at once, or one with multiple={false}, which can also be emptied. A count after the label stays in the mono, like every number."
+        code={`
+<ChipGroup label="Mood" options={['Joy', 'Curious', 'Startled', 'Shy', 'Sad', 'Groove']} defaultValue={['Curious']} />
+<ChipGroup label="Category" multiple={false} defaultValue={['image']}
+  options={[{ value: 'all', label: 'All', count: 276 }, { value: 'image', label: 'Image', count: 48 }, …]} />`}
+      >
+        <div className="sc-stack" style={{ gap: 14 }}>
+          <ChipGroup label="Mood" options={['Joy', 'Curious', 'Startled', 'Shy', 'Sad', 'Groove']} defaultValue={['Curious', 'Groove']} />
+          <ChipGroup
+            label="Category"
+            multiple={false}
+            defaultValue={['image']}
+            options={[
+              { value: 'all', label: 'All', count: 276 },
+              { value: 'image', label: 'Image', count: 48 },
+              { value: 'video', label: 'Video', count: 22 },
+              { value: 'audio', label: 'Audio', count: 12 },
+              { value: '3d', label: '3D & worlds', count: 9 },
+              { value: 'tools', label: 'Tools', count: 31, disabled: true },
+            ]}
+          />
+        </div>
+      </Spec>
+
+      <Spec
         id="segmented"
         text="One of n. The insert travels between positions and the text it arrives under switches ink. Arrow keys move it; options can carry icons or be disabled."
         code={`
-<Segmented label="Quality" options={['LOW', 'MED', 'HIGH', 'ULTRA']} defaultValue="HIGH" />
+<Segmented label="Quality" options={['Low', 'Med', 'High', 'Ultra']} defaultValue="HIGH" />
 <Segmented options={[{ value: 'l', icon: <AlignLeft /> }, …]} />`}
       >
         <div className="sc-grid">
-          <Segmented label="Quality" options={['LOW', 'MED', 'HIGH', 'ULTRA']} defaultValue="HIGH" />
-          <Segmented label="Space" options={['LINEAR', 'SRGB', 'ACES']} defaultValue="ACES" />
-          <Segmented label="Scale" options={['1X', '2X', { value: '4X', disabled: true }, '8X']} defaultValue="2X" />
+          <Segmented label="Quality" options={['Low', 'Med', 'High', 'Ultra']} defaultValue="HIGH" />
+          <Segmented label="Space" options={['Linear', 'sRGB', 'ACES']} defaultValue="ACES" />
+          <Segmented label="Scale" options={['1×', '2×', { value: '4×', disabled: true }, '8×']} defaultValue="2X" />
           <Segmented
             label="Align"
             options={[
@@ -133,13 +159,13 @@ export function ControlsChapter() {
         id="select"
         text="Closed, a full-width insert with a chevron — or a quiet well with appearance=&quot;well&quot;. Open, the frosted list unrolls out of the face, portalled to <body> so docks never clip it. Arrows, Home/End, Enter, Escape and type-ahead."
         code={`
-<Select label="Tonemap" options={['ACES', 'AGX', 'FILMIC']} defaultValue="AGX" />
+<Select label="Tonemap" options={['ACES', 'AGX', 'Filmic']} defaultValue="AGX" />
 <Select appearance="well" options={['Fixed', 'Fill', 'Hug']} defaultValue="Fixed" />`}
       >
         <div className="sc-grid">
-          <Select label="List" options={['ITEM 1', 'ITEM 2', 'ITEM 3', 'ITEM 4']} />
-          <Select label="Tonemap" options={['ACES', 'AGX', 'FILMIC', 'NEUTRAL']} defaultValue="AGX" />
-          <Select label="Blend" options={['NORMAL', 'ADD', 'MULTIPLY', 'SCREEN', { value: 'OVERLAY', disabled: true }]} defaultValue="SCREEN" />
+          <Select label="List" options={['Item 1', 'Item 2', 'Item 3', 'Item 4']} />
+          <Select label="Tonemap" options={['ACES', 'AGX', 'Filmic', 'Neutral']} defaultValue="AGX" />
+          <Select label="Blend" options={['Normal', 'Add', 'Multiply', 'Screen', { value: 'Overlay', disabled: true }]} defaultValue="SCREEN" />
           <Select label="Sizing" appearance="well" options={['Fixed', 'Fill', 'Hug']} defaultValue="Fixed" />
         </div>
       </Spec>

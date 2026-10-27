@@ -1,0 +1,70 @@
+/* ARTINOS ChipGroup — wrapping pills. Off: an outlined pill in the line ink. On: the insert,
+   the same polished part a pressed Segmented option or Button is. */
+
+.ar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+:where(.ar-chip) {
+  all: unset;
+}
+.ar-chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: calc(var(--ar-h) - 2px);
+  padding: 0 11px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+  color: var(--ar-text-mid);
+  cursor: pointer;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-state) var(--ar-ease-spring);
+}
+.ar-chip .ar-text {
+  color: inherit;
+}
+.ar-chip:hover {
+  background: var(--ar-bg-hover);
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong);
+}
+.ar-chip:active {
+  transform: scale(0.97);
+}
+.ar-chip:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong), var(--ar-focus-ring);
+}
+.ar-chip[data-on] {
+  /* .ar-insert paints the face; the pill keeps its shape */
+  border-radius: 999px;
+  box-shadow: var(--ar-insert-shadow);
+  color: var(--ar-insert-ink);
+}
+.ar-chip[data-on]:focus-visible {
+  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+}
+.ar-chip[data-on]:hover {
+  background: var(--ar-insert);
+}
+.ar-chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ar-chip .ar-icon {
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+}
+.ar-chip__count {
+  font-size: calc(var(--ar-value-size) - 1px);
+  color: var(--ar-text-low);
+}
+.ar-chip[data-on] .ar-chip__count {
+  color: var(--ar-insert-unit-ink, var(--ar-insert-ink));
+}

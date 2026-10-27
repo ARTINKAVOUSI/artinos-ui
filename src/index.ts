@@ -30,6 +30,8 @@ export { Switch } from './controls/Switch';
 export type { SwitchProps } from './controls/Switch';
 export { ToggleGroup } from './controls/ToggleGroup';
 export type { ToggleGroupProps } from './controls/ToggleGroup';
+export { ChipGroup } from './controls/ChipGroup';
+export type { ChipGroupProps, ChipOption } from './controls/ChipGroup';
 export { Segmented } from './controls/Segmented';
 export type { SegmentedProps } from './controls/Segmented';
 export { ColorField } from './controls/ColorField';
@@ -70,6 +72,8 @@ export { Tabs } from './layout/Tabs';
 export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
+export { ItemList, ItemRow } from './layout/ItemRow';
+export type { ItemListProps, ItemRowProps } from './layout/ItemRow';
 
 // overlays
 export { Menu, ContextMenu } from './overlays/Menu';

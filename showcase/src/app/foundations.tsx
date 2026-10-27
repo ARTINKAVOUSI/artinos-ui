@@ -113,7 +113,7 @@ export function ThemeCard({ t, active, onPick }: { t: ThemeName; active: boolean
       <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <Slider label="Roughness" defaultValue={0.52} toggleable />
         <Slider variant="stepped" steps={5} label="Samples" min={1} max={5} decimals={0} defaultValue={3} />
-        <Segmented options={['LOW', 'MED', 'HIGH']} defaultValue="MED" label="Quality" />
+        <Segmented options={['Low', 'Med', 'High']} defaultValue="MED" label="Quality" />
       </div>
     </ArtinosTheme>
   );

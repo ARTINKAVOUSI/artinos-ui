@@ -211,7 +211,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
         text="The track carries the parameter's own scale. While dragging, a swatch reads out the sampled colour below the seam. Label and value ink follow the luminance under them. Pass your own stops for any scale."
         code={`
 <Slider variant="gradient" gradient="temperature" min={0} max={100} label="Temperature" />
-<Slider variant="gradient" gradient={{ stops: [[0, '#1B1F3B'], [1, '#FFB000']], describe: (t) => t > .5 ? 'DAY' : 'NIGHT' }} />`}
+<Slider variant="gradient" gradient={{ stops: [[0, '#1B1F3B'], [1, '#FFB000']], describe: (t) => t > .5 ? 'Day' : 'Night' }} />`}
       >
         <div className="sc-grid">
           {(Object.keys(GRADIENTS) as Array<keyof typeof GRADIENTS>).map((g) => (
@@ -229,7 +229,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
               detents={g === 'exposure' ? [0] : undefined}
             />
           ))}
-          <Slider variant="gradient" gradient={{ stops: [[0, '#1B1F3B'], [0.55, '#E86F51'], [1, '#FFD27A']], describe: (t) => (t > 0.5 ? 'DAY' : 'NIGHT') }} label="Sun" defaultValue={0.7} />
+          <Slider variant="gradient" gradient={{ stops: [[0, '#1B1F3B'], [0.55, '#E86F51'], [1, '#FFD27A']], describe: (t) => (t > 0.5 ? 'Day' : 'Night') }} label="Sun" defaultValue={0.7} />
         </div>
       </Spec>
 

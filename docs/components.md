@@ -9,8 +9,8 @@ Everything is a named export of the kit's `index.ts`.
 This is the prop reference. For *which kind* to use — the six slider faces, the control shapes, the row states, and a lookup from parameter to control — read `catalogue.md` first.
 
 Contents:
-- Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
-- Layout: Panel / Section / Field · Tabs · PropertyRow
+- Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
+- Layout: Panel / Section / Field · Tabs · PropertyRow · ItemList / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
 - Display: RollingValue · RollingText · Meter · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
@@ -145,15 +145,26 @@ Props: `label` (placeholder + accessible name), `options: OptionInput[]`, `value
 <Select label="Output" options={[{ value: 'png', label: 'PNG' }, { value: 'exr', label: 'EXR' }]} value={fmt} onChange={setFmt} appearance="well" />
 ```
 
+## ChipGroup
+
+A wrapping set of choices: moods, tags, categories, filters. Off, a chip is an outlined pill; on, it is the polished insert.
+
+Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, title, disabled, count }`; `count` draws in the mono after the label), `value` / `defaultValue` / `onChange` with **`V[]`**, `multiple` (default true; `false` = one at a time, which can also be emptied).
+
+```tsx
+<ChipGroup label="Mood" options={['Joy', 'Curious', 'Shy']} defaultValue={['Curious']} />
+<ChipGroup label="Category" multiple={false} options={[{ value: 'image', label: 'Image', count: 48 }, { value: 'video', label: 'Video', count: 22 }]} />
+```
+
 ## Panel · Section · Field
 
 - **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
-- **Section** — titled group with a hairline. Everything about the group lives in its one title row: title · rule (which carries on/off) · count · actions · chevron. Props:
-  - `title` (required), `heading` (`'caps'` mono uppercase, default · `'text'` UI font);
-  - `count`: quiet info at the end of the line, before any actions and the chevron — a number (it rolls when it changes) or a short note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it). It dims with the group when off;
+- **Section** — a titled group under a quiet heading, with no line across. Everything about the group lives in its one title row: LED (switchable groups) · title · count · actions · chevron. Props:
+  - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title);
+  - `count`: quiet info right after the title — a number (it rolls when it changes) or a short note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it). It dims with the group when off;
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
-  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, carried by the title row's line, the family's plain solid 1px hairline: the line ink when on, the subtle line ink (and a quiet title) when off. **One click** on the title or line folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
-  - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title, rule and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
+  - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, shown by an LED before the title (lit when on; dark with a ghosted title when off). **One click** on the title row folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
+  - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title row and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
 - **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
 
 ```tsx
@@ -239,6 +250,19 @@ Props:
 Read-only instruments.
 - **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required; drawn at the left in a label column, width `--ar-meter-label-w`, 92px), `hideLabel` (screen readers only, for a row that already names it), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
 - **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`.
+
+## ItemList · ItemRow
+
+A list of things: layers, bodies, presets, files. Rows stand in an `ItemList` (`role="list"`, `label`) 2px apart with no dividers.
+
+**ItemRow** props: `title` (the name, in the sans), `meta` (a quiet second line; truncates), `swatch` (a colour drawn as a round swatch) or `leading` (any icon or thumbnail), `trailing` (tools at the end: a `Badge`, `Switch variant="compact"`, `IconButton`, `Menu`; clicks there never select the row), `selected` (the active wash and the signal edge on the left), `onSelect` (makes the row a button), `disabled` (the name side goes quiet; the trailing tools stay live).
+
+```tsx
+<ItemList label="Layers">
+  <ItemRow title="Orb" meta="Glass shell · 12,480 tris" swatch="#4fd1ba" selected={picked === 'orb'} onSelect={() => setPicked('orb')}
+           trailing={<><Badge tone="live" dot>Live</Badge><Switch variant="compact" aria-label="Show Orb" value={on} onChange={setOn} /></>} />
+</ItemList>
+```
 
 ## PropertyRow
 

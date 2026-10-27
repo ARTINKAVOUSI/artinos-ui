@@ -5,10 +5,10 @@ What every component can be. The API guide (`components.md`) lists props; this g
 Contents:
 - [Choosing by parameter](#choosing-by-parameter): the lookup table
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
-- [Controls](#controls): NumberField · TextField · Switch · ToggleGroup · Segmented · Select · ColorField · FileDrop
+- [Controls](#controls): NumberField · TextField · Switch · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge
 - [Display](#display): RollingValue · Meter · Sparkline
-- [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow
+- [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
 - [Scopes](#scopes): theme · density · material
@@ -37,6 +37,8 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | text (a name, a filter) | `TextField` | `type="search"` for filtering | a line cut into the well |
 | on / off | `Switch` | `variant="compact"` inside a `Field` | shutter or knob |
 | several independent flags (passes, layers, A/B/C) | `ToggleGroup` | `led`, icon options | LED chips in one well |
+| tags, moods, categories, filters — more than fit one well | `ChipGroup` | `multiple={false}`, `count` | outlined pills that wrap; on is the insert |
+| a list of things to pick from or manage (layers, bodies, presets, files) | `ItemList` + `ItemRow` | `swatch`, `meta`, `trailing`, `selected` | a name with a line of detail and tools at the end; never a stack of buttons |
 | one of a few (2–4 choices, all visible) | `Segmented` | | the insert travels to the choice |
 | one of many (5+), or choices with icons and descriptions | `Select` | `appearance="well"` in forms | a frosted list that never clips |
 | a colour | `ColorField` | `alpha` | the colour is the insert; hex and opacity are scrubbable |
@@ -165,6 +167,13 @@ Independent flags sharing one well; each chip is a small insert with its own LED
 - `led` (default true): the LED seam on text chips. Icon options (`{ value, icon, title }`) replace text and recede into the well when off.
 - `value` / `onChange` take an array.
 
+### ChipGroup
+
+A wrapping set of pills for choices that outgrow one well: moods, tags, categories, filters.
+- Off: an outlined pill in the line ink. On: the polished insert, the same part as a pressed Segmented option.
+- `multiple` (default true); `multiple={false}` picks one at a time and can be emptied, for a filter with an "any" state.
+- `count` on an option draws a number in the mono after its label.
+
 ### Segmented
 
 One of a few, all visible: the insert travels between positions and the text it arrives under switches ink. Arrow keys move it. Options can carry icons or be `disabled`. Prefer it up to four short choices; beyond that, `Select`.
@@ -192,7 +201,7 @@ A wide well with an etched, dashed rim. Hold a file over it and the rim breathes
 | choices | all visible? | control |
 |---|---|---|
 | on / off | yes | `Switch` |
-| several flags, any number on | yes | `ToggleGroup` |
+| several flags, any number on | yes | `ToggleGroup` (up to ~5) or `ChipGroup` (more, or tags that wrap) |
 | one of 2–4 | yes | `Segmented` |
 | one of 2–4, or none | yes | `ToggleGroup multiple={false}` |
 | one of 5+ | no (a list) | `Select` |
@@ -251,16 +260,16 @@ The glass card that holds controls. Slots: `title`, `subtitle`, `actions` (heade
 
 ### Section
 
-A titled group under a hairline. Everything about the group lives in its one title row: title · rule · count · actions · chevron.
+A titled group under a quiet heading, no line across. Everything about the group lives in its one title row: LED · title · count · actions · chevron.
 
 | kind | props | behaviour |
 |---|---|---|
-| plain | `title` | a heading and a rule |
-| collapsible | `collapsible`, `open` / `defaultOpen` / `onOpenChange` | click the title, rule or chevron to fold |
-| switchable | `enabled` / `defaultEnabled` / `onEnabledChange` | the rule carries the on/off (line ink on, subtle ink off); one click folds, double-click or Shift+Enter switches; off folds closed and makes the body inert, values kept |
+| plain | `title` | a small heading |
+| collapsible | `collapsible`, `open` / `defaultOpen` / `onOpenChange` | click the title row or chevron to fold |
+| switchable | `enabled` / `defaultEnabled` / `onEnabledChange` | an LED before the title carries the on/off; one click folds, double-click or Shift+Enter switches; off folds closed and makes the body inert, values kept |
 
-- `heading`: `'caps'` (mono uppercase, default; dock panels and strips) or `'text'` (the sans voice; inspectors).
-- `count`: quiet info before the chevron: a number (it rolls) or a note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it).
+- `heading`: `'caps'` (a small sans heading in capitals, default) or `'text'` (a larger sans title; inspectors).
+- `count`: quiet info right after the title: a number (it rolls) or a note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it).
 - `actions`: slim things that belong to the group, a `Badge` or an `IconButton`.
 
 ### Field
@@ -270,6 +279,15 @@ A label column beside one or more controls: `Width [268] [Fixed ˅]`. `label` re
 ### Tabs
 
 A tab strip with a travelling underline. `items`, `value` / `defaultValue` / `onChange`, `label`, `idBase` (wires `aria-controls` to your panels). Usually in a Panel's `tabs` slot.
+
+### ItemList · ItemRow
+
+One thing in a list: a layer, a body, a preset, a file. Use it wherever a panel lists things, instead of a column of full-width buttons.
+- A `swatch` colour or a `leading` icon, the `title` in the sans, a `meta` line of detail (kind, size, state).
+- `trailing` tools at the end — a `Badge`, a compact `Switch`, an `IconButton` or `Menu` — that never select the row.
+- `selected`: the active wash and the signal edge on the left; `onSelect` makes the row a button.
+- `disabled`: the name side goes quiet and the trailing tools stay live, so a hidden layer can be shown again.
+- Rows stand in an `ItemList`, 2px apart, no dividers.
 
 ### PropertyRow
 
