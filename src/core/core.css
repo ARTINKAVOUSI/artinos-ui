@@ -201,6 +201,10 @@
   text-align: center;
   vertical-align: top;
 }
+/* a sign, separator or unit letter keeps its own width; only digits share the drum's 1ch */
+.ar-roll__slot[data-char] {
+  width: auto;
+}
 .ar-roll__strip {
   display: block;
   white-space: pre;

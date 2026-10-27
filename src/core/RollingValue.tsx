@@ -115,7 +115,7 @@ const Slot = memo(function Slot({ ch, dir, dur, delay, grow }: SlotProps) {
   }, [ch]);
 
   return (
-    <span ref={host} className="ar-roll__slot" aria-hidden="true">
+    <span ref={host} className="ar-roll__slot" data-char={isDigit(ch) ? undefined : ''} aria-hidden="true">
       {isDigit(ch) ? (
         <span ref={strip} aria-hidden="true" className="ar-roll__strip" style={{ transform: `translateY(${-pos.current * CELL}em)` }}>
           {STRIP}
@@ -189,7 +189,31 @@ export function RollingValue({ text, unit, dir, fast, base = 2, className }: Rol
   );
 }
 
-/** Any readout text: rolls when it holds a number, plain text otherwise ("—", "true", a name). */
+const NUMBER = /[-+−]?\d[\d.,:]*/g;
+const BARE_NUMBER = /^[-+−]?[\d.,:]+\s?[^\s\d]{0,4}$/;
+
+/**
+ * Any readout text. A bare number (with at most a short unit) rolls as one readout; in a
+ * sentence ("56.1 L · 50 of its seed") only the numbers roll and the words stay plain text,
+ * so letters never sit in a digit's drum. No digits: plain text ("—", "true", a name).
+ */
 export function RollingText({ text, base = 3, className }: { text: string; base?: number; className?: string }) {
-  return /\d/.test(text) ? <RollingValue text={text} base={base} className={className} /> : <span className={className}>{text}</span>;
+  if (!/\d/.test(text)) return <span className={className}>{text}</span>;
+  if (BARE_NUMBER.test(text.trim())) return <RollingValue text={text} base={base} className={className} />;
+  const parts = [];
+  let last = 0;
+  let k = 0;
+  for (const m of text.matchAll(NUMBER)) {
+    if (m.index! > last) parts.push(<span key={'t' + k}>{text.slice(last, m.index)}</span>);
+    parts.push(<RollingValue key={'n' + k} text={m[0]} base={base} />);
+    last = m.index! + m[0].length;
+    k++;
+  }
+  if (last < text.length) parts.push(<span key="tail">{text.slice(last)}</span>);
+  return (
+    <span className={className}>
+      <span className="ar-sr">{text}</span>
+      <span aria-hidden="true">{parts}</span>
+    </span>
+  );
 }

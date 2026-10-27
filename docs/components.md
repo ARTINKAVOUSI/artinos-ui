@@ -184,7 +184,7 @@ Props:
 - `fast`: a short roll. Default: on while the value changes more often than every 450ms, so a streaming readout stays legible.
 - `base`: the canonical number of decimals (default 2). Digits beyond it grow in and out.
 
-`RollingText` takes any readout string: it rolls when the string holds a number and shows plain text otherwise (`—`, `true`, a name).
+`RollingText` takes any readout string. A bare number with at most a short unit rolls as one readout; in a sentence (`56.1 L · 50 of its seed`) only the numbers roll and the words stay plain text in their own font; with no digits it is plain text (`—`, `true`, a name).
 
 ```tsx
 <RollingValue text={fps.toFixed(0)} unit="fps" base={0} />
@@ -237,7 +237,7 @@ Props:
 ## Meter · Sparkline
 
 Read-only instruments.
-- **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
+- **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required; drawn at the left in a label column, width `--ar-meter-label-w`, 92px), `hideLabel` (screen readers only, for a row that already names it), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
 - **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`.
 
 ## PropertyRow

@@ -7,7 +7,7 @@ import { clamp, cx, GRADIENTS, gradientCss, joinFormatted, luminance, pxToken, r
 import type { Format, Formatter, Gradient, GradientName, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, CURVES, extraDigits, majorEvery, makeScale, modifierRatio, nextDetent, niceUnit, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
 import type { CurveName, PrecisionLevels } from './engine';
-import { Hud, HUD_TOKENS, ValueEditor } from './parts';
+import { Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
 import type { HudState } from './parts';
 
 /* ARTINOS Slider — one compact precision surface.
@@ -146,6 +146,7 @@ export function Slider(props: SliderProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const valRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
   const gRef = useRef<SVGGElement>(null);
   const drag = useRef<Drag | null>(null);
@@ -503,7 +504,7 @@ export function Slider(props: SliderProps) {
   if (variant === 'gradient') sd = 0;
 
   const dot = showDot ? <i className="ar-dot" data-on={enabled ? '' : undefined} /> : null;
-  const labelEl = (over: boolean) => (integrated && label ? <span className={cx('ar-text ar-slider__label', over && 'ar-text--over')}>{label}</span> : null);
+  const labelEl = (over: boolean) => (integrated && label ? <span ref={over ? undefined : labelRef} className={cx('ar-text ar-slider__label', over && 'ar-text--over')}>{label}</span> : null);
   const editor = <ValueEditor initial={editInitial()} label={(props['aria-label'] ?? label ?? 'Value') + ' — type a value'} onDone={finishEdit} />;
   const readout = (over: boolean) => (
     <span ref={over ? undefined : valRef} className={cx('ar-value ar-slider__readout', over && 'ar-slider__readout--over')}>
@@ -525,6 +526,23 @@ export function Slider(props: SliderProps) {
     onDoubleClick,
   };
   const trackVars = { '--ar-lo': lo, '--ar-hi': hi, '--ar-p': seamP, '--_sd': sd } as CSSProperties;
+
+  /* the seam parts around label and readout ink instead of striking it through */
+  const partRef = useRef(() => {});
+  partRef.current = () => {
+    const seamed = integrated && enabled && (variant === 'material' || variant === 'gradient');
+    const [over] = seamed ? seamsOverInk(trackRef.current, [[seamP, sd, hi - lo]], [labelRef.current, valRef.current]) : [false];
+    rootRef.current?.toggleAttribute('data-parted', over);
+  };
+  useLayoutEffect(() => partRef.current());
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => partRef.current());
+    ro.observe(el);
+    if (valRef.current) ro.observe(valRef.current);
+    return () => ro.disconnect();
+  }, [variant, editing]);
 
   let track;
   if (variant === 'material' || variant === 'stepped') {
@@ -570,7 +588,7 @@ export function Slider(props: SliderProps) {
         <div className="ar-slider__content">
           {dot}
           {integrated && label ? (
-            <span className="ar-text ar-slider__label" data-ink={inkAt(0.08)}>
+            <span ref={labelRef} className="ar-text ar-slider__label" data-ink={inkAt(0.08)}>
               {label}
             </span>
           ) : null}

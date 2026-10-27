@@ -7,8 +7,10 @@ export interface MeterProps {
   value: number;
   min?: number;
   max?: number;
-  /** Accessible name. */
+  /** Drawn at the left, in a column so stacked meters line up; also the accessible name. */
   label: string;
+  /** Keep the label for screen readers only, when the row already shows it (a Field, a PropertyRow). */
+  hideLabel?: boolean;
   /** Text drawn at the right; defaults to the value. Pass null to hide. */
   valueText?: string | null;
   /** Hold the peak for a moment and let it fall. */
@@ -22,7 +24,7 @@ export interface MeterProps {
  * Meter — a horizontal level bar for live values (audio, CPU, progress).
  * Updating it at frame rate is fine: the fill is a CSS transform.
  */
-export function Meter({ value, min = 0, max = 1, label, valueText, peak = false, tone = 'live', className, style }: MeterProps) {
+export function Meter({ value, min = 0, max = 1, label, hideLabel = false, valueText, peak = false, tone = 'live', className, style }: MeterProps) {
   const t = Math.min(1, Math.max(0, (value - min) / (max - min || 1)));
   const peakRef = useRef<HTMLSpanElement>(null);
   const held = useRef({ value: 0, time: 0 });
@@ -52,6 +54,7 @@ export function Meter({ value, min = 0, max = 1, label, valueText, peak = false,
       aria-valuenow={value}
       style={style}
     >
+      {hideLabel ? null : <span className="ar-text ar-meter__label">{label}</span>}
       <span className="ar-meter__track">
         <span className="ar-meter__fill" style={{ transform: `scaleX(${t})` }} />
         {peak && <span ref={peakRef} className="ar-meter__peak" />}

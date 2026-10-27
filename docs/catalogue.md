@@ -233,8 +233,8 @@ A status tag drawn as a wash and a hairline in its colour, never a solid fill. `
 
 Read-only instruments.
 
-- **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change; a carry resolves right to left; a streaming value rolls short. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out). **RollingText** takes any readout string and rolls when it holds a number.
-- **Meter**: a level in a thin well with a signal fill and a rolling readout. `value`, `label` required; `min` / `max`; `valueText` (null hides it); `peak` holds the highest value for a moment and lets it fall; `tone` `'live' | 'warm' | 'neutral'` cross-fades the fill.
+- **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change; a carry resolves right to left; a streaming value rolls short. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out). **RollingText** takes any readout string: only its numbers roll, the words stay still.
+- **Meter**: a level in a thin well with a signal fill and a rolling readout. `value`, `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it); `peak` holds the highest value for a moment and lets it fall; `tone` `'live' | 'warm' | 'neutral'` cross-fades the fill.
 - **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`.
 
 ```tsx

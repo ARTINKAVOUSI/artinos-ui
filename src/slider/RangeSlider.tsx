@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { RollingValue } from '../core/RollingValue';
 import { useControllable } from '../core/hooks';
@@ -7,7 +7,7 @@ import { clamp, cx, joinFormatted, pxToken, runFormat, scopeAttrs, snapshotToken
 import type { Format, Formatter, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, extraDigits, makeScale, modifierRatio, nextDetent, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
 import type { PrecisionLevels } from './engine';
-import { Hud, HUD_TOKENS, ValueEditor } from './parts';
+import { Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
 import type { HudState } from './parts';
 
 /* ARTINOS RangeSlider — the same capsule holding an interval.
@@ -96,6 +96,7 @@ export function RangeSlider(props: RangeSliderProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const valRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
   const thumbs = { lo: useRef<HTMLSpanElement>(null), hi: useRef<HTMLSpanElement>(null) };
   const drag = useRef<Drag | null>(null);
   const live = useRef<RangeValue>(value);
@@ -346,11 +347,29 @@ export function RangeSlider(props: RangeSliderProps) {
   const hi = toT(value[1]);
   const stepTicks = quant > 2 && quant <= 17 ? Array.from({ length: quant - 2 }, (_, i) => (i + 1) / (quant - 1)) : [];
 
+  /* each seam parts around label and readout ink instead of striking it through */
+  const partRef = useRef(() => {});
+  partRef.current = () => {
+    const ink = [labelRef.current, valRef.current];
+    const [a, b] = integrated && enabled ? seamsOverInk(trackRef.current, [[lo, 1, hi - lo], [hi, -1, hi - lo]], ink) : [false, false];
+    rootRef.current?.toggleAttribute('data-part-lo', a);
+    rootRef.current?.toggleAttribute('data-part-hi', b);
+  };
+  useLayoutEffect(() => partRef.current());
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => partRef.current());
+    ro.observe(el);
+    if (valRef.current) ro.observe(valRef.current);
+    return () => ro.disconnect();
+  }, [editing]);
+
   const dot = showDot ? <i className="ar-dot" data-on={enabled ? '' : undefined} /> : null;
   const content = (over: boolean) => (
     <div className={cx('ar-slider__content', over ? 'ar-slider__content--over' : 'ar-slider__content--base')} aria-hidden={over || undefined}>
       {dot}
-      {integrated && label ? <span className={cx('ar-text ar-slider__label', over && 'ar-text--over')}>{label}</span> : null}
+      {integrated && label ? <span ref={over ? undefined : labelRef} className={cx('ar-text ar-slider__label', over && 'ar-text--over')}>{label}</span> : null}
       <span ref={over ? undefined : valRef} className={cx('ar-value ar-slider__readout', over && 'ar-slider__readout--over')}>
         {editing && !over ? (
           <ValueEditor initial={shown(live.current[0]) + ' – ' + shown(live.current[1])} label={(props['aria-label'] ?? label ?? 'Range') + ' — type lo – hi'} onDone={finishEdit} />

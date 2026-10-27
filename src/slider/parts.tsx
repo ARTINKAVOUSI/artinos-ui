@@ -9,6 +9,25 @@ export type HudState =
   | { kind: 'scrub'; ox: number; oy: number; px: number; py: number; leaving?: boolean }
   | { kind: 'swatch'; sx: number; sy: number; color: string; caption: string; leaving?: boolean };
 
+/**
+ * Which seams would cut through label or readout ink. Each seam is [p, sd, span]:
+ * its 0..1 position, the side it sits in from (-1 · 0 · 1) and the fill span it is
+ * set in from — the same three numbers `.ar-seam` places itself with in slider.css.
+ * A seam over ink parts around the letters instead of striking them through.
+ */
+export function seamsOverInk(track: HTMLElement | null, seams: [number, number, number][], ink: (HTMLElement | null)[]) {
+  if (!track || !track.clientWidth) return seams.map(() => false);
+  const cs = getComputedStyle(track);
+  const inset = parseFloat(cs.getPropertyValue('--ar-inset')) || 2;
+  const off = parseFloat(cs.getPropertyValue('--ar-seam-offset')) || 0;
+  const w = track.clientWidth;
+  const W = w - inset * 2;
+  return seams.map(([p, sd, span]) => {
+    const x = Math.min(Math.max(inset + p * W + sd * Math.min(off, span * W * 0.5), inset + 3), w - inset - 3);
+    return ink.some((el) => !!el && el.offsetWidth > 0 && x > el.offsetLeft - 3 && x < el.offsetLeft + el.offsetWidth + 3);
+  });
+}
+
 /** Tokens the portalled HUD carries out of its theme scope. */
 export const HUD_TOKENS = ['--ar-signal-hi', '--ar-sheet-bg', '--ar-sheet-blur', '--ar-sheet-shadow', '--ar-float-ink', '--ar-float-ink-low', '--ar-font-num', '--ar-ease', '--ar-ease-exit'] as const;
 

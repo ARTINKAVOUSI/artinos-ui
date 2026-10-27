@@ -62,6 +62,10 @@
   background: var(--ar-value-ink-hi);
   transition: left 120ms linear;
 }
+.ar-meter__label {
+  flex: none;
+  width: var(--ar-meter-label-w, 92px);
+}
 .ar-meter__value {
   min-width: 40px;
   text-align: right;

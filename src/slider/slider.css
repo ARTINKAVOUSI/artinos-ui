@@ -7,6 +7,8 @@
 @property --ar-hi { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --ar-p { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --ar-p2 { syntax: '<number>'; inherits: true; initial-value: 0; }
+/* half the gap a parted seam opens around label or readout ink */
+@property --_part { syntax: '<length>'; inherits: false; initial-value: 0px; }
 
 .ar-slider {
   position: relative;
@@ -178,8 +180,11 @@
   background: linear-gradient(90deg, var(--_c) 0 var(--ar-seam-a), transparent var(--ar-seam-a) var(--ar-seam-b), var(--_c) var(--ar-seam-b));
   box-shadow: var(--ar-seam-edge);
   filter: var(--ar-seam-drop);
+  -webkit-mask-image: linear-gradient(#000 calc(50% - var(--_part)), transparent 0 calc(50% + var(--_part)), #000 0);
+  mask-image: linear-gradient(#000 calc(50% - var(--_part)), transparent 0 calc(50% + var(--_part)), #000 0);
   pointer-events: none;
   transition:
+    --_part var(--ar-dur-state) var(--ar-ease),
     height var(--ar-dur-state) var(--ar-ease),
     box-shadow 160ms var(--ar-ease),
     filter 160ms var(--ar-ease),
@@ -437,6 +442,15 @@
   height: calc(var(--_h) * var(--ar-seam-scale) - 1px);
   box-shadow: var(--ar-seam-edge);
   filter: var(--ar-seam-drop);
+}
+
+/* ---------- parted seam: over label or readout ink it opens around the letters,
+   a split index above and below the text instead of a bar through it ---------- */
+.ar-slider[data-parted] .ar-slider__seam,
+.ar-range[data-part-lo] .ar-slider__seam--lo,
+.ar-range[data-part-hi] .ar-slider__seam--hi {
+  --_part: calc(max(var(--ar-label-size), var(--ar-value-size)) * 0.5 + 1px);
+  height: calc(var(--_h) - 2 * var(--ar-inset) - 2px);
 }
 .ar-range__thumb {
   position: absolute;
