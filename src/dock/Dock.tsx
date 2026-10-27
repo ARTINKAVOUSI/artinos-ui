@@ -58,7 +58,7 @@ export interface DockProps {
   viewport?: ReactNode;
   /** localStorage key to save and restore the arrangement. Omit to start fresh each time. */
   storageKey?: string;
-  /** Dock sizes as a fraction of the workspace. Default left .22 · right .24 · bottom .36. */
+  /** Dock sizes as a fraction of the workspace. Default left .22 · right .24 · bottom .36; side docks keep at least 220px, edge docks 120px. */
   sizes?: Partial<Record<DockEdge, number>>;
   /** Where panels with dock: 'float' (or reopened without a dock) appear. */
   floatBounds?: { x: number; y: number; width: number; height: number };

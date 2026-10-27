@@ -1,7 +1,7 @@
 /* Live pieces several chapters share: stroke icons, a wandering data series, and the
    workspace's panels (the Dock demo uses them, and the Layout chapter shows the inspector). */
 import { useEffect, useState } from 'react';
-import { Badge, Button, ContextMenu, IconButton, Meter, NodeGraph, PropertyRow, Section, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, useDock } from '../../../src';
+import { Badge, Button, ContextMenu, IconButton, ItemList, ItemRow, Meter, NodeGraph, PropertyRow, Section, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, useDock } from '../../../src';
 import type { GraphDefinition } from '../../../src';
 
 const icon = (d: string) => (
@@ -77,8 +77,16 @@ export function InspectorPanel() {
   );
 }
 
+const LAYER_META: Record<string, [string, string]> = {
+  Orb: ['#4fd1ba', 'Mesh · 12,480 tris'],
+  'Glass shell': ['#9eeede', 'Material · thick glass'],
+  'Rim light': ['#f2e8d5', 'Area light · 4.2 lm'],
+  Backdrop: ['#8a7a5c', 'Image · 2048 px'],
+};
+
 export function LayersPanel() {
   const [layers, setLayers] = useState(['Orb', 'Glass shell', 'Rim light', 'Backdrop']);
+  const [hidden, setHidden] = useState<string[]>([]);
   const [selected, setSelected] = useState('Orb');
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -88,6 +96,7 @@ export function LayersPanel() {
         <ToolbarSpacer />
         <IconButton size="sm" label="Delete" icon={IC.trash} onClick={() => setLayers((l) => l.filter((x) => x !== selected))} />
       </Toolbar>
+      <ItemList label="Layers">
       {layers.map((name) => (
         <ContextMenu
           key={name}
@@ -98,15 +107,26 @@ export function LayersPanel() {
             { id: 'del', label: 'Delete', danger: true, icon: IC.trash, onSelect: () => setLayers((l) => l.filter((x) => x !== name)) },
           ]}
         >
-          <button type="button" className="sc-layer" data-on={name === selected ? '' : undefined} onClick={() => setSelected(name)}>
-            <span>{name}</span>
-            <span className="sc-layer__icons">
-              {IC.eye}
-              {IC.lock}
-            </span>
-          </button>
+          <ItemRow
+            title={name}
+            meta={LAYER_META[name]?.[1] ?? 'Layer'}
+            swatch={LAYER_META[name]?.[0] ?? '#8a8a8a'}
+            selected={name === selected}
+            onSelect={() => setSelected(name)}
+            disabled={hidden.includes(name)}
+            trailing={
+              <IconButton
+                size="sm"
+                label={hidden.includes(name) ? `Show ${name}` : `Hide ${name}`}
+                icon={IC.eye}
+                active={!hidden.includes(name)}
+                onClick={() => setHidden((h) => (h.includes(name) ? h.filter((x) => x !== name) : [...h, name]))}
+              />
+            }
+          />
         </ContextMenu>
       ))}
+      </ItemList>
     </div>
   );
 }

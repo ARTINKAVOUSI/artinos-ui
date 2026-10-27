@@ -27,7 +27,7 @@ function WorkspaceDemo() {
       <Dock
         panels={panels}
         viewport={<img className="sc-workspace__view" src={BACKDROPS.garden} alt="" />}
-        storageKey="artinos-showcase.dock.v2"
+        storageKey="artinos-showcase.dock.v3"
         sizes={{ left: 0.28, right: 0.25, bottom: 0.38 }}
         floatBounds={{ x: 380, y: 60, width: 300, height: 170 }}
         viewProps={{ padding: 8, gap: 6 }}
@@ -41,6 +41,7 @@ export function WorkspaceChapter() {
     <Chapter id="workspace">
       <Spec
         id="dock"
+        wide
         text="A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float. Drag a tab out to float it, onto an edge to dock it, onto another dock to merge; right-click a tab for every placement. A panel's PanelBar rises into the tab strip when there is room. storageKey keeps the arrangement. Built on the MetaBlock engine."
         keys={[
           ['DRAG TAB', 'float · dock · merge · split'],

@@ -333,7 +333,7 @@ Props:
 - `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer? }`;
 - `viewport`;
 - `storageKey`: saves the arrangement to localStorage, and restores it only while every saved id still exists;
-- `sizes`: fractions per edge; default left .22, right .24, bottom .36;
+- `sizes`: fractions per edge; default left .22, right .24, bottom .36. A side dock never drops below 220px (taking at most 40% of the room left), a top or bottom dock below 120px (at most half), so a small workspace keeps usable columns;
 - `floatBounds`;
 - `commands`: extra palette entries;
 - `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip; a strip under 520px wide (a side dock) puts the tabs on a row of their own and the panel bar, search and toolbar on the row below, and under 340px search folds to a magnifier;

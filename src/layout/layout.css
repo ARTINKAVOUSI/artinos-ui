@@ -183,8 +183,9 @@ button.ar-section__trigger:focus-visible {
   height: 8px;
 }
 .ar-section__count {
-  flex: none;
-  max-width: 50%;
+  /* in a narrow column the note gives way long before the title does */
+  flex: 0 100 auto;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

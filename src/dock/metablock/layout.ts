@@ -2,6 +2,12 @@ import type { MetaBlockWorkspace } from './workspace';
 import type { LayoutNode, Rect } from './types';
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const make = (x: number, y: number, width: number, height: number): Rect => ({ x, y, width, height, left: x, top: y, right: x + width, bottom: y + height });
+/* root docks: the narrowest a side column gets (px), and the most of the remaining space it may take */
+const MIN_SIDE = 220;
+const SIDE_CAP = 0.4;
+/* top and bottom docks */
+const MIN_EDGE = 120;
+const EDGE_CAP = 0.5;
 
 function splitRect(target: Rect, node: LayoutNode, gap: number) {
   const ratio = clamp(node.size, 0.12, 0.72);
@@ -71,7 +77,9 @@ export function resolveWorkspaceRects(
     const ratio = clamp(node.size, 0.05, 0.72),
       horizontal = node.area === 'left' || node.area === 'right';
     if (horizontal) {
-      const amount = Math.max(0, available.width * ratio - gap / 2);
+      // a side dock never drops below a usable column (MIN_SIDE), but never takes more than
+      // SIDE_CAP of what is left, so the viewport and the other docks keep room
+      const amount = Math.max(0, Math.min(Math.max(available.width * ratio, MIN_SIDE), available.width * SIDE_CAP) - gap / 2);
       if (node.area === 'left') {
         result.set(node.groupId, make(available.x, available.y, amount, available.height));
         available = make(available.x + amount + gap, available.y, Math.max(0, available.width - amount - gap), available.height);
@@ -80,7 +88,7 @@ export function resolveWorkspaceRects(
         available = make(available.x, available.y, Math.max(0, available.width - amount - gap), available.height);
       }
     } else {
-      const amount = Math.max(0, available.height * ratio - gap / 2);
+      const amount = Math.max(0, Math.min(Math.max(available.height * ratio, MIN_EDGE), available.height * EDGE_CAP) - gap / 2);
       if (node.area === 'top') {
         result.set(node.groupId, make(available.x, available.y, available.width, amount));
         available = make(available.x, available.y + amount + gap, available.width, Math.max(0, available.height - amount - gap));

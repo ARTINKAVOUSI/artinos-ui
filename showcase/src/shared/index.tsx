@@ -81,7 +81,8 @@ export function Code({ children }: { children: string }) {
 }
 
 /** One section: the registry gives its number and title; the left column explains, the right one shows. */
-export function Spec({ id, text, keys, code, children }: { id: string; text: ReactNode; keys?: Array<[string, string]>; code?: string; children: ReactNode }) {
+/** `wide`: the demo takes the full width under its description (a workspace needs the room). */
+export function Spec({ id, text, keys, code, wide, children }: { id: string; text: ReactNode; keys?: Array<[string, string]>; code?: string; wide?: boolean; children: ReactNode }) {
   const mode = useContext(GalleryMode);
   const def = SECTIONS.get(id);
   if (!def) throw new Error(`Section "${id}" is not in chapters/registry.ts`);
@@ -96,7 +97,7 @@ export function Spec({ id, text, keys, code, children }: { id: string; text: Rea
       </section>
     );
   return (
-    <section className="sc-spec" id={sectionAnchor(id)} data-section={id}>
+    <section className={wide ? 'sc-spec sc-spec--wide' : 'sc-spec'} id={sectionAnchor(id)} data-section={id}>
       <div className="sc-about">
         <span className="sc-num">{def.n}</span>
         <b className="sc-title">{def.title}</b>
