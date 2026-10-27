@@ -37,7 +37,7 @@
   min-width: 0;
   overflow: hidden;
   font-size: var(--ar-text-md);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   line-height: var(--ar-leading-snug);
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -79,7 +79,7 @@
 .ar-prop__message {
   margin: 0 0 0 calc(var(--_label-w) + 10px);
   font-size: var(--ar-text-sm);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   line-height: var(--ar-leading-text);
   color: var(--ar-text-low);
 }

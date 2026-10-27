@@ -11,7 +11,7 @@ import { MakeItYoursChapter } from '../chapters/MakeItYours';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import { ExportKit } from '../export/ExportKit';
 import { KIT_COMPONENTS } from '../export/kit';
-import { BACKDROPS, BACKDROP_OPTIONS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
+import { BACKDROPS, BACKDROP_OPTIONS, LIGHT_BACKDROPS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
 import { loadThemes, saveThemes } from '../studio/store';
@@ -57,7 +57,7 @@ export function App() {
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
   const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'instrument'));
-  const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera'] as const, 'garden'));
+  const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera', 'studio'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');
 
   if (view === 'studio')
@@ -75,7 +75,7 @@ export function App() {
     );
 
   return (
-    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} ground className="sc-root">
+    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
 
       <header className="sc-bar">

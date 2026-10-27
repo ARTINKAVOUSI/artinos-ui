@@ -20,7 +20,7 @@
   /* type */
   --ar-control-font: var(--ar-font-num);
   --ar-label-weight: 500;
-  --ar-value-weight: 300;
+  --ar-value-weight: 400;
   --ar-label-tracking: 0.13em;
   --ar-label-case: uppercase;
   --ar-label-bump: 0px;

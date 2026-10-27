@@ -19,7 +19,7 @@
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  font: var(--ar-weight-light) calc(var(--ar-value-size) + 2px) / var(--ar-leading-snug) var(--ar-font-ui);
+  font: var(--ar-weight-text) calc(var(--ar-value-size) + 2px) / var(--ar-leading-snug) var(--ar-font-ui);
   text-align: center;
   color: var(--ar-text-hi);
   text-shadow: var(--ar-base-text-shadow);

@@ -367,7 +367,7 @@ const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [
 
 ## ArtinosTheme
 
-Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-material`, `data-ar-type` and inline tokens on one element. Props: `theme` (a built-in id **or any custom theme name** you have CSS for; default `studio`), `density`, `material`, `type` (a type collection, see `TYPE_COLLECTIONS`; inherits when omitted), `tokens` (overrides: `{ signal: '#ff4fa3' }` or full `--ar-*` names), `ground` (paint the theme's background and text colour — use for solid themes / full-page scopes), `as` (default `div`), plus any HTML attributes. Scopes nest. Without React: `<div data-ar-theme="frost-deep">`.
+Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-material`, `data-ar-type`, `data-ar-scene` and inline tokens on one element. Props: `theme` (a built-in id **or any custom theme name** you have CSS for; default `studio`), `density`, `material`, `type` (a type collection, see `TYPE_COLLECTIONS`; inherits when omitted), `scene` (`'light' | 'dark'`: what the glass sits over; a wash of the theme's own ground goes under every glass surface so its ink keeps contrast over a scene of the other kind, e.g. frost-deep over a light room; omit over a scene the theme was drawn for), `tokens` (overrides: `{ signal: '#ff4fa3' }` or full `--ar-*` names), `ground` (paint the theme's background and text colour — use for solid themes / full-page scopes), `as` (default `div`), plus any HTML attributes. Scopes nest. Without React: `<div data-ar-theme="frost-deep">`.
 
 `themeStyle(tokens)` returns the same inline style object without the wrapper.
 

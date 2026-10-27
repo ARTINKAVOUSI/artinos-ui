@@ -142,20 +142,22 @@
   --ar-weight-light: 300; /* the default: prose, titles, values */
   --ar-weight-regular: 400; /* emphasis inside prose; a theme's firmer values */
   --ar-weight-medium: 500; /* caps: labels, kickers, marks */
+  /* small sans text (xs–md, inputs, rows, menus): light strokes thin out on glass at these sizes */
+  --ar-weight-text: var(--ar-weight-regular);
 
-  /* the sans voice: weight 300 unless noted. Control text (labels, rows, buttons) uses the
+  /* the sans voice: --ar-weight-text up to md, weight 300 (light) from lg up. Control text (labels, rows, buttons) uses the
      --ar-label-* and --ar-value-* tokens instead, which density and themes tune. */
-  --ar-text-xs: 10.5px; /* hints, captions, port names */
-  --ar-text-sm: 11.5px; /* secondary lines, tabs, menu rows */
-  --ar-text-md: 12px; /* body: field labels, rows of prose, messages */
+  --ar-text-xs: 11px; /* hints, captions, port names */
+  --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
+  --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
   --ar-text-xl: 17px; /* panel titles */
   --ar-text-2xl: 22px; /* page section titles */
   --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */
 
   /* the mono caps voice outside a control: uppercase, weight 500, tracked */
-  --ar-caps-xs: 8px; /* the smallest mark: keycaps, port tags, drop hints */
-  --ar-caps-sm: 9px; /* kickers, foot lines, counts, badges, section numbers */
+  --ar-caps-xs: 9.5px; /* the smallest mark: keycaps, port tags, drop hints */
+  --ar-caps-sm: 10px; /* kickers, foot lines, counts, badges, section numbers */
 
   /* tracking: caps open up, large sans closes in, everything else is set as drawn */
   --ar-track-caps: 0.16em;
@@ -174,24 +176,38 @@
 :root,
 [data-ar-density='standard'] {
   --ar-h: 26px;
-  --ar-label-size: 10px;
-  --ar-value-size: 11.5px;
+  --ar-label-size: 11px;
+  --ar-value-size: 12px;
   --ar-pad-x: 9px;
   --ar-gap: 7px;
 }
 [data-ar-density='dense'] {
   --ar-h: 24px;
-  --ar-label-size: 9.5px;
-  --ar-value-size: 11px;
+  --ar-label-size: 10.5px;
+  --ar-value-size: 11.5px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
 }
 [data-ar-density='comfort'] {
   --ar-h: 30px;
-  --ar-label-size: 10.5px;
-  --ar-value-size: 12.5px;
+  --ar-label-size: 11.5px;
+  --ar-value-size: 13px;
   --ar-pad-x: 11px;
   --ar-gap: 8px;
+}
+
+/* ---------- scene: what the glass sits over ----------
+   A glass theme's ink is drawn for a scene that contrasts with it: light ink over a dark scene,
+   dark ink over a light one. Over the other kind the frost takes the ink's own colour and labels
+   wash out. ArtinosTheme scene="light" | "dark" (data-ar-scene) lays a wash of the theme's own
+   app ground under every glass surface. Over a scene that already contrasts it barely shows; over
+   a mismatched one it gives the ink back its ground. */
+:root {
+  --ar-panel-floor: transparent;
+  --ar-floor-amount: 72%; /* white ink stays near 4.5:1 over a light grey scene */
+}
+[data-ar-scene] {
+  --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) var(--ar-floor-amount), transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,8 +19,16 @@ export const Swatch = ({ t }: { t: ThemeName }) => {
 };
 export const THEME_OPTIONS = THEMES.map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> }));
 export const TYPE_OPTIONS = TYPE_COLLECTIONS.map((t) => ({ value: t, label: TYPE_META[t].label }));
-export const BACKDROPS = { none: '', garden: persianGarden, monstera } as const;
-export const BACKDROP_OPTIONS = [{ value: 'garden', label: 'Persian garden' }, { value: 'monstera', label: 'Monstera' }, { value: 'none', label: 'None' }] as const;
+/* a light product-shot room — wall, horizon, floor — the scene glass themes are not drawn for */
+const studioRoom =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 10" preserveAspectRatio="none"><linearGradient id="g" x2="0" y2="1"><stop offset="0" stop-color="#c4c4c1"/><stop offset=".58" stop-color="#e2e2df"/><stop offset=".6" stop-color="#d2d2cf"/><stop offset="1" stop-color="#a9a9a6"/></linearGradient><rect width="16" height="10" fill="url(#g)"/></svg>',
+  );
+export const BACKDROPS = { none: '', garden: persianGarden, monstera, studio: studioRoom } as const;
+export const BACKDROP_OPTIONS = [{ value: 'garden', label: 'Persian garden' }, { value: 'monstera', label: 'Monstera' }, { value: 'studio', label: 'Studio grey (light)' }, { value: 'none', label: 'None' }] as const;
+/** Light backdrops: the page sets ArtinosTheme scene="light" over them. */
+export const LIGHT_BACKDROPS: ReadonlySet<string> = new Set(['studio']);
 export type Backdrop = keyof typeof BACKDROPS;
 
 export const wave = Array.from({ length: 140 }, (_, i) => {

@@ -7,7 +7,7 @@
   flex-direction: column;
   min-width: 0;
   border-radius: var(--ar-radius-shell);
-  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--ar-panel-shadow);
@@ -35,7 +35,7 @@
 }
 .ar-panel__subtitle {
   font-size: var(--ar-text-sm);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   color: var(--ar-text-low);
 }
 .ar-panel__actions {
@@ -253,7 +253,7 @@ button.ar-section__trigger:focus-visible {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--ar-text-md);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   color: var(--ar-text-mid);
 }
 .ar-field__control {
@@ -285,7 +285,7 @@ button.ar-section__trigger:focus-visible {
   padding: 8px 0 9px;
   font-family: var(--ar-font-ui);
   font-size: var(--ar-text-sm);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   color: var(--ar-text-low);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);

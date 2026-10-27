@@ -1212,7 +1212,7 @@
 .mb-context-menu > div > button > span small {
   margin-left: auto;
   color: var(--au-faint, #888);
-  font: var(--ar-weight-light) var(--ar-text-xs)/var(--ar-leading-none) var(--ar-font-ui);
+  font: var(--ar-weight-text) var(--ar-text-xs)/var(--ar-leading-none) var(--ar-font-ui);
   white-space: nowrap;
 }
 
@@ -1416,7 +1416,7 @@
 .mb-block-error span {
   max-width: 36ch;
   color: var(--au-faint, #7d8885);
-  font: var(--ar-weight-light) var(--ar-text-xs)/var(--ar-leading-text) var(--ar-font-ui);
+  font: var(--ar-weight-text) var(--ar-text-xs)/var(--ar-leading-text) var(--ar-font-ui);
   letter-spacing: var(--ar-track-text);
   word-break: break-word;
 }

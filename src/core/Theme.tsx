@@ -24,6 +24,10 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   type?: TypeCollection | (string & {});
   /** Inline token overrides for a custom look — applied on top of the theme. */
   tokens?: TokenOverrides;
+  /** What the glass sits over. Over a scene of the other kind than the theme's ink (frost-deep
+   *  over a light room), a wash of the theme's own ground goes under every glass surface so the
+   *  text keeps its contrast. Omit over a scene the theme was drawn for. */
+  scene?: 'light' | 'dark';
   /** Paint the theme's app ground (background + text colour). */
   ground?: boolean;
   as?: ElementType;
@@ -34,7 +38,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
  * Optional scope wrapper. It only sets data attributes and inline tokens, so the
  * same result is available without React: <div data-ar-theme="frost">.
  */
-export function ArtinosTheme({ theme = 'studio', material, density, type, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+export function ArtinosTheme({ theme = 'studio', material, density, type, scene, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'div';
@@ -45,6 +49,7 @@ export function ArtinosTheme({ theme = 'studio', material, density, type, tokens
       data-ar-material={material}
       data-ar-density={density}
       data-ar-type={type}
+      data-ar-scene={scene}
       className={cx('ar-theme', ground && 'ar-theme--ground', className)}
       style={{ ...themeStyle(tokens), ...style }}
     >

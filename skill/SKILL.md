@@ -33,7 +33,7 @@ node "{{PACKAGE}}/artinos.mjs" list
 Use what the user named. If they named no theme, pick one that fits the host and say which you picked (and, when the brand calls for it, a type collection: see `--type` in step 3):
 - dark app → `frost-deep` or `studio`
 - light app → `studio-light` or `frost-light`
-- over imagery or a canvas → any glass or frost theme
+- over imagery or a canvas → any glass or frost theme, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page (without it, light-ink glass over a light scene is unreadable)
 
 Pick only the components the UI uses; each one brings the files it imports. `ArtinosTheme` and the `studio` base theme are always included. Decide what each parameter *is* before deciding which component shows it: `references/catalogue.md` has the lookup table (parameter → component → kind), and the short version is in step 5.
 - **Grouped controls:** add `Panel`.

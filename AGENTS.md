@@ -17,7 +17,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 3. **Choose themes and components.** List them with `node <this folder>/artinos.mjs list`. Use what the user named. If they named no theme, pick one that fits and say which:
    - dark app → `frost-deep` or `studio`
    - light app → `studio-light` or `frost-light`
-   - over a 3D canvas, video or photo → any glass or frost theme
+   - over a 3D canvas, video or photo → any glass or frost theme, with `scene="light"` on `ArtinosTheme` when what is behind is light
 
    Pick the components the UI uses, plus `Panel` for grouped controls. Use `Dock` for an editor layout around a canvas. `GraphGPU` needs `three` and is only included when named.
 

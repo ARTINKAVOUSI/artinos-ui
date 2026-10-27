@@ -13,7 +13,7 @@
   backdrop-filter: var(--ar-list-backdrop);
   box-shadow: var(--ar-list-shadow);
   text-shadow: var(--ar-list-text-shadow);
-  font: var(--ar-weight-light) var(--ar-text-md)/var(--ar-leading-snug) var(--ar-font-ui);
+  font: var(--ar-weight-text) var(--ar-text-md)/var(--ar-leading-snug) var(--ar-font-ui);
   color: var(--ar-float-ink);
   animation: ar-drop-in var(--ar-dur-enter) var(--ar-ease-roll);
   transform-origin: top left;

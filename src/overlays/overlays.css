@@ -15,7 +15,7 @@
   backdrop-filter: var(--ar-list-backdrop);
   box-shadow: var(--ar-list-shadow);
   font-family: var(--ar-font-ui);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-text);
   color: var(--ar-float-ink);
   text-shadow: var(--ar-list-text-shadow);
 }

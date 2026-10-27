@@ -20,7 +20,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 **Choosing:**
 - **Dark app:** `frost-deep` (the showcase default), `studio`, or an untinted, atelier glass or luxe glass theme.
 - **Light app:** `studio-light`, `glass-light`, `frost-light`, `pane-light`, `argent`, `ivory`, `porcelain` or `pearl`.
-- **UI over a 3D canvas, video or photo:** any glass or frost theme.
+- **UI over a 3D canvas, video or photo:** any glass or frost theme, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page. Most glass themes have light ink drawn for dark scenes; over a light one their frost turns the colour of the ink and labels wash out.
 
 **Families:**
 - **Untinted:** achromatic panes with no tint, only blur. Accents are the ARTINOS set: teal signal, azure bind, amber warn, rose fault.
@@ -97,6 +97,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 `THEME_META[id].kind` is `'solid'` or `'glass'`.
 - **Solid** themes paint their own ground. Use `<ArtinosTheme theme="studio" ground>` on the page or panel container.
 - **Glass** themes are panes: `Panel` uses `backdrop-filter` over whatever is behind it. They look right over imagery, video or a live canvas. Over a flat colour they look like a plain tinted card, which is expected. Don't add `ground` to a glass scope that should show the scene through it.
+- **Scene.** Glass ink is drawn for a scene that contrasts with it. `scene="light" | "dark"` on `ArtinosTheme` (`data-ar-scene`) sets `--ar-panel-floor`, a wash of the theme's `--ar-bg-app` at `--ar-floor-amount` (72%), under Panel, Dock panes and the floating Toolbar. Over a scene that already contrasts it barely shows; over a mismatched one it keeps the ink at about 4.5:1. Lower `--ar-floor-amount` for more glass, raise it for more ground.
 
 For React Three Fiber, the controls are DOM. Put them in an HTML overlay above the `<Canvas>` (a sibling `div` with `position: absolute`), not inside the Canvas tree, so the glass blurs the rendered scene. drei `<Html>` works for UI attached to 3D objects, but inspector panels belong in the overlay.
 
@@ -188,14 +189,14 @@ Put it on the same element as `data-ar-theme` or below it. Kits exported with `-
 
 ## Key tokens
 
-The design language in one paragraph: every part is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips, graph nodes). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices: mono caps control text for labels, rows and buttons, and light UI body text on the scale below. Motion uses the duration and curve tokens only. Everything that scrolls inside a theme scope (lists, the palette, dock panels, your own panels) gets the family's one scrollbar: a thin rounded thumb in the theme's ink, no buttons, no track; a page outside the scope can copy the `::-webkit-scrollbar` rules from `core/core.css` onto `html`.
+The design language in one paragraph: every part is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips, graph nodes). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices: mono caps control text for labels, rows and buttons, and UI body text on the scale below (regular to 13px, light for titles). Motion uses the duration and curve tokens only. Everything that scrolls inside a theme scope (lists, the palette, dock panels, your own panels) gets the family's one scrollbar: a thin rounded thumb in the theme's ink, no buttons, no track; a page outside the scope can copy the `::-webkit-scrollbar` rules from `core/core.css` onto `html`.
 
 Roles (theme level):
 - ground and surfaces: `--ar-bg-app`, `--ar-bg-surface`, `--ar-bg-raised`, `--ar-bg-well`, `--ar-bg-hover`, `--ar-bg-active`
 - ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint`, `--ar-text-ghost`
 - lines: `--ar-line-subtle`, `--ar-line`, `--ar-line-strong`, `--ar-tick`, `--ar-tick-major`
 - accents: `--ar-signal`, `--ar-signal-hi`, `--ar-signal-line`, `--ar-signal-wash`, `--ar-signal-ink`, `--ar-bind`, `--ar-warn`, `--ar-fault`, `--ar-focus-ring`
-- panel glass: `--ar-panel-tint`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`
+- panel glass: `--ar-panel-tint`, `--ar-panel-floor` (set by `scene`), `--ar-floor-amount`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`
 - floating ink and the typed-entry field: `--ar-float-bg`, `--ar-float-ring`, `--ar-float-shadow`, `--ar-float-ink`, `--ar-float-ink-low`
 - radii: `--ar-radius-control`, `--ar-radius-card`, `--ar-radius-panel`, `--ar-radius-shell`
 - typography (see [Typography](#typography) below): `--ar-font-ui`, `--ar-font-num`, `--ar-weight-*`, `--ar-text-*`, `--ar-caps-*`, `--ar-track-*`, `--ar-leading-*`
@@ -220,9 +221,9 @@ Control finish (materials level):
 One superfamily in two voices. **Chivo**, the sans, speaks: titles, prose, menus, field labels. **Chivo Mono**, its monospaced sibling, measures: control labels, readouts, counts and marks. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
 - families: `--ar-font-ui` (the sans), `--ar-font-num` (the mono), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the mono; Roboto Mono in `reference`).
-- weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, the default for prose, titles and values), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps).
-- the sans scale, weight 300: `--ar-text-xs` (10.5px, hints and captions), `--ar-text-sm` (11.5px, secondary lines, tabs, menu rows), `--ar-text-md` (12px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.
-- the mono caps voice outside a control (kickers, foot lines, counts, badges, keycaps, port tags), always weight 500, uppercase, `--ar-track-caps`: `--ar-caps-sm` (9px) and `--ar-caps-xs` (8px, the smallest mark). The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
+- weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, titles from 14px up), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps); `--ar-weight-text` (regular) is small sans text up to `--ar-text-md`, inputs, rows and menus, where light strokes thin out on glass. Control readouts use `--ar-value-weight` (400 by default).
+- the sans scale, `--ar-weight-text` to md and light above: `--ar-text-xs` (11px, hints and captions), `--ar-text-sm` (12px, secondary lines, tabs, menu rows), `--ar-text-md` (13px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.
+- the mono caps voice outside a control (kickers, foot lines, counts, badges, keycaps, port tags), always weight 500, uppercase, `--ar-track-caps`: `--ar-caps-sm` (10px) and `--ar-caps-xs` (9.5px, the smallest mark). Control labels are `--ar-label-size`, set by density: 10.5 · 11 · 11.5px for dense · standard · comfort. The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
 - control text (labels, rows, buttons) is the third use of the mono voice and is tuned by density and theme: `--ar-label-size`, `--ar-value-size`, and the control-typography tokens under Control finish.
 - tracking: `--ar-track-caps` (0.16em, caps open up), `--ar-track-text` (0, set as drawn), `--ar-track-title` (-0.01em, 17px and up), `--ar-track-display` (-0.025em, 30px and up).
 - leading: `--ar-leading-none` (1, single-line marks), `--ar-leading-snug` (1.3, titles and menu rows), `--ar-leading-text` (1.5, prose), `--ar-leading-code` (1.65, code and long reading).
