@@ -95,3 +95,13 @@
   font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
   color: var(--ar-text-low);
 }
+
+/* checked: the insert, and a soft halo of the signal around it, the way a lit LED glows */
+.ar-checkbox__box:not([data-state='off']) {
+  box-shadow:
+    var(--ar-insert-shadow),
+    0 0 0 3px color-mix(in srgb, var(--ar-signal) 14%, transparent);
+}
+.ar-checkbox__input:focus-visible + .ar-checkbox__box:not([data-state='off']) {
+  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+}

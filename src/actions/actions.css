@@ -350,18 +350,22 @@
   gap: 3px;
 }
 
-/* ---------- Badge ---------- */
+/* ---------- Badge: a small status plate ---------- */
+/* a recessed well like every value's, an LED in the state's colour, calm text: the state is
+   carried by light, as everywhere in the family, not by a coloured wash */
 .ar-badge {
-  --_tone: var(--ar-text-mid);
+  --_tone: var(--ar-text-low);
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 18px;
-  padding: 0 7px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--_tone) 12%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_tone) 30%, transparent);
+  gap: 6px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
   font-family: var(--ar-voice-font);
   font-size: calc(var(--ar-voice-size) - 1px);
   font-weight: var(--ar-voice-weight);
@@ -369,12 +373,8 @@
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
   white-space: nowrap;
-  color: var(--_tone);
+  color: var(--ar-text-mid);
   text-shadow: none;
-  transition:
-    color var(--ar-dur-surface) var(--ar-ease),
-    background var(--ar-dur-surface) var(--ar-ease),
-    box-shadow var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-badge[data-tone='live'] {
   --_tone: var(--ar-signal);
@@ -385,20 +385,22 @@
 .ar-badge[data-tone='danger'] {
   --_tone: var(--ar-fault);
 }
-.ar-badge[data-tone='neutral'] {
-  background: var(--ar-bg-hover);
-  box-shadow: inset 0 0 0 1px var(--ar-line);
-}
+/* the LED: a short lit bar, the family's mark of something live */
 .ar-badge__dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 5px currentColor;
+  flex: none;
+  width: 3px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--_tone);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 70%, transparent);
+}
+.ar-badge[data-tone='neutral'] .ar-badge__dot {
+  box-shadow: none;
 }
 @media (prefers-reduced-motion: no-preference) {
-  /* live means live: the dot breathes */
-  .ar-badge[data-tone='live'] .ar-badge__dot {
+  /* live means live: the LED breathes */
+  .ar-badge[data-live] .ar-badge__dot {
     animation: ar-breathe 2.4s ease-in-out infinite;
   }
 }
+

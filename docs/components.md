@@ -252,8 +252,8 @@ A choice in a form or a list. Props: `label`, `description` (a quieter line unde
   Other props: `size` (`'md' | 'sm'`), `icon` (leading), `trailing` (a right-aligned hint, typically `<Kbd>`), `block` (full width), plus every `<button>` attribute.
 - **IconButton**: square and icon-only. The required `label` is both the accessible name and the tooltip. `active` makes it a toggle drawn as an insert while pressed; `filled` gives it a well at rest, for use over bright scenes; `size` is `'md' | 'sm'`; `labelled` shows the label beside the icon — `true` always, `'active'` only while `active`, so a tool strip names the current tool and keeps the rest as icons.
 - **Toolbar**: groups actions with `role="toolbar"`. Props: `label` (required), `orientation`, `floating` (a small pane of the theme's glass, for use over a canvas). Use `<ToolbarGroup label>` to set related buttons in one shared well (a tool strip, a set of views), `<ToolbarSeparator />` for a hairline and `<ToolbarSpacer />` to push the rest to the far end. A good toolbar is a few groups, then a spacer, then its actions from quiet to primary: `ghost` · `default` · one `primary`.
-- **Kbd**: key caps drawn as tiny wells. `keys={['mod', 'K']}`: `mod` shows ⌘ on Apple platforms and Ctrl elsewhere (the same for `shift` and `alt`). The platform is read after hydration, so server-rendered HTML always matches.
-- **Badge**: a status tag drawn as a wash and a hairline in its state's colour. `tone`: `'neutral' | 'live' | 'warm' | 'danger'`. `dot` adds a glowing dot in front.
+- **Kbd**: key caps drawn as raised keys, lit along the top and shaded along the bottom edge, in the mono; words read as written ("Ctrl", "Esc"). `keys={['mod', 'K']}`: `mod` shows ⌘ on Apple platforms and Ctrl elsewhere (the same for `shift` and `alt`). The platform is read after hydration, so server-rendered HTML always matches.
+- **Badge**: a small status plate — a recessed well with an LED in the state's colour and calm text; the state is carried by light, as everywhere in the family. `tone`: `'neutral' | 'live' | 'warm' | 'danger'` (every toned badge carries its LED; a neutral one only with `dot`). `dot`: live — the LED breathes.
 
 ```tsx
 <Toolbar label="Format" floating>
@@ -327,7 +327,7 @@ Everything that floats sits on one sheet: the float surface that a Select's list
   - `tone` is `'neutral' | 'success' | 'warning' | 'error'` and is drawn as a small LED.
   - `duration: 0` keeps the toast until it is dismissed.
   - The call returns a dismiss function.
-- **Tooltip** takes `content`, `children` (one focusable element), `side` (`'top' | 'bottom' | 'left' | 'right'`) and `delay` (450ms). It shows on hover and on keyboard focus.
+- **Tooltip** takes `content`, `children` (one focusable element), `side` (`'top' | 'bottom' | 'left' | 'right'`) and `delay` (450ms). It shows on hover and on keyboard focus. `shortcut` (e.g. `['mod', 'D']`) shows the action's key caps after the hint.
 - **CommandPalette** is a search sheet that matches fuzzily on label and keywords. Props: `commands: Command[]` (`{ id, label, group?, keywords?, shortcut?, icon?, run }`), `open` / `onOpenChange`, `hotkey` (default Ctrl/⌘ + K; `null` turns it off), `placeholder`.
 
 ```tsx

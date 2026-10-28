@@ -302,6 +302,7 @@
 }
 
 /* ---------- key cap: a shortcut, as a tiny well (Kbd, the palette, the dock menu) ---------- */
+/* a key cap is a key: raised, lit along its top, shaded along its bottom edge */
 .ar-keycap {
   box-sizing: border-box;
   display: inline-grid;
@@ -309,12 +310,14 @@
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  border-radius: calc(var(--ar-insert-radius) - 2px);
-  background: var(--ar-trough);
-  box-shadow: var(--ar-well);
-  font: var(--ar-label-weight) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-control-font);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  border-radius: 5px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ar-text-hi) 9%, transparent), color-mix(in srgb, var(--ar-text-hi) 3%, transparent)), var(--ar-trough);
+  box-shadow:
+    inset 0 0 0 1px var(--ar-line-subtle),
+    inset 0 1px 0 color-mix(in srgb, var(--ar-text-hi) 14%, transparent),
+    0 1px 0 rgba(0, 0, 0, 0.32);
+  font: var(--ar-weight-medium) calc(var(--ar-caps-sm) + 0.5px) / var(--ar-leading-none) var(--ar-font-num);
+  letter-spacing: 0;
   color: var(--ar-text-mid);
   text-shadow: none;
 }

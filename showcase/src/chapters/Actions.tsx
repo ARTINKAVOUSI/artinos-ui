@@ -131,7 +131,7 @@ export function ActionsChapter() {
 
       <Spec
         id="keys-badges"
-        text="Kbd draws key caps as tiny wells; mod is ⌘ on Apple platforms and Ctrl elsewhere, read after hydration so server HTML never mismatches. A Badge marks state with a wash and a hairline of its colour, never a solid fill; a live badge's dot breathes."
+        text="Kbd draws key caps as raised keys, lit along the top, in the mono; mod is ⌘ on Apple platforms and Ctrl elsewhere, read after hydration so server HTML never mismatches. A Badge is a small status plate: a recessed well with an LED in its state's colour and calm text, the state carried by light as everywhere in the family; a live badge's LED breathes."
         code={`<Kbd keys={['mod', 'Shift', 'P']} />
 <Badge tone="live" dot>Live</Badge>   <Badge tone="warm">Bound</Badge>   <Badge tone="danger">Fault</Badge>   <Badge>v2.0</Badge>`}
       >

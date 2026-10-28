@@ -85,7 +85,7 @@ function Toasts() {
 function Tooltips() {
   return (
     <div className="sc-row" style={{ alignItems: 'center' }}>
-      <Tooltip content="Tooltips follow the theme, even portalled">
+      <Tooltip content="Duplicate, from above" shortcut={["mod", "D"]}>
         <Button variant="ghost">Top</Button>
       </Tooltip>
       <Tooltip content="From below" side="bottom">
@@ -163,7 +163,8 @@ notify({ title: 'Render queued', action: { label: 'Undo', onClick: undo } });`}
         <Toasts />
       </Spec>
 
-      <Spec id="tooltip" text="A short hint on hover or keyboard focus, sliding out of the side it points away from. It wraps one focusable element and portals out, so panels never clip it." code={`<Tooltip content="Frame the selection" side="bottom"><Button>Fit</Button></Tooltip>`}>
+      <Spec id="tooltip" text="A short hint on hover or keyboard focus, sliding out of the side it points away from. It wraps one focusable element and portals out, so panels never clip it; shortcut shows the action's key caps after the hint." code={`<Tooltip content="Duplicate" shortcut={["mod", "D"]}><IconButton … /></Tooltip>
+<Tooltip content="Frame the selection" side="bottom"><Button>Fit</Button></Tooltip>`}>
         <Tooltips />
       </Spec>
 

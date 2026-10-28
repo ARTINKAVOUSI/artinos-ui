@@ -253,7 +253,7 @@ Never a row of equal labelled pills: group them, name only the current tool, and
 
 ### Kbd
 
-Key caps as tiny wells: `keys={['mod', 'K']}`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere (same for `shift` and `alt`), read after hydration so server HTML never mismatches.
+Key caps as raised keys: `keys={['mod', 'K']}`. `mod` is ⌘ on Apple platforms and Ctrl elsewhere (same for `shift` and `alt`), read after hydration so server HTML never mismatches.
 
 ### Badge
 

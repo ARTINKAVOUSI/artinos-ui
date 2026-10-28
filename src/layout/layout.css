@@ -562,3 +562,19 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group__all:focus-visible {
   box-shadow: var(--ar-focus-ring);
 }
+
+/* a foldable heading answers the pointer with a faint rounded band, so it reads as clickable
+   without any line across the panel; its text stays aligned with the rows below */
+.ar-section__head:has(> button.ar-section__trigger) {
+  margin-inline: -6px;
+  padding-inline: 6px;
+  border-radius: var(--ar-row-radius);
+  transition: background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-section__head:has(> button.ar-section__trigger):hover {
+  background: color-mix(in srgb, var(--ar-text-hi) 4%, transparent);
+}
+.ar-section[data-variant='card'] > .ar-section__head:has(> button.ar-section__trigger) {
+  margin-inline: -4px;
+  padding-inline: 4px;
+}

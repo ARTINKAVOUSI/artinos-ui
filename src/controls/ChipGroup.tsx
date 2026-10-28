@@ -5,7 +5,8 @@ import { cx, normalizeOptions, revealClipped, scopeAttrs } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS ChipGroup — a wrapping set of choices: moods, tags, categories, filters. Off, a chip
-   is a quiet outlined pill; on, it is the family's polished insert. Many can be on at once,
+   is a pill recessed in the well with a dark LED; on, it is the family's polished insert with
+   its LED lit — the same language as a ToggleGroup's chips. Many can be on at once,
    or one with `multiple={false}` (which can also be emptied). A count rolls in the mono after
    the label. */
 
@@ -50,7 +51,7 @@ export function ChipGroup<V extends string = string>({ label, options, value, de
             className={cx('ar-chip', on && 'ar-insert')}
             data-on={on ? '' : undefined}
           >
-            {o.icon ? <span className="ar-icon">{o.icon}</span> : null}
+            {o.icon ? <span className="ar-icon">{o.icon}</span> : <i className="ar-led ar-chip__led" data-on={on ? '' : undefined} />}
             {o.label != null ? <span className={cx('ar-text', on && 'ar-text--over')}>{o.label}</span> : null}
             {count != null ? <span className="ar-value ar-chip__count">{count}</span> : null}
           </button>

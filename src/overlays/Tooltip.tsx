@@ -1,6 +1,7 @@
 'use client';
 import { usePresence } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
+import { Kbd } from '../actions/Kbd';
 import { cloneElement, useEffect, useId, useLayoutEffect, useRef, useState, type ReactElement, type ReactNode } from 'react';
 
 export interface TooltipProps {
@@ -9,12 +10,14 @@ export interface TooltipProps {
   children: ReactElement<Record<string, unknown>>;
   side?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;
+  /** The action's shortcut, shown as key caps after the hint: ['mod', 'D']. */
+  shortcut?: readonly string[];
 }
 
 type Position = { left: number; top: number };
 
 /** Tooltip — a short hint on hover or keyboard focus, portalled to the body so panels never clip it. */
-export function Tooltip({ content, children, side = 'top', delay = 450 }: TooltipProps) {
+export function Tooltip({ content, children, side = 'top', delay = 450, shortcut }: TooltipProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<Position | null>(null);
@@ -102,7 +105,8 @@ export function Tooltip({ content, children, side = 'top', delay = 450 }: Toolti
             data-state={leaving ? 'closing' : position ? 'open' : undefined}
             style={{ left: position?.left ?? -9999, top: position?.top ?? -9999 }}
           >
-            {content}
+            <span className="ar-tooltip__text">{content}</span>
+            {shortcut?.length ? <Kbd keys={shortcut} className="ar-tooltip__keys" /> : null}
           </div>
         </ThemedPortal>
       )}

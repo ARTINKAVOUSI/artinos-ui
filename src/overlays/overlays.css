@@ -607,3 +607,74 @@
   padding: 6px 10px;
   border-radius: calc(var(--ar-radius-card) - 2px);
 }
+
+/* ---------- refinements: the toast's LED, the tooltip's keys, the dialog's footer ---------- */
+/* the toast's state is a vertical LED the height of its title, glowing in its tone */
+.ar-toast {
+  gap: 11px;
+  padding: 11px 9px 11px 13px;
+}
+.ar-toast__dot {
+  width: 3px;
+  height: 14px;
+  margin-top: 1px;
+  border-radius: 2px;
+  box-shadow:
+    0 0 6px var(--_tone),
+    0 0 14px color-mix(in srgb, var(--_tone) 35%, transparent);
+}
+.ar-toast__text strong {
+  font-weight: var(--ar-weight-medium);
+}
+
+/* the tooltip: its hint, then the shortcut's key caps */
+.ar-tooltip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ar-space-4);
+  font-size: var(--ar-text-sm);
+  color: var(--ar-float-ink);
+}
+.ar-tooltip__keys .ar-keycap {
+  height: 16px;
+  min-width: 16px;
+  padding: 0 4px;
+}
+
+/* the dialog: the actions stand in a softly tinted footer band, under a firmer title */
+.ar-dialog__head {
+  padding: 20px 22px 0;
+}
+.ar-dialog__head h2 {
+  font-size: calc(var(--ar-text-lg) + 1px);
+  font-weight: var(--ar-weight-medium);
+  letter-spacing: -0.005em;
+}
+.ar-dialog__head p {
+  margin-top: 6px;
+  max-width: var(--ar-measure);
+  text-wrap: pretty;
+}
+.ar-dialog__body {
+  padding: 16px 22px 0;
+}
+.ar-dialog__foot {
+  margin-top: 20px;
+  padding: 12px 16px 14px;
+  border-top: 1px solid color-mix(in srgb, var(--ar-float-ink) 7%, transparent);
+  background: color-mix(in srgb, var(--ar-float-ink) 3.5%, transparent);
+  border-radius: 0 0 var(--ar-radius-shell) var(--ar-radius-shell);
+}
+
+/* shortcuts in menus read as keys are written: "Ctrl D", "⌘ D" */
+.ar-menu__shortcut {
+  font-family: var(--ar-font-num);
+  font-size: calc(var(--ar-caps-sm) + 0.5px);
+  font-weight: var(--ar-weight-text);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+/* the body and actions fade in place: a slide would count as overflow and flash a scrollbar */
+.ar-dialog[open]:not([data-state='closing']) :is(.ar-dialog__body, .ar-dialog__foot) {
+  animation-name: ar-fade-in;
+}
