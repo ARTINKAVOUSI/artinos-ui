@@ -1,6 +1,6 @@
 'use client';
 import { useLayoutEffect, useRef, type CSSProperties } from 'react';
-import { approach, useFrames } from '../core/motion';
+import { spring, useFrames } from '../core/motion';
 import { RollingValue } from '../core/RollingValue';
 import { reducedMotion } from '../core/utils';
 
@@ -22,39 +22,42 @@ export interface MeterProps {
   style?: CSSProperties;
 }
 
-/** How long the level takes to close half the gap to a new reading (ms), and the peak's hold and fall. */
-const HALF_LIFE = 70;
+/** About how long the level takes to settle on a new reading (ms), and the peak's hold and fall. */
+const SMOOTH = 180;
 const PEAK_HOLD = 700;
 const PEAK_FALL = 2600; // ms to fall the full scale
 
 /**
- * Meter — a horizontal level bar for live values (audio, CPU, progress). The fill glides toward
- * each new reading every frame, so a value that updates a few times a second still moves as one
- * continuous motion; the peak holds, then falls smoothly. Nothing re-renders between readings.
+ * Meter — a horizontal level bar for live values (audio, CPU, progress). The fill rides a
+ * critically damped spring toward each new reading every frame: its speed never jumps, so a value
+ * that updates a few times a second moves as one fluid motion; the peak holds, then falls
+ * smoothly. Nothing re-renders between readings.
  */
 export function Meter({ value, min = 0, max = 1, label, hideLabel = false, valueText, peak = false, tone = 'live', className, style }: MeterProps) {
   const t = Math.min(1, Math.max(0, (value - min) / (max - min || 1)));
   const fillRef = useRef<HTMLSpanElement>(null);
   const peakRef = useRef<HTMLSpanElement>(null);
-  const live = useRef({ target: t, level: 0, peak: 0, hold: 0 });
+  const live = useRef({ target: t, level: { x: 0, v: 0 }, peak: 0, hold: 0 });
 
   const kick = useFrames((dt) => {
     const s = live.current;
-    s.level = reducedMotion() ? s.target : approach(s.level, s.target, dt, HALF_LIFE);
-    if (Math.abs(s.level - s.target) < 1e-4) s.level = s.target;
-    if (fillRef.current) fillRef.current.style.transform = `scaleX(${s.level})`;
-    let moving = s.level !== s.target;
+    if (reducedMotion()) s.level = { x: s.target, v: 0 };
+    else spring(s.level, s.target, dt, SMOOTH);
+    if (Math.abs(s.level.x - s.target) < 1e-4 && Math.abs(s.level.v) < 1e-6) s.level = { x: s.target, v: 0 };
+    const level = s.level.x;
+    if (fillRef.current) fillRef.current.style.transform = `scaleX(${level})`;
+    let moving = level !== s.target || s.level.v !== 0;
     if (peak) {
-      if (s.level >= s.peak) {
-        s.peak = s.level;
+      if (level >= s.peak) {
+        s.peak = level;
         s.hold = PEAK_HOLD;
       } else if (s.hold > 0) {
         s.hold -= dt;
       } else {
-        s.peak = Math.max(s.level, s.peak - dt / PEAK_FALL);
+        s.peak = Math.max(level, s.peak - dt / PEAK_FALL);
       }
       if (peakRef.current) peakRef.current.style.transform = `translateX(${s.peak * 100}cqw)`;
-      moving ||= s.peak > s.level + 1e-4;
+      moving ||= s.peak > level + 1e-4;
     }
     return moving;
   });

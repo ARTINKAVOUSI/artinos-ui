@@ -7,8 +7,8 @@ import { reducedMotion } from './utils';
    - usePresence keeps an overlay mounted while it plays its exit;
    - useGlide moves one highlight between rows instead of flashing each row;
    - useFlip slides siblings into place when a stack reflows (toasts);
-   - useFrames + approach let a live value glide every frame, written straight to the DOM,
-     so a level updated a few times a second still moves like one continuous motion. */
+   - useFrames + spring (or approach) let a live value glide every frame, written straight to
+     the DOM, so a level updated a few times a second still moves like one continuous motion. */
 
 /** The family's roll / settle curve, for Web Animations (CSS uses --ar-ease-roll). */
 export const EASE_ROLL = 'cubic-bezier(.22,1,.36,1)';
@@ -89,6 +89,34 @@ export function useFlip(container: RefObject<HTMLElement | null>) {
  * left. Frame-rate independent and never overshoots, so a level eases without wobble.
  */
 export const approach = (current: number, target: number, dt: number, halfLife: number) => target + (current - target) * Math.pow(2, -dt / halfLife);
+
+/** A value moving on a critically damped spring: position and velocity. */
+export interface Spring {
+  x: number;
+  v: number;
+}
+
+/**
+ * Moves `s` toward `target` on a critically damped spring that settles in about
+ * `smoothTime` ms. Unlike `approach`, its velocity never jumps when the target changes, so a
+ * value fed new readings a few times a second keeps moving as one fluid motion instead of
+ * darting and stopping at each one. Never overshoots.
+ */
+export function spring(s: Spring, target: number, dt: number, smoothTime: number) {
+  const omega = 2 / Math.max(1, smoothTime);
+  const k = omega * dt;
+  const decay = 1 / (1 + k + 0.48 * k * k + 0.235 * k * k * k);
+  const change = s.x - target;
+  const temp = (s.v + omega * change) * dt;
+  s.v = (s.v - omega * temp) * decay;
+  s.x = target + (change + temp) * decay;
+  // no overshoot past a target it was heading for
+  if ((target - s.x > 0) === (change > 0) && change !== 0) {
+    s.x = target;
+    s.v = 0;
+  }
+  return s;
+}
 
 /**
  * Runs `frame(dt)` on every animation frame for as long as it returns true; the returned

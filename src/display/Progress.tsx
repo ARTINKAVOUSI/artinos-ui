@@ -1,6 +1,6 @@
 'use client';
 import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from 'react';
-import { approach, useFrames } from '../core/motion';
+import { spring, useFrames } from '../core/motion';
 import { RollingValue } from '../core/RollingValue';
 import { cx, reducedMotion } from '../core/utils';
 
@@ -34,18 +34,19 @@ export function Progress({ label, value, valueText, status = 'running', caption,
   // done fills the track; an error keeps the fill where the work stopped
   const target = status === 'done' || (!known && status === 'error') ? 1 : t;
   const fillRef = useRef<HTMLSpanElement>(null);
-  const live = useRef({ target, level: 0 });
+  const live = useRef({ target, level: { x: 0, v: 0 } });
   const kick = useFrames((dt) => {
     const s = live.current;
-    s.level = reducedMotion() ? s.target : approach(s.level, s.target, dt, 120);
-    if (Math.abs(s.level - s.target) < 1e-4) s.level = s.target;
+    if (reducedMotion()) s.level = { x: s.target, v: 0 };
+    else spring(s.level, s.target, dt, 300);
+    if (Math.abs(s.level.x - s.target) < 1e-4 && Math.abs(s.level.v) < 1e-6) s.level = { x: s.target, v: 0 };
     // the fill is clipped, not scaled, so the sheen inside keeps its shape at any value
-    fillRef.current?.style.setProperty('--_p', String(s.level));
-    return s.level !== s.target;
+    fillRef.current?.style.setProperty('--_p', String(s.level.x));
+    return s.level.x !== s.target || s.level.v !== 0;
   });
   useLayoutEffect(() => {
     if (sweeping) {
-      live.current.level = 0;
+      live.current.level = { x: 0, v: 0 };
       fillRef.current?.style.removeProperty('--_p');
       return;
     }
