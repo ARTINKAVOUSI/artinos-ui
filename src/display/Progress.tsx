@@ -33,7 +33,7 @@ export function Progress({ label, value, valueText, status = 'running', caption,
   const sweeping = !known && status === 'running';
   // done fills the track; an error keeps the fill where the work stopped
   const target = status === 'done' || (!known && status === 'error') ? 1 : t;
-  const fillRef = useRef<HTMLSpanElement>(null);
+  const trackRef = useRef<HTMLSpanElement>(null);
   const live = useRef({ target, level: { x: 0, v: 0 } });
   const kick = useFrames((dt) => {
     const s = live.current;
@@ -41,13 +41,13 @@ export function Progress({ label, value, valueText, status = 'running', caption,
     else spring(s.level, s.target, dt, 300);
     if (Math.abs(s.level.x - s.target) < 1e-4 && Math.abs(s.level.v) < 1e-6) s.level = { x: s.target, v: 0 };
     // the fill is clipped, not scaled, so the sheen inside keeps its shape at any value
-    fillRef.current?.style.setProperty('--_p', String(s.level.x));
+    trackRef.current?.style.setProperty('--_p', String(s.level.x));
     return s.level.x !== s.target || s.level.v !== 0;
   });
   useLayoutEffect(() => {
     if (sweeping) {
       live.current.level = { x: 0, v: 0 };
-      fillRef.current?.style.removeProperty('--_p');
+      trackRef.current?.style.removeProperty('--_p');
       return;
     }
     live.current.target = target;
@@ -76,8 +76,9 @@ export function Progress({ label, value, valueText, status = 'running', caption,
           ) : null}
         </div>
       ) : null}
-      <span className="ar-progress__track">
-        <span ref={fillRef} className="ar-progress__fill" />
+      <span ref={trackRef} className="ar-progress__track">
+        <span className="ar-progress__fill" />
+        <span className="ar-progress__tip" />
       </span>
       {caption != null ? <span className="ar-progress__caption">{caption}</span> : null}
     </div>

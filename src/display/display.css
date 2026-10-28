@@ -28,37 +28,54 @@
 .ar-meter__track {
   position: relative;
   flex: 1;
-  height: 6px;
-  border-radius: 3px;
+  height: 4px;
+  border-radius: 999px;
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  overflow: hidden;
-  /* the peak travels in this track's own width (cqw) */
+  /* the tip and the peak travel in this track's own width (cqw) */
   container-type: inline-size;
 }
+/* the fill: a translucent tone that brightens into its leading edge, clipped (not scaled) at the
+   level Meter.tsx glides every frame, so the gradient keeps its shape at any value */
 .ar-meter__fill {
   position: absolute;
-  inset: 1px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--ar-meter-tone) 45%, transparent), var(--ar-meter-tone));
-  box-shadow: 0 0 6px color-mix(in srgb, var(--ar-meter-tone) 40%, transparent);
-  transform-origin: left center;
-  /* Meter.tsx glides the level every frame (it starts empty and fills in); no CSS transition,
-     which would only add a lag on top */
-  transform: scaleX(0);
-  will-change: transform;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ar-meter-tone) 18%, transparent), color-mix(in srgb, var(--ar-meter-tone) 70%, transparent) 70%, var(--ar-meter-tone));
+  background-size: max(1px, calc(var(--_p, 0) * 100%)) 100%;
+  background-repeat: no-repeat;
+  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0 round 999px);
 }
+/* a soft glowing tip rides the leading edge */
+.ar-meter__tip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ar-meter-tone) 55%, white);
+  box-shadow:
+    0 0 6px 1px color-mix(in srgb, var(--ar-meter-tone) 70%, transparent),
+    0 0 14px 2px color-mix(in srgb, var(--ar-meter-tone) 28%, transparent);
+  opacity: min(1, calc(var(--_p, 0) * 40));
+  transform: translateX(calc(var(--_p, 0) * 100cqw));
+  pointer-events: none;
+}
+/* the peak: a fine tick that stands just proud of the track */
 .ar-meter__peak {
   position: absolute;
-  top: 1px;
-  bottom: 1px;
+  top: -3px;
+  bottom: -3px;
   left: 0;
-  width: 2px;
-  margin-left: -2px;
+  width: 1.5px;
+  margin-left: -1px;
   border-radius: 1px;
   background: var(--ar-value-ink-hi);
+  opacity: 0.75;
   will-change: transform;
 }
 .ar-meter__label {
@@ -66,8 +83,9 @@
   width: var(--ar-meter-label-w, 92px);
 }
 .ar-meter__value {
-  min-width: 40px;
+  min-width: 44px;
   text-align: right;
+  font-variant-numeric: tabular-nums;
   color: var(--ar-value-ink);
 }
 
@@ -87,26 +105,53 @@
 .ar-sparkline__line {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.25;
+  stroke-width: 1.5;
+  stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
   animation: ar-spark-draw var(--ar-dur-layout) var(--ar-ease-roll) backwards;
 }
 .ar-sparkline__area {
   animation: ar-fade-in var(--ar-dur-layout) var(--ar-ease) 120ms backwards;
 }
-.ar-sparkline__head {
+.ar-sparkline__halo {
   stroke: currentColor;
-  stroke-width: 4;
+  stroke-width: 11;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.16;
+  animation: ar-fade-in var(--ar-dur-state) var(--ar-ease) var(--ar-dur-layout) backwards;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ar-sparkline__halo {
+    animation:
+      ar-fade-in var(--ar-dur-state) var(--ar-ease) var(--ar-dur-layout) backwards,
+      ar-spark-halo 2.4s ease-in-out var(--ar-dur-layout) infinite;
+  }
+}
+@keyframes ar-spark-halo {
+  50% {
+    opacity: 0.3;
+  }
+}
+.ar-sparkline__head {
+  stroke: color-mix(in srgb, currentColor 55%, white);
+  stroke-width: 4.5;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
   filter: drop-shadow(0 0 2px currentColor);
   animation: ar-fade-in var(--ar-dur-state) var(--ar-ease) var(--ar-dur-layout) backwards;
 }
+/* the dash exists only while the line draws in: a stretched sparkline measures its non-scaling
+   stroke on screen, so a lasting one-path-long dash would stop the line short */
 @keyframes ar-spark-draw {
   from {
+    stroke-dasharray: 1;
     stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
   }
 }
 .ar-sparkline {
@@ -134,10 +179,13 @@
   --_tone: var(--ar-text-low);
 }
 .ar-stat[data-framed] {
-  padding: 10px 12px 11px;
+  padding: 12px 14px 12px;
   border-radius: var(--ar-radius-card);
-  background: var(--ar-bg-surface);
-  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+  /* a quiet tile, lit from above: a soft wash, hairline edges and a brighter top edge */
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ar-text-hi) 6%, transparent), color-mix(in srgb, var(--ar-text-hi) 1.5%, transparent) 60%), var(--ar-bg-surface);
+  box-shadow:
+    inset 0 0 0 1px var(--ar-line-subtle),
+    inset 0 1px 0 color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
 }
 .ar-stat__head {
   display: flex;
@@ -155,8 +203,10 @@
   color: var(--ar-text-low);
 }
 .ar-stat__value {
-  font-size: calc(var(--ar-value-size) * 2);
+  font-size: calc(var(--ar-value-size) * 2.1);
   font-weight: var(--ar-weight-light);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ar-text-hi);
 }
@@ -169,13 +219,19 @@
   color: var(--ar-text-low);
 }
 .ar-stat__delta {
+  --_d: var(--ar-text-low);
   display: inline-flex;
   flex: none;
   align-items: center;
   gap: 3px;
+  height: 18px;
+  padding: 0 7px 0 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--_d) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_d) 24%, transparent);
   font: var(--ar-weight-text) calc(var(--ar-value-size) - 1px) / 1 var(--ar-control-font);
   font-variant-numeric: tabular-nums;
-  color: var(--ar-text-low);
+  color: var(--_d);
 }
 .ar-stat__delta svg {
   width: 8px;
@@ -187,10 +243,10 @@
   stroke-linejoin: round;
 }
 .ar-stat__delta[data-good='true'] {
-  color: var(--ar-signal);
+  --_d: var(--ar-signal);
 }
 .ar-stat__delta[data-good='false'] {
-  color: var(--ar-fault);
+  --_d: color-mix(in srgb, var(--ar-fault) 80%, var(--ar-text-hi));
 }
 .ar-stat__trend {
   width: 100%;
@@ -238,24 +294,47 @@
 .ar-progress__track {
   position: relative;
   display: block;
-  height: 6px;
-  border-radius: 3px;
+  height: 4px;
+  border-radius: 999px;
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  overflow: hidden;
+  container-type: inline-size;
 }
 .ar-progress__fill {
   position: absolute;
-  inset: 1px;
+  inset: 0;
   overflow: hidden;
-  border-radius: 2px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 55%, transparent), var(--_tone));
-  box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 40%, transparent);
+  border-radius: inherit;
+  /* brightens into its leading edge; the gradient spans only what is filled */
+  background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 22%, transparent), color-mix(in srgb, var(--_tone) 75%, transparent) 70%, var(--_tone));
+  background-size: max(1px, calc(var(--_p, 0) * 100%)) 100%;
+  background-repeat: no-repeat;
   /* Progress.tsx glides --_p every frame; the clip, not a scale, keeps the sheen's shape */
-  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0 round 2px);
-  transition: background var(--ar-dur-surface) var(--ar-ease);
+  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0 round 999px);
+  transition: filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-progress__tip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--_tone) 55%, white);
+  box-shadow:
+    0 0 6px 1px color-mix(in srgb, var(--_tone) 70%, transparent),
+    0 0 14px 2px color-mix(in srgb, var(--_tone) 28%, transparent);
+  opacity: min(1, calc(var(--_p, 0) * 40));
+  transform: translateX(calc(var(--_p, 0) * 100cqw));
+  transition: opacity var(--ar-dur-surface) var(--ar-ease);
+  pointer-events: none;
+}
+/* finished, failed or sweeping: no tip */
+.ar-progress:is([data-status], [data-indeterminate]) .ar-progress__tip {
+  opacity: 0;
 }
 /* running: a soft sheen travels along the fill, so a task that waits still looks alive */
 .ar-progress:not([data-status]):not([data-indeterminate]) .ar-progress__fill::after {
@@ -279,6 +358,8 @@
   right: auto;
   width: 38%;
   clip-path: none;
+  background: linear-gradient(90deg, transparent, var(--_tone) 50%, transparent);
+  background-size: 100% 100%;
   animation: ar-progress-sweep 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 @keyframes ar-progress-sweep {
@@ -295,8 +376,7 @@
 }
 @keyframes ar-progress-done {
   40% {
-    box-shadow: 0 0 14px var(--_tone);
-    filter: brightness(1.15);
+    filter: brightness(1.35) drop-shadow(0 0 6px var(--_tone));
   }
 }
 .ar-progress__caption {

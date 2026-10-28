@@ -35,7 +35,7 @@ const PEAK_FALL = 2600; // ms to fall the full scale
  */
 export function Meter({ value, min = 0, max = 1, label, hideLabel = false, valueText, peak = false, tone = 'live', className, style }: MeterProps) {
   const t = Math.min(1, Math.max(0, (value - min) / (max - min || 1)));
-  const fillRef = useRef<HTMLSpanElement>(null);
+  const trackRef = useRef<HTMLSpanElement>(null);
   const peakRef = useRef<HTMLSpanElement>(null);
   const live = useRef({ target: t, level: { x: 0, v: 0 }, peak: 0, hold: 0 });
 
@@ -45,7 +45,8 @@ export function Meter({ value, min = 0, max = 1, label, hideLabel = false, value
     else spring(s.level, s.target, dt, SMOOTH);
     if (Math.abs(s.level.x - s.target) < 1e-4 && Math.abs(s.level.v) < 1e-6) s.level = { x: s.target, v: 0 };
     const level = s.level.x;
-    if (fillRef.current) fillRef.current.style.transform = `scaleX(${level})`;
+    // one variable drives the clipped fill and its glowing tip
+    trackRef.current?.style.setProperty('--_p', String(level));
     let moving = level !== s.target || s.level.v !== 0;
     if (peak) {
       if (level >= s.peak) {
@@ -79,8 +80,9 @@ export function Meter({ value, min = 0, max = 1, label, hideLabel = false, value
       style={style}
     >
       {hideLabel ? null : <span className="ar-text ar-meter__label">{label}</span>}
-      <span className="ar-meter__track">
-        <span ref={fillRef} className="ar-meter__fill" />
+      <span ref={trackRef} className="ar-meter__track">
+        <span className="ar-meter__fill" />
+        <span className="ar-meter__tip" />
         {peak && <span ref={peakRef} className="ar-meter__peak" />}
       </span>
       {text !== null && <span className="ar-value ar-meter__value"><RollingValue text={text} /></span>}

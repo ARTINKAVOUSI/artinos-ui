@@ -80,11 +80,14 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
   const uid = useId().replace(/:/g, '');
   const gradient = uid + 'g';
   const clip = uid + 'c';
+  const fade = uid + 'f';
+  const fadeMask = uid + 'm';
   const live = values.length >= 2;
 
   const lineRef = useRef<SVGPathElement>(null);
   const areaRef = useRef<SVGPathElement>(null);
   const headRef = useRef<SVGLineElement>(null);
+  const haloRef = useRef<SVGLineElement>(null);
   const thRef = useRef<SVGLineElement>(null);
   const st = useRef<{
     values: readonly number[];
@@ -145,8 +148,10 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
     const g = draw(s.values, s.lead, s.lo.x, s.hi.x, offset, width, height, threshold);
     lineRef.current?.setAttribute('d', g.line);
     areaRef.current?.setAttribute('d', g.area);
-    headRef.current?.setAttribute('y1', g.headY.toFixed(2));
-    headRef.current?.setAttribute('y2', g.headY.toFixed(2));
+    for (const el of [headRef.current, haloRef.current]) {
+      el?.setAttribute('y1', g.headY.toFixed(2));
+      el?.setAttribute('y2', g.headY.toFixed(2));
+    }
     if (g.thresholdY !== null) {
       thRef.current?.setAttribute('y1', g.thresholdY.toFixed(2));
       thRef.current?.setAttribute('y2', g.thresholdY.toFixed(2));
@@ -199,25 +204,34 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
     >
       <defs>
         <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="currentColor" stopOpacity="0.28" />
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.22" />
           <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
         {/* samples slide in from behind the right edge and out past the left */}
         <clipPath id={clip}>
           <rect x="0" y="-4" width={width} height={height + 8} />
         </clipPath>
+        {/* the oldest samples fade in from the left edge, so history recedes instead of ending */}
+        <linearGradient id={fade} x1="0" y1="0" x2={width} y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset="0.18" stopColor="#fff" stopOpacity="1" />
+        </linearGradient>
+        <mask id={fadeMask} maskUnits="userSpaceOnUse" x="0" y="-4" width={width} height={height + 8}>
+          <rect x="0" y="-4" width={width} height={height + 8} fill={`url(#${fade})`} />
+        </mask>
       </defs>
       {g0 && threshold !== undefined && (
         <line ref={thRef} className="ar-sparkline__threshold" x1="0" x2={width} y1={g0.thresholdY ?? 0} y2={g0.thresholdY ?? 0} />
       )}
       {g0 && (
-        <g clipPath={`url(#${clip})`}>
+        <g clipPath={`url(#${clip})`} mask={`url(#${fadeMask})`}>
           {fill && <path ref={areaRef} className="ar-sparkline__area" d={g0.area} fill={`url(#${gradient})`} />}
           {/* pathLength lets the line draw itself in on mount */}
           <path ref={lineRef} className="ar-sparkline__line" d={g0.line} pathLength={1} />
         </g>
       )}
       {/* the latest sample: a zero-length round-capped line stays a dot under any stretch */}
+      {g0 && <line ref={haloRef} className="ar-sparkline__halo" x1={width} y1={g0.headY} x2={width} y2={g0.headY} />}
       {g0 && <line ref={headRef} className="ar-sparkline__head" x1={width} y1={g0.headY} x2={width} y2={g0.headY} />}
     </svg>
   );
