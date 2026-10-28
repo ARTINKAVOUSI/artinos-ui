@@ -49,7 +49,7 @@
   box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
 }
 .ar-chip[data-on]:hover {
-  background: var(--ar-insert);
+  background: var(--ar-insert-sheen), var(--ar-insert);
 }
 .ar-chip:disabled {
   opacity: 0.4;

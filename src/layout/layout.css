@@ -15,6 +15,17 @@
   font-family: var(--ar-font-ui);
   text-shadow: var(--ar-panel-text-shadow);
 }
+/* the lit top edge: light catching the glass, brightest in the middle, gone at the corners */
+.ar-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ar-edge-light), transparent);
+  pointer-events: none;
+}
 .ar-panel__head {
   display: flex;
   align-items: flex-start;

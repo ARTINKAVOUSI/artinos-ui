@@ -47,6 +47,17 @@
   box-shadow: var(--ar-panel-shadow);
   text-shadow: var(--ar-panel-text-shadow);
 }
+/* the lit top edge: light catching the glass, brightest in the middle, gone at the corners */
+.ar-dock .mb-group:not([data-role='viewport'])::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ar-edge-light), transparent);
+  pointer-events: none;
+}
 .ar-dock .mb-group[data-focused='true']:not([data-role='viewport']),
 .ar-dock .mb-group:not([data-fullscreen-locked='true']):hover {
   box-shadow: var(--ar-panel-shadow);

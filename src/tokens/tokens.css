@@ -202,6 +202,16 @@
    wash out. ArtinosTheme scene="light" | "dark" (data-ar-scene) lays a wash of the theme's own
    app ground under every glass surface. Over a scene that already contrasts it barely shows; over
    a mismatched one it gives the ink back its ground. */
+/* ---------- finish shared by every theme ----------
+   --ar-insert-sheen: light on the polished part, laid over each theme's own --ar-insert — a soft
+   top light, a gentle shade below — so an insert reads as a machined, dimensional part.
+   --ar-edge-light: the lit top edge of panel glass, brightest in the middle. Set either to
+   'none' / transparent in a theme to switch it off. */
+:root {
+  --ar-insert-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 46%, rgba(0, 0, 0, 0) 54%, rgba(0, 0, 0, 0.07) 100%);
+  --ar-edge-light: color-mix(in srgb, var(--ar-text-hi) 34%, transparent);
+}
+
 :root {
   --ar-panel-floor: transparent;
   --ar-floor-amount: 72%; /* white ink stays near 4.5:1 over a light grey scene */

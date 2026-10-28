@@ -115,7 +115,7 @@
 .ar-insert {
   box-sizing: border-box;
   border-radius: var(--_ir);
-  background: var(--ar-insert);
+  background: var(--ar-insert-sheen), var(--ar-insert);
   mix-blend-mode: var(--ar-insert-blend);
   -webkit-backdrop-filter: var(--ar-insert-backdrop);
   backdrop-filter: var(--ar-insert-backdrop);
