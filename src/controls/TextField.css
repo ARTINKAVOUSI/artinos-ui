@@ -32,7 +32,8 @@
   stroke-width: 1.4;
   stroke-linecap: round;
 }
-.ar-textfield input {
+.ar-textfield input,
+.ar-textfield textarea {
   all: unset;
   flex: 1;
   min-width: 0;
@@ -44,11 +45,11 @@
   text-shadow: var(--ar-base-text-shadow);
   caret-color: var(--ar-signal);
 }
-.ar-textfield input::placeholder {
+.ar-textfield :is(input, textarea)::placeholder {
   color: var(--ar-dim-ink);
   opacity: 1;
 }
-.ar-textfield input::selection {
+.ar-textfield :is(input, textarea)::selection {
   background: var(--ar-signal-wash);
 }
 .ar-textfield__clear {
@@ -79,4 +80,35 @@
 }
 .ar-textfield:focus-within input::placeholder {
   opacity: 0.6;
+}
+
+/* invalid: the well keeps its shape and takes a fault ring; focus keeps the ring visible */
+.ar-textfield[data-invalid] {
+  box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-fault) 70%, transparent);
+}
+.ar-textfield[data-invalid]:focus-within {
+  box-shadow: var(--ar-well), 0 0 0 1px var(--ar-fault), 0 0 0 3px color-mix(in srgb, var(--ar-fault) 30%, transparent);
+}
+.ar-textfield[data-invalid] .ar-textfield__icon {
+  color: var(--ar-fault);
+}
+
+/* multiline: a textarea that starts at its rows and grows with its text where the browser can */
+.ar-textfield[data-multiline] {
+  height: auto;
+  align-items: flex-start;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.ar-textfield textarea {
+  display: block;
+  width: 100%;
+  min-height: calc(var(--ar-leading-text) * 1em * 2);
+  line-height: var(--ar-leading-text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  resize: none;
+  field-sizing: content;
+  max-height: 40vh;
+  overflow: auto;
 }

@@ -9,7 +9,7 @@ Everything is a named export of the kit's `index.ts`.
 This is the prop reference. For *which kind* to use — the six slider faces, the control shapes, the row states, and a lookup from parameter to control — read `catalogue.md` first.
 
 Contents:
-- Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
+- Controls: Slider · RangeSlider · NumberField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
 - Layout: Panel / Section / Field · Tabs · PropertyRow · ItemList / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
 - Display: RollingValue · RollingText · Stat · Meter · Progress · Sparkline
@@ -165,7 +165,7 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
   - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, shown by an LED before the title (lit when on; dark with a ghosted title when off). **One click** on the title row folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;
   - `collapsible`, `open` / `defaultOpen` (true) / `onOpenChange`: the title row and chevron open and close the group without switching it off. A switchable group is always foldable and always shows its chevron.
-- **Field** — a label + control row. Props: `label` (required), `labelWidth` (default 72px via `--ar-field-label-w`), `children`.
+- **Field** — a label and its control. Props: `label` (required), `layout` (`'inline'` default: the label in a column beside the control, for inspectors · `'stacked'`: the label above it, for forms), `labelWidth` (inline; default 72px via `--ar-field-label-w`), `hint` (a quiet line under the control), `error` (what is wrong, in words: replaces the hint in the fault colour and rings the control), `required` (marks the label), `children`. The Field hands its id, message and state to the control inside (`useField()`), so a TextField inside is labelled, described by the message and marked invalid without wiring; read `useField()` in your own controls to do the same.
 
 ```tsx
 <Panel title="Material" subtitle="Optical body" footer="Ready">
@@ -212,9 +212,18 @@ Props:
 <XYPad label="Pan / Tilt" value={pt} onChange={setPt} height={140} />
 ```
 
+## Checkbox
+
+A choice in a form or a list. Props: `label`, `description` (a quieter line under it), `checked` / `defaultChecked` / `onChange(boolean)`, `indeterminate` (some of a group: a dash), `disabled`, `aria-label` (when there is no label), `id`. Checked, the insert fills the box and the check draws itself in. For a setting that takes effect at once, use a `Switch`.
+
+```tsx
+<Checkbox label="All passes" checked={all} indeterminate={some && !all} onChange={setAll} />
+<Checkbox label="Include textures" description="Bakes 12 maps, about 48 MB" defaultChecked />
+```
+
 ## TextField · FileDrop
 
-- **TextField**: a single-line input cut into a well. Typed text uses the body font; the icon lights with the signal while the field has focus. Props: `value` / `onChange(string)` (both required), `label` (accessible name), `icon`, `clearable`, `size` (`'md' | 'sm'`), plus every `<input>` attribute. `type="search"` adds a magnifier and a clear button, and Escape clears the text. It forwards a ref to the `<input>`.
+- **TextField**: text cut into a well. Typed text uses the body font; the icon lights with the signal while the field has focus. Props: `value` / `onChange(string)` (both required), `label` (accessible name when no Field labels it), `icon`, `clearable`, `size` (`'md' | 'sm'`), `invalid` (the fault ring; set for you inside a Field with an `error`), `multiline` with `rows` (default 3: a textarea that starts at that height and grows with its text where the browser supports `field-sizing`), plus every `<input>` attribute. `type="search"` adds a magnifier and a clear button, and Escape clears the text. It forwards a ref to the `<input>`.
 - **FileDrop**: a wide well with an etched, dashed rim that lights with the signal while a file is held over it. Click it to browse. Props: `onFiles(files)` (required), `accept` (input syntax, e.g. `"image/*,.glb"`), `multiple` (default true), `title`, `hint` (written in mono caps), `disabled`.
 
 ```tsx

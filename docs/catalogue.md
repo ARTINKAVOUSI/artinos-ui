@@ -5,7 +5,7 @@ What every component can be. The API guide (`components.md`) lists props; this g
 Contents:
 - [Choosing by parameter](#choosing-by-parameter): the lookup table
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
-- [Controls](#controls): NumberField · TextField · Switch · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
+- [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge
 - [Display](#display): RollingValue · Stat · Meter · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
@@ -147,9 +147,17 @@ The same well, insert and LED seam in every shape a parameter takes.
 
 A recessed numeric cell that is also a scrubber: drag sideways to scrub (`pixelsPerStep`, default 4 px; Alt 0.1×, Shift 10×), click to type (Enter commits, Escape cancels, typing a digit starts fresh), arrows and wheel step while focused. `format`, `decimals`, `unit`, `formatter` as on the Slider; `align` `'center' | 'end'`; `disabled`. Use it where typing is as common as dragging, or in a `Field` beside a `Select` (`Width [268] [Fixed ˅]`).
 
+### Checkbox
+
+A choice in a form or a list: a small box in the well; checked, the insert fills it and the check draws itself in; `indeterminate` shows a dash for some-of-a-group. `label` in the sans, `description` a quieter line under it. Use a Switch for a setting that applies at once, a Checkbox for one you confirm.
+
+### Forms
+
+A form is Fields stacked: `<Field layout="stacked" label hint error required>` around each control. `hint` is a quiet line under the control; `error` replaces it with what is wrong, in words, in the fault colour, and rings the control. The Field labels and describes the control inside for you. Validate when the person leaves a field or submits, never while they type; end with one `primary` Button and a `ghost` Cancel.
+
 ### TextField
 
-A single line of text cut into the well. `value` / `onChange(string)` required. `type="search"` adds the magnifier, a clear button and Escape-to-clear; `icon` leads; `clearable` shows the clear button for any type; `size` `'md' | 'sm'`. Every `<input>` attribute passes through and the ref reaches the input.
+Text cut into the well: one line, or `multiline` (a textarea from `rows` that grows with its text). `value` / `onChange(string)` required. `invalid` rings it in the fault colour (inside a Field with an `error` it is set for you). `type="search"` adds the magnifier, a clear button and Escape-to-clear; `icon` leads; `clearable` shows the clear button for any type; `size` `'md' | 'sm'`. Every `<input>` attribute passes through and the ref reaches the input.
 
 ### Switch
 
@@ -200,7 +208,9 @@ A wide well with an etched, dashed rim. Hold a file over it and the rim breathes
 
 | choices | all visible? | control |
 |---|---|---|
-| on / off | yes | `Switch` |
+| on / off, takes effect at once | yes | `Switch` |
+| a choice you confirm with a button (export options, consent) | yes | `Checkbox` |
+| some of a list, with select-all | yes | `Checkbox` per item, one with `indeterminate` above them |
 | several flags, any number on | yes | `ToggleGroup` (up to ~5) or `ChipGroup` (more, or tags that wrap) |
 | one of 2–4 | yes | `Segmented` |
 | one of 2–4, or none | yes | `ToggleGroup multiple={false}` |

@@ -275,6 +275,34 @@ button.ar-section__trigger:focus-visible {
   flex: none;
   margin-left: auto;
 }
+/* stacked: the label above the control, the message under it — a form */
+.ar-field[data-layout='stacked'] {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 6px;
+}
+.ar-field__required {
+  margin-left: 3px;
+  color: var(--ar-text-faint);
+}
+.ar-field__message {
+  grid-column: 2;
+  margin-top: -4px;
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.ar-field[data-layout='stacked'] .ar-field__message {
+  grid-column: 1;
+  margin-top: -2px;
+}
+.ar-field[data-invalid] .ar-field__message {
+  /* the fault colour lifted toward the theme's bright ink, so small text stays readable on glass */
+  color: color-mix(in srgb, var(--ar-fault) 72%, var(--ar-text-hi));
+  animation: ar-fade-in var(--ar-dur-state) var(--ar-ease);
+}
+.ar-field[data-invalid] .ar-field__label {
+  color: var(--ar-text-hi);
+}
 
 /* ---------- Tabs ---------- */
 .ar-tabs {

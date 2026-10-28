@@ -24,8 +24,12 @@ export interface Option<V extends string = string> {
   disabled?: boolean;
 }
 
+/** A label made from an id reads in sentence case: "fixed" → "Fixed". Anything with a capital
+ *  already ("glTF", "sRGB", "ACES") is a name and is left as written. */
+const asLabel = (v: string) => (/^[a-z]/.test(v) && v === v.toLowerCase() ? v[0].toUpperCase() + v.slice(1) : v);
+
 export const normalizeOptions = <V extends string>(opts: readonly OptionInput<V>[]): Option<V>[] =>
-  opts.map((o) => (typeof o === 'string' ? { value: o, label: o } : { ...o, label: o.label ?? (o.icon ? null : o.value) }));
+  opts.map((o) => (typeof o === 'string' ? { value: o, label: asLabel(o) } : { ...o, label: o.label ?? (o.icon ? null : asLabel(o.value)) }));
 
 /* ---------- mapping: the semantic value stays exact, only geometry changes ---------- */
 

@@ -1,6 +1,6 @@
 /* 03 · Controls — every other shape a parameter takes, on the same well and insert. */
 import { useState } from 'react';
-import { ChipGroup, ColorField, FileDrop, NumberField, Segmented, Select, Switch, TextField, ToggleGroup } from '../../../src';
+import { Button, Checkbox, ChipGroup, ColorField, Field, FileDrop, NumberField, Panel, Segmented, Select, Switch, TextField, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 
 function TextFields() {
@@ -19,6 +19,66 @@ function TextFields() {
 function Drop() {
   const [files, setFiles] = useState<string[]>([]);
   return <FileDrop accept="image/*,.glb" multiple onFiles={(f) => setFiles(f.map((x) => x.name))} title="Drop a model or image" hint={files.length ? files.join(' · ') : 'GLB · PNG · JPG'} />;
+}
+
+const PASSES = ['Beauty', 'Depth', 'Normals'] as const;
+
+function Checkboxes() {
+  const [on, setOn] = useState<string[]>(['Beauty']);
+  const all = on.length === PASSES.length;
+  return (
+    <div className="sc-grid">
+      <div className="sc-stack" style={{ gap: 10 }}>
+        <Checkbox label="All passes" checked={all} indeterminate={on.length > 0 && !all} onChange={(v) => setOn(v ? [...PASSES] : [])} />
+        <div className="sc-stack" style={{ gap: 8, paddingLeft: 25 }}>
+          {PASSES.map((p) => (
+            <Checkbox key={p} label={p} checked={on.includes(p)} onChange={(v) => setOn(v ? [...on, p] : on.filter((x) => x !== p))} />
+          ))}
+        </div>
+      </div>
+      <div className="sc-stack" style={{ gap: 12 }}>
+        <Checkbox label="Include textures" description="Bakes 12 maps, about 48 MB" defaultChecked />
+        <Checkbox label="Embed fonts" description="Not available for this format" disabled />
+      </div>
+    </div>
+  );
+}
+
+function ExportForm() {
+  const [name, setName] = useState('');
+  const [notes, setNotes] = useState('');
+  const [format, setFormat] = useState('glTF');
+  const [touched, setTouched] = useState(false);
+  const error = !touched ? undefined : !name.trim() ? "Give the export a name." : /[\\/:*?"<>|]/.test(name) ? "A name cannot contain / \\ : * ? \" < > |" : undefined;
+  return (
+    <Panel
+      title="Export scene"
+      subtitle="Orb · 4 layers"
+      footer={
+        <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
+          <Button variant="ghost" onClick={() => (setName(''), setNotes(''), setTouched(false))}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={() => setTouched(true)}>
+            Export
+          </Button>
+        </div>
+      }
+    >
+      <div className="sc-stack" style={{ gap: 14 }}>
+        <Field layout="stacked" label="Name" required error={error} hint="Used for the file and the kit's README">
+          <TextField value={name} onChange={setName} placeholder="orb-studio" onBlur={() => setTouched(true)} />
+        </Field>
+        <Field layout="stacked" label="Notes" hint="Optional · shown to whoever opens it">
+          <TextField multiline rows={2} value={notes} onChange={setNotes} placeholder="What changed in this version…" />
+        </Field>
+        <Field layout="stacked" label="Format">
+          <Segmented options={['glTF', 'USDZ', 'OBJ']} value={format} onChange={setFormat} />
+        </Field>
+        <Checkbox label="Include textures" description="Bakes 12 maps, about 48 MB" defaultChecked />
+      </div>
+    </Panel>
+  );
 }
 
 export function ControlsChapter() {
@@ -69,6 +129,15 @@ export function ControlsChapter() {
           <Switch variant="compact" label="Snap" />
           <Switch variant="compact" density="comfort" label="Grid" defaultValue />
         </div>
+      </Spec>
+
+      <Spec
+        id="checkbox"
+        text="A choice in a form or a list. A small box cut into the well; checked, the insert fills it and the check draws itself in; mixed (some of a group) shows a dash. The label is the sans, with an optional quieter line under it. For a setting that applies at once, use a Switch; for a choice you confirm with a button, a Checkbox."
+        code={`<Checkbox label="All passes" checked={all} indeterminate={some && !all} onChange={setAll} />
+<Checkbox label="Include textures" description="Bakes 12 maps, about 48 MB" defaultChecked />`}
+      >
+        <Checkboxes />
       </Spec>
 
       <Spec
@@ -194,6 +263,21 @@ export function ControlsChapter() {
         code={`<FileDrop accept="image/*,.glb" multiple onFiles={(files) => load(files)} title="Drop a model or image" hint="GLB · PNG · JPG" />`}
       >
         <Drop />
+      </Spec>
+
+      <Spec
+        id="forms"
+        text="A form is Fields stacked: layout='stacked' puts the label above the control, hint a quiet line under it, and error replaces the hint with what is wrong, in the fault colour, and rings the control. The Field hands its id, message and state to the control inside, so the label is associated and the message is read out. TextField multiline is a textarea that grows with its text. One primary action at the end; validate when the person leaves the field or submits, not while they type."
+        code={`<Field layout="stacked" label="Name" required error={error} hint="Used for the file name">
+  <TextField value={name} onChange={setName} onBlur={() => setTouched(true)} />
+</Field>
+<Field layout="stacked" label="Notes" hint="Optional">
+  <TextField multiline rows={2} value={notes} onChange={setNotes} />
+</Field>`}
+      >
+        <div style={{ maxWidth: 420 }}>
+          <ExportForm />
+        </div>
       </Spec>
     </Chapter>
   );

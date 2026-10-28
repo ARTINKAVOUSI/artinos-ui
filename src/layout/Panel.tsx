@@ -3,6 +3,7 @@ import { useEffect, useId, useRef } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
 import { RollingText } from '../core/RollingValue';
+import { FieldContext } from '../core/field';
 import { cx, revealClipped } from '../core/utils';
 
 /* ARTINOS layout — the frames controls live in.
@@ -189,18 +190,48 @@ export function Section({
 export interface FieldProps {
   label: ReactNode;
   children?: ReactNode;
-  /** Label column width. Default 72px (token --ar-field-label-w). */
+  /** Label column width (inline layout). Default 72px (token --ar-field-label-w). */
   labelWidth?: number | string;
+  /** inline: the label in a column beside the control (inspectors) · stacked: the label above it (forms). */
+  layout?: 'inline' | 'stacked';
+  /** A quiet line under the control: what to enter, a limit, a default. */
+  hint?: ReactNode;
+  /** What is wrong, in words. Replaces the hint, turns the line and the control's ring the fault colour. */
+  error?: ReactNode;
+  /** Marks the label and tells the control. */
+  required?: boolean;
   className?: string;
   style?: CSSProperties;
 }
 
-export function Field({ label, children, labelWidth, className, style }: FieldProps) {
+export function Field({ label, children, labelWidth, layout = 'inline', hint, error, required, className, style }: FieldProps) {
   const lw = labelWidth === undefined ? undefined : typeof labelWidth === 'number' ? labelWidth + 'px' : labelWidth;
+  const id = useId().replace(/:/g, '');
+  const message = error ?? hint;
+  const invalid = error != null && error !== false;
   return (
-    <div className={cx('ar-field', className)} style={{ ...(lw ? ({ '--ar-field-label-w': lw } as CSSProperties) : null), ...style }}>
-      <span className="ar-field__label">{label}</span>
-      <div className="ar-field__control">{children}</div>
+    <div
+      className={cx('ar-field', className)}
+      data-layout={layout === 'stacked' ? 'stacked' : undefined}
+      data-invalid={invalid ? '' : undefined}
+      style={{ ...(lw ? ({ '--ar-field-label-w': lw } as CSSProperties) : null), ...style }}
+    >
+      <label className="ar-field__label" htmlFor={id + '-control'}>
+        {label}
+        {required ? (
+          <span className="ar-field__required" aria-hidden="true">
+            *
+          </span>
+        ) : null}
+      </label>
+      <div className="ar-field__control">
+        <FieldContext.Provider value={{ controlId: id + '-control', describedBy: message != null ? id + '-message' : undefined, invalid, required }}>{children}</FieldContext.Provider>
+      </div>
+      {message != null ? (
+        <span id={id + '-message'} className="ar-field__message" role={invalid ? 'alert' : undefined}>
+          {message}
+        </span>
+      ) : null}
     </div>
   );
 }

@@ -15,6 +15,7 @@ export const COMPONENTS = [
   { group: 'Controls', id: 'NumberField', label: 'NumberField', file: 'controls/NumberField.tsx', note: 'scrub or type a number' },
   { group: 'Controls', id: 'TextField', label: 'TextField', file: 'controls/TextField.tsx', note: 'text input' },
   { group: 'Controls', id: 'Switch', label: 'Switch', file: 'controls/Switch.tsx', note: 'shutter or compact' },
+  { group: 'Controls', id: 'Checkbox', label: 'Checkbox', file: 'controls/Checkbox.tsx', note: 'a choice in a form or list' },
   { group: 'Controls', id: 'ToggleGroup', label: 'ToggleGroup', file: 'controls/ToggleGroup.tsx', note: 'independent flags' },
   { group: 'Controls', id: 'ChipGroup', label: 'ChipGroup', file: 'controls/ChipGroup.tsx', note: 'wrapping chips: tags, moods, filters' },
   { group: 'Controls', id: 'Segmented', label: 'Segmented', file: 'controls/Segmented.tsx', note: 'one of a few' },

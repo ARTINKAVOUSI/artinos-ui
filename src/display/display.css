@@ -288,7 +288,7 @@
   color: var(--ar-text-faint);
 }
 .ar-progress[data-status='error'] .ar-progress__caption {
-  color: var(--ar-fault);
+  color: color-mix(in srgb, var(--ar-fault) 72%, var(--ar-text-hi));
 }
 @media (prefers-reduced-motion: reduce) {
   .ar-progress[data-indeterminate] .ar-progress__fill {

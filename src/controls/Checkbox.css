@@ -1,0 +1,97 @@
+/* ARTINOS Checkbox — a small box cut into the well; checked, the insert fills it and the check
+   draws itself in. The real input stays in place, invisible, for keyboard and forms. */
+
+.ar-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-width: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ar-checkbox[data-disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ar-checkbox__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.ar-checkbox__box {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border-radius: 4px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  color: var(--ar-insert-ink);
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    transform var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-checkbox__box.ar-insert {
+  border-radius: 4px;
+}
+.ar-checkbox:hover .ar-checkbox__box:not(.ar-insert) {
+  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-line-strong);
+}
+.ar-checkbox:active .ar-checkbox__box {
+  transform: scale(0.9);
+  transition-duration: 60ms;
+}
+.ar-checkbox__input:focus-visible + .ar-checkbox__box {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+.ar-checkbox__input:focus-visible + .ar-checkbox__box.ar-insert {
+  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+}
+.ar-checkbox__box svg {
+  width: 11px;
+  height: 11px;
+  overflow: visible;
+}
+.ar-checkbox__mark {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--ar-dur-surface) var(--ar-ease) 40ms;
+}
+.ar-checkbox__box:not([data-state='off']) .ar-checkbox__mark {
+  stroke-dashoffset: 0;
+}
+
+.ar-checkbox__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ar-checkbox__label {
+  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
+  color: var(--ar-text-mid);
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-checkbox:hover .ar-checkbox__label {
+  color: var(--ar-text-hi);
+}
+.ar-checkbox__description {
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-low);
+}

@@ -11,6 +11,7 @@
 @import './slider/slider.css';
 @import './controls/controls.css';
 @import './controls/TextField.css';
+@import './controls/Checkbox.css';
 @import './controls/FileDrop.css';
 @import './controls/Knob.css';
 @import './controls/XYPad.css';

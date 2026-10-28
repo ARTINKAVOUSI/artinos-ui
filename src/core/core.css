@@ -172,10 +172,6 @@
   text-shadow: var(--ar-base-text-shadow);
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
-/* sentence case from any data: an id such as "fixed" or "exposure" still reads as a label */
-.ar-text::first-letter {
-  text-transform: var(--ar-voice-first, uppercase);
-}
 .ar-text--over {
   color: var(--ar-insert-ink);
   text-shadow: var(--ar-insert-text-shadow);
