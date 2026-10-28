@@ -35,6 +35,8 @@ export interface PanelProps {
   onOpenChange?: (open: boolean) => void;
   /** The body scrolls past this height, its edges fading so the cut reads as deliberate. */
   maxHeight?: number | string;
+  /** One label column for every Field inside, so their labels line up (e.g. 96). */
+  labelWidth?: number | string;
   children?: ReactNode;
   as?: ElementType;
   className?: string;
@@ -42,13 +44,17 @@ export interface PanelProps {
   id?: string;
 }
 
+/** The shared Field label column a Panel or Section hands down. */
+const labelColumn = (w: number | string | undefined): CSSProperties | undefined =>
+  w === undefined ? undefined : ({ '--ar-field-label-w': typeof w === 'number' ? w + 'px' : w } as CSSProperties);
+
 const Chevron = ({ up }: { up: boolean }) => (
   <svg className="ar-chevron" data-up={up ? '' : undefined} viewBox="0 0 10 6" aria-hidden="true">
     <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, children, as = 'section', className, style, id }: PanelProps) {
+export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, labelWidth, children, as = 'section', className, style, id }: PanelProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'section';
@@ -62,7 +68,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 
     </div>
   );
   return (
-    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} style={style}>
+    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} style={{ ...labelColumn(labelWidth), ...style }}>
       {title || subtitle || actions || icon ? (
         <header className="ar-panel__head">
           {icon ? <span className="ar-panel__icon">{icon}</span> : null}
@@ -186,6 +192,8 @@ export interface SectionProps {
   variant?: 'plain' | 'card';
   /** Lay the rows out in 2 or 3 columns (each child is a cell). */
   columns?: 1 | 2 | 3;
+  /** One label column for every Field inside, so their labels line up (e.g. 96). */
+  labelWidth?: number | string;
   /** Needed inside an accordion SectionGroup. */
   id?: string;
   children?: ReactNode;
@@ -212,6 +220,7 @@ export function Section({
   heading = 'caps',
   variant = 'plain',
   columns = 1,
+  labelWidth,
   id,
   children,
   className,
@@ -311,7 +320,7 @@ export function Section({
       data-open={shown ? '' : undefined}
       data-off={off ? '' : undefined}
       data-switchable={toggleable ? '' : undefined}
-      style={style}
+      style={{ ...labelColumn(labelWidth), ...style }}
     >
       <div className="ar-section__head" onPointerEnter={(e) => revealClipped(e.currentTarget, e.currentTarget.querySelector<HTMLElement>('.ar-section__title'))}>
         {foldable ? (

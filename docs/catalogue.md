@@ -12,6 +12,7 @@ Contents:
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
 - [Scopes](#scopes): theme · density · material
+- [Layout and text](#layout-and-text): spacing · type roles · alignment · grouping
 - [Checklist](#checklist-for-a-finished-panel)
 
 ## Choosing by parameter
@@ -424,6 +425,64 @@ Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
+## Layout and text
+
+A panel looks designed when every gap comes from one scale, every piece of text plays one role, and things that belong together line up. These are the rules the family is built on; follow them in your own composition too.
+
+### Spacing: one scale, three roles
+
+Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space-9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px). The components use three roles, which density tunes together:
+
+| role | token | standard · dense · comfort | between |
+|---|---|---|---|
+| row | `--ar-row-gap` | 6 · 4 · 8 px | rows inside a group |
+| group | `--ar-group-gap` | 16 · 12 · 20 px | groups inside a panel |
+| panel | `--ar-panel-pad-x` / `-y` | 20/16 · 12/12 · 24/20 px | the panel's edge and its content |
+
+- Compose with `Stack` (a column) and `Inline` (a row): `gap="row"`, `gap="group"` or a step `gap={4}`. Never hand-set margins or pixel gaps.
+- Sections placed one after another in a Panel are already a group gap apart; rows inside them a row gap. Don't add spacers.
+- Set density once, on the theme scope or the panel (`density="dense"`), never per control.
+
+### Text: one role per kind of text
+
+Use `Text` with a `variant`; never set a font size, weight or colour by hand.
+
+| variant | for | looks |
+|---|---|---|
+| `display` | one hero figure or headline per page | 34 px thin, the display face |
+| `title` | a panel or page title (a Panel's `title` already is one) | 17 px light, bright |
+| `heading` | a group's name inside prose | 14 px regular, bright |
+| `body` | a paragraph | 13 px, 1.5 leading, at most `--ar-measure` (62ch) wide |
+| `caption` | a note under the thing it describes | 11 px, low ink |
+| `kicker` | a small label above a title | small capitals |
+| `value` | a figure | the mono, tabular |
+
+- At most three sizes in one panel: its title, its labels and rows, its captions. Figures are the mono at the control size.
+- `tone` changes ink only for meaning: `low` / `faint` for quieter, `signal` / `warn` / `fault` for state. Never colour text for decoration.
+- Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.
+- A caption goes under what it describes, never above. A kicker goes above a title, never alone.
+- Long text is cut by the kit, never by hand: `truncate` for one line, `lines={2}` to clamp, and controls show the full text as a tooltip when cut. Give full names.
+- Sentence case everywhere ("Env intensity", "Export kit"); capitals only for small headings (section headings, kickers). No full stop after a label or a button.
+- Numbers carry their unit through `format` / `unit`, never typed into the label ("Gain −4.5 dB", not "Gain (dB)").
+
+### Alignment
+
+- One label column per group: put `labelWidth` on the Panel or Section (e.g. `labelWidth={96}`), not on each Field, so every label starts and every control starts on the same line.
+- A Field's label sits level with its control's first line, even beside a multiline field or a pad.
+- Figures are right-aligned and tabular, so digits line up down a column; readouts already are.
+- In a row, the name leads and the tools trail: title · details · then badge, switch, menu at the end (`ItemRow`, `Section actions`).
+- In a form or dialog, actions sit at the end of the last line: `ghost` Cancel, then the one `primary`.
+- Use `Inline align="baseline"` when text of different sizes shares a row, so the letters stand on one line.
+
+### Grouping
+
+- A Section holds one idea and about seven rows at most; split a longer one.
+- Related numbers sit side by side: `Section columns={3}` for X · Y · Z, a `RangeSlider` for an interval, an `XYPad` for a pair.
+- Set groups apart with `variant="card"` when a panel has several that stand alone; keep plain sections when they flow as one list.
+- Alternatives the user visits one at a time go in a `SectionGroup accordion`; a long panel of groups gets `SectionGroup toolbar`.
+- A list of things is an `ItemList` of `ItemRow`s, never a column of full-width buttons.
+- One `primary` action per view.
+
 ## Checklist for a finished panel
 
 - Every number has a `format` or a `unit`; nothing is formatted by hand.
@@ -439,3 +498,8 @@ Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - Groups that can be switched off are a `Section` with `enabled`; parameters that can be switched off alone keep `toggleable`.
 - Rows that can change show `modified` + `onReset`; driven values show `binding` / `status`.
 - The panel is a `Panel` (or a Dock panel) so the gutter marks and the glass are there.
+- Every gap comes from the space scale (`Stack` / `Inline`, the roles); no hand-set margins.
+- Every piece of text is a `Text` role or a component's own; at most three sizes in the panel.
+- Labels in a group share one column (`labelWidth` on the Panel or Section).
+- Sentence case; capitals only for small headings; no full stops on labels.
+- Look at it: take a screenshot and check the rules above before calling it done.

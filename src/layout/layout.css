@@ -29,8 +29,8 @@
 .ar-panel__head {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 18px 20px 12px;
+  gap: var(--ar-space-5);
+  padding: calc(var(--ar-panel-pad-y) + 2px) var(--ar-panel-pad-x) var(--ar-space-5);
 }
 .ar-panel__titles {
   display: flex;
@@ -57,21 +57,26 @@
   color: var(--ar-text-low);
 }
 .ar-panel__tabs {
-  padding: 0 20px;
+  padding: 0 var(--ar-panel-pad-x);
   border-bottom: 1px solid var(--ar-line-subtle);
 }
 .ar-panel__body {
   display: flex;
   flex-direction: column;
-  gap: var(--ar-row-gap, 6px);
-  padding: 14px 20px 16px;
+  gap: var(--ar-row-gap);
+  padding: calc(var(--ar-space-5) + 2px) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
   min-height: 0;
+}
+/* rows keep the row gap; a group that follows another stands a group gap away */
+.ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel),
+.ar-section__body > .ar-section + .ar-section {
+  margin-top: calc(var(--ar-group-gap) - var(--ar-row-gap));
 }
 .ar-panel__foot {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 20px 11px;
+  gap: var(--ar-space-4);
+  padding: 9px var(--ar-panel-pad-x) 11px;
   border-top: 1px solid var(--ar-line-subtle);
   font-family: var(--ar-voice-font);
   font-size: calc(var(--ar-voice-size) - 1px);
@@ -235,7 +240,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body {
   display: flex;
   flex-direction: column;
-  gap: var(--ar-row-gap, 6px);
+  gap: var(--ar-row-gap);
   min-height: 0;
   /* clipped top and bottom while it folds (a few px of margin keep focus rings whole);
      open sideways, so marks in the gutter, like a PropertyRow's, are never cut */
@@ -259,11 +264,16 @@ button.ar-section__trigger:focus-visible {
 .ar-field {
   display: grid;
   grid-template-columns: var(--ar-field-label-w, 72px) minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
+  /* top-aligned, with the label as tall as one control row: it sits level with the control's
+     first line, even beside a multiline field or a tall pad */
+  align-items: start;
+  column-gap: var(--ar-space-4);
+  row-gap: var(--ar-space-2);
   min-width: 0;
 }
 .ar-field__label {
+  /* one control row tall, so the text sits level with the control's first line; still truncates */
+  line-height: var(--ar-h);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -290,7 +300,10 @@ button.ar-section__trigger:focus-visible {
 .ar-field[data-layout='stacked'] {
   grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
-  gap: 6px;
+  gap: var(--ar-space-3);
+}
+.ar-field[data-layout='stacked'] .ar-field__label {
+  line-height: var(--ar-leading-snug);
 }
 .ar-field__required {
   margin-left: 3px;
@@ -489,8 +502,8 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body[data-columns] {
   display: grid;
   grid-template-columns: repeat(var(--_cols, 2), minmax(0, 1fr));
-  column-gap: 10px;
-  row-gap: var(--ar-row-gap, 6px);
+  column-gap: var(--ar-space-4);
+  row-gap: var(--ar-row-gap);
 }
 .ar-section__body[data-columns='3'] {
   --_cols: 3;
@@ -516,8 +529,12 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--ar-group-gap);
   min-width: 0;
+}
+/* cards carry their own edges, so they sit closer */
+.ar-section-group:has(> .ar-section[data-variant='card']) {
+  gap: var(--ar-space-4);
 }
 .ar-section-group__bar {
   display: flex;

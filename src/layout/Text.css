@@ -1,0 +1,169 @@
+/* ARTINOS Text · Stack · Inline — the type roles and the spacing primitives. One role per
+   kind of text, one scale for every gap: a panel composed from these needs no hand-set size,
+   margin or gap. */
+
+/* ---------- Text ---------- */
+.ar-type {
+  --_ink: var(--ar-text-mid);
+  margin: 0;
+  min-width: 0;
+  color: var(--_ink);
+  font-family: var(--ar-font-ui);
+  font-weight: var(--ar-weight-text);
+  font-size: var(--ar-text-md);
+  line-height: var(--ar-leading-text);
+  letter-spacing: var(--ar-track-text);
+  overflow-wrap: break-word;
+}
+.ar-type[data-variant='display'] {
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-display);
+  font-size: var(--ar-text-3xl);
+  font-weight: var(--ar-weight-thin);
+  line-height: 1.08;
+  letter-spacing: var(--ar-track-display);
+  text-wrap: balance;
+}
+.ar-type[data-variant='title'] {
+  --_ink: var(--ar-text-hi);
+  font-size: var(--ar-text-xl);
+  font-weight: var(--ar-weight-light);
+  line-height: var(--ar-leading-snug);
+  letter-spacing: var(--ar-track-title);
+  text-wrap: balance;
+}
+.ar-type[data-variant='heading'] {
+  --_ink: var(--ar-text-hi);
+  font-size: var(--ar-text-lg);
+  font-weight: var(--ar-weight-regular);
+  line-height: var(--ar-leading-snug);
+  text-wrap: balance;
+}
+.ar-type[data-variant='body'] {
+  text-wrap: pretty;
+}
+.ar-type[data-variant='caption'] {
+  --_ink: var(--ar-text-low);
+  font-size: var(--ar-text-xs);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+/* the one place prose keeps capitals: a small label above a title */
+.ar-type[data-variant='kicker'] {
+  --_ink: var(--ar-text-low);
+  font-family: var(--ar-voice-font);
+  font-size: calc(var(--ar-voice-size) - 1.5px);
+  font-weight: var(--ar-weight-medium);
+  line-height: var(--ar-leading-snug);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ar-type[data-variant='value'] {
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-control-font);
+  font-size: calc(var(--ar-value-size) + 1px);
+  font-weight: var(--ar-value-weight);
+  line-height: var(--ar-leading-snug);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  /* a figure and its unit never break apart */
+  white-space: nowrap;
+}
+.ar-type[data-tone='hi'] {
+  --_ink: var(--ar-text-hi);
+}
+.ar-type[data-tone='mid'] {
+  --_ink: var(--ar-text-mid);
+}
+.ar-type[data-tone='low'] {
+  --_ink: var(--ar-text-low);
+}
+.ar-type[data-tone='faint'] {
+  --_ink: var(--ar-text-faint);
+}
+.ar-type[data-tone='signal'] {
+  --_ink: var(--ar-signal);
+}
+.ar-type[data-tone='warn'] {
+  --_ink: var(--ar-warn);
+}
+.ar-type[data-tone='fault'] {
+  --_ink: color-mix(in srgb, var(--ar-fault) 80%, var(--ar-text-hi));
+}
+.ar-type[data-align='center'] {
+  text-align: center;
+  margin-inline: auto;
+}
+.ar-type[data-align='end'] {
+  text-align: end;
+  margin-inline-start: auto;
+}
+.ar-type[data-measure] {
+  max-width: var(--ar-measure);
+}
+.ar-type[data-truncate] {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ar-type[data-lines] {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--_lines);
+  line-clamp: var(--_lines);
+  overflow: hidden;
+}
+/* a kicker or caption hugs the title it belongs to */
+.ar-type[data-variant='kicker'] + .ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) {
+  margin-top: var(--ar-space-1);
+}
+.ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) + .ar-type[data-variant='caption'] {
+  margin-top: calc(var(--ar-space-1) * -1);
+}
+
+/* ---------- Stack · Inline ---------- */
+.ar-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  min-width: 0;
+}
+.ar-stack[data-align='start'] {
+  align-items: flex-start;
+}
+.ar-stack[data-align='center'] {
+  align-items: center;
+}
+.ar-stack[data-align='end'] {
+  align-items: flex-end;
+}
+.ar-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--_gap);
+  min-width: 0;
+}
+.ar-inline[data-align='baseline'] {
+  align-items: baseline;
+}
+.ar-inline[data-align='start'] {
+  align-items: flex-start;
+}
+.ar-inline[data-align='end'] {
+  align-items: flex-end;
+}
+.ar-inline[data-align='stretch'] {
+  align-items: stretch;
+}
+.ar-inline[data-justify='center'] {
+  justify-content: center;
+}
+.ar-inline[data-justify='end'] {
+  justify-content: flex-end;
+}
+.ar-inline[data-justify='between'] {
+  justify-content: space-between;
+}
+.ar-inline[data-wrap] {
+  flex-wrap: wrap;
+}

@@ -81,6 +81,8 @@ export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
 export { ItemList, ItemRow } from './layout/ItemRow';
+export { Inline, Stack, Text } from './layout/Text';
+export type { InlineProps, Space, StackProps, TextProps, TextTone, TextVariant } from './layout/Text';
 export type { ItemListProps, ItemRowProps } from './layout/ItemRow';
 
 // overlays

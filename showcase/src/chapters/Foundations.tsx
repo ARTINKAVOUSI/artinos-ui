@@ -1,9 +1,81 @@
 /* 01 · Foundations — the themes, the five materials every part is made of, the tokens and the
    two voices of text, density, and the motion tokens. */
 import { useEffect, useRef, useState } from 'react';
-import { Badge, Button, DENSITIES, NumberField, Segmented, Slider, Switch, TextField, THEME_META, THEMES, TYPE_COLLECTIONS } from '../../../src';
+import { Badge, Button, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEME_META, THEMES, TYPE_COLLECTIONS } from '../../../src';
 import { FAMILIES, ThemeCard, TokenTable, TypeCard } from '../app/foundations';
 import { Chapter, Spec } from '../shared';
+
+/* ---------- layout & text ---------- */
+
+const STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
+
+function LayoutAndText() {
+  const [format, setFormat] = useState('glTF');
+  return (
+    <div className="sc-grid" style={{ alignItems: 'start' }}>
+      <Stack gap="group">
+        <Stack gap={2}>
+          <Text variant="kicker">Type roles</Text>
+          <Text variant="title">One role per kind of text</Text>
+          <Text variant="caption">Seven roles, three sizes in any one panel.</Text>
+        </Stack>
+        <Stack gap={3}>
+          <Text variant="display">60.0</Text>
+          <Text variant="heading">Heading inside prose</Text>
+          <Text>
+            Body text is the sans at 13 px with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
+          </Text>
+          <Inline align="baseline" gap={3}>
+            <Text variant="value">16.4 ms</Text>
+            <Text variant="caption">frame time, a caption under or beside the figure it explains</Text>
+          </Inline>
+          <Inline gap={3} wrap>
+            <Text variant="caption" tone="signal">signal</Text>
+            <Text variant="caption" tone="warn">warn</Text>
+            <Text variant="caption" tone="fault">fault</Text>
+            <Text variant="caption" tone="faint">faint</Text>
+          </Inline>
+        </Stack>
+        <Stack gap={3}>
+          <Text variant="kicker">Space scale</Text>
+          <Inline align="end" gap={3}>
+            {STEPS.map((n) => (
+              <Stack key={n} gap={2} align="center">
+                <span className="sc-space" style={{ width: `var(--ar-space-${n})`, height: `var(--ar-space-${n})` }} />
+                <Text variant="caption" tone="faint">
+                  {n}
+                </Text>
+              </Stack>
+            ))}
+          </Inline>
+        </Stack>
+      </Stack>
+
+      <Panel title="Export" subtitle="Built from the primitives only" labelWidth={84}>
+        <Text>Every gap here comes from the scale and every label shares one column, so the panel lines up without a single hand-set margin.</Text>
+        <Section title="Output" count={3}>
+          <Field label="Name">
+            <TextField value="orb-studio" onChange={() => {}} />
+          </Field>
+          <Field label="Format">
+            <Segmented options={['glTF', 'USDZ', 'OBJ']} value={format} onChange={setFormat} />
+          </Field>
+          <Field label="Scale">
+            <NumberField defaultValue={1} decimals={2} unit="×" aria-label="Scale" />
+          </Field>
+        </Section>
+        <Section title="Size" count={2} columns={2}>
+          <NumberField label="W" defaultValue={2048} decimals={0} unit="px" />
+          <NumberField label="H" defaultValue={1365} decimals={0} unit="px" />
+        </Section>
+        <Inline justify="end" gap={3} style={{ marginTop: 'var(--ar-space-4)' }}>
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="primary">Export</Button>
+        </Inline>
+      </Panel>
+    </div>
+  );
+}
 
 /* ---------- materials ---------- */
 
@@ -288,6 +360,28 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
             <Segmented key={d} density={d} options={['Low', 'Med', 'High']} defaultValue="MED" label={d} />
           ))}
         </div>
+      </Spec>
+
+      <Spec
+        id="layout"
+        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one of seven roles, at most three sizes in a panel, paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The catalogue's Layout and text chapter has every rule."
+        code={`<Panel title="Export" labelWidth={84}>
+  <Text>Every gap comes from the scale…</Text>
+  <Section title="Output">
+    <Field label="Name"><TextField … /></Field>
+    <Field label="Format"><Segmented … /></Field>
+  </Section>
+  <Section title="Size" columns={2}> <NumberField label="W" … /> <NumberField label="H" … /> </Section>
+  <Inline justify="end" gap={3}> <Button variant="ghost">Cancel</Button> <Button variant="primary">Export</Button> </Inline>
+</Panel>
+
+<Stack gap={2}>
+  <Text variant="kicker">Type roles</Text>
+  <Text variant="title">One role per kind of text</Text>
+  <Text variant="caption">Seven roles, three sizes in any one panel.</Text>
+</Stack>`}
+      >
+        <LayoutAndText />
       </Spec>
 
       <Spec

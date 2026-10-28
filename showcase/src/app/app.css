@@ -1217,3 +1217,12 @@ html::-webkit-scrollbar-thumb:hover {
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 10px;
 }
+
+.sc-space {
+  display: block;
+  min-width: 2px;
+  min-height: 2px;
+  border-radius: 2px;
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+}

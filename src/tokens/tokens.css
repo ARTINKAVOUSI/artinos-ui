@@ -172,6 +172,23 @@
   --ar-leading-code: 1.65; /* code and long-form reading */
 }
 
+/* ---------- space: one scale; every gap and padding in the family comes from it ----------
+   Raw steps for your own layouts (Stack, Inline, gap={4}), and named roles the components use:
+   rows inside a group · groups inside a panel · the panel's own padding · a paragraph's width. */
+:root {
+  --ar-space-1: 2px;
+  --ar-space-2: 4px;
+  --ar-space-3: 6px;
+  --ar-space-4: 8px;
+  --ar-space-5: 12px;
+  --ar-space-6: 16px;
+  --ar-space-7: 20px;
+  --ar-space-8: 24px;
+  --ar-space-9: 32px;
+  /* the longest comfortable line for a paragraph */
+  --ar-measure: 62ch;
+}
+
 /* ---------- density ---------- */
 :root,
 [data-ar-density='standard'] {
@@ -180,6 +197,10 @@
   --ar-value-size: 12px;
   --ar-pad-x: 9px;
   --ar-gap: 7px;
+  --ar-row-gap: var(--ar-space-3);
+  --ar-group-gap: var(--ar-space-6);
+  --ar-panel-pad-x: var(--ar-space-7);
+  --ar-panel-pad-y: var(--ar-space-6);
 }
 [data-ar-density='dense'] {
   --ar-h: 24px;
@@ -187,6 +208,10 @@
   --ar-value-size: 11.5px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
+  --ar-row-gap: var(--ar-space-2);
+  --ar-group-gap: var(--ar-space-5);
+  --ar-panel-pad-x: var(--ar-space-5);
+  --ar-panel-pad-y: var(--ar-space-5);
 }
 [data-ar-density='comfort'] {
   --ar-h: 30px;
@@ -194,6 +219,10 @@
   --ar-value-size: 13px;
   --ar-pad-x: 11px;
   --ar-gap: 8px;
+  --ar-row-gap: var(--ar-space-4);
+  --ar-group-gap: var(--ar-space-7);
+  --ar-panel-pad-x: var(--ar-space-8);
+  --ar-panel-pad-y: var(--ar-space-7);
 }
 
 /* ---------- scene: what the glass sits over ----------

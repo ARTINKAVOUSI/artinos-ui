@@ -30,6 +30,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
       { id: 'tokens', title: 'Tokens & type' },
       { id: 'type', title: 'Type collections' },
       { id: 'density', title: 'Density' },
+      { id: 'layout', title: 'Layout & text' },
       { id: 'motion', title: 'Motion' },
     ],
   },

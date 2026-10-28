@@ -1,6 +1,6 @@
 ---
 name: artinos-ui
-description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Progress, Sparkline, Panel/Section/SectionGroup/Field, Tabs, PropertyRow, ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace and a NodeGraph editor) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
+description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace and a NodeGraph editor) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
 ---
 
 # ARTINOS UI in a project
@@ -117,7 +117,7 @@ Read `references/catalogue.md` first: it lists every *kind* of every component a
 | a dial in a tight spot · two coupled values | `Knob` · `XYPad` |
 | an exact number people type | `NumberField` |
 | on/off · flags · one of 2–4 · one of many · a colour · a file | `Switch` · `ToggleGroup` · `Segmented` · `Select` · `ColorField` · `FileDrop` |
-| a read-only level · trend · figure | `Meter` · `Sparkline` · `RollingValue` |
+| a read-only level · trend · figure · task · key figure with its change | `Meter` · `Sparkline` · `RollingValue` · `Progress` · `Stat` |
 
 Conveniences that are easy to miss:
 - `format` (`percent`, `db`, `hz`, `angle`, `time`) and `unit` instead of hand-formatting;
@@ -127,11 +127,17 @@ Conveniences that are easy to miss:
 - `toggleable` (on by default): double-click switches a parameter off and keeps its value; `Section enabled` switches a whole group;
 - `PropertyRow modified onReset binding status` for inspector rows that can change or are driven.
 
+**Compose the panel by the rules** (`references/catalogue.md`, *Layout and text*):
+- every gap from the space scale: `Stack` / `Inline` with `gap="row"`, `"group"` or a step; never hand-set margins, pixel gaps or font sizes;
+- every piece of text a `Text` role (`title` · `body` · `caption` · `kicker` · `value`…); at most three sizes in a panel; sentence case, capitals only for small headings;
+- one label column per group: `labelWidth` on the Panel or Section;
+- a Section holds one idea and about seven rows; related numbers side by side (`columns`); a list of things is `ItemList` / `ItemRow`; one `primary` action per view.
+
 `references/theming.md` covers themes, `tokens={{ signal: '#…' }}` overrides, density, custom themes and every token.
 
 ### 6. Verify
 
-Run the project's type-check and build, then look at it in the browser:
+Run the project's type-check and build, then look at it in the browser. Take a screenshot and check it against the catalogue's *Layout and text* rules and checklist — gaps from the scale, one label column, three text sizes at most, nothing cut by hand — before calling it done. Then the usual failures:
 - **Controls unstyled:** `artinos.css` isn't imported at the root, or it's imported in a lazily loaded module.
 - **Glass themes look flat:** they need something behind them. Over a flat background they look like a plain tinted card.
 - **Theme looks like studio:** the id you used isn't in the kit's `tokens/themes.css`, and unknown ids fall back silently. Re-export with it.
