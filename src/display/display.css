@@ -35,6 +35,8 @@
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
   overflow: hidden;
+  /* the peak travels in this track's own width (cqw) */
+  container-type: inline-size;
 }
 .ar-meter__fill {
   position: absolute;
@@ -43,24 +45,21 @@
   background: linear-gradient(90deg, color-mix(in srgb, var(--ar-meter-tone) 45%, transparent), var(--ar-meter-tone));
   box-shadow: 0 0 6px color-mix(in srgb, var(--ar-meter-tone) 40%, transparent);
   transform-origin: left center;
-  /* a live level moves in short linear steps; it first fills in from empty */
-  transition: transform 90ms linear;
-  animation: ar-meter-fill-in var(--ar-dur-layout) var(--ar-ease-roll) backwards;
-}
-@keyframes ar-meter-fill-in {
-  from {
-    transform: scaleX(0);
-  }
+  /* Meter.tsx glides the level every frame (it starts empty and fills in); no CSS transition,
+     which would only add a lag on top */
+  transform: scaleX(0);
+  will-change: transform;
 }
 .ar-meter__peak {
   position: absolute;
   top: 1px;
   bottom: 1px;
+  left: 0;
   width: 2px;
   margin-left: -2px;
   border-radius: 1px;
   background: var(--ar-value-ink-hi);
-  transition: left 120ms linear;
+  will-change: transform;
 }
 .ar-meter__label {
   flex: none;
@@ -250,37 +249,54 @@
 .ar-progress__fill {
   position: absolute;
   inset: 1px;
+  overflow: hidden;
   border-radius: 2px;
   background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 55%, transparent), var(--_tone));
   box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 40%, transparent);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition:
-    transform var(--ar-dur-layout) var(--ar-ease-roll),
-    background var(--ar-dur-surface) var(--ar-ease);
+  /* Progress.tsx glides --_p every frame; the clip, not a scale, keeps the sheen's shape */
+  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0 round 2px);
+  transition: background var(--ar-dur-surface) var(--ar-ease);
 }
-/* unknown length: a short segment sweeps across */
+/* running: a soft sheen travels along the fill, so a task that waits still looks alive */
+.ar-progress:not([data-status]):not([data-indeterminate]) .ar-progress__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0 35%, rgba(255, 255, 255, 0.32) 50%, transparent 65% 100%);
+  background-size: 250% 100%;
+  animation: ar-progress-sheen 2.2s linear infinite;
+}
+@keyframes ar-progress-sheen {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+/* unknown length: a segment sweeps across, easing in and out of each pass */
 .ar-progress[data-indeterminate] .ar-progress__fill {
   right: auto;
-  width: 34%;
-  transform: none;
-  animation: ar-progress-sweep 1.3s var(--ar-ease) infinite;
+  width: 38%;
+  clip-path: none;
+  animation: ar-progress-sweep 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 @keyframes ar-progress-sweep {
   from {
-    transform: translateX(-100%);
+    transform: translateX(-105%);
   }
   to {
-    transform: translateX(300%);
+    transform: translateX(270%);
   }
 }
 /* done: the work is in; the fill glows once and settles */
 .ar-progress[data-status='done'] .ar-progress__fill {
-  animation: ar-progress-done 600ms var(--ar-ease) 1;
+  animation: ar-progress-done 700ms var(--ar-ease) 1;
 }
 @keyframes ar-progress-done {
   40% {
-    box-shadow: 0 0 12px var(--_tone);
+    box-shadow: 0 0 14px var(--_tone);
+    filter: brightness(1.15);
   }
 }
 .ar-progress__caption {
@@ -292,8 +308,13 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ar-progress[data-indeterminate] .ar-progress__fill {
-    width: 100%;
+    width: auto;
+    right: 1px;
     opacity: 0.5;
     animation: none;
+  }
+  .ar-progress__fill::after {
+    animation: none !important;
+    opacity: 0;
   }
 }

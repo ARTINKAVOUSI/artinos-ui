@@ -1,12 +1,14 @@
 'use client';
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { reducedMotion } from './utils';
 
 /* Motion helpers shared by the family. Durations and curves live in the tokens
    (--ar-dur-*, --ar-ease-*); these only decide *when* something moves:
    - usePresence keeps an overlay mounted while it plays its exit;
    - useGlide moves one highlight between rows instead of flashing each row;
-   - useFlip slides siblings into place when a stack reflows (toasts). */
+   - useFlip slides siblings into place when a stack reflows (toasts);
+   - useFrames + approach let a live value glide every frame, written straight to the DOM,
+     so a level updated a few times a second still moves like one continuous motion. */
 
 /** The family's roll / settle curve, for Web Animations (CSS uses --ar-ease-roll). */
 export const EASE_ROLL = 'cubic-bezier(.22,1,.36,1)';
@@ -80,4 +82,39 @@ export function useFlip(container: RefObject<HTMLElement | null>) {
     }
     last.current = next;
   });
+}
+
+/**
+ * Moves `current` toward `target` by frame time: after `halfLife` ms half the distance is
+ * left. Frame-rate independent and never overshoots, so a level eases without wobble.
+ */
+export const approach = (current: number, target: number, dt: number, halfLife: number) => target + (current - target) * Math.pow(2, -dt / halfLife);
+
+/**
+ * Runs `frame(dt)` on every animation frame for as long as it returns true; the returned
+ * `kick()` starts it again (call it when the target changes). Nothing re-renders: the frame
+ * writes styles directly. Stops when the component unmounts.
+ */
+export function useFrames(frame: (dt: number) => boolean) {
+  const fn = useRef(frame);
+  fn.current = frame;
+  const raf = useRef(0);
+  useEffect(
+    () => () => {
+      // reset as well as cancel: a remount (React's StrictMode runs effects twice) must be able to start again
+      cancelAnimationFrame(raf.current);
+      raf.current = 0;
+    },
+    [],
+  );
+  return useCallback(() => {
+    if (raf.current || typeof requestAnimationFrame === 'undefined') return;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(64, Math.max(0, now - last));
+      last = now;
+      raf.current = fn.current(dt) ? requestAnimationFrame(tick) : 0;
+    };
+    raf.current = requestAnimationFrame(tick);
+  }, []);
 }

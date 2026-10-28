@@ -1,7 +1,8 @@
 'use client';
-import type { CSSProperties, ReactNode } from 'react';
+import { useLayoutEffect, useRef, type CSSProperties, type ReactNode } from 'react';
+import { approach, useFrames } from '../core/motion';
 import { RollingValue } from '../core/RollingValue';
-import { cx } from '../core/utils';
+import { cx, reducedMotion } from '../core/utils';
 
 export interface ProgressProps {
   /** What is running, in the sans: "Baking lightmaps". */
@@ -19,14 +20,38 @@ export interface ProgressProps {
 }
 
 /**
- * Progress — a task under way. A label and its percentage over a slim well; the fill is the
- * family's insert and glides as work lands. Without a value it runs indeterminate; when it ends
- * it settles in the signal colour, or the fault colour with the reason as its caption.
+ * Progress — a task under way. A label and its percentage over a slim well; the fill glides
+ * toward each new value every frame, so work that lands in steps still reads as one steady
+ * advance, and a soft sheen travels along it while it runs. Without a value it runs
+ * indeterminate; when it ends it settles in the signal colour, or the fault colour with the
+ * reason as its caption.
  */
 export function Progress({ label, value, valueText, status = 'running', caption, className, style }: ProgressProps) {
   const known = value !== undefined && Number.isFinite(value);
   const t = known ? Math.min(1, Math.max(0, value!)) : 0;
   const text = valueText === undefined ? (known ? String(Math.round(t * 100)) : null) : valueText;
+  const sweeping = !known && status === 'running';
+  // done fills the track; an error keeps the fill where the work stopped
+  const target = status === 'done' || (!known && status === 'error') ? 1 : t;
+  const fillRef = useRef<HTMLSpanElement>(null);
+  const live = useRef({ target, level: 0 });
+  const kick = useFrames((dt) => {
+    const s = live.current;
+    s.level = reducedMotion() ? s.target : approach(s.level, s.target, dt, 120);
+    if (Math.abs(s.level - s.target) < 1e-4) s.level = s.target;
+    // the fill is clipped, not scaled, so the sheen inside keeps its shape at any value
+    fillRef.current?.style.setProperty('--_p', String(s.level));
+    return s.level !== s.target;
+  });
+  useLayoutEffect(() => {
+    if (sweeping) {
+      live.current.level = 0;
+      fillRef.current?.style.removeProperty('--_p');
+      return;
+    }
+    live.current.target = target;
+    kick();
+  }, [target, sweeping, kick]);
   return (
     <div
       className={cx('ar-progress', className)}
@@ -37,7 +62,7 @@ export function Progress({ label, value, valueText, status = 'running', caption,
       aria-valuenow={known ? Math.round(t * 100) : undefined}
       aria-valuetext={valueText ?? undefined}
       data-status={status === 'running' ? undefined : status}
-      data-indeterminate={known || status !== 'running' ? undefined : ''}
+      data-indeterminate={sweeping ? '' : undefined}
       style={style}
     >
       {label || text !== null ? (
@@ -51,8 +76,7 @@ export function Progress({ label, value, valueText, status = 'running', caption,
         </div>
       ) : null}
       <span className="ar-progress__track">
-        {/* done fills the track; an error keeps the fill where the work stopped */}
-        <span className="ar-progress__fill" style={known || status !== 'running' ? { transform: `scaleX(${status === 'done' || !known ? 1 : t})` } : undefined} />
+        <span ref={fillRef} className="ar-progress__fill" />
       </span>
       {caption != null ? <span className="ar-progress__caption">{caption}</span> : null}
     </div>

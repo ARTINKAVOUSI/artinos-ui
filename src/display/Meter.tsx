@@ -1,6 +1,8 @@
 'use client';
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useLayoutEffect, useRef, type CSSProperties } from 'react';
+import { approach, useFrames } from '../core/motion';
 import { RollingValue } from '../core/RollingValue';
+import { reducedMotion } from '../core/utils';
 
 export interface MeterProps {
   /** Current level. */
@@ -20,27 +22,46 @@ export interface MeterProps {
   style?: CSSProperties;
 }
 
+/** How long the level takes to close half the gap to a new reading (ms), and the peak's hold and fall. */
+const HALF_LIFE = 70;
+const PEAK_HOLD = 700;
+const PEAK_FALL = 2600; // ms to fall the full scale
+
 /**
- * Meter — a horizontal level bar for live values (audio, CPU, progress).
- * Updating it at frame rate is fine: the fill is a CSS transform.
+ * Meter — a horizontal level bar for live values (audio, CPU, progress). The fill glides toward
+ * each new reading every frame, so a value that updates a few times a second still moves as one
+ * continuous motion; the peak holds, then falls smoothly. Nothing re-renders between readings.
  */
 export function Meter({ value, min = 0, max = 1, label, hideLabel = false, valueText, peak = false, tone = 'live', className, style }: MeterProps) {
   const t = Math.min(1, Math.max(0, (value - min) / (max - min || 1)));
+  const fillRef = useRef<HTMLSpanElement>(null);
   const peakRef = useRef<HTMLSpanElement>(null);
-  const held = useRef({ value: 0, time: 0 });
+  const live = useRef({ target: t, level: 0, peak: 0, hold: 0 });
 
-  useEffect(() => {
-    if (!peak || !peakRef.current) return;
-    const now = performance.now();
-    const h = held.current;
-    if (t >= h.value) {
-      h.value = t;
-      h.time = now;
-    } else if (now - h.time > 700) {
-      h.value = Math.max(t, h.value - (now - h.time - 700) / 4000);
+  const kick = useFrames((dt) => {
+    const s = live.current;
+    s.level = reducedMotion() ? s.target : approach(s.level, s.target, dt, HALF_LIFE);
+    if (Math.abs(s.level - s.target) < 1e-4) s.level = s.target;
+    if (fillRef.current) fillRef.current.style.transform = `scaleX(${s.level})`;
+    let moving = s.level !== s.target;
+    if (peak) {
+      if (s.level >= s.peak) {
+        s.peak = s.level;
+        s.hold = PEAK_HOLD;
+      } else if (s.hold > 0) {
+        s.hold -= dt;
+      } else {
+        s.peak = Math.max(s.level, s.peak - dt / PEAK_FALL);
+      }
+      if (peakRef.current) peakRef.current.style.transform = `translateX(${s.peak * 100}cqw)`;
+      moving ||= s.peak > s.level + 1e-4;
     }
-    peakRef.current.style.left = `${h.value * 100}%`;
+    return moving;
   });
+  useLayoutEffect(() => {
+    live.current.target = t;
+    kick();
+  }, [t, kick]);
 
   const text = valueText === undefined ? value.toFixed(2) : valueText;
   return (
@@ -56,11 +77,10 @@ export function Meter({ value, min = 0, max = 1, label, hideLabel = false, value
     >
       {hideLabel ? null : <span className="ar-text ar-meter__label">{label}</span>}
       <span className="ar-meter__track">
-        <span className="ar-meter__fill" style={{ transform: `scaleX(${t})` }} />
+        <span ref={fillRef} className="ar-meter__fill" />
         {peak && <span ref={peakRef} className="ar-meter__peak" />}
       </span>
       {text !== null && <span className="ar-value ar-meter__value"><RollingValue text={text} /></span>}
     </div>
   );
 }
-

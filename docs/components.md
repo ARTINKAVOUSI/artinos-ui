@@ -412,6 +412,7 @@ Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-mat
 
 Every component moves with the same few durations and curves, all of them tokens (see the theming guide), and nothing loops unless it means something live.
 - **Numbers roll** (RollingValue) wherever they change.
+- **Live levels glide.** A Meter, a Progress fill and a Meter's peak move toward each new reading every frame (no re-renders), so a value updated a few times a second reads as one continuous motion; the peak holds, then falls smoothly. A Sparkline whose samples shift by one scrolls left continuously until the next sample instead of jumping, and its head glides to the new reading. A running Progress carries a soft travelling sheen.
 - **Overlays arrive and leave.** Menus drop from their trigger, or rise when they open upward. Tooltips slide out of the side they point away from. Dialogs, the command palette and toasts rise in, then fade out faster than they came. A dismissed toast slides away and the stack closes the gap.
 - **One highlight glides.** In menus, the Select list and the palette, the hovered or keyboard-active row is a single wash that slides between rows.
 - **Lists unroll.** The Select list opens out of its face with its rows cascading, and rolls back up into the face on close.
