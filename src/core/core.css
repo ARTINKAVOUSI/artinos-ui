@@ -23,8 +23,8 @@
 /* the mono caps voice outside a control: kickers, foot lines, counts, marks */
 .ar-caps {
   font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
 }
 .ar-caps--xs {
   font-size: var(--ar-caps-xs);

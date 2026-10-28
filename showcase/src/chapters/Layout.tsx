@@ -123,7 +123,7 @@ function ControlStrip() {
             <Slider toggleable label="Fog Density" max={0.2} decimals={3} defaultValue={0.04} />
             <Slider toggleable label="Ground Blur" defaultValue={0.36} />
           </Section>
-          <span className="sc-dock__foot">STUDIO · PERSIAN GARDEN</span>
+          <span className="sc-dock__foot">Studio · Persian garden</span>
         </div>
         <div className="sc-dock__card">
           <Section title="Output" count={9}>
@@ -132,7 +132,7 @@ function ControlStrip() {
             <Slider toggleable label="Tone Contrast" defaultValue={0.58} detents={[0.5]} />
             <Slider toggleable variant="gradient" gradient="temperature" label="White Bal" min={0} max={100} defaultValue={58} />
           </Section>
-          <span className="sc-dock__foot">WEBGPU · ADAPTIVE DPR</span>
+          <span className="sc-dock__foot">WebGPU · adaptive DPR</span>
         </div>
         <div className="sc-dock__card" style={{ flexGrow: 0.85 }}>
           <Section title="Stack" count={44}>
@@ -145,7 +145,7 @@ function ControlStrip() {
         </div>
       </div>
       <div className="sc-console">
-        <b>CONSOLE</b>
+        <b>Console</b>
         <span>Drag a readout for precision · double-click a slider to switch it off</span>
       </div>
     </div>

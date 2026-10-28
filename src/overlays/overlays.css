@@ -153,8 +153,8 @@
   font-family: var(--ar-font-num);
   font-size: var(--ar-caps-sm);
   font-weight: var(--ar-weight-medium);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-float-ink-low);
 }
 .ar-menu__separator {
@@ -551,7 +551,7 @@
   font-size: calc(var(--ar-voice-size) - 2.5px);
   font-weight: var(--ar-weight-medium);
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 .ar-menu__label {
   padding: 9px 13px 4px 33px;

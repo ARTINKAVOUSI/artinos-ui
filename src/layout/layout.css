@@ -175,13 +175,13 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* a small heading: the one place control text keeps capitals */
+  /* a small heading: the voice at medium weight (a collection may set it in tracked capitals) */
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1.5px);
+  font-size: calc(var(--ar-voice-size) + var(--ar-head-bump));
   font-weight: var(--ar-weight-medium);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ar-text-low);
+  letter-spacing: var(--ar-head-tracking);
+  text-transform: var(--ar-head-case);
+  color: var(--ar-text-mid);
 }
 .ar-section[data-heading='text'] .ar-section__title {
   font-family: var(--ar-font-ui);

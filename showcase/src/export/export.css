@@ -76,8 +76,8 @@
   align-items: baseline;
   gap: 8px;
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-text-hi);
 }
 .xk__sub em { font-style: normal; color: var(--ar-text-low); }
@@ -88,15 +88,15 @@
   all: unset;
   cursor: pointer;
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-text-low);
 }
 .xk__links button:hover { color: var(--ar-text-hi); }
 .xk__links button:focus-visible { box-shadow: var(--ar-focus-ring); border-radius: 3px; }
 .xk__note { margin: 0; font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-text) var(--ar-font-ui); color: var(--ar-text-low); }
 .xk__note b { font-weight: var(--ar-weight-medium); color: var(--ar-text-mid); }
-.xk__note code { font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-num); color: var(--ar-text-mid); }
+.xk__note code { font: var(--ar-weight-regular) var(--ar-text-sm) var(--ar-font-code); color: var(--ar-text-mid); }
 
 .xk__fam { display: flex; flex-direction: column; gap: 6px; }
 .xk__famhead {
@@ -242,8 +242,8 @@
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-text-hi);
 }
 .xk__btn:hover { background: var(--ar-bg-hover); }

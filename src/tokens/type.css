@@ -27,20 +27,38 @@
   --ar-control-font: 'Roboto Mono', var(--ar-font-num);
 }
 
-/* the default: Geist and Geist Mono ('geist' is kept as a name for it) */
-[data-ar-type='instrument'],
+/* the default: Inter for words and figures alike; Geist Mono for code */
+[data-ar-type='instrument'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.1em;
+  --ar-label-tracking: 0.08em;
+}
+
+/* Geist and Geist Mono: mono figures, and small headings in tracked capitals */
 [data-ar-type='geist'] {
   --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-track-caps: 0.12em;
   --ar-label-tracking: 0.1em;
+  --ar-head-case: uppercase;
+  --ar-head-tracking: 0.08em;
+  --ar-head-bump: -1.5px;
+  --ar-caps-case: uppercase;
+  --ar-caps-on: 1;
+  --ar-caps-xs: 9.5px;
+  --ar-caps-sm: 10px;
 }
 
 /* Chivo and Chivo Mono: the engineering grotesk, crisp caps and a characterful mono */
 [data-ar-type='grotesk'] {
   --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-track-caps: 0.16em;
 }
@@ -49,6 +67,7 @@
 [data-ar-type='editorial'] {
   --ar-font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-track-caps: 0.12em;
   --ar-label-tracking: 0.1em;
@@ -59,6 +78,7 @@
 [data-ar-type='modern'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.09em;
@@ -69,6 +89,7 @@
 [data-ar-type='atelier'] {
   --ar-font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-track-caps: 0.14em;
   --ar-label-tracking: 0.12em;
@@ -78,6 +99,7 @@
 [data-ar-type='red-hat'] {
   --ar-font-ui: 'Red Hat Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Red Hat Display', 'Red Hat Text', system-ui, sans-serif;
   --ar-weight-thin: 300;
   --ar-track-caps: 0.12em;
@@ -88,6 +110,7 @@
 [data-ar-type='luxe'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --ar-weight-thin: 300;
   --ar-track-caps: 0.1em;

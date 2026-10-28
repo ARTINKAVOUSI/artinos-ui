@@ -536,7 +536,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
             {picked ? (
               <div className="ed-picked">
                 <div className="ed-picked__head">
-                  <span className="ed-picked__kicker">SELECTED</span>
+                  <span className="ed-picked__kicker">Selected</span>
                   <b>{picked.title}</b>
                   <button type="button" className="ed-link" onClick={() => setPicking(true)}>pick another</button>
                   <button type="button" className="ed-reset ed-picked__close" aria-label="Clear selection" onClick={() => setPicked(null)}>

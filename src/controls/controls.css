@@ -261,8 +261,8 @@
   z-index: 1;
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
 }
 .ar-color__hex {
   all: unset;
@@ -277,8 +277,8 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   cursor: text;
 }
 .ar-color__hex:focus {

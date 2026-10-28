@@ -48,15 +48,15 @@
   line-height: 1.45;
   text-wrap: pretty;
 }
-/* the one place prose keeps capitals: a small label above a title */
+/* a small label above a title, set like a section's heading */
 .ar-type[data-variant='kicker'] {
   --_ink: var(--ar-text-low);
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1.5px);
+  font-size: calc(var(--ar-voice-size) + var(--ar-head-bump));
   font-weight: var(--ar-weight-medium);
   line-height: var(--ar-leading-snug);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: var(--ar-head-tracking);
+  text-transform: var(--ar-head-case);
 }
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);

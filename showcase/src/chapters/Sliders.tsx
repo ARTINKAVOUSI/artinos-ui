@@ -105,17 +105,17 @@ const [rough, setRough] = useState(0.52);
         id="slider-precision"
         text="Drag from the readout. Vertical distance from it selects the sensitivity; extra digits appear while scrubbing and collapse on release. The HUD exists only for this gesture."
         keys={[
-          ['0–26 PX', '1×'],
-          ['26–78 PX', '0.1×'],
-          ['78+ PX', '0.01×'],
-          ['ALT', 'FINE'],
-          ['SHIFT', 'ULTRA-FINE'],
-          ['CTRL', 'SNAP / NEXT DETENT'],
-          ['DBL-CLICK VALUE', 'TYPE A VALUE'],
-          ['ENTER / F2', 'TYPE A VALUE'],
-          ['ESC', 'CANCEL DRAG / TYPING'],
-          ['WHEEL', 'ONLY WHEN FOCUSED'],
-          ['HOME / END', 'MIN / MAX'],
+          ['0–26 px', '1×'],
+          ['26–78 px', '0.1×'],
+          ['78+ px', '0.01×'],
+          ['Alt', 'fine'],
+          ['Shift', 'ultra-fine'],
+          ['Ctrl', 'snap / next detent'],
+          ['Double-click value', 'type a value'],
+          ['Enter / F2', 'type a value'],
+          ['Esc', 'cancel drag / typing'],
+          ['Wheel', 'only when focused'],
+          ['Home / End', 'min / max'],
         ]}
         code={`
 <Slider label="IOR" min={1} max={2.5} decimals={3} precision={3} />   // 1× · 0.1× · 0.01×

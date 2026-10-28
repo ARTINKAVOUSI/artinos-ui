@@ -22,7 +22,7 @@
   --ar-label-weight: 500;
   --ar-value-weight: 400;
   --ar-label-tracking: 0.13em;
-  --ar-label-case: uppercase;
+  --ar-label-case: var(--ar-caps-case);
   /* the voice of control text — labels, buttons, chips, segments, menu actions: the sans in
      sentence case. Numbers keep --ar-control-font; capitals are kept for small headings. */
   --ar-voice-font: var(--ar-font-ui);

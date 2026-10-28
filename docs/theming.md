@@ -107,11 +107,12 @@ For React Three Fiber, the controls are DOM. Put them in an HTML overlay above t
 
 ## Type collections
 
-Type is one superfamily in two voices: a sans that speaks (titles, prose, menus) and a mono that measures (labels, readouts, marks), tuned so a title, a label and a readout sit on one line without a seam. A **type collection** swaps the faces and re-tunes only what the faces change (caps tracking, the control-label tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).
+By default type is one voice: a single sans sets words, figures (tabular, so columns line up) and small marks, with sentence-case headings and no tracked capitals, so a panel reads as one hand; a monospace is kept for code. A **type collection** swaps the faces and re-tunes only what the faces change (the figures face, caps, tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).
 
 | collection | sans · mono (· display) | character |
 |---|---|---|
-| `instrument` (default) | Geist · Geist Mono | one skeleton drawn twice for screens: words and figures read as one family, crisp at small sizes (`geist` is kept as another name for it) |
+| `instrument` (default) | Inter (words and figures) · Geist Mono for code | one voice, drawn open at 11–13px with optical sizes; sentence-case headings, no tracked capitals |
+| `geist` | Geist · Geist Mono | mono figures and tracked capitals on small headings: the exact, technical look |
 | `grotesk` | Chivo · Chivo Mono | a grotesk with an engineering edge: crisp caps, a mono with character |
 | `editorial` | IBM Plex Sans · IBM Plex Mono | drawn, editorial; open counters, a mono with character |
 | `modern` | Inter · JetBrains Mono | the proven pairing of modern tools; tall x-height, a wide legible mono |
@@ -218,18 +219,18 @@ Control finish (materials level):
 
 ### Typography
 
-One superfamily in two voices. **Geist**, the sans, speaks: titles, prose, menus, labels, buttons. **Geist Mono**, its monospaced sibling, measures: readouts, counts, hex codes and key caps. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
+One voice. **Inter** sets titles, prose, menus, labels, buttons, readouts and counts; figures are tabular wherever numbers line up, and small headings are sentence case at medium weight. **Geist Mono** is for code only. A collection can bring back a mono for figures and tracked capitals (`geist` does both). Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
-- families: `--ar-font-ui` (the sans), `--ar-font-num` (the mono), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the mono; Roboto Mono in `reference`).
+- families: `--ar-font-ui` (the sans), `--ar-font-num` (figures and small marks: the sans by default, a mono in most collections), `--ar-font-code` (code), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the figures face; Roboto Mono in `reference`).
 - weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, titles from 14px up), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps); `--ar-weight-text` (regular) is small sans text up to `--ar-text-md`, inputs, rows and menus, where light strokes thin out on glass. Control readouts use `--ar-value-weight` (400 by default).
 - space: `--ar-space-1` … `--ar-space-9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and the roles density tunes — `--ar-row-gap` (rows in a group), `--ar-group-gap` (groups in a panel), `--ar-panel-pad-x` / `--ar-panel-pad-y` (a panel's padding) — plus `--ar-measure` (62ch, a paragraph's longest line). The catalogue's *Layout and text* chapter has the rules.
 - the sans scale, `--ar-weight-text` to md and light above: `--ar-text-xs` (11px, hints and captions), `--ar-text-sm` (12px, secondary lines, tabs, menu rows), `--ar-text-md` (13px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.
-- the mono caps voice outside a control (kickers, foot lines, counts, badges, keycaps, port tags), always weight 500, uppercase, `--ar-track-caps`: `--ar-caps-sm` (10px) and `--ar-caps-xs` (9.5px, the smallest mark). Control labels are `--ar-label-size`, set by density: 10.5 · 11 · 11.5px for dense · standard · comfort. The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
+- small marks outside a control (foot lines, counts, badges, keycaps, port tags), weight 500: `--ar-caps-sm` (11px) and `--ar-caps-xs` (10.5px, the smallest mark). The caps switch sets them in tracked capitals: `--ar-caps-case` (`none`, or `uppercase`) and `--ar-caps-on` (0, or 1 to apply `--ar-track-caps` and the control-label tracking); a collection that turns it on steps the sizes down to 10 · 9.5px. Small headings (a section's title, a kicker) have their own: `--ar-head-case`, `--ar-head-tracking`, `--ar-head-bump`. Control labels are `--ar-label-size`, set by density: 10.5 · 11 · 11.5px for dense · standard · comfort. The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
 - control text is tuned by density and theme: `--ar-label-size` (labels draw at `--ar-voice-size`, one pixel up), `--ar-value-size`, and the control-typography tokens under Control finish.
-- tracking: `--ar-track-caps` (0.16em, caps open up), `--ar-track-text` (0, set as drawn), `--ar-track-title` (-0.01em, 17px and up), `--ar-track-display` (-0.025em, 30px and up).
+- tracking: `--ar-track-caps` (0.1em, for capitals; applied only when the caps switch is on), `--ar-track-text` (0, set as drawn), `--ar-track-title` (-0.01em, 17px and up), `--ar-track-display` (-0.025em, 30px and up).
 - leading: `--ar-leading-none` (1, single-line marks), `--ar-leading-snug` (1.3, titles and menu rows), `--ar-leading-text` (1.5, prose), `--ar-leading-code` (1.65, code and long reading).
 
 ```css
-.my-kicker { font: var(--ar-weight-medium) var(--ar-caps-sm) / 1 var(--ar-font-num); letter-spacing: var(--ar-track-caps); text-transform: uppercase; }
+.my-mark  { font: var(--ar-weight-medium) var(--ar-caps-sm) / 1 var(--ar-font-num); letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on)); text-transform: var(--ar-caps-case); }
 .my-title  { font: var(--ar-weight-light) var(--ar-text-xl) / var(--ar-leading-snug) var(--ar-font-ui); letter-spacing: var(--ar-track-title); }
 ```

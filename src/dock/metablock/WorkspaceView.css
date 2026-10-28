@@ -217,7 +217,7 @@
   background: color-mix(in srgb, var(--au-surface-2, #171a1b) 82%, transparent);
   color: color-mix(in srgb, var(--mb-signal) 82%, white 18%);
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   backdrop-filter: blur(10px);
 }
 .mb-native-tabs {
@@ -271,7 +271,7 @@
   backdrop-filter: blur(10px);
   color: color-mix(in srgb, var(--mb-signal) 88%, white 12%);
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   opacity: 0;
   transform: translateY(2px);
   transition:
@@ -379,11 +379,11 @@
 }
 .mb-panel-drag-ghost span {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
 }
 .mb-panel-drag-ghost small {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: color-mix(in srgb, var(--mb-signal) 70%, var(--au-muted, #888));
 }
 .mb-dock-preview[data-kind="panel"] {
@@ -889,9 +889,9 @@
 }
 .mb-dock-preview > span {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: color-mix(in srgb, var(--mb-signal) 72%, var(--au-text, #fff));
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
   opacity: 0.9;
 }
 .mb-panel-drag-ghost {
@@ -970,14 +970,14 @@
     0 10px 28px -18px #000;
   color: var(--au-text, #fff);
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   pointer-events: none;
   white-space: nowrap;
 }
 .mb-dock-intent small {
   color: var(--au-faint, #999);
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
 }
 .mb-dock-intent[data-active="false"] {
   display: none;
@@ -1020,7 +1020,7 @@
 .mb-context-head span,
 .mb-context-label {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--au-faint, #888);
 }
 .mb-context-label {
@@ -1057,7 +1057,7 @@
 }
 .mb-context-menu kbd {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--au-faint, #888);
   background: transparent;
 }
@@ -1135,7 +1135,7 @@
 }
 .mb-dock-intent > b {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--au-faint, #777);
 }
 .mb-dock-intent[data-armed="true"] {
@@ -1245,11 +1245,11 @@
 }
 .mb-empty-container b {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
 }
 .mb-empty-container span {
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-snug) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   opacity: 0.65;
 }
 
@@ -1397,7 +1397,7 @@
   text-align: center;
   border-radius: calc(var(--mb-radius) - 4px);
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-text) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
 }
 .mb-block-empty {
   border: 1px dashed

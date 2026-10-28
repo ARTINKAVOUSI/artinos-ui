@@ -336,7 +336,7 @@ The inspector row around any control. It never owns the value; it arranges the l
 
 States, all optional and all drawn without taking width from the control:
 - `modified`: a signal dot in the left gutter; with `onReset` it becomes the reset under the pointer or keyboard focus, in the same spot.
-- `binding`: names the driver (`"LFO 1"`) in mono caps in the bind colour.
+- `binding`: names the driver (`"LFO 1"`) in small marks in the bind colour.
 - `status` `'bound' | 'warn' | 'fault'` with `message` explaining it in words.
 - `actions`: extra affordances at the right end on hover or focus (these do take width; prefer the Section's `actions` for group state).
 - `highlighted` (a search reveal), `dataControl` (written as `data-control` for search), `disabled`.

@@ -61,7 +61,7 @@
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-style: normal;
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
+  letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
   text-transform: var(--ar-label-case);
   color: var(--ar-bind);
 }

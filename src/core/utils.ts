@@ -292,7 +292,7 @@ export type Density = (typeof DENSITIES)[number];
    faces and re-tunes the tracking; sizes, weights and leading stay. Some add a display face for
    titles at 2xl and up. Pick one with <ArtinosTheme type="…"> or data-ar-type; tokens/fonts.css
    loads the faces and tokens/type.css carries the tuning. `instrument` is the default. */
-export const TYPE_COLLECTIONS = ['instrument', 'grotesk', 'editorial', 'modern', 'atelier', 'red-hat', 'luxe'] as const;
+export const TYPE_COLLECTIONS = ['instrument', 'geist', 'grotesk', 'editorial', 'modern', 'atelier', 'red-hat', 'luxe'] as const;
 export type TypeCollection = (typeof TYPE_COLLECTIONS)[number];
 
 export interface TypeMeta {
@@ -310,10 +310,11 @@ export interface TypeMeta {
 
 /* one entry per line: the kit builder reads this table from the source */
 export const TYPE_META: Record<TypeCollection, TypeMeta> = {
-  instrument: { label: 'Instrument', ui: 'Geist', mono: 'Geist Mono', display: '', description: 'The default. Geist and Geist Mono, one skeleton drawn twice for screens: words and figures read as one family, crisp at small sizes, quiet and exact.', fonts: 'family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@200;300;400;500' },
+  instrument: { label: 'Instrument', ui: 'Inter', mono: 'Geist Mono', display: '', description: 'The default. One voice: Inter for words and tabular figures alike, drawn open at small sizes, so a panel reads as one hand. Geist Mono is kept for code.', fonts: 'family=Inter:opsz,wght@14..32,200..500&family=Geist+Mono:wght@200;300;400;500' },
+  geist: { label: 'Geist', ui: 'Geist', mono: 'Geist Mono', display: '', description: 'Geist and Geist Mono, one skeleton drawn twice: mono figures and tracked capitals on small headings, the exact, technical look.', fonts: 'family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@200;300;400;500' },
   grotesk: { label: 'Grotesk', ui: 'Chivo', mono: 'Chivo Mono', display: '', description: 'Chivo and Chivo Mono: a grotesk with an engineering edge, crisp caps and a mono with character. The first voice of the family.', fonts: 'family=Chivo:wght@200;300;400;500&family=Chivo+Mono:wght@200;300;400;500' },
   editorial: { label: 'Editorial', ui: 'IBM Plex Sans', mono: 'IBM Plex Mono', display: '', description: 'IBM Plex, the superfamily with a drawn, editorial tone: open counters, a humanist rhythm and a mono with real character.', fonts: 'family=IBM+Plex+Sans:wght@200;300;400;500&family=IBM+Plex+Mono:wght@200;300;400;500' },
-  modern: { label: 'Modern', ui: 'Inter', mono: 'JetBrains Mono', display: '', description: 'Inter with JetBrains Mono, the proven pairing of modern tools: a tall x-height for small prose and a wide, legible mono for readouts.', fonts: 'family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@200;300;400;500' },
+  modern: { label: 'Modern', ui: 'Inter', mono: 'JetBrains Mono', display: '', description: 'Inter with JetBrains Mono, the proven pairing of modern tools: a tall x-height for small prose and a wide, legible mono for readouts.', fonts: 'family=Inter:opsz,wght@14..32,200..500&family=JetBrains+Mono:wght@200;300;400;500' },
   atelier: { label: 'Atelier', ui: 'DM Sans', mono: 'DM Mono', display: '', description: 'DM Sans and DM Mono: a warm geometric superfamily with soft terminals and a lighter touch, for creative tools.', fonts: 'family=DM+Sans:wght@200;300;400;500&family=DM+Mono:wght@300;400;500' },
   'red-hat': { label: 'Red Hat', ui: 'Red Hat Text', mono: 'Red Hat Mono', display: 'Red Hat Display', description: 'Red Hat Text, Display and Mono: a three-voice superfamily, friendly and crisp, with its own display face for titles.', fonts: 'family=Red+Hat+Text:wght@300;400;500&family=Red+Hat+Display:wght@300;400;500&family=Red+Hat+Mono:wght@300;400;500' },
   luxe: { label: 'Luxe', ui: 'Inter', mono: 'JetBrains Mono', display: 'Cormorant Garamond', description: 'A serif display over a neutral sans: Cormorant Garamond titles, Inter prose, JetBrains Mono readouts. Editorial luxury for the luxe themes.', fonts: 'family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@200;300;400;500' },

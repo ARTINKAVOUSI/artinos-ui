@@ -297,7 +297,7 @@ Props:
   - `'default'`: the control names itself, so the label is hidden;
   - `'compact'`: the label sits in a column;
   - `'multiline'`;
-- `binding`: names the driver, in mono caps in the bind colour;
+- `binding`: names the driver, in small marks in the bind colour;
 - `status`: `'bound' | 'warn' | 'fault'`, with `message` explaining it in words;
 - `modified`: a signal dot in the left gutter, outside the row, so it takes no width;
 - `onReset`: with `modified`, the dot becomes the reset under the pointer or keyboard focus, in the same gutter spot, so the control keeps its full width and rows stay aligned;

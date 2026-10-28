@@ -378,7 +378,7 @@
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
+  letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
   text-transform: var(--ar-label-case);
   color: var(--ar-text-hi);
   text-shadow: var(--ar-panel-text-shadow);
@@ -433,7 +433,7 @@
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
   font-weight: var(--ar-label-weight);
   line-height: var(--ar-leading-none);
-  letter-spacing: var(--ar-label-tracking);
+  letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
   text-transform: var(--ar-label-case);
 }
 .ar-dock .mb-dock-preview > span {

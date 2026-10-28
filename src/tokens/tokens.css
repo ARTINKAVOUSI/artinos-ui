@@ -126,15 +126,18 @@
 }
 
 /* ---------- type ----------
-   One superfamily in two voices: the sans speaks (titles, prose, menus); its monospaced sibling
-   measures (labels, readouts, marks). They share skeleton, x-height and weights, so the two
-   voices sit on one line without a seam. Declared on :root only, not at every theme boundary,
-   so a type collection (tokens/type.css, data-ar-type) set on a scope carries through the themes
-   nested inside it. */
+   One voice: words, figures and small marks are set in one sans, with tabular figures where
+   numbers line up, so a panel reads as one hand. A monospace is kept for code only. Declared on
+   :root only, not at every theme boundary, so a type collection (tokens/type.css, data-ar-type)
+   set on a scope carries through the themes nested inside it; a collection may give figures a
+   mono of their own. */
 :root {
-  /* Geist and Geist Mono: one skeleton drawn twice for screens, so words and figures read as one family */
-  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* Inter, with optical sizes: it draws itself more open at 11–13px, where panels live */
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* figures and small marks: readouts, counts, badges, ticks */
+  --ar-font-num: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* code, and nothing else */
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* titles at 2xl and up; a type collection may give it a serif or a display face */
   --ar-font-display: var(--ar-font-ui);
 
@@ -156,9 +159,19 @@
   --ar-text-2xl: 22px; /* page section titles */
   --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */
 
-  /* the mono caps voice outside a control: uppercase, weight 500, tracked */
-  --ar-caps-xs: 9.5px; /* the smallest mark: keycaps, port tags, drop hints */
-  --ar-caps-sm: 10px; /* kickers, foot lines, counts, badges, section numbers */
+  /* small marks outside a control (keycaps, port tags, counts, badges, foot lines): weight 500.
+     Set in sentence case by default; a collection that wants tracked capitals turns the caps
+     switch on (--ar-caps-case: uppercase, --ar-caps-on: 1) and steps these down to 10 / 9.5px. */
+  --ar-caps-xs: 10.5px; /* the smallest mark: keycaps, port tags, drop hints */
+  --ar-caps-sm: 11px; /* kickers, foot lines, counts, badges, section numbers */
+  --ar-caps-case: none;
+  --ar-caps-on: 0; /* 1: marks and control labels take their tracking */
+
+  /* small headings (a section's title, a kicker): sentence case at the voice's size, medium
+     weight. A collection that wants tracked capitals sets case, tracking and a smaller bump. */
+  --ar-head-case: none;
+  --ar-head-tracking: 0;
+  --ar-head-bump: 0px;
 
   /* tracking: caps open up, large sans closes in, everything else is set as drawn */
   --ar-track-caps: 0.12em;

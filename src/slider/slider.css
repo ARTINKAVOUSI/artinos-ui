@@ -498,7 +498,7 @@
 }
 .ar-hud__pill--swatch { padding: 3px 8px 3px 3px; gap: 7px; }
 .ar-hud__text { font-size: var(--ar-text-sm); font-weight: var(--ar-weight-text); color: var(--ar-float-ink, #f4f4f4); }
-.ar-hud__ratio { font-size: var(--ar-caps-sm); font-weight: var(--ar-weight-medium); letter-spacing: var(--ar-track-caps); color: var(--ar-float-ink-low, #919191); }
+.ar-hud__ratio { font-size: var(--ar-caps-sm); font-weight: var(--ar-weight-medium); letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on)); color: var(--ar-float-ink-low, #919191); }
 .ar-hud__ratio[data-fine] { color: var(--ar-signal-hi, #7fe3d4); }
 .ar-hud__swatch { width: 14px; height: 14px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22); }
 .ar-hud__caption { font-size: var(--ar-text-xs); font-weight: var(--ar-weight-medium); letter-spacing: var(--ar-track-text); color: var(--ar-float-ink, #f4f4f4); }

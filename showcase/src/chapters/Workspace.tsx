@@ -38,9 +38,9 @@ export function WorkspaceChapter() {
         wide
         text="A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float. Drag a tab out to float it, onto an edge to dock it, onto another dock to merge; right-click a tab for every placement. A panel's PanelBar rises into the tab strip when there is room. storageKey keeps the arrangement. Sections live in the panes too: drag one by its heading from the floating Effects pane into the Inspector and back (SectionGroups sharing a group trade sections), and drag Layers to reorder them. Built on the MetaBlock engine."
         keys={[
-          ['DRAG TAB', 'float · dock · merge · split'],
-          ['RIGHT-CLICK TAB', 'snap · dock · pin · auto-hide · attach'],
-          ['CTRL/⌘ K', 'search panels and commands'],
+          ['Drag tab', 'float · dock · merge · split'],
+          ['Right-click tab', 'snap · dock · pin · auto-hide · attach'],
+          ['Ctrl/⌘ K', 'search panels and commands'],
         ]}
         code={`<Dock
   viewport={<Canvas>…</Canvas>}

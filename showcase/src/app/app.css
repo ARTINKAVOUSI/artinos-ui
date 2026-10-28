@@ -113,14 +113,14 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-word {
   font: var(--ar-weight-medium) var(--ar-label-size) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-hi);
 }
 .sc-sub {
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 .sc-rule {
   width: 1px;
@@ -134,7 +134,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-pick > span {
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-mid);
 }
 .sc-pick > .ar-well {
@@ -190,8 +190,8 @@ html::-webkit-scrollbar-thumb:hover {
   display: block;
   margin-bottom: 14px;
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-signal);
 }
 .sc-hero h1 {
@@ -246,7 +246,7 @@ html::-webkit-scrollbar-thumb:hover {
   display: block;
   margin-top: 6px;
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-mid);
 }
 /* the chapter map: the component chapters as a two-column table of contents */
@@ -275,7 +275,7 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-hero__count {
   margin-left: auto;
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
 }
 
@@ -318,8 +318,8 @@ html::-webkit-scrollbar-thumb:hover {
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
 }
 .sc-index__head .sc-num {
   color: inherit;
@@ -479,14 +479,14 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-num {
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-mid);
 }
 .sc-title {
-  font: var(--ar-weight-medium) var(--ar-label-size) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  font: var(--ar-weight-medium) var(--ar-text-lg) var(--ar-font-ui);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-hi);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 .sc-text {
   margin: 0;
@@ -500,7 +500,7 @@ html::-webkit-scrollbar-thumb:hover {
   gap: 4px 14px;
   margin-top: 6px;
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
 }
 .sc-keys b {
@@ -556,9 +556,9 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-subhead {
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-mid);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
   margin-top: 4px;
 }
 
@@ -583,7 +583,7 @@ html::-webkit-scrollbar-thumb:hover {
   cursor: pointer;
   list-style: none;
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
 }
 .sc-code summary::-webkit-details-marker {
@@ -609,7 +609,7 @@ html::-webkit-scrollbar-thumb:hover {
   border-radius: 4px;
   cursor: pointer;
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-mid);
   box-shadow: inset 0 0 0 1px var(--ar-line);
 }
@@ -620,7 +620,7 @@ html::-webkit-scrollbar-thumb:hover {
   margin: 0;
   padding: 4px 14px 14px;
   overflow: auto;
-  font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-code) var(--ar-font-num);
+  font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-code) var(--ar-font-code);
   color: var(--ar-text-mid);
   white-space: pre;
 }
@@ -630,7 +630,7 @@ html::-webkit-scrollbar-thumb:hover {
   border-radius: var(--ar-radius-card);
   background: var(--ar-bg-well);
   box-shadow: var(--ar-shadow-well);
-  font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-code) var(--ar-font-num);
+  font: var(--ar-weight-light) var(--ar-text-sm) / var(--ar-leading-code) var(--ar-font-code);
   color: var(--ar-text-mid);
   white-space: pre;
   overflow: auto;
@@ -674,16 +674,16 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-card__name {
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-hi);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 .sc-card__meta {
   margin-left: auto;
   font: var(--ar-weight-medium) var(--ar-caps-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 
 /* type collection cards: each a data-ar-type scope, so the specimen is set in its own faces */
@@ -726,8 +726,8 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-type__caps {
   font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-text-low);
 }
 .sc-card__text {
@@ -805,8 +805,8 @@ html::-webkit-scrollbar-thumb:hover {
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
   font-weight: var(--ar-label-weight);
-  letter-spacing: var(--ar-label-tracking);
-  text-transform: uppercase;
+  letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
+  text-transform: var(--ar-caps-case);
   color: var(--ar-list-ink);
 }
 .sc-mat--sheet span[data-active] {
@@ -1053,7 +1053,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-dock__foot {
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-faint);
   margin-top: auto;
 }
@@ -1068,7 +1068,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-console b {
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-signal-hi);
 }
 .sc-inspector {
@@ -1152,9 +1152,9 @@ html::-webkit-scrollbar-thumb:hover {
   padding-top: 20px;
   border-top: 1px solid var(--ar-line-subtle);
   font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: var(--ar-track-caps);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   color: var(--ar-text-low);
-  text-transform: uppercase;
+  text-transform: var(--ar-caps-case);
 }
 
 /* ---------- narrower screens ---------- */

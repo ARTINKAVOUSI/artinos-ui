@@ -86,19 +86,19 @@ export function App() {
           <span className="sc-sub">UI · Showcase</span>
         </a>
         <label className="sc-pick sc-pick--theme">
-          <span>THEME</span>
+          <span>Theme</span>
           <Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" />
         </label>
         <label className="sc-pick">
-          <span>TYPE</span>
+          <span>Type</span>
           <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
         </label>
         <label className="sc-pick">
-          <span>DENSITY</span>
+          <span>Density</span>
           <Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" />
         </label>
         <label className="sc-pick">
-          <span>BACKDROP</span>
+          <span>Backdrop</span>
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
         </label>
         <span className="sc-bar__actions">
@@ -165,7 +165,7 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
             <b>
               <CountUp to={THEMES.length} />
             </b>
-            <span>THEMES</span>
+            <span>Themes</span>
           </div>
           <div className="sc-stat">
             <b>
@@ -177,7 +177,7 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
             <b>
               <CountUp to={KIT_COMPONENTS.length} delay={240} />
             </b>
-            <span>COMPONENTS</span>
+            <span>Components</span>
           </div>
         </div>
         <nav className="sc-hero__map" aria-label="Component chapters">
