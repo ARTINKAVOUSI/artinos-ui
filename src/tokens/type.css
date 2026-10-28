@@ -27,7 +27,18 @@
   --ar-control-font: 'Roboto Mono', var(--ar-font-num);
 }
 
-[data-ar-type='instrument'] {
+/* the default: Geist and Geist Mono ('geist' is kept as a name for it) */
+[data-ar-type='instrument'],
+[data-ar-type='geist'] {
+  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: var(--ar-font-ui);
+  --ar-track-caps: 0.12em;
+  --ar-label-tracking: 0.1em;
+}
+
+/* Chivo and Chivo Mono: the engineering grotesk, crisp caps and a characterful mono */
+[data-ar-type='grotesk'] {
   --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
@@ -43,13 +54,6 @@
   --ar-label-tracking: 0.1em;
 }
 
-[data-ar-type='geist'] {
-  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
-  --ar-track-caps: 0.14em;
-  --ar-label-tracking: 0.12em;
-}
 
 /* Inter's tall x-height asks for a touch tighter titles; JetBrains Mono is wide */
 [data-ar-type='modern'] {

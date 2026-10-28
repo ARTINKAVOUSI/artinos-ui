@@ -20,7 +20,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   material?: MaterialName;
   density?: Density;
   /** A type collection (see TYPE_COLLECTIONS): the faces and their tuning. Inherits when omitted;
-   *  the default is `instrument` (Chivo and Chivo Mono). */
+   *  the default is `instrument` (Geist and Geist Mono). */
   type?: TypeCollection | (string & {});
   /** Inline token overrides for a custom look — applied on top of the theme. */
   tokens?: TokenOverrides;

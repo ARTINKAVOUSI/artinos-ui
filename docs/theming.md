@@ -111,9 +111,9 @@ Type is one superfamily in two voices: a sans that speaks (titles, prose, menus)
 
 | collection | sans · mono (· display) | character |
 |---|---|---|
-| `instrument` (default) | Chivo · Chivo Mono | one grotesk superfamily with an engineering edge: crisp caps, even numerals |
+| `instrument` (default) | Geist · Geist Mono | one skeleton drawn twice for screens: words and figures read as one family, crisp at small sizes (`geist` is kept as another name for it) |
+| `grotesk` | Chivo · Chivo Mono | a grotesk with an engineering edge: crisp caps, a mono with character |
 | `editorial` | IBM Plex Sans · IBM Plex Mono | drawn, editorial; open counters, a mono with character |
-| `geist` | Geist · Geist Mono | quiet, contemporary, exact; the most neutral |
 | `modern` | Inter · JetBrains Mono | the proven pairing of modern tools; tall x-height, a wide legible mono |
 | `atelier` | DM Sans · DM Mono | warm geometric, soft terminals, a lighter touch |
 | `red-hat` | Red Hat Text · Red Hat Mono · Red Hat Display | a three-voice superfamily, friendly and crisp, with its own display face |
@@ -218,7 +218,7 @@ Control finish (materials level):
 
 ### Typography
 
-One superfamily in two voices. **Chivo**, the sans, speaks: titles, prose, menus, field labels. **Chivo Mono**, its monospaced sibling, measures: control labels, readouts, counts and marks. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
+One superfamily in two voices. **Geist**, the sans, speaks: titles, prose, menus, labels, buttons. **Geist Mono**, its monospaced sibling, measures: readouts, counts, hex codes and key caps. They share a skeleton, x-height and weights, so the two voices sit on one line without a seam. Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
 - families: `--ar-font-ui` (the sans), `--ar-font-num` (the mono), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the mono; Roboto Mono in `reference`).
 - weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, titles from 14px up), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps); `--ar-weight-text` (regular) is small sans text up to `--ar-text-md`, inputs, rows and menus, where light strokes thin out on glass. Control readouts use `--ar-value-weight` (400 by default).

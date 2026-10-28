@@ -132,8 +132,9 @@
    so a type collection (tokens/type.css, data-ar-type) set on a scope carries through the themes
    nested inside it. */
 :root {
-  --ar-font-ui: Chivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* Geist and Geist Mono: one skeleton drawn twice for screens, so words and figures read as one family */
+  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* titles at 2xl and up; a type collection may give it a serif or a display face */
   --ar-font-display: var(--ar-font-ui);
 
@@ -160,7 +161,7 @@
   --ar-caps-sm: 10px; /* kickers, foot lines, counts, badges, section numbers */
 
   /* tracking: caps open up, large sans closes in, everything else is set as drawn */
-  --ar-track-caps: 0.16em;
+  --ar-track-caps: 0.12em;
   --ar-track-text: 0;
   --ar-track-title: -0.01em; /* 17px and up */
   --ar-track-display: -0.025em; /* 30px and up */
