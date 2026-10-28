@@ -401,6 +401,12 @@
 .ar-list__row[data-hi] {
   color: var(--ar-list-ink-hi);
 }
+/* rows sit inset from the list's edges under a rounded highlight, like a menu's */
+.ar-list__row {
+  margin: 0 4px;
+  padding: 0 7px;
+  border-radius: var(--ar-row-radius);
+}
 /* one highlight glides between rows (core/motion.ts useGlide) */
 .ar-list__glide {
   position: absolute;
@@ -408,6 +414,8 @@
   left: 0;
   background: var(--ar-list-hover);
   opacity: 0;
+  border-radius: var(--ar-row-radius);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-float-ink, #fff) 7%, transparent);
   pointer-events: none;
   transition:
     transform var(--ar-dur-surface) var(--ar-ease-roll),

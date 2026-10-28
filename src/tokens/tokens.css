@@ -205,11 +205,15 @@
 /* ---------- finish shared by every theme ----------
    --ar-insert-sheen: light on the polished part, laid over each theme's own --ar-insert — a soft
    top light, a gentle shade below — so an insert reads as a machined, dimensional part.
-   --ar-edge-light: the lit top edge of panel glass, brightest in the middle. Set either to
-   'none' / transparent in a theme to switch it off. */
+   --ar-edge-light: the lit top edge of panel glass and sheets, brightest in the middle. Set either
+   to 'none' / transparent in a theme to switch it off. */
 :root {
   --ar-insert-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.04) 46%, rgba(0, 0, 0, 0) 54%, rgba(0, 0, 0, 0.07) 100%);
   --ar-edge-light: color-mix(in srgb, var(--ar-text-hi) 34%, transparent);
+  /* a close contact shadow under every floating sheet's own long shadow, so it floats instead of lying flat */
+  --ar-float-depth: 0 1px 2px rgba(0, 0, 0, 0.16), 0 10px 28px -12px rgba(0, 0, 0, 0.38);
+  /* the rounded highlight that glides between rows of a menu, list or palette */
+  --ar-row-radius: 6px;
 }
 
 :root {

@@ -512,3 +512,98 @@
   text-align: center;
   color: var(--ar-float-ink-low);
 }
+
+/* ---------- finish: how the sheets float, and how their rows feel ---------- */
+.ar-menu,
+.ar-dialog,
+.ar-toast,
+.ar-tooltip,
+.ar-palette__dialog {
+  box-shadow: var(--ar-list-shadow), var(--ar-float-depth);
+}
+/* rows sit inset from the sheet's edges; the highlight that glides between them is rounded */
+.ar-menu {
+  padding: 5px 0;
+  border-radius: var(--ar-radius-card);
+}
+.ar-menu__item,
+.ar-palette__item {
+  margin: 0 5px;
+  border-radius: var(--ar-row-radius);
+}
+.ar-menu__item {
+  padding: 0 10px 0 8px;
+}
+.ar-palette__item {
+  padding: 0 11px;
+}
+.ar-menu__glide,
+.ar-palette__glide {
+  border-radius: var(--ar-row-radius);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-float-ink) 7%, transparent);
+}
+.ar-menu__separator {
+  margin: 5px 10px;
+}
+/* group headings are small headings: the one place a sheet keeps capitals */
+.ar-menu__label,
+.ar-palette__group {
+  font-size: calc(var(--ar-voice-size) - 2.5px);
+  font-weight: var(--ar-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ar-menu__label {
+  padding: 9px 13px 4px 33px;
+}
+.ar-palette__group {
+  padding: 12px 16px 5px;
+}
+
+/* the dialog: a lit top edge, a firmer title, a softer room behind it */
+.ar-dialog {
+  border-radius: var(--ar-radius-shell);
+}
+.ar-dialog__surface {
+  position: relative;
+}
+.ar-dialog__surface::before,
+.ar-toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ar-edge-light), transparent);
+  pointer-events: none;
+}
+.ar-dialog__head h2 {
+  font-weight: var(--ar-weight-regular);
+}
+.ar-dialog__foot {
+  border-top-color: color-mix(in srgb, var(--ar-float-ink) 8%, transparent);
+}
+.ar-dialog::backdrop {
+  background: radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.52));
+  -webkit-backdrop-filter: blur(6px) saturate(115%);
+  backdrop-filter: blur(6px) saturate(115%);
+}
+/* the dialog arrives with a touch of scale as well as rise */
+.ar-dialog[open]:not([data-state='closing']) {
+  animation: ar-dialog-in var(--ar-dur-layout) var(--ar-ease-roll);
+}
+@keyframes ar-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.975);
+  }
+}
+
+.ar-toast {
+  border-radius: var(--ar-radius-card);
+}
+.ar-tooltip {
+  padding: 6px 10px;
+  border-radius: calc(var(--ar-radius-card) - 2px);
+}
