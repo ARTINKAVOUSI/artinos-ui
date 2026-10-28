@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Dock } from '../../../src';
 import type { DockPanel } from '../../../src';
 import { BACKDROPS, Chapter, Spec } from '../shared';
-import { ConsolePanel, GraphPanel, InspectorPanel, LayersPanel } from './demos';
+import { ConsolePanel, EffectsPanel, GraphPanel, InspectorPanel, LayersPanel } from './demos';
 
 function WorkspaceDemo() {
   const panels = useMemo<DockPanel[]>(
@@ -12,13 +12,7 @@ function WorkspaceDemo() {
       { id: 'layers', title: 'Layers', description: 'Scene layers — right-click one', dock: 'right', content: <LayersPanel /> },
       { id: 'console', title: 'Console', description: 'Live readouts', active: true, content: <ConsolePanel />, footer: 'Sampling · 220 ms' },
       { id: 'graph', title: 'Graph', description: 'Node editor', keywords: ['nodes', 'wires'], content: <GraphPanel /> },
-      {
-        id: 'notes',
-        title: 'Notes',
-        description: 'A floating panel',
-        dock: 'float',
-        content: <p className="sc-text">Drag a tab out to float it, onto an edge to dock it, onto another dock to merge. Right-click a tab for every placement.</p>,
-      },
+      { id: 'effects', title: 'Effects', description: 'Sections that move between panes', dock: 'float', content: <EffectsPanel /> },
     ],
     [],
   );
@@ -27,9 +21,9 @@ function WorkspaceDemo() {
       <Dock
         panels={panels}
         viewport={<img className="sc-workspace__view" src={BACKDROPS.garden} alt="" />}
-        storageKey="artinos-showcase.dock.v3"
+        storageKey="artinos-showcase.dock.v4"
         sizes={{ left: 0.28, right: 0.25, bottom: 0.38 }}
-        floatBounds={{ x: 380, y: 60, width: 300, height: 170 }}
+        floatBounds={{ x: 360, y: 40, width: 300, height: 330 }}
         viewProps={{ padding: 8, gap: 6 }}
       />
     </div>
@@ -42,7 +36,7 @@ export function WorkspaceChapter() {
       <Spec
         id="dock"
         wide
-        text="A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float. Drag a tab out to float it, onto an edge to dock it, onto another dock to merge; right-click a tab for every placement. A panel's PanelBar rises into the tab strip when there is room. storageKey keeps the arrangement. Built on the MetaBlock engine."
+        text="A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float. Drag a tab out to float it, onto an edge to dock it, onto another dock to merge; right-click a tab for every placement. A panel's PanelBar rises into the tab strip when there is room. storageKey keeps the arrangement. Sections live in the panes too: drag one by its heading from the floating Effects pane into the Inspector and back (SectionGroups sharing a group trade sections), and drag Layers to reorder them. Built on the MetaBlock engine."
         keys={[
           ['DRAG TAB', 'float · dock · merge · split'],
           ['RIGHT-CLICK TAB', 'snap · dock · pin · auto-hide · attach'],

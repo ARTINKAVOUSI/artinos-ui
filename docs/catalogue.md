@@ -480,7 +480,7 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 - Related numbers sit side by side: `Section columns={3}` for X · Y · Z, a `RangeSlider` for an interval, an `XYPad` for a pair.
 - Set groups apart with `variant="card"` when a panel has several that stand alone; keep plain sections when they flow as one list.
 - Alternatives the user visits one at a time go in a `SectionGroup accordion`; a long panel of groups gets `SectionGroup toolbar`.
-- A list of things is an `ItemList` of `ItemRow`s, never a column of full-width buttons.
+- A list of things is an `ItemList` of `ItemRow`s, never a column of full-width buttons. Let people reorder what has an order (`onReorder`), and let lists or panes that hold the same kind of thing trade it (`group` + `onMove`): layers between scenes, sections between dock panes.
 - One `primary` action per view.
 
 ## Checklist for a finished panel

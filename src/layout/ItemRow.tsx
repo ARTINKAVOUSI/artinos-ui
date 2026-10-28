@@ -1,5 +1,7 @@
 'use client';
-import type { CSSProperties, ReactNode } from 'react';
+import { useId, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useSortable } from '../core/sortable';
+import type { SortPlace } from '../core/sortable';
 import { cx, revealClipped } from '../core/utils';
 
 /* ARTINOS ItemRow — one thing in a list: a layer, a body, a preset, a file. A leading mark
@@ -30,15 +32,33 @@ export interface ItemRowProps {
 export interface ItemListProps {
   /** The list's accessible name, e.g. "Layers". */
   label?: string;
+  /** Drag rows to reorder (Alt+↑/↓ for the keyboard): onReorder(from, to) with indices. */
+  onReorder?: (from: number, to: number) => void;
+  /** Lists that share a group trade rows by drag: onMove({ list, index }, { list, index }). Give each an id. */
+  group?: string;
+  id?: string;
+  onMove?: (from: SortPlace, to: SortPlace) => void;
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
 }
 
-/** The list ItemRows stand in: a column with no dividers and a 2px gap. */
-export function ItemList({ label, children, className, style }: ItemListProps) {
+/** The list ItemRows stand in: a column with no dividers and a 2px gap; rows can be dragged to
+ *  reorder, or to another list of the same group. */
+export function ItemList({ label, onReorder, group, id, onMove, children, className, style }: ItemListProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const autoId = useId();
+  const listId = id ?? autoId;
+  const sortable = !!(onReorder || onMove);
+  useSortable(ref, {
+    id: listId,
+    group,
+    itemSelector: '.ar-item',
+    enabled: sortable,
+    onMove: (from, to) => (onMove ? onMove(from, to) : from.list === to.list && onReorder?.(from.index, to.index)),
+  });
   return (
-    <div role="list" aria-label={label} className={cx('ar-items', className)} style={style}>
+    <div ref={ref} id={id} role="list" aria-label={label} className={cx('ar-items', className)} data-sortable={sortable ? '' : undefined} style={style}>
       {children}
     </div>
   );

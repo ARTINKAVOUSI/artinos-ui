@@ -1,8 +1,9 @@
 /* Live pieces several chapters share: stroke icons, a wandering data series, and the
    workspace's panels (the Dock demo uses them, and the Layout chapter shows the inspector). */
-import { useEffect, useState } from 'react';
-import { Badge, Button, ContextMenu, IconButton, ItemList, ItemRow, Meter, NodeGraph, PropertyRow, Section, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, useDock } from '../../../src';
-import type { GraphDefinition } from '../../../src';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
+import { Badge, Button, ContextMenu, IconButton, ItemList, ItemRow, Meter, NodeGraph, PropertyRow, Section, SectionGroup, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, moveBetween, useDock } from '../../../src';
+import type { GraphDefinition, SortPlace } from '../../../src';
 
 const icon = (d: string) => (
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -57,7 +58,23 @@ export function GraphPanel({ height }: { height?: number }) {
 
 /** Property rows around real controls, as an inspector group: its state and its on/off sit in
  *  the title row; a changed row shows a dot in the gutter that turns into its reset. */
-export function InspectorPanel() {
+/* ---------- sections that live in the dock: drag one by its heading into another pane ---------- */
+
+type PaneSections = Record<string, string[]>;
+let paneSections: PaneSections = { inspector: ['material', 'environment'], effects: ['post', 'lens'] };
+const paneListeners = new Set<() => void>();
+const movePaneSection = (from: SortPlace, to: SortPlace) => {
+  paneSections = moveBetween(paneSections, from, to);
+  paneListeners.forEach((l) => l());
+};
+const usePaneSections = () =>
+  useSyncExternalStore(
+    (l) => (paneListeners.add(l), () => paneListeners.delete(l)),
+    () => paneSections,
+    () => paneSections,
+  );
+
+export function MaterialSection() {
   const [exposure, setExposure] = useState(0.71);
   const [gain, setGain] = useState(-4.5);
   const [live, setLive] = useState(true);
@@ -74,6 +91,56 @@ export function InspectorPanel() {
         <Select options={['Neutral', 'Warm', 'Cool']} defaultValue="Neutral" appearance="well" label="Mode" />
       </PropertyRow>
     </Section>
+  );
+}
+
+const PANE_SECTIONS: Record<string, () => ReactElement> = {
+  material: MaterialSection,
+  environment: () => (
+    <Section title="Environment" count={2}>
+      <Slider label="Env intensity" defaultValue={0.82} unit="×" />
+      <Slider label="Fog density" defaultValue={0.04} decimals={3} />
+    </Section>
+  ),
+  post: () => (
+    <Section title="Post" count={2} defaultEnabled>
+      <Slider label="Bloom" defaultValue={0.24} />
+      <Slider label="Grain" defaultValue={0.08} />
+    </Section>
+  ),
+  lens: () => (
+    <Section title="Lens" count={2}>
+      <Slider variant="ruler" label="Focal" min={12} max={200} span={40} unit="mm" decimals={0} defaultValue={50} />
+      <Slider label="Aperture" min={1.4} max={16} decimals={1} defaultValue={2.8} />
+    </Section>
+  ),
+};
+
+/** A dock pane's sections: they trade with every other pane in the same group. */
+function PaneSections({ pane, label }: { pane: string; label: string }) {
+  const lists = usePaneSections();
+  return (
+    <SectionGroup id={pane} group="dock-sections" onMove={movePaneSection} label={label}>
+      {lists[pane].map((id) => {
+        const Body = PANE_SECTIONS[id];
+        return <Body key={id} />;
+      })}
+    </SectionGroup>
+  );
+}
+
+export function InspectorPanel() {
+  return <PaneSections pane="inspector" label="Inspector sections" />;
+}
+
+export function EffectsPanel() {
+  return (
+    <div className="ar-stack" style={{ '--_gap': 'var(--ar-space-4)' } as CSSProperties}>
+      <p className="sc-text" style={{ margin: 0 }}>
+        Drag a section by its heading into the Inspector, or back. Alt + ↑ / ↓ on a heading moves it within its pane.
+      </p>
+      <PaneSections pane="effects" label="Effects sections" />
+    </div>
   );
 }
 
@@ -96,7 +163,7 @@ export function LayersPanel() {
         <ToolbarSpacer />
         <IconButton size="sm" label="Delete" icon={IC.trash} onClick={() => setLayers((l) => l.filter((x) => x !== selected))} />
       </Toolbar>
-      <ItemList label="Layers">
+      <ItemList label="Layers" onReorder={(from, to) => setLayers((l) => { const n = [...l]; const [x] = n.splice(from, 1); n.splice(to, 0, x); return n; })}>
       {layers.map((name) => (
         <ContextMenu
           key={name}

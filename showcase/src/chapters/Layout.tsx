@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Badge, Button, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
-import { InspectorPanel } from './demos';
+import { MaterialSection } from './demos';
 
 function Inspector() {
   const [tab, setTab] = useState('scene');
@@ -98,7 +98,7 @@ function Inspector() {
         )}
       </Panel>
       <div className="sc-stack" style={{ flex: '1 1 300px', minWidth: 0, gap: 14 }}>
-        <InspectorPanel />
+        <MaterialSection />
         <Section title="Environment" count={4} defaultEnabled>
           <Slider label="Env Intensity" max={2} unit="x" defaultValue={0.82} detents={[1]} />
           <Slider label="Fog Density" max={0.2} decimals={3} defaultValue={0.04} />
@@ -224,12 +224,20 @@ const LAYERS = [
 
 function Items() {
   const [picked, setPicked] = useState('orb');
+  const [order, setOrder] = useState(LAYERS.map((l) => l.id));
+  const reorder = (from: number, to: number) =>
+    setOrder((o) => {
+      const n = [...o];
+      const [x] = n.splice(from, 1);
+      n.splice(to, 0, x);
+      return n;
+    });
   const [on, setOn] = useState<Record<string, boolean>>({ orb: true, dye: true, rim: true, backdrop: false });
   return (
     <Panel title="Layers" subtitle="4 of 8">
       <Section title="Scene" count={LAYERS.length} actions={<Button size="sm" variant="ghost" icon={<span aria-hidden>+</span>}>Add</Button>}>
-        <ItemList label="Layers">
-          {LAYERS.map((l) => (
+        <ItemList label="Layers" onReorder={reorder}>
+          {order.map((id) => LAYERS.find((l) => l.id === id)!).map((l) => (
             <ItemRow
               key={l.id}
               title={l.title}
@@ -315,7 +323,7 @@ export function LayoutChapter() {
 
       <Spec
         id="item-rows"
-        text="One thing in a list: a layer, a body, a preset, a file. A swatch or icon, a name in the sans, a quiet line of detail under it, and tools at the end (a badge, a switch, a menu) that never select the row. Hover gives a wash; the selected row takes the active wash and the signal edge on its left. No dividers: the rows stand in an ItemList, 2px apart."
+        text="One thing in a list: a layer, a body, a preset, a file. A swatch or icon, a name in the sans, a quiet line of detail under it, and tools at the end (a badge, a switch, a menu) that never select the row. Hover gives a wash; the selected row takes the active wash and the signal edge on its left. No dividers: the rows stand in an ItemList, 2px apart. Drag a row to reorder it (Alt + ↑ / ↓ from the keyboard); lists that share a group trade rows."
         code={`
 <ItemList label="Layers">
   <ItemRow title="Orb" meta="Glass shell · 12,480 tris" swatch="#4fd1ba"

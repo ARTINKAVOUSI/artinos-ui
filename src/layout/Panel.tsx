@@ -4,6 +4,8 @@ import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
 import { RollingText } from '../core/RollingValue';
 import { FieldContext } from '../core/field';
+import { useSortable } from '../core/sortable';
+import type { SortPlace } from '../core/sortable';
 import { cx, revealClipped } from '../core/utils';
 
 /* ARTINOS layout — the frames controls live in.
@@ -124,12 +126,30 @@ export interface SectionGroupProps {
   toolbar?: boolean;
   /** Accessible name of the group. */
   label?: string;
+  /** Drag sections by their heading to reorder (Alt+↑/↓ on a heading): onReorder(from, to). */
+  onReorder?: (from: number, to: number) => void;
+  /** Groups that share a group name trade sections by drag — across panels and dock panes:
+   *  onMove({ list, index }, { list, index }). Give each SectionGroup an id. */
+  group?: string;
+  id?: string;
+  onMove?: (from: SortPlace, to: SortPlace) => void;
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
 }
 
-export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = false, label, children, className, style }: SectionGroupProps) {
+export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = false, label, onReorder, group, id, onMove, children, className, style }: SectionGroupProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const autoId = useId();
+  const sortable = !!(onReorder || onMove);
+  useSortable(ref, {
+    id: id ?? autoId,
+    group,
+    itemSelector: ':scope > .ar-section',
+    handleSelector: '.ar-section__head',
+    enabled: sortable,
+    onMove: (from, to) => (onMove ? onMove(from, to) : from.list === to.list && onReorder?.(from.index, to.index)),
+  });
   const [openId, setOpenId] = useState<string | null>(defaultOpen);
   const [command, setCommand] = useState<GroupState['command']>(null);
   const value = useMemo(() => ({ accordion, openId, setOpenId, command }), [accordion, openId, command]);
@@ -141,7 +161,7 @@ export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = 
     setCommand({ open, stamp: (command?.stamp ?? 0) + 1 });
   };
   return (
-    <div role="group" aria-label={label} className={cx('ar-section-group', className)} data-accordion={accordion ? '' : undefined} style={style}>
+    <div ref={ref} id={id} role="group" aria-label={label} className={cx('ar-section-group', className)} data-accordion={accordion ? '' : undefined} data-sortable={sortable ? '' : undefined} style={style}>
       {toolbar ? (
         <div className="ar-section-group__bar">
           {accordion ? null : (
