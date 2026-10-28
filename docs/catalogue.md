@@ -7,7 +7,7 @@ Contents:
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
 - [Controls](#controls): NumberField · TextField · Switch · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge
-- [Display](#display): RollingValue · Meter · Sparkline
+- [Display](#display): RollingValue · Stat · Meter · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
@@ -47,7 +47,7 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | a group that can be turned off as a whole (an effect, a pass) | `Section` | `enabled` / `defaultEnabled` | the title row carries the on/off; the body folds |
 | a parameter that can be turned off alone (a post effect, a modifier) | `Slider` / `RangeSlider` | `toggleable` (default) | double-click the body; the value is kept |
 
-Read-only values go to [Display](#display): a level to `Meter`, a trend to `Sparkline`, a figure to `RollingValue`.
+Read-only values go to [Display](#display): a figure that matters (with its change and trend) to `Stat`, a level to `Meter`, a task under way to `Progress`, a trend to `Sparkline`, a bare number to `RollingValue`.
 
 ## Sliders
 
@@ -253,6 +253,8 @@ A status tag drawn as a wash and a hairline in its colour, never a solid fill. `
 Read-only instruments.
 
 - **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change; a carry resolves right to left; a streaming value rolls short. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out). **RollingText** takes any readout string: only its numbers roll, the words stay still.
+- **Stat**: one figure that matters, for dashboards and status heads: label, the number large in the mono with its unit, `delta` with an arrow (`better` says which way is good, so it takes the signal or fault colour), a `trend` sparkline with an optional `threshold`, a `caption`. `framed` (default) is a quiet tile; `size="lg"` for the one hero number.
+- **Progress**: a task under way — label, percentage, a slim well whose fill glides. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
 - **Meter**: a level in a thin well with a signal fill and a rolling readout. `value`, `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it); `peak` holds the highest value for a moment and lets it fall; `tone` `'live' | 'warm' | 'neutral'` cross-fades the fill.
 - **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`.
 

@@ -119,3 +119,181 @@
   stroke-dasharray: 2 3;
   vector-effect: non-scaling-stroke;
 }
+
+/* ---------- Stat: one figure that matters ---------- */
+.ar-stat {
+  --_tone: var(--ar-signal);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.ar-stat[data-tone='warm'] {
+  --_tone: var(--ar-warn);
+}
+.ar-stat[data-tone='neutral'] {
+  --_tone: var(--ar-text-low);
+}
+.ar-stat[data-framed] {
+  padding: 10px 12px 11px;
+  border-radius: var(--ar-radius-card);
+  background: var(--ar-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+}
+.ar-stat__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.ar-stat__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
+  color: var(--ar-text-low);
+}
+.ar-stat__value {
+  font-size: calc(var(--ar-value-size) * 2);
+  font-weight: var(--ar-weight-light);
+  line-height: 1.1;
+  color: var(--ar-text-hi);
+}
+.ar-stat[data-size='lg'] .ar-stat__value {
+  font-size: calc(var(--ar-value-size) * 3);
+  font-weight: var(--ar-weight-thin);
+}
+.ar-stat__value .ar-roll__unit {
+  font-size: 0.5em;
+  color: var(--ar-text-low);
+}
+.ar-stat__delta {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  font: var(--ar-weight-text) calc(var(--ar-value-size) - 1px) / 1 var(--ar-control-font);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-text-low);
+}
+.ar-stat__delta svg {
+  width: 8px;
+  height: 8px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ar-stat__delta[data-good='true'] {
+  color: var(--ar-signal);
+}
+.ar-stat__delta[data-good='false'] {
+  color: var(--ar-fault);
+}
+.ar-stat__trend {
+  width: 100%;
+  margin-top: 4px;
+  color: var(--_tone);
+}
+.ar-stat__caption {
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-faint);
+}
+
+/* ---------- Progress: a task under way ---------- */
+.ar-progress {
+  --_tone: var(--ar-signal);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.ar-progress[data-status='error'] {
+  --_tone: var(--ar-fault);
+}
+.ar-progress__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.ar-progress__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
+  color: var(--ar-text-mid);
+}
+.ar-progress__value {
+  flex: none;
+  color: var(--ar-value-ink);
+}
+.ar-progress[data-status='error'] .ar-progress__value {
+  color: var(--ar-fault);
+}
+.ar-progress__track {
+  position: relative;
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  overflow: hidden;
+}
+.ar-progress__fill {
+  position: absolute;
+  inset: 1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--_tone) 55%, transparent), var(--_tone));
+  box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 40%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    transform var(--ar-dur-layout) var(--ar-ease-roll),
+    background var(--ar-dur-surface) var(--ar-ease);
+}
+/* unknown length: a short segment sweeps across */
+.ar-progress[data-indeterminate] .ar-progress__fill {
+  right: auto;
+  width: 34%;
+  transform: none;
+  animation: ar-progress-sweep 1.3s var(--ar-ease) infinite;
+}
+@keyframes ar-progress-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+/* done: the work is in; the fill glows once and settles */
+.ar-progress[data-status='done'] .ar-progress__fill {
+  animation: ar-progress-done 600ms var(--ar-ease) 1;
+}
+@keyframes ar-progress-done {
+  40% {
+    box-shadow: 0 0 12px var(--_tone);
+  }
+}
+.ar-progress__caption {
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-faint);
+}
+.ar-progress[data-status='error'] .ar-progress__caption {
+  color: var(--ar-fault);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ar-progress[data-indeterminate] .ar-progress__fill {
+    width: 100%;
+    opacity: 0.5;
+    animation: none;
+  }
+}

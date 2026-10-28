@@ -64,6 +64,10 @@ export { Meter } from './display/Meter';
 export type { MeterProps } from './display/Meter';
 export { Sparkline } from './display/Sparkline';
 export type { SparklineProps } from './display/Sparkline';
+export { Stat } from './display/Stat';
+export type { StatProps } from './display/Stat';
+export { Progress } from './display/Progress';
+export type { ProgressProps } from './display/Progress';
 
 // layout
 export { Panel, Section, Field } from './layout/Panel';

@@ -28,6 +28,8 @@ export const COMPONENTS = [
   { group: 'Actions', id: 'Badge', label: 'Badge', file: 'actions/Badge.tsx', note: 'status tag' },
   { group: 'Display', id: 'Meter', label: 'Meter', file: 'display/Meter.tsx', note: 'level bar' },
   { group: 'Display', id: 'Sparkline', label: 'Sparkline', file: 'display/Sparkline.tsx', note: 'inline trend line' },
+  { group: 'Display', id: 'Stat', label: 'Stat', file: 'display/Stat.tsx', note: 'a figure with its change and trend' },
+  { group: 'Display', id: 'Progress', label: 'Progress', file: 'display/Progress.tsx', note: 'a task under way' },
   { group: 'Display', id: 'RollingValue', label: 'RollingValue', file: 'core/RollingValue.tsx', note: 'rolling-digit readout' },
   { group: 'Layout', id: 'Panel', label: 'Panel · Section · Field', file: 'layout/Panel.tsx', note: 'glass panel and layout' },
   { group: 'Layout', id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },

@@ -86,10 +86,12 @@ export const CHAPTERS: readonly ChapterDef[] = [
     id: 'display',
     title: 'Display',
     note: 'Read-only instruments. Every number rolls, every level moves in place.',
-    components: ['RollingValue', 'Meter', 'Sparkline'],
+    components: ['RollingValue', 'Stat', 'Meter', 'Progress', 'Sparkline'],
     sections: [
       { id: 'rolling', title: 'Rolling readout' },
+      { id: 'stats', title: 'Stats' },
       { id: 'meters', title: 'Meters' },
+      { id: 'progress', title: 'Progress' },
       { id: 'sparklines', title: 'Sparklines' },
     ],
   },

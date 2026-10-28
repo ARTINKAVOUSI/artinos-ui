@@ -12,7 +12,7 @@ Contents:
 - Controls: Slider · RangeSlider · NumberField · Switch · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
 - Layout: Panel / Section / Field · Tabs · PropertyRow · ItemList / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
-- Display: RollingValue · RollingText · Meter · Sparkline
+- Display: RollingValue · RollingText · Stat · Meter · Progress · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - Workspace: Dock · PanelBar · MetaBlock · NodeGraph · LiveGraphView · graph/gpu
 - Also: Motion · ArtinosTheme · shared types · recipes · requirements
@@ -247,9 +247,11 @@ Props:
 <Badge tone="live" dot>Live</Badge>
 ```
 
-## Meter · Sparkline
+## Stat · Meter · Progress · Sparkline
 
 Read-only instruments.
+- **Stat**: one figure that matters. Props: `label` (required), `value` (a formatted string or a number shown with `decimals`; its digits roll), `unit`, `delta` (signed change, drawn with an arrow) with `deltaText` (how it reads, e.g. `"+2.4%"`) and `better` (`'up'` default or `'down'`: the arrow takes the signal colour when the change is good, the fault colour when not), `trend` (recent samples, drawn as a Sparkline under the figure) with `threshold`, `tone`, `caption` (a quiet line under it), `framed` (default true: a quiet tile; false sets it bare in your own card), `size` (`'md' | 'lg'`).
+- **Progress**: a task under way. Props: `label`, `value` (0..1; leave it out for an indeterminate sweep), `valueText` (default the percentage; `null` hides it), `status` (`'running' | 'done' | 'error'`: done fills and settles in the signal colour; error keeps the fill where it stopped, in the fault colour), `caption` ("3 of 12 files", or what went wrong and what to do).
 - **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required; drawn at the left in a label column, width `--ar-meter-label-w`, 92px), `hideLabel` (screen readers only, for a row that already names it), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
 - **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`.
 

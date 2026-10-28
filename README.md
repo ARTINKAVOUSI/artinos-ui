@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 35 components, on a token-based design system with **52 themes** (glass, frost, studio, atelier and luxe):
+A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 37 components, on a token-based design system with **52 themes** (glass, frost, studio, atelier and luxe):
 - sliders, ranges, knobs and XY pads;
 - number, text and colour fields, file drops, switches, toggles, segmented controls and selects;
 - buttons, toolbars, badges, meters and sparklines;
