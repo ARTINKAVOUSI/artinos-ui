@@ -79,9 +79,20 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
     const peers = () => [...containers].filter((c) => c === me || (opts.current.group && c.opts.current.group === opts.current.group && c.opts.current.enabled));
 
     const place = (x: number, y: number) => {
-      // the container under the pointer (the innermost one), then the gap nearest it
+      // the container under the pointer (the innermost one), then the gap nearest it. Only
+      // containers on the surface that is on top there count: a floating panel over a pane
+      // takes the drop, not the pane hidden beneath it.
+      let pool = peers();
+      const top = document.elementsFromPoint(x, y).find((n) => !drag!.item.contains(n) && n !== drag!.line);
+      for (let n = top ?? null; n; n = n.parentElement) {
+        const inside = pool.filter((c) => n!.contains(c.el));
+        if (inside.length) {
+          pool = inside;
+          break;
+        }
+      }
       let hit: Registered | null = null;
-      for (const c of peers()) {
+      for (const c of pool) {
         const r = c.el.getBoundingClientRect();
         if (x >= r.left - 12 && x <= r.right + 12 && y >= r.top - 16 && y <= r.bottom + 16 && (!hit || hit.el.contains(c.el))) hit = c;
       }

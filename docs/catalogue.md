@@ -291,7 +291,7 @@ The glass card that holds controls. Slots: `title`, `subtitle`, `icon`, `actions
 
 ### SectionGroup
 
-Sections that behave together. `accordion` keeps one open at a time (each Section needs an `id`); `toolbar` adds Expand all · Collapse all. Use an accordion for alternatives the user visits one by one (camera · light · atmosphere), a toolbar for a long panel of groups.
+Sections that behave together. `accordion` keeps one open at a time (each Section needs an `id`); `toolbar` adds Expand all · Collapse all. Use an accordion for alternatives the user visits one by one (camera · light · atmosphere), a toolbar for a long panel of groups. Groups that share a `group` name trade sections by dragging their headings, across panels and Dock panes; in a Dock, `createDockSections` also lets a section tear off into its own floating panel and drop back into any pane.
 
 ### Section
 

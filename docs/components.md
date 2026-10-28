@@ -161,7 +161,7 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
 - **Panel** — glass card. Props: `title`, `subtitle`, `icon` (a small mark before the title), `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `variant` (`'glass'` default · `'solid'` opaque, for busy or bright scenes · `'inset'` a quiet hairline frame with no glass, for a panel inside a panel), `collapsible` with `open` / `defaultOpen` / `onOpenChange` (folds to its header; click the title or chevron), `maxHeight` (the body scrolls past it under soft fades), `labelWidth` (one label column for every Field inside), `as` (default `section`), `children`.
 - **Text** — one role per kind of text. Props: `variant` (`'display' | 'title' | 'heading' | 'body'` (default) `| 'caption' | 'kicker' | 'value'`), `tone` (`'hi' | 'mid' | 'low' | 'faint' | 'signal' | 'warn' | 'fault'`; default the role's own), `align` (`'start' | 'center' | 'end'`), `truncate` (one line with an ellipsis), `lines` (clamp to n lines), `measure` (keep to `--ar-measure`, 62ch; on by default for body and caption), `as` (default: h1 display · h2 title · h3 heading · p body and caption · span kicker and value).
 - **Stack** / **Inline** — a column / a row whose gaps come from the space scale. `gap`: a step `1`–`9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px), `'row'`, `'group'` or `'none'` (Stack default `'row'`, Inline default `4`). Stack `align` (`stretch` default · `start` · `center` · `end`); Inline `align` (`center` default · `baseline` · `start` · `end` · `stretch`), `justify` (`start` · `center` · `end` · `between`), `wrap`. Both take `as`.
-- **SectionGroup** — sections that behave together. Props: `accordion` (one open at a time; give each Section an `id`), `defaultOpen` (the id open first), `toolbar` (Expand all · Collapse all above the sections; only this group's sections answer), `label`, `onReorder(from, to)` (drag sections by their heading into a new order; Alt+↑/↓ on a heading), and `group` + `id` + `onMove(from, to)`: groups that share a group name trade sections by drag, across panels and Dock panes — the way a section moves from one pane of a workspace to another. Every Section inside a group can fold.
+- **SectionGroup** — sections that behave together. Props: `accordion` (one open at a time; give each Section an `id`), `defaultOpen` (the id open first), `toolbar` (Expand all · Collapse all above the sections; only this group's sections answer), `label`, `onReorder(from, to)` (drag sections by their heading into a new order; Alt+↑/↓ on a heading), and `group` + `id` + `onMove(from, to)`: groups that share a group name trade sections by drag, across panels and Dock panes — the way a section moves from one pane of a workspace to another. `onTearOff(from, at)` is called when a section is dropped outside every group of its name, with the screen point; without it, such a drop cancels. In a Dock, `createDockSections` wires all of this for you. A drop goes to the group on the surface that is on top under the pointer, so a floating panel over a pane takes the drop, not the pane beneath it. Every Section inside a group can fold.
 - **Section** — a titled group under a quiet heading, with no line across. Everything about the group lives in its one title row: LED (switchable groups) · title · count · actions · chevron. Props:
   - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title), `icon` (a small mark before the title), `description` (a quiet line at the top of the body: what the group does);
   - `variant` (`'plain'` default · `'card'`: the group sits in its own soft inset card — use it to set related groups apart in a long panel), `columns` (2 or 3: the rows become cells of a grid, e.g. X · Y · Z);
@@ -359,7 +359,7 @@ Props:
 - `sizes`: fractions per edge; default left .22, right .24, bottom .36. A side dock never drops below 220px (taking at most 40% of the room left), a top or bottom dock below 120px (at most half), so a small workspace keeps usable columns;
 - `floatBounds`;
 - `commands`: extra palette entries;
-- `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip; a strip under 520px wide (a side dock) puts the tabs on a row of their own and the panel bar, search and toolbar on the row below, and under 340px search folds to a magnifier;
+- `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip, which always stays one row; in a strip 520px wide or less search folds to a magnifier;
 - `toolbar`: the right end of every strip;
 - `brand`: a corner chip;
 - `hideKey`: e.g. `'h'` hides the docks;
@@ -368,10 +368,26 @@ Props:
 - `className`, `style`.
 
 Inside a panel:
-- `useDock()` returns the `DockApi`: `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible }`.
+- `useDock()` returns the `DockApi`: `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible, addPanel(panel, place?), removePanel(id) }`. `addPanel` adds a floating panel while the workspace runs, at `place.at` (its top-left on screen) or at the float bounds, `place.width` / `place.height` optional; `removePanel` takes it away again. Panels whose id starts with `TEAR_PREFIX` (`'ar-tear:'`) are left out of the saved layout, so a reload starts without them.
 - `<PanelBar>` holds a panel's toolbar. It rises into the dock's tab strip when there is room, and otherwise stays at the top of the panel.
 - The panel body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content.
 - A panel that throws shows a Retry card instead of taking the dock down.
+
+**Sections across panes.** `createDockSections({ panes, render, title?, group? })`, called once outside your components, keeps where every section is. Put its `<Pane id="…" />` in a panel's content; `panes` says which section ids start in which pane, and `render(id)` draws a section (a `<Section>`).
+- Drag a section by its heading into another pane to move it there.
+- Drag it out over open space and it tears off into its own floating panel at that point, titled by `title(id)`.
+- Drag sections into and out of a torn-off panel like any pane; once it is empty it closes.
+- Close a torn-off panel with its window button and its sections go back to their home panes.
+- `get()` and `subscribe(listener)` read the arrangement (torn-off panels are keyed by their panel id).
+
+```tsx
+const sections = createDockSections({
+  panes: { inspector: ['material', 'lens'], effects: ['post'] },
+  render: (id) => <MySection id={id} />,
+  title: (id) => TITLES[id],
+});
+// panels={[{ id: 'inspector', title: 'Inspector', dock: 'left', content: <sections.Pane id="inspector" /> }, …]}
+```
 
 The Dock fills its parent, so give the parent a height.
 
