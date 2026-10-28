@@ -100,7 +100,9 @@ export { CommandPalette } from './overlays/CommandPalette';
 export type { Command, CommandPaletteProps } from './overlays/CommandPalette';
 
 // dock: the studio workspace, and the MetaBlock engine it is built on
-export { Dock, useDock } from './dock/Dock';
+export { Dock, TEAR_PREFIX, useDock } from './dock/Dock';
+export { createDockSections } from './dock/sections';
+export type { DockSections, DockSectionsOptions } from './dock/sections';
 export type { DockProps, DockPanel, DockApi, DockEdge } from './dock/Dock';
 export { PanelBar } from './dock/PanelBar';
 export { DockMenu } from './dock/DockMenu';

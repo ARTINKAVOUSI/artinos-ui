@@ -43,6 +43,7 @@ export const COMPONENTS = [
   { group: 'Overlays', id: 'Tooltip', label: 'Tooltip', file: 'overlays/Tooltip.tsx', note: 'hover and focus hints' },
   { group: 'Overlays', id: 'CommandPalette', label: 'CommandPalette', file: 'overlays/CommandPalette.tsx', note: 'Ctrl/⌘ K search' },
   { group: 'Dock', id: 'Dock', label: 'Dock', file: 'dock/Dock.tsx', note: 'studio workspace: docks, tabs, floating panels' },
+  { group: 'Dock', id: 'DockSections', label: 'createDockSections', file: 'dock/sections.tsx', note: 'sections that move between panes and tear off into panels' },
   { group: 'Dock', id: 'MetaBlock', label: 'MetaBlock engine', file: 'dock/metablock/WorkspaceView.tsx', note: 'the docking engine alone' },
   { group: 'Graph', id: 'NodeGraph', label: 'NodeGraph', file: 'graph/NodeGraph.tsx', note: 'node editor' },
   { group: 'Graph', id: 'LiveGraphView', label: 'LiveGraphView', file: 'graph/LiveGraphView.tsx', note: 'read-only live graph' },

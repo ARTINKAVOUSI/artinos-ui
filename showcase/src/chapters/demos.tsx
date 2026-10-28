@@ -1,9 +1,9 @@
 /* Live pieces several chapters share: stroke icons, a wandering data series, and the
    workspace's panels (the Dock demo uses them, and the Layout chapter shows the inspector). */
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties, ReactElement } from 'react';
-import { Badge, Button, ContextMenu, IconButton, ItemList, ItemRow, Meter, NodeGraph, PropertyRow, Section, SectionGroup, Select, Slider, Sparkline, Toolbar, ToolbarSpacer, createNode, moveBetween, useDock } from '../../../src';
-import type { GraphDefinition, SortPlace } from '../../../src';
+import { Badge, Button, ContextMenu, IconButton, ItemList, ItemRow, Meter, NodeGraph, PropertyRow, Section, Select, Slider, Sparkline, PanelBar, createDockSections, createNode, useDock } from '../../../src';
+import type { GraphDefinition } from '../../../src';
 
 const icon = (d: string) => (
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -60,20 +60,6 @@ export function GraphPanel({ height }: { height?: number }) {
  *  the title row; a changed row shows a dot in the gutter that turns into its reset. */
 /* ---------- sections that live in the dock: drag one by its heading into another pane ---------- */
 
-type PaneSections = Record<string, string[]>;
-let paneSections: PaneSections = { inspector: ['material', 'environment'], effects: ['post', 'lens'] };
-const paneListeners = new Set<() => void>();
-const movePaneSection = (from: SortPlace, to: SortPlace) => {
-  paneSections = moveBetween(paneSections, from, to);
-  paneListeners.forEach((l) => l());
-};
-const usePaneSections = () =>
-  useSyncExternalStore(
-    (l) => (paneListeners.add(l), () => paneListeners.delete(l)),
-    () => paneSections,
-    () => paneSections,
-  );
-
 export function MaterialSection() {
   const [exposure, setExposure] = useState(0.71);
   const [gain, setGain] = useState(-4.5);
@@ -116,30 +102,31 @@ const PANE_SECTIONS: Record<string, () => ReactElement> = {
   ),
 };
 
-/** A dock pane's sections: they trade with every other pane in the same group. */
-function PaneSections({ pane, label }: { pane: string; label: string }) {
-  const lists = usePaneSections();
-  return (
-    <SectionGroup id={pane} group="dock-sections" onMove={movePaneSection} label={label}>
-      {lists[pane].map((id) => {
-        const Body = PANE_SECTIONS[id];
-        return <Body key={id} />;
-      })}
-    </SectionGroup>
-  );
-}
+const SECTION_TITLES: Record<string, string> = { material: 'Material', environment: 'Environment', post: 'Post', lens: 'Lens' };
+
+/* the kit keeps where each section is: panes trade them, a drag out over open space tears one
+   off into its own floating panel, and dropping it back closes that panel */
+const dockSections = createDockSections({
+  panes: { inspector: ['material', 'environment'], effects: ['post', 'lens'] },
+  render: (id) => {
+    const Body = PANE_SECTIONS[id];
+    return <Body />;
+  },
+  title: (id) => SECTION_TITLES[id] ?? id,
+});
+const { Pane: SectionPane } = dockSections;
 
 export function InspectorPanel() {
-  return <PaneSections pane="inspector" label="Inspector sections" />;
+  return <SectionPane id="inspector" label="Inspector sections" />;
 }
 
 export function EffectsPanel() {
   return (
     <div className="ar-stack" style={{ '--_gap': 'var(--ar-space-4)' } as CSSProperties}>
       <p className="sc-text" style={{ margin: 0 }}>
-        Drag a section by its heading into the Inspector, or back. Alt + ↑ / ↓ on a heading moves it within its pane.
+        Drag a section by its heading into the Inspector, or out over the scene to tear it off into its own panel; drop it back into any pane. Alt + ↑ / ↓ on a heading moves it within its pane.
       </p>
-      <PaneSections pane="effects" label="Effects sections" />
+      <SectionPane id="effects" label="Effects sections" />
     </div>
   );
 }
@@ -157,12 +144,12 @@ export function LayersPanel() {
   const [selected, setSelected] = useState('Orb');
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <Toolbar label="Layer actions">
+      <PanelBar>
         <IconButton size="sm" label="Add layer" icon={IC.plus} onClick={() => setLayers((l) => [...l, `Layer ${l.length + 1}`])} />
         <IconButton size="sm" label="Duplicate" icon={IC.copy} onClick={() => setLayers((l) => [...l, `${selected} copy`])} />
-        <ToolbarSpacer />
+        <span className="ar-panel-bar__spacer" />
         <IconButton size="sm" label="Delete" icon={IC.trash} onClick={() => setLayers((l) => l.filter((x) => x !== selected))} />
-      </Toolbar>
+      </PanelBar>
       <ItemList label="Layers" onReorder={(from, to) => setLayers((l) => { const n = [...l]; const [x] = n.splice(from, 1); n.splice(to, 0, x); return n; })}>
       {layers.map((name) => (
         <ContextMenu

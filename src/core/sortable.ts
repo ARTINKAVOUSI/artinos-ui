@@ -27,6 +27,9 @@ export interface SortableOptions {
   handleSelector?: string;
   enabled: boolean;
   onMove: (from: SortPlace, to: SortPlace) => void;
+  /** Dropped outside every container of its group: the item asks to be torn off at that point
+   *  (a section becoming its own floating panel). Without it, such a drop cancels. */
+  onTearOff?: (from: SortPlace, at: { x: number; y: number }) => void;
 }
 
 interface Registered {
@@ -63,6 +66,8 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
       line: HTMLElement | null;
       target: { c: Registered; index: number } | null;
       pointer: number;
+      x: number;
+      y: number;
     } | null = null;
 
     /** The item of this container that holds `t`, if any (works for ':scope > …' selectors too). */
@@ -124,6 +129,11 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
       };
       window.addEventListener('click', swallow, { capture: true, once: true });
       setTimeout(() => window.removeEventListener('click', swallow, { capture: true }), 0);
+      d.item.removeAttribute('data-tearing');
+      if (commit && !d.target && opts.current.onTearOff) {
+        opts.current.onTearOff({ list: opts.current.id, index: d.from }, { x: d.x, y: d.y });
+        return;
+      }
       if (!commit || !d.target) return;
       const same = d.target.c === me;
       const to = d.target.index;
@@ -141,7 +151,7 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
       if (target.closest(INTERACTIVE) && !(o.handleSelector && target.closest(o.handleSelector) && !target.closest('input, textarea, select, .ar-section__actions, .ar-section__reset, .ar-section__chevron'))) return;
       const from = itemsOf(me).indexOf(item);
       if (from < 0) return;
-      drag = { item, from, x0: e.clientX, y0: e.clientY, live: false, line: null, target: null, pointer: e.pointerId };
+      drag = { item, from, x0: e.clientX, y0: e.clientY, live: false, line: null, target: null, pointer: e.pointerId, x: e.clientX, y: e.clientY };
     };
     const onMovePtr = (e: PointerEvent) => {
       if (!drag || e.pointerId !== drag.pointer) return;
@@ -154,11 +164,15 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
         document.documentElement.setAttribute('data-ar-sorting', '');
       }
       e.preventDefault();
+      drag.x = e.clientX;
+      drag.y = e.clientY;
       drag.item.style.transform = `translate(${dx}px, ${dy}px)${reducedMotion() ? '' : ' scale(0.985)'}`;
       const t = place(e.clientX, e.clientY);
       drag.target = t ? { c: t.c, index: t.index } : null;
       if (t) showLine(t);
       else if (drag.line) drag.line.style.width = '0px';
+      // out over open space: a section that can tear off says it will become its own panel
+      drag.item.toggleAttribute('data-tearing', !t && !!opts.current.onTearOff);
     };
     const onUp = (e: PointerEvent) => drag && e.pointerId === drag.pointer && end(true);
     const onCancel = () => end(false);

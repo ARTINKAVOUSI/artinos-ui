@@ -1267,7 +1267,8 @@ export function MetaBlockWorkspaceView({
             : interaction.dragGroupId === group.id
               ? 980
               : group.posture === 'floating'
-                ? (workspace.floating.get(group.id)?.z ?? 100)
+                ? // floating windows always stand above the docks (20); their own order counts up from 1
+                  100 + (workspace.floating.get(group.id)?.z ?? 0)
                 : group.posture === 'maximized'
                   ? 900
                   : group.posture === 'zone'

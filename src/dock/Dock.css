@@ -82,14 +82,13 @@
 }
 
 /* ---------- strip: tabs · the active panel's bar · search · toolbar ----------
-   One row where it fits. The tabs give way first (they scroll), so search and the toolbar never leave the strip;
-   a narrow strip — a side dock — puts its tabs on a row of their own and the rest on the row below. */
+   Always one row: a panel's head never costs it a second. The tabs give way first (they scroll), a narrow
+   strip folds search down to its magnifier, and the panel's bar rides along only where it fits. */
 .ar-dock__strip {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  column-gap: 14px;
-  row-gap: 0;
+  column-gap: 12px;
   min-height: 36px;
   padding: 0 10px 0 14px;
   border-bottom: 1px solid var(--ar-line-subtle);
@@ -210,29 +209,31 @@
   box-shadow: none;
   color: inherit;
 }
-/* a narrow strip (a side dock): the tabs take the first row, the panel's bar, search and the toolbar the second */
+/* a narrow strip (a side dock): search folds down to a bare magnifier, a tool like the window buttons,
+   so the tabs and the panel's bar keep the room */
 @container ar-dock-strip (max-width: 520px) {
-  .ar-dock__tabs {
-    flex: 1 0 100%;
-  }
-  .ar-dock__slot,
-  .ar-dock__search,
-  .ar-dock__toolbar {
-    margin-bottom: 8px;
-  }
-  .ar-dock__search {
-    flex: 1 1 120px;
-    max-width: none;
-  }
-}
-/* narrower still: search folds down to the magnifier, so the panel's bar keeps its room */
-@container ar-dock-strip (max-width: 340px) {
   .ar-dock__search {
     flex: none;
     min-width: 0;
-    width: var(--ar-h);
+    width: 24px;
+    height: 24px;
     padding: 0;
     justify-content: center;
+    border-radius: var(--ar-insert-radius);
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .ar-dock__search:hover {
+    background: var(--ar-bg-hover);
+  }
+  .ar-dock__search:focus-visible {
+    box-shadow: var(--ar-focus-ring);
+  }
+  .ar-dock__search svg {
+    width: 13px;
+    height: 13px;
   }
   .ar-dock__search > span,
   .ar-dock__search .ar-kbd {
@@ -248,7 +249,7 @@
 .ar-dock__toolbar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
   flex: none;
   margin-left: auto;
 }
@@ -259,7 +260,7 @@
 /* a detached panel: its tabs and window controls */
 .ar-dock__strip--window {
   min-height: 32px;
-  padding-right: 6px;
+  padding-right: 5px;
 }
 .ar-dock__strip--window .ar-dock__tabs {
   height: 32px;
@@ -271,7 +272,7 @@
   margin-left: auto;
 }
 .ar-dock__window-actions .ar-tool {
-  --_tool: 22px;
+  --_tool: 24px;
 }
 .ar-dock__window-actions .ar-tool svg {
   width: 12px;
@@ -321,7 +322,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 12px;
+  gap: 6px 8px;
   margin: 0 0 8px;
 }
 .ar-panel-bar > .ar-textfield {
@@ -349,7 +350,7 @@
 }
 .ar-dock__slot > .ar-panel-bar {
   flex-wrap: nowrap;
-  gap: 12px;
+  gap: 2px;
   margin: 0;
   min-width: 0;
 }

@@ -50,7 +50,16 @@ export interface DockApi {
   /** Interface shown (false when hidden with the hide key). */
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  /** Add a panel while the workspace runs, floating: at `at` (a point on screen, the panel's
+   *  top-left) or at the float bounds. Ids starting with TEAR_PREFIX are not kept in the saved layout. */
+  addPanel: (panel: DockPanel, place?: { at?: { x: number; y: number }; width?: number; height?: number }) => void;
+  /** Remove a panel added with addPanel. */
+  removePanel: (id: string) => void;
 }
+
+/** Panels torn off at run time (a section become its own panel) carry this id prefix: the saved
+ *  layout leaves them out, so a reload starts from the arrangement without them. */
+export const TEAR_PREFIX = 'ar-tear:';
 
 export interface DockProps {
   panels: readonly DockPanel[];
@@ -146,10 +155,12 @@ function buildWorkspace(
       const raw = localStorage.getItem(o.storageKey);
       const snapshot = raw ? JSON.parse(raw) : null;
       const known = new Set(panels.map((p) => p.id).concat(o.viewport ? [VIEWPORT] : []));
-      const saved: string[] = (snapshot?.blocks ?? []).map((b: MetaBlockInstance) => b.id);
+      const saved: string[] = (snapshot?.blocks ?? []).map((b: MetaBlockInstance) => b.id).filter((id: string) => !id.startsWith(TEAR_PREFIX));
       // a removed panel must not come back as an empty tab: restore only if every saved tab still exists
       if (saved.length && saved.every((id) => known.has(id))) {
         workspace.restore(snapshot);
+        // torn-off panels belonged to the last session
+        for (const id of [...workspace.blocks.keys()]) if (id.startsWith(TEAR_PREFIX)) workspace.removeBlock(id);
         // no pop-out windows here: a group saved popped out would stay invisible
         for (const groupId of [...workspace.popouts.keys()])
           workspace.reattachPopout(groupId, { area: 'bottom', targetGroupId: workspace.groups.has('dock.bottom') ? 'dock.bottom' : null });
@@ -204,7 +215,10 @@ export function Dock({
     [shape, storageKey, version],
   );
   useWorkspaceRevision(workspace);
-  const byId = new Map(panels.map((p) => [p.id, p]));
+  // panels added while it runs (addPanel): floating, outside the saved arrangement's panel set
+  const [extras, setExtras] = useState<DockPanel[]>([]);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const byId = new Map([...panels, ...extras].map((p) => [p.id, p]));
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [visible, setVisible] = useState(true);
 
@@ -265,9 +279,31 @@ export function Dock({
     setVersion((v) => v + 1);
   }, [storageKey]);
 
+  const addPanel = useCallback<DockApi['addPanel']>(
+    (panel, place) => {
+      setExtras((e) => [...e.filter((p) => p.id !== panel.id), panel]);
+      if (!workspace.blocks.has(panel.id)) {
+        workspace.createMetaBlock({ id: panel.id, title: panel.title, role: 'panel', meta: { description: panel.description ?? null } });
+        const base = floatBounds ?? DEFAULT_FLOAT;
+        const box = rootRef.current?.getBoundingClientRect();
+        const at = place?.at && box ? { x: Math.max(8, place.at.x - box.left), y: Math.max(8, place.at.y - box.top) } : { x: base.x, y: base.y };
+        workspace.floatBlock(panel.id, { ...at, width: place?.width ?? 300, height: place?.height ?? 260 });
+      }
+      workspace.activateBlock(panel.id);
+    },
+    [workspace, floatBounds],
+  );
+  const removePanel = useCallback<DockApi['removePanel']>(
+    (id) => {
+      if (workspace.blocks.has(id)) workspace.removeBlock(id);
+      setExtras((e) => e.filter((p) => p.id !== id));
+    },
+    [workspace],
+  );
+
   const api = useMemo<DockApi>(
-    () => ({ workspace, openPanel, resetLayout, openPalette: () => setPaletteOpen(true), visible, setVisible }),
-    [workspace, openPanel, resetLayout, visible],
+    () => ({ workspace, openPanel, resetLayout, openPalette: () => setPaletteOpen(true), visible, setVisible, addPanel, removePanel }),
+    [workspace, openPanel, resetLayout, visible, addPanel, removePanel],
   );
   const ready = useRef(onReady);
   ready.current = onReady;
@@ -419,7 +455,7 @@ export function Dock({
   };
 
   return (
-    <div className={cx('ar-dock', className)} style={style} data-ui-hidden={!visible || undefined}>
+    <div ref={rootRef} className={cx('ar-dock', className)} style={style} data-ui-hidden={!visible || undefined}>
       <MetaBlockWorkspaceView
         padding={10}
         gap={8}

@@ -133,12 +133,15 @@ export interface SectionGroupProps {
   group?: string;
   id?: string;
   onMove?: (from: SortPlace, to: SortPlace) => void;
+  /** A section dropped outside every group asks to become its own floating panel at that point.
+   *  createDockSections wires this to the Dock for you. */
+  onTearOff?: (from: SortPlace, at: { x: number; y: number }) => void;
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
 }
 
-export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = false, label, onReorder, group, id, onMove, children, className, style }: SectionGroupProps) {
+export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = false, label, onReorder, group, id, onMove, onTearOff, children, className, style }: SectionGroupProps) {
   const ref = useRef<HTMLDivElement>(null);
   const autoId = useId();
   const sortable = !!(onReorder || onMove);
@@ -149,6 +152,7 @@ export function SectionGroup({ accordion = false, defaultOpen = null, toolbar = 
     handleSelector: '.ar-section__head',
     enabled: sortable,
     onMove: (from, to) => (onMove ? onMove(from, to) : from.list === to.list && onReorder?.(from.index, to.index)),
+    onTearOff,
   });
   const [openId, setOpenId] = useState<string | null>(defaultOpen);
   const [command, setCommand] = useState<GroupState['command']>(null);

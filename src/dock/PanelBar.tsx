@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../core/utils';
 
-/** Gap between bar items in the strip, and room kept free so the strip never feels jammed. */
-const ITEM_GAP = 12;
-const BREATHING = 16;
+/** Gap between bar items in the strip (Dock.css), and room kept free so the strip never feels jammed. */
+const ITEM_GAP = 2;
+const BREATHING = 8;
 
 /** The panel currently being rendered, so its bar can find its own slot in the dock strip. */
 export const PanelIdContext = createContext<string | null>(null);
