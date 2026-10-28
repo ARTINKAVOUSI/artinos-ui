@@ -359,3 +359,189 @@ button.ar-section__trigger:focus-visible {
     transform var(--ar-dur-layout) var(--ar-ease),
     width var(--ar-dur-layout) var(--ar-ease);
 }
+
+/* ---------- Panel: icon, fold, variants, scrolling body ---------- */
+.ar-panel__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  color: var(--ar-text-low);
+}
+.ar-panel__icon svg {
+  width: 15px;
+  height: 15px;
+}
+:where(.ar-panel__toggle, .ar-panel__chevron) {
+  all: unset;
+}
+.ar-panel__toggle {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  border-radius: var(--ar-radius-control);
+}
+.ar-panel__toggle:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-panel__chevron {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 22px;
+  color: var(--ar-text-faint);
+  cursor: pointer;
+  transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-panel__head:hover .ar-panel__chevron {
+  color: var(--ar-text-mid);
+}
+/* the fold: tabs, body and foot roll up into the header, like a Section's rows */
+.ar-panel__fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ar-dur-surface) var(--ar-ease-exit);
+}
+.ar-panel[data-open] > .ar-panel__fold {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--ar-dur-layout) var(--ar-ease-roll);
+}
+.ar-panel__inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: visible clip;
+  overflow-clip-margin: 4px;
+}
+.ar-panel:not([data-open]) .ar-panel__head {
+  padding-bottom: 16px;
+}
+/* a long body scrolls under soft fades instead of being cut */
+.ar-panel__body[data-scroll] {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 14px), transparent);
+}
+/* solid: opaque, for a busy or bright scene */
+.ar-panel[data-variant='solid'] {
+  background: var(--ar-panel-sheen), color-mix(in srgb, var(--ar-bg-app) 94%, transparent);
+}
+/* inset: a quiet frame inside another panel — no glass of its own */
+.ar-panel[data-variant='inset'] {
+  border-radius: var(--ar-radius-card);
+  background: color-mix(in srgb, var(--ar-text-hi) 3%, transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+  text-shadow: none;
+}
+.ar-panel[data-variant='inset']::before {
+  display: none;
+}
+.ar-panel[data-variant='inset'] .ar-panel__head {
+  padding: 12px 14px 8px;
+}
+.ar-panel[data-variant='inset'] .ar-panel__title {
+  font-size: var(--ar-text-lg);
+}
+.ar-panel[data-variant='inset'] .ar-panel__body {
+  padding: 8px 14px 12px;
+}
+
+/* ---------- Section: icon, reset, description, card, columns ---------- */
+.ar-section__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  color: var(--ar-text-low);
+}
+.ar-section__icon svg {
+  width: 12px;
+  height: 12px;
+}
+.ar-section__reset {
+  --_tool: 18px;
+  animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-section__reset svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ar-section__description {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+  font: var(--ar-weight-text) var(--ar-text-sm) / var(--ar-leading-text) var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+/* columns: the rows become cells of a grid */
+.ar-section__body[data-columns] {
+  display: grid;
+  grid-template-columns: repeat(var(--_cols, 2), minmax(0, 1fr));
+  column-gap: 10px;
+  row-gap: var(--ar-row-gap, 6px);
+}
+.ar-section__body[data-columns='3'] {
+  --_cols: 3;
+}
+/* card: the group sits in its own soft inset card */
+.ar-section[data-variant='card'] {
+  padding: 8px 10px 10px;
+  border-radius: var(--ar-radius-card);
+  background: color-mix(in srgb, var(--ar-text-hi) 3.5%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--ar-line-subtle),
+    inset 0 1px 0 color-mix(in srgb, var(--ar-text-hi) 6%, transparent);
+  transition: background var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-section[data-variant='card']:not([data-open]) {
+  padding-bottom: 4px;
+}
+.ar-section[data-variant='card'][data-off] {
+  background: color-mix(in srgb, var(--ar-text-hi) 1.5%, transparent);
+}
+
+/* ---------- SectionGroup ---------- */
+.ar-section-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ar-section-group__bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-bottom: -2px;
+}
+:where(.ar-section-group__all) {
+  all: unset;
+}
+.ar-section-group__all {
+  padding: 2px 7px;
+  border-radius: var(--ar-radius-control);
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-low);
+  cursor: pointer;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-section-group__all:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-section-group__all:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}

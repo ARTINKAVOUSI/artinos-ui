@@ -1,7 +1,7 @@
 /* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
    rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
-import { Badge, Button, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
+import { Badge, Button, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { InspectorPanel } from './demos';
 
@@ -152,6 +152,69 @@ function ControlStrip() {
   );
 }
 
+const RENDER_ICON = (
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 1.8l5.4 3.1v6.2L8 14.2l-5.4-3.1V4.9z" />
+    <path d="M8 8l5.4-3.1M8 8v6.2M8 8L2.6 4.9" />
+  </svg>
+);
+const EXPOSURE0 = { ev: 0.4, gamma: 2.2 };
+
+function Groups() {
+  const [exp, setExp] = useState(EXPOSURE0);
+  const changed = exp.ev !== EXPOSURE0.ev || exp.gamma !== EXPOSURE0.gamma;
+  return (
+    <div className="sc-grid" style={{ alignItems: 'start' }}>
+      <Panel title="Render" subtitle="Orb · frame 1 of 240" icon={RENDER_ICON} collapsible maxHeight={340} footer={<>• Live <span>GPU 4.1 ms</span></>}>
+        <SectionGroup toolbar label="Render settings">
+          <Section
+            variant="card"
+            title="Exposure"
+            description="How bright the frame is before the tonemap."
+            count={changed ? '1 changed' : undefined}
+            modified={changed}
+            onReset={() => setExp(EXPOSURE0)}
+          >
+            <Slider label="Exposure" min={-4} max={4} unit="ev" decimals={2} bipolar value={exp.ev} onChange={(ev) => setExp({ ...exp, ev })} />
+            <Slider label="Gamma" min={1} max={3} decimals={2} value={exp.gamma} onChange={(gamma) => setExp({ ...exp, gamma })} />
+          </Section>
+          <Section variant="card" title="Transform" count={3} columns={3}>
+            <NumberField label="X" defaultValue={1.25} decimals={2} unit="m" />
+            <NumberField label="Y" defaultValue={0} decimals={2} unit="m" />
+            <NumberField label="Z" defaultValue={-0.5} decimals={2} unit="m" />
+          </Section>
+          <Section variant="card" title="Post" defaultEnabled storageKey="showcase-render-post" description="Double-click the heading to switch the whole group; its fold is remembered.">
+            <Slider label="Bloom" defaultValue={0.24} />
+            <Slider label="Grain" defaultValue={0.08} />
+            <Slider label="Vignette" defaultValue={0.4} />
+          </Section>
+        </SectionGroup>
+      </Panel>
+
+      <Panel title="Scene" subtitle="One open at a time" variant="solid">
+        <SectionGroup accordion defaultOpen="camera" label="Scene">
+          <Section id="camera" title="Camera" count={2}>
+            <Slider variant="ruler" label="Focal" min={12} max={200} span={40} unit="mm" decimals={0} defaultValue={50} />
+            <Slider label="Aperture" min={1.4} max={16} decimals={1} defaultValue={2.8} />
+          </Section>
+          <Section id="light" title="Light" count={2}>
+            <Slider variant="gradient" gradient="temperature" label="Temperature" min={1000} max={12000} decimals={0} defaultValue={6500} />
+            <Slider label="Intensity" defaultValue={0.7} />
+          </Section>
+          <Section id="atmosphere" title="Atmosphere" count={1}>
+            <Slider label="Fog" defaultValue={0.12} />
+          </Section>
+        </SectionGroup>
+        <Panel variant="inset" title="Notes">
+          <p className="sc-text" style={{ margin: 0 }}>
+            An inset panel is a quiet frame inside another: no glass of its own.
+          </p>
+        </Panel>
+      </Panel>
+    </div>
+  );
+}
+
 const LAYERS = [
   { id: 'orb', title: 'Orb', meta: 'Glass shell · 12,480 tris', swatch: '#4fd1ba', live: true },
   { id: 'dye', title: 'Dye stream', meta: 'Fluid · magenta · joined', swatch: '#d0307a', live: false },
@@ -229,6 +292,25 @@ export function LayoutChapter() {
           <Inspector />
           <ControlStrip />
         </div>
+      </Spec>
+
+      <Spec
+        id="groups"
+        text="Groups that do more. A Section can carry a description, an icon, a reset that appears once something changed, and remember whether it was open; variant='card' sets it in its own soft inset card and columns lays its rows out side by side. SectionGroup makes sections behave together: an accordion keeps one open at a time, toolbar adds Expand all and Collapse all. A Panel takes an icon, folds to its header when collapsible, scrolls past maxHeight under soft fades, and comes as glass, solid (opaque, for busy scenes) or inset (a quiet frame inside another panel)."
+        code={`<Panel title="Render" icon={<Cube />} collapsible maxHeight={340}>
+  <SectionGroup toolbar>
+    <Section variant="card" title="Exposure" description="How bright the frame is."
+             modified={changed} onReset={reset}> … </Section>
+    <Section variant="card" title="Transform" columns={3}> <NumberField label="X" /> … </Section>
+    <Section variant="card" title="Post" defaultEnabled storageKey="post"> … </Section>
+  </SectionGroup>
+</Panel>
+<SectionGroup accordion defaultOpen="camera">
+  <Section id="camera" title="Camera"> … </Section>
+  <Section id="light" title="Light"> … </Section>
+</SectionGroup>`}
+      >
+        <Groups />
       </Spec>
 
       <Spec

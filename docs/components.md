@@ -158,9 +158,14 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
 
 ## Panel · Section · Field
 
-- **Panel** — glass card. Props: `title`, `subtitle`, `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `as` (default `section`), `children`.
+- **Panel** — glass card. Props: `title`, `subtitle`, `icon` (a small mark before the title), `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `variant` (`'glass'` default · `'solid'` opaque, for busy or bright scenes · `'inset'` a quiet hairline frame with no glass, for a panel inside a panel), `collapsible` with `open` / `defaultOpen` / `onOpenChange` (folds to its header; click the title or chevron), `maxHeight` (the body scrolls past it under soft fades), `as` (default `section`), `children`.
+- **SectionGroup** — sections that behave together. Props: `accordion` (one open at a time; give each Section an `id`), `defaultOpen` (the id open first), `toolbar` (Expand all · Collapse all above the sections; only this group's sections answer), `label`. Every Section inside a group can fold.
 - **Section** — a titled group under a quiet heading, with no line across. Everything about the group lives in its one title row: LED (switchable groups) · title · count · actions · chevron. Props:
-  - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title);
+  - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title), `icon` (a small mark before the title), `description` (a quiet line at the top of the body: what the group does);
+  - `variant` (`'plain'` default · `'card'`: the group sits in its own soft inset card — use it to set related groups apart in a long panel), `columns` (2 or 3: the rows become cells of a grid, e.g. X · Y · Z);
+  - `modified` with `onReset`: a reset button appears in the title row while something in the group differs from its default;
+  - `storageKey`: remembers open or closed across visits (localStorage; read after mount, so server HTML matches), and makes the group foldable;
+  - `id`: needed inside an accordion SectionGroup;
   - `count`: quiet info right after the title — a number (it rolls when it changes) or a short note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it). It dims with the group when off;
   - `actions`: slim things that belong to the group, such as a status `Badge` or an `IconButton`; they are trimmed to the row's height;
   - `enabled` / `defaultEnabled` / `onEnabledChange`: the group's on/off, shown by an LED before the title (lit when on; dark with a ghosted title when off). **One click** on the title row folds the group; **double-click** (or **Shift+Enter**) switches it on or off. Off folds it closed and makes it inert; values are kept, and on restores the fold it had. A switchable group always shows its chevron. On switchable groups a single click waits ~220ms to tell it from a double-click;

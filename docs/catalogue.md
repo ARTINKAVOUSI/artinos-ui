@@ -278,11 +278,23 @@ Read-only instruments.
 
 ### Panel
 
-The glass card that holds controls. Slots: `title`, `subtitle`, `actions` (header right: icon buttons, a status dot), `tabs` (between header and body, usually `<Tabs>`), `footer` (a foot status line), `children`. `as` changes the element (default `section`).
+The glass card that holds controls. Slots: `title`, `subtitle`, `icon`, `actions` (header right: icon buttons, a status dot), `tabs` (between header and body, usually `<Tabs>`), `footer` (a foot status line), `children`. `as` changes the element (default `section`).
+
+| need | use |
+|---|---|
+| a panel over a calm scene | `variant="glass"` (default) |
+| a panel over a busy or bright scene | `variant="solid"` |
+| a panel inside a panel | `variant="inset"` |
+| a panel the user can tuck away | `collapsible` |
+| a long panel in a fixed space | `maxHeight` (the body scrolls under soft fades) |
+
+### SectionGroup
+
+Sections that behave together. `accordion` keeps one open at a time (each Section needs an `id`); `toolbar` adds Expand all · Collapse all. Use an accordion for alternatives the user visits one by one (camera · light · atmosphere), a toolbar for a long panel of groups.
 
 ### Section
 
-A titled group under a quiet heading, no line across. Everything about the group lives in its one title row: LED · title · count · actions · chevron.
+A titled group under a quiet heading, no line across. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group in its own soft inset card; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
 
 | kind | props | behaviour |
 |---|---|---|

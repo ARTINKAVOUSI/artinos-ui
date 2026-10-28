@@ -32,7 +32,7 @@ export const COMPONENTS = [
   { group: 'Display', id: 'Stat', label: 'Stat', file: 'display/Stat.tsx', note: 'a figure with its change and trend' },
   { group: 'Display', id: 'Progress', label: 'Progress', file: 'display/Progress.tsx', note: 'a task under way' },
   { group: 'Display', id: 'RollingValue', label: 'RollingValue', file: 'core/RollingValue.tsx', note: 'rolling-digit readout' },
-  { group: 'Layout', id: 'Panel', label: 'Panel · Section · Field', file: 'layout/Panel.tsx', note: 'glass panel and layout' },
+  { group: 'Layout', id: 'Panel', label: 'Panel · Section · SectionGroup · Field', file: 'layout/Panel.tsx', note: 'glass panel, groups, accordion and layout' },
   { group: 'Layout', id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
   { group: 'Layout', id: 'PropertyRow', label: 'PropertyRow', file: 'layout/PropertyRow.tsx', note: 'label · control inspector row' },
   { group: 'Layout', id: 'ItemRow', label: 'ItemList · ItemRow', file: 'layout/ItemRow.tsx', note: 'a list of things: layers, bodies, presets' },

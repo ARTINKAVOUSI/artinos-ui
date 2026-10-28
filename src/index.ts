@@ -74,8 +74,8 @@ export { Progress } from './display/Progress';
 export type { ProgressProps } from './display/Progress';
 
 // layout
-export { Panel, Section, Field } from './layout/Panel';
-export type { PanelProps, SectionProps, FieldProps } from './layout/Panel';
+export { Panel, Section, SectionGroup, Field } from './layout/Panel';
+export type { PanelProps, SectionProps, SectionGroupProps, FieldProps } from './layout/Panel';
 export { Tabs } from './layout/Tabs';
 export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
