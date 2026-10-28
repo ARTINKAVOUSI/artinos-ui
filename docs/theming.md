@@ -107,12 +107,12 @@ For React Three Fiber, the controls are DOM. Put them in an HTML overlay above t
 
 ## Type collections
 
-By default type is one voice: a single sans sets words, figures (tabular, so columns line up) and small marks, with sentence-case headings and no tracked capitals, so a panel reads as one hand; a monospace is kept for code. A **type collection** swaps the faces and re-tunes only what the faces change (the figures face, caps, tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).
+By default type is two voices of one family: a sans sets words and its mono sibling sets figures and small marks, so numbers line up and read as measurements; headings are sentence case, with no tracked capitals. A **type collection** swaps the faces and re-tunes only what the faces change (the figures face, caps, tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).
 
 | collection | sans · mono (· display) | character |
 |---|---|---|
-| `instrument` (default) | Inter (words and figures) · Geist Mono for code | one voice, drawn open at 11–13px with optical sizes; sentence-case headings, no tracked capitals |
-| `geist` | Geist · Geist Mono | mono figures and tracked capitals on small headings: the exact, technical look |
+| `instrument` (default) | Geist · Geist Mono | a sans for words, its mono sibling for every figure; sentence-case headings |
+| `geist` | Geist · Geist Mono | the default faces with small headings and marks in tracked capitals: the exact, technical look |
 | `grotesk` | Chivo · Chivo Mono | a grotesk with an engineering edge: crisp caps, a mono with character |
 | `editorial` | IBM Plex Sans · IBM Plex Mono | drawn, editorial; open counters, a mono with character |
 | `modern` | Inter · JetBrains Mono | the proven pairing of modern tools; tall x-height, a wide legible mono |
@@ -219,9 +219,9 @@ Control finish (materials level):
 
 ### Typography
 
-One voice. **Inter** sets titles, prose, menus, labels, buttons, readouts and counts; figures are tabular wherever numbers line up, and small headings are sentence case at medium weight. **Geist Mono** is for code only. A collection can bring back a mono for figures and tracked capitals (`geist` does both). Everything uses the tokens below; no component sets a literal size, weight or tracking.
+Two voices of one family. **Geist** sets titles, prose, menus, labels and buttons; **Geist Mono**, drawn on the same skeleton, sets readouts, counts, badges and code, so figures line up and read as measurements. Small headings are sentence case at medium weight; `geist` sets them, and the small marks, in tracked capitals. Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
-- families: `--ar-font-ui` (the sans), `--ar-font-num` (figures and small marks: the sans by default, a mono in most collections), `--ar-font-code` (code), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the figures face; Roboto Mono in `reference`).
+- families: `--ar-font-ui` (the sans), `--ar-font-num` (figures and small marks: a mono, Geist Mono by default), `--ar-font-code` (code), `--ar-font-display` (titles at 22px and up; the sans unless a collection gives it a display or serif face). A [type collection](#type-collections) sets all three. A theme's controls read `--ar-control-font` (the figures face; Roboto Mono in `reference`).
 - weights, exactly the four the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (200, display figures), `--ar-weight-light` (300, titles from 14px up), `--ar-weight-regular` (400, emphasis), `--ar-weight-medium` (500, caps); `--ar-weight-text` (regular) is small sans text up to `--ar-text-md`, inputs, rows and menus, where light strokes thin out on glass. Control readouts use `--ar-value-weight` (400 by default).
 - space: `--ar-space-1` … `--ar-space-9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and the roles density tunes — `--ar-row-gap` (rows in a group), `--ar-group-gap` (groups in a panel), `--ar-panel-pad-x` / `--ar-panel-pad-y` (a panel's padding) — plus `--ar-measure` (62ch, a paragraph's longest line). The catalogue's *Layout and text* chapter has the rules.
 - the sans scale, `--ar-weight-text` to md and light above: `--ar-text-xs` (11px, hints and captions), `--ar-text-sm` (12px, secondary lines, tabs, menu rows), `--ar-text-md` (13px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (17px, panel titles), `--ar-text-2xl` (22px, page section titles), `--ar-text-3xl` (34px, display, weight 200). Mono readouts that aren't caps use the same steps.

@@ -126,17 +126,17 @@
 }
 
 /* ---------- type ----------
-   One voice: words, figures and small marks are set in one sans, with tabular figures where
-   numbers line up, so a panel reads as one hand. A monospace is kept for code only. Declared on
+   Two voices of one family: a sans for words (titles, prose, labels, menus) and its mono sibling
+   for figures (readouts, counts, badges, ticks), so numbers line up and read as measurements.
+   Headings stay in sentence case. Declared on
    :root only, not at every theme boundary, so a type collection (tokens/type.css, data-ar-type)
-   set on a scope carries through the themes nested inside it; a collection may give figures a
-   mono of their own. */
+   set on a scope carries through the themes nested inside it. */
 :root {
-  /* Inter, with optical sizes: it draws itself more open at 11–13px, where panels live */
-  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Geist and Geist Mono: one skeleton drawn twice for screens */
+  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* figures and small marks: readouts, counts, badges, ticks */
-  --ar-font-num: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* code, and nothing else */
+  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* code */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* titles at 2xl and up; a type collection may give it a serif or a display face */
   --ar-font-display: var(--ar-font-ui);
