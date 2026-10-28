@@ -1,7 +1,7 @@
 'use client';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useControllable } from '../core/hooks';
-import { cx, normalizeOptions, scopeAttrs } from '../core/utils';
+import { cx, normalizeOptions, revealClipped, scopeAttrs } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS Segmented — one of n. The insert travels between positions and the text
@@ -60,6 +60,7 @@ export function Segmented<V extends string = string>({ label, options, value, de
             title={o.title}
             disabled={o.disabled}
             onClick={() => pick(o.value)}
+            onPointerEnter={(e) => revealClipped(e.currentTarget, e.currentTarget.querySelector<HTMLElement>('.ar-text'))}
             className="ar-segmented__opt"
             data-on={i === idx ? '' : undefined}
           >

@@ -164,6 +164,24 @@ export function snapshotTokens(el: Element | null, names: readonly string[]): Re
   return out;
 }
 
+/**
+ * Truncation fallback: when an ellipsis has cut `text`, its full words become `host`'s native
+ * tooltip; when it fits again, the tooltip goes. Call it as the pointer enters the host. A title
+ * the host was given on purpose is never touched.
+ */
+export function revealClipped(host: HTMLElement | null, text: HTMLElement | null | undefined) {
+  if (!host || !text) return;
+  const auto = host.dataset.arAutoTitle !== undefined;
+  if (host.title && !auto) return;
+  if (text.scrollWidth > text.clientWidth + 1) {
+    host.title = text.textContent ?? '';
+    host.dataset.arAutoTitle = '';
+  } else if (auto) {
+    host.removeAttribute('title');
+    delete host.dataset.arAutoTitle;
+  }
+}
+
 /** Reads a px length token (e.g. --ar-inset) from an element. */
 export function pxToken(el: Element | null, name: string, fallback: number) {
   if (!el) return fallback;

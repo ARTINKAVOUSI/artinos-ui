@@ -4,7 +4,7 @@ import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useGlide, usePresence } from '../core/motion';
 import { useControllable, useSafeId } from '../core/hooks';
-import { cx, normalizeOptions, reducedMotion, scopeAttrs, snapshotTokens } from '../core/utils';
+import { cx, normalizeOptions, reducedMotion, revealClipped, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
 /* ARTINOS Select — closed, a full-width insert with a chevron (or a quiet well with
@@ -212,6 +212,7 @@ export function Select<V extends string = string>({ label, options, value, defau
       data-appearance={appearance}
       onKeyDown={onKeyDown}
       onClick={() => (open ? close() : show())}
+      onPointerEnter={(e) => revealClipped(e.currentTarget, e.currentTarget.querySelector<HTMLElement>('.ar-select__text'))}
       className={cx('ar-well ar-select', disabled && 'is-disabled', className)}
       style={style}
     >

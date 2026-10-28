@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { RollingValue } from '../core/RollingValue';
 import { useControllable, useSafeId } from '../core/hooks';
-import { clamp, cx, GRADIENTS, gradientCss, joinFormatted, luminance, pxToken, reducedMotion, runFormat, sampleStops, scopeAttrs, snapshotTokens } from '../core/utils';
+import { clamp, cx, GRADIENTS, gradientCss, joinFormatted, luminance, pxToken, reducedMotion, revealClipped, runFormat, sampleStops, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { Format, Formatter, Gradient, GradientName, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, CURVES, extraDigits, majorEvery, makeScale, modifierRatio, nextDetent, niceUnit, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
 import type { CurveName, PrecisionLevels } from './engine';
@@ -521,6 +521,7 @@ export function Slider(props: SliderProps) {
     onPointerCancel: () => end(true),
     onPointerEnter: () => {
       insetRef.current = pxToken(trackRef.current, '--ar-inset', 2);
+      revealClipped(rootRef.current, labelRef.current);
     },
     onPointerLeave: () => !drag.current && zone && setZone(null),
     onDoubleClick,

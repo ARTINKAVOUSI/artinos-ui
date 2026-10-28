@@ -3,7 +3,7 @@ import { useEffect, useId, useRef } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
 import { RollingText } from '../core/RollingValue';
-import { cx } from '../core/utils';
+import { cx, revealClipped } from '../core/utils';
 
 /* ARTINOS layout — the frames controls live in.
  *   Panel    frosted card: header (title · subtitle · actions), body, foot status line
@@ -145,7 +145,7 @@ export function Section({
       data-switchable={toggleable ? '' : undefined}
       style={style}
     >
-      <div className="ar-section__head">
+      <div className="ar-section__head" onPointerEnter={(e) => revealClipped(e.currentTarget, e.currentTarget.querySelector<HTMLElement>('.ar-section__title'))}>
         {foldable ? (
           <button
             type="button"

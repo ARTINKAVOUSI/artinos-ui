@@ -127,6 +127,47 @@
   box-shadow: var(--ar-focus-ring);
 }
 
+/* default: the secondary weight — a quiet raised face and a hairline, no insert, no LED, so
+   the one primary action in a view is the only polished part */
+.ar-button:not([data-variant]) {
+  height: var(--ar-h);
+  padding: 0;
+  border-radius: var(--ar-radius);
+  background: var(--ar-bg-raised);
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+  color: var(--ar-label-ink);
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.ar-button:not([data-variant])[data-size='sm'] {
+  height: calc(var(--ar-h) - 4px);
+}
+.ar-button:not([data-variant]) .ar-button__label,
+.ar-button:not([data-variant]) .ar-button__icon,
+.ar-button:not([data-variant]) .ar-button__trailing {
+  color: inherit;
+}
+.ar-button:not([data-variant]):hover {
+  background: var(--ar-bg-active);
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong);
+  color: var(--ar-text-hi);
+}
+.ar-button:not([data-variant]):hover .ar-button__face {
+  filter: none;
+}
+.ar-button:not([data-variant]):focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong), var(--ar-focus-ring);
+}
+.ar-button:not([data-variant]) .ar-button__trailing .ar-keycap {
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  color: var(--ar-text-low);
+}
+.ar-button:not([data-variant]):disabled .ar-button__face {
+  filter: none;
+}
+
 /* ---------- IconButton: bare ink, an insert when pressed ---------- */
 :where(.ar-icon-button) {
   all: unset;
@@ -212,6 +253,50 @@
 .ar-icon-button:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+/* labelled: the name beside the icon; 'active' shows it only on the pressed tool, growing in */
+.ar-icon-button[data-labelled] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: var(--_size);
+  padding: 0 calc((var(--_size) - 13px) / 2);
+  gap: 6px;
+}
+.ar-icon-button__label {
+  color: inherit;
+  text-shadow: inherit;
+}
+.ar-icon-button[data-labelled='active'] .ar-icon-button__label {
+  max-width: 0;
+  margin-left: -6px;
+  opacity: 0;
+  transition:
+    max-width var(--ar-dur-surface) var(--ar-ease),
+    margin var(--ar-dur-surface) var(--ar-ease),
+    opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-icon-button[data-labelled='active'][aria-pressed='true'] .ar-icon-button__label {
+  max-width: 140px;
+  margin-left: 0;
+  opacity: 1;
+}
+
+/* ---------- ToolbarGroup: related buttons in one shared well ---------- */
+.ar-toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: calc(var(--ar-radius) + 2px);
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+}
+.ar-toolbar[aria-orientation='vertical'] .ar-toolbar__group {
+  flex-direction: column;
 }
 
 /* ---------- Toolbar ---------- */

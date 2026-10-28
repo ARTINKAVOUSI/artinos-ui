@@ -211,24 +211,34 @@ A wide well with an etched, dashed rim. Hold a file over it and the rim breathes
 
 ### Button
 
-An insert in its well, labelled in mono caps.
+Three weights, so a view has one clear main action.
 
 | variant | look | use for |
 |---|---|---|
-| `default` | the insert | most actions |
-| `primary` | the LED lights | the one main action in a view |
-| `danger` | the LED lights in the fault colour | destructive actions |
-| `ghost` | bare label ink, no insert | secondary actions, dialog cancels |
+| `primary` | the polished insert in its well, LED lit | the one main action in a view |
+| `danger` | the insert, LED in the fault colour | destructive actions |
+| `default` | a quiet raised face with a hairline | every other action |
+| `ghost` | bare label ink | the quietest actions, dialog cancels, resets |
+
+A label cut by an ellipsis shows in full as the tooltip.
 
 `size` `'md' | 'sm'` (sm fits tight rows), `icon` leads, `trailing` is a right-aligned hint (usually `<Kbd>`), `block` stretches to the container. Every `<button>` attribute passes through.
 
 ### IconButton
 
-Square and icon-only; bare ink that becomes an insert when pressed. `label` is required (tooltip and accessible name). `active` makes it a toggle drawn as an insert while on; `filled` draws a well behind it at rest, for use over bright scenes; `size` `'md' | 'sm'`.
+Square and icon-only; bare ink that becomes an insert when pressed. `label` is required (tooltip and accessible name). `active` makes it a toggle drawn as an insert while on; `filled` draws a well behind it at rest, for use over bright scenes; `size` `'md' | 'sm'`; `labelled` puts the label beside the icon (`'active'`: only on the pressed one).
 
 ### Toolbar
 
-Groups actions under `role="toolbar"`. `label` required; `orientation` `'horizontal' | 'vertical'`; `floating` gives it a pane of the theme's glass for use over a canvas. `<ToolbarSeparator />` draws a hairline; `<ToolbarSpacer />` pushes the rest to the far end.
+Groups actions under `role="toolbar"`. `label` required; `orientation` `'horizontal' | 'vertical'`; `floating` gives it a pane of the theme's glass for use over a canvas. `<ToolbarGroup label>` sets related buttons in one shared well; `<ToolbarSeparator />` draws a hairline; `<ToolbarSpacer />` pushes the rest to the far end.
+
+| toolbar | build it from |
+|---|---|
+| a tool strip (select, move, brush…) | one `ToolbarGroup` of `IconButton size="sm" labelled="active"`, one `active` |
+| view toggles (grid, snap, guides) | a second `ToolbarGroup` of `IconButton active` |
+| actions at the end | `ToolbarSpacer`, then `ghost` · `default` · one `primary` Button |
+
+Never a row of equal labelled pills: group them, name only the current tool, and let one action be primary.
 
 ### Kbd
 

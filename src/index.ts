@@ -52,7 +52,7 @@ export { Button } from './actions/Button';
 export type { ButtonProps } from './actions/Button';
 export { IconButton } from './actions/IconButton';
 export type { IconButtonProps } from './actions/IconButton';
-export { Toolbar, ToolbarSeparator, ToolbarSpacer } from './actions/Toolbar';
+export { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarSpacer } from './actions/Toolbar';
 export type { ToolbarProps } from './actions/Toolbar';
 export { Kbd } from './actions/Kbd';
 export type { KbdProps } from './actions/Kbd';

@@ -27,6 +27,16 @@ export function Toolbar({ label, orientation = 'horizontal', floating = false, c
   );
 }
 
+/** A set of related buttons in one shared well — a tool strip, a set of views — so a toolbar
+ *  reads as a few groups instead of a row of equal pills. */
+export function ToolbarGroup({ label, children, className, style }: { label: string; children: ReactNode; className?: string; style?: CSSProperties }) {
+  return (
+    <div role="group" aria-label={label} className={className ? `ar-toolbar__group ${className}` : 'ar-toolbar__group'} style={style}>
+      {children}
+    </div>
+  );
+}
+
 export function ToolbarSeparator() {
   return <span className="ar-toolbar__separator" role="separator" />;
 }

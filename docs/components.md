@@ -224,15 +224,17 @@ Props:
 
 ## Button · IconButton · Toolbar · Kbd · Badge
 
-- **Button**: an insert in its well, labelled in mono caps. `variant`:
-  - `'default'`;
-  - `'primary'` lights the LED; use it for the one main action in a view;
-  - `'danger'` lights the LED in the fault colour;
-  - `'ghost'` is bare label ink.
+- **Button**: a labelled action in three weights. `variant`:
+  - `'primary'`: the family's polished insert in its well with a lit LED; the one main action in a view;
+  - `'danger'`: the same, with the LED in the fault colour;
+  - `'default'`: a quiet raised face with a hairline, for every other action;
+  - `'ghost'`: bare label ink.
+
+  A label cut by an ellipsis shows in full as the button's tooltip (unless you gave it a `title`).
 
   Other props: `size` (`'md' | 'sm'`), `icon` (leading), `trailing` (a right-aligned hint, typically `<Kbd>`), `block` (full width), plus every `<button>` attribute.
-- **IconButton**: square and icon-only. The required `label` is both the accessible name and the tooltip. `active` makes it a toggle drawn as an insert while pressed; `filled` gives it a well at rest, for use over bright scenes; `size` is `'md' | 'sm'`.
-- **Toolbar**: groups actions with `role="toolbar"`. Props: `label` (required), `orientation`, `floating` (a small pane of the theme's glass, for use over a canvas). Use `<ToolbarSeparator />` for a hairline and `<ToolbarSpacer />` to push the rest to the far end.
+- **IconButton**: square and icon-only. The required `label` is both the accessible name and the tooltip. `active` makes it a toggle drawn as an insert while pressed; `filled` gives it a well at rest, for use over bright scenes; `size` is `'md' | 'sm'`; `labelled` shows the label beside the icon — `true` always, `'active'` only while `active`, so a tool strip names the current tool and keeps the rest as icons.
+- **Toolbar**: groups actions with `role="toolbar"`. Props: `label` (required), `orientation`, `floating` (a small pane of the theme's glass, for use over a canvas). Use `<ToolbarGroup label>` to set related buttons in one shared well (a tool strip, a set of views), `<ToolbarSeparator />` for a hairline and `<ToolbarSpacer />` to push the rest to the far end. A good toolbar is a few groups, then a spacer, then its actions from quiet to primary: `ghost` · `default` · one `primary`.
 - **Kbd**: key caps drawn as tiny wells. `keys={['mod', 'K']}`: `mod` shows ⌘ on Apple platforms and Ctrl elsewhere (the same for `shift` and `alt`). The platform is read after hydration, so server-rendered HTML always matches.
 - **Badge**: a status tag drawn as a wash and a hairline in its state's colour. `tone`: `'neutral' | 'live' | 'warm' | 'danger'`. `dot` adds a glowing dot in front.
 

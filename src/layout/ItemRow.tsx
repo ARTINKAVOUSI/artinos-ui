@@ -1,6 +1,6 @@
 'use client';
 import type { CSSProperties, ReactNode } from 'react';
-import { cx } from '../core/utils';
+import { cx, revealClipped } from '../core/utils';
 
 /* ARTINOS ItemRow — one thing in a list: a layer, a body, a preset, a file. A leading mark
    (a colour swatch or an icon), a name, a quiet line of detail under it, and trailing tools
@@ -62,6 +62,17 @@ export function ItemRow({ title, meta, swatch, leading, trailing, selected = fal
       className={cx('ar-item', className)}
       data-selected={selected ? '' : undefined}
       data-disabled={disabled ? '' : undefined}
+      onPointerEnter={(e) => {
+        const host = e.currentTarget;
+        const title = host.querySelector<HTMLElement>('.ar-item__title');
+        const meta = host.querySelector<HTMLElement>('.ar-item__meta');
+        // either line cut short: the row's tooltip carries both in full
+        const cut = [title, meta].some((t) => t && t.scrollWidth > t.clientWidth + 1);
+        if (cut && (!host.title || host.dataset.arAutoTitle !== undefined)) {
+          host.title = [title?.textContent, meta?.textContent].filter(Boolean).join(' — ');
+          host.dataset.arAutoTitle = '';
+        } else if (!cut) revealClipped(host, title);
+      }}
       style={style}
     >
       {onSelect ? (
