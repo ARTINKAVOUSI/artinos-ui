@@ -2055,8 +2055,8 @@
   --ar-signal-wash: rgba(79, 209, 186, 0.14);
   --ar-signal-ink: #0b0f10;
   --ar-bind: rgba(255, 255, 255, 0.8);
-  --ar-warn: rgba(255, 255, 255, 0.8);
-  --ar-fault: rgba(255, 255, 255, 0.8);
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
   --ar-tick: rgba(255, 255, 255, 0.3);
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;
@@ -2093,8 +2093,8 @@
   --ar-signal-wash: rgba(10, 138, 120, 0.1);
   --ar-signal-ink: #ffffff;
   --ar-bind: rgba(17, 17, 17, 0.8);
-  --ar-warn: rgba(17, 17, 17, 0.8);
-  --ar-fault: rgba(17, 17, 17, 0.8);
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
   --ar-tick: rgba(0, 0, 0, 0.28);
   --ar-tick-major: rgba(0, 0, 0, 0.7);
   --ar-shadow-well: none;
@@ -2169,8 +2169,8 @@
   --ar-signal-wash: rgba(79, 209, 186, 0.14);
   --ar-signal-ink: #0b0f10;
   --ar-bind: rgba(255, 255, 255, 0.8);
-  --ar-warn: rgba(255, 255, 255, 0.8);
-  --ar-fault: rgba(255, 255, 255, 0.8);
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
   --ar-tick: rgba(255, 255, 255, 0.3);
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;

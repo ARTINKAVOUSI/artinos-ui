@@ -166,7 +166,8 @@ export function Select<V extends string = string>({ label, options, value, defau
         aria-label={label}
         className="ar-list"
         data-state={leaving ? 'closing' : 'open'}
-        style={{ ...tokens.current, left: rect.left, top: rect.top, width: rect.width, '--_head': rect.height + 'px', '--_top': rect.top + 'px' } as CSSProperties}
+        // at least the trigger's width, wider when an option needs it, never past the window's edge
+        style={{ ...tokens.current, left: rect.left, top: rect.top, width: 'max-content', minWidth: rect.width, maxWidth: `calc(100vw - ${rect.left + 8}px)`, '--_head': rect.height + 'px', '--_top': rect.top + 'px' } as CSSProperties}
       >
         <span className="ar-list__insert" />
         <div className="ar-list__head" onClick={close}>
