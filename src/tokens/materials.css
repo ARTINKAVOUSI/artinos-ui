@@ -400,8 +400,6 @@
 
 /* NOCTURNE — dark insert with dedicated seam contrast. */
 [data-ar-theme='nocturne']:not([data-ar-material]) {
-  --ar-radius: 3px;
-  --ar-insert-radius: 2px;
   --ar-inset: 2px;
   --ar-label-tracking: .19em;
   --ar-insert: rgba(65, 62, 56, 0.65);
@@ -426,8 +424,6 @@
 
 /* LAGOON — dark insert with dedicated seam contrast. */
 [data-ar-theme='lagoon']:not([data-ar-material]) {
-  --ar-radius: 12px;
-  --ar-insert-radius: 11px;
   --ar-inset: 2px;
   --ar-label-tracking: .08em;
   --ar-insert: rgba(66, 142, 144, 0.5);
@@ -453,8 +449,6 @@
 
 /* ARGENT — light insert with dedicated seam contrast. */
 [data-ar-theme='argent']:not([data-ar-material]) {
-  --ar-radius: 2px;
-  --ar-insert-radius: 1px;
   --ar-inset: 2px;
   --ar-label-tracking: .16em;
   --ar-insert: rgba(231, 238, 245, 0.87);
@@ -479,8 +473,6 @@
 
 /* GARNET — dark insert with dedicated seam contrast. */
 [data-ar-theme='garnet']:not([data-ar-material]) {
-  --ar-radius: 6px;
-  --ar-insert-radius: 5px;
   --ar-inset: 2px;
   --ar-label-tracking: .14em;
   --ar-insert: rgba(142, 83, 98, 0.62);
@@ -505,8 +497,6 @@
 
 /* IVORY — light insert with dedicated seam contrast. */
 [data-ar-theme='ivory']:not([data-ar-material]) {
-  --ar-radius: 9px;
-  --ar-insert-radius: 8px;
   --ar-inset: 3px;
   --ar-label-tracking: .1em;
   --ar-insert: rgba(246, 238, 221, 0.9);
@@ -533,8 +523,6 @@
 
 /* GLACIER — light insert with dedicated seam contrast. */
 [data-ar-theme='glacier']:not([data-ar-material]) {
-  --ar-radius: 5px;
-  --ar-insert-radius: 4px;
   --ar-inset: 2px;
   --ar-label-tracking: .12em;
   --ar-insert: rgba(234, 247, 251, 0.93);
@@ -560,8 +548,6 @@
 
 /* WISTERIA — light insert with dedicated seam contrast. */
 [data-ar-theme='wisteria']:not([data-ar-material]) {
-  --ar-radius: 11px;
-  --ar-insert-radius: 10px;
   --ar-inset: 3px;
   --ar-label-tracking: .07em;
   --ar-insert: rgba(239, 232, 249, 0.92);
@@ -588,8 +574,6 @@
 
 /* DUNE — light insert with dedicated seam contrast. */
 [data-ar-theme='dune']:not([data-ar-material]) {
-  --ar-radius: 4px;
-  --ar-insert-radius: 3px;
   --ar-inset: 3px;
   --ar-label-tracking: .17em;
   --ar-insert: linear-gradient(180deg, rgba(224, 212, 189, 0.94) 0%, rgba(195, 178, 151, 0.9) 100%);
@@ -2015,8 +1999,6 @@
 
 /* PRESSED — paired soft shadows, no colour: light from the top left */
 [data-ar-theme='pressed']:not([data-ar-material]) {
-  --ar-radius: 9px;
-  --ar-insert-radius: 7px;
   --ar-inset: 3px;
   --ar-trough: rgba(0, 0, 0, 0.06);
   --ar-well: inset 2px 2px 5px rgba(0, 0, 0, 0.22), inset -1px -1px 3px rgba(255, 255, 255, 0.14);

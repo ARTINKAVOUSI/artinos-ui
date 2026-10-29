@@ -72,13 +72,13 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `frost-deep` | Deep Frost | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
 |  | `frost-satin` | Satin Frost | glass | Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering. |
 |  | `frost-ceramic` | Ceramic Frost | glass | Glazed white values with a soft gloss band, set into pressed frost. |
-| atelier-glass | `nocturne` | Nocturne | glass | Architectural smoke glass. Cut corners, black crystal controls and a fine champagne edge. |
-|  | `lagoon` | Lagoon | glass | Deep petrol crystal. Rounded aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
-|  | `argent` | Argent | glass | Daylight silver glass. Crisp square edges, polished silver inserts and precise ink-blue accents. |
+| atelier-glass | `nocturne` | Nocturne | glass | Architectural smoke glass. Black crystal controls and a fine champagne edge. |
+|  | `lagoon` | Lagoon | glass | Deep petrol crystal. Aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
+|  | `argent` | Argent | glass | Daylight silver glass. Polished silver inserts and precise ink-blue accents. |
 |  | `garnet` | Garnet | glass | Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals. |
 | atelier-frost | `ivory` | Ivory | glass | Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details. |
 |  | `glacier` | Glacier | glass | Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals. |
-|  | `wisteria` | Wisteria | glass | Lilac silk frost. Softly rounded opaline controls, plum lettering and muted violet accents. |
+|  | `wisteria` | Wisteria | glass | Lilac silk frost. Opaline controls, plum lettering and muted violet accents. |
 |  | `dune` | Dune | glass | Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering. |
 | studio | `studio` | Studio | solid | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default. |
 |  | `studio-light` | Studio Light | solid | The same instrument on a light neutral desk. White satin controls. |

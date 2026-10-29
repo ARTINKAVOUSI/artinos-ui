@@ -56,14 +56,14 @@
  *     frost-satin     Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering.
  *     frost-ceramic   Glazed white values with a soft gloss band, set into pressed frost.
  *   atelier-glass
- *     nocturne        Architectural smoke glass. Cut corners, black crystal controls and a fine champagne edge.
- *     lagoon          Deep petrol crystal. Rounded aquamarine lenses, luminous sea-glass edges and cool ivory ink.
- *     argent          Daylight silver glass. Crisp square edges, polished silver inserts and precise ink-blue accents.
+ *     nocturne        Architectural smoke glass. Black crystal controls and a fine champagne edge.
+ *     lagoon          Deep petrol crystal. Aquamarine lenses, luminous sea-glass edges and cool ivory ink.
+ *     argent          Daylight silver glass. Polished silver inserts and precise ink-blue accents.
  *     garnet          Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals.
  *   atelier-frost
  *     ivory           Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details.
  *     glacier         Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals.
- *     wisteria        Lilac silk frost. Softly rounded opaline controls, plum lettering and muted violet accents.
+ *     wisteria        Lilac silk frost. Opaline controls, plum lettering and muted violet accents.
  *     dune            Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering.
  *   studio
  *     studio          Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default.
@@ -301,10 +301,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --ar-float-ink: #f6f1e7;
   --ar-float-ink-low: #b9b2a6;
-  --ar-radius-control: 3px;
-  --ar-radius-card: 5px;
-  --ar-radius-panel: 8px;
-  --ar-radius-shell: 12px;
   color-scheme: dark;
 }
 
@@ -347,10 +343,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --ar-float-ink: #edfff9;
   --ar-float-ink-low: #a1c9c3;
-  --ar-radius-control: 12px;
-  --ar-radius-card: 14px;
-  --ar-radius-panel: 22px;
-  --ar-radius-shell: 30px;
   color-scheme: dark;
 }
 
@@ -393,10 +385,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.24);
   --ar-float-ink: #1d2b39;
   --ar-float-ink-low: #526371;
-  --ar-radius-control: 2px;
-  --ar-radius-card: 4px;
-  --ar-radius-panel: 6px;
-  --ar-radius-shell: 10px;
   color-scheme: light;
 }
 
@@ -439,10 +427,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --ar-float-ink: #fff0ed;
   --ar-float-ink-low: #c9a4ab;
-  --ar-radius-control: 6px;
-  --ar-radius-card: 8px;
-  --ar-radius-panel: 14px;
-  --ar-radius-shell: 20px;
   color-scheme: dark;
 }
 
@@ -485,10 +469,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.24);
   --ar-float-ink: #342c22;
   --ar-float-ink-low: #71634f;
-  --ar-radius-control: 9px;
-  --ar-radius-card: 12px;
-  --ar-radius-panel: 18px;
-  --ar-radius-shell: 26px;
   color-scheme: light;
 }
 
@@ -531,10 +511,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.24);
   --ar-float-ink: #183848;
   --ar-float-ink-low: #507181;
-  --ar-radius-control: 5px;
-  --ar-radius-card: 8px;
-  --ar-radius-panel: 12px;
-  --ar-radius-shell: 18px;
   color-scheme: light;
 }
 
@@ -577,10 +553,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.24);
   --ar-float-ink: #35263f;
   --ar-float-ink-low: #735d7e;
-  --ar-radius-control: 11px;
-  --ar-radius-card: 14px;
-  --ar-radius-panel: 22px;
-  --ar-radius-shell: 30px;
   color-scheme: light;
 }
 
@@ -623,10 +595,6 @@
   --ar-float-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --ar-float-ink: #fcf3e3;
   --ar-float-ink-low: #c2b299;
-  --ar-radius-control: 4px;
-  --ar-radius-card: 7px;
-  --ar-radius-panel: 11px;
-  --ar-radius-shell: 16px;
   color-scheme: dark;
 }
 
