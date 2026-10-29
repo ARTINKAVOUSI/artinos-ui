@@ -166,15 +166,42 @@ html::-webkit-scrollbar-thumb:hover {
 /* ---------- sheet ---------- */
 .sc-sheet {
   position: relative;
+  isolation: isolate;
   max-width: 1440px;
   margin: 18px auto 0;
   padding: 40px 44px 40px;
   border-radius: var(--ar-radius-shell);
+  scroll-margin-top: 90px;
+}
+/* The sheet's glass is a layer behind its content, not the sheet itself, so the sheet is no
+   backdrop root: a window cut in this layer (.sc-window, see useOpenWindow) lets what sits
+   there blur the backdrop directly, as it would in an app, not the sheet's blur again. */
+.sc-sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background: var(--ar-panel-sheen), var(--ar-panel-tint);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--ar-panel-shadow);
-  scroll-margin-top: 90px;
+  pointer-events: none;
+}
+.sc-sheet[data-window]::before {
+  -webkit-mask:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0) var(--sc-window-x) var(--sc-window-y) / var(--sc-window-w) var(--sc-window-h) no-repeat;
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0) var(--sc-window-x) var(--sc-window-y) / var(--sc-window-w) var(--sc-window-h) no-repeat;
+  mask-composite: exclude;
+}
+/* headings inside the window sit on the bare backdrop */
+.sc-window .sc-subhead {
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* ---------- hero ---------- */

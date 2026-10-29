@@ -1,9 +1,59 @@
 /* 01 · Foundations — the themes, the five materials every part is made of, the tokens and the
    two voices of text, density, and the motion tokens. */
 import { useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 import { Badge, Button, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEME_META, THEMES, TYPE_COLLECTIONS } from '../../../src';
 import { FAMILIES, ThemeCard, TokenTable, TypeCard } from '../app/foundations';
 import { Chapter, Spec } from '../shared';
+
+/* ---------- the theme gallery, on the bare backdrop ---------- */
+
+/** Cuts a window in the sheet's glass where `ref` sits, kept in step as the page reflows, so
+ *  the theme cards there blur the backdrop itself and show each theme's glass as it really is. */
+function useOpenWindow(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    const sheet = el?.closest<HTMLElement>('.sc-sheet');
+    if (!el || !sheet) return;
+    const PAD = 12;
+    const place = () => {
+      const s = sheet.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      sheet.style.setProperty('--sc-window-x', `${r.left - s.left - PAD}px`);
+      sheet.style.setProperty('--sc-window-y', `${r.top - s.top - PAD}px`);
+      sheet.style.setProperty('--sc-window-w', `${r.width + PAD * 2}px`);
+      sheet.style.setProperty('--sc-window-h', `${r.height + PAD * 2}px`);
+    };
+    place();
+    sheet.setAttribute('data-window', '');
+    const ro = new ResizeObserver(place);
+    ro.observe(sheet);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      sheet.removeAttribute('data-window');
+    };
+  }, [ref]);
+}
+
+function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: string) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useOpenWindow(ref);
+  return (
+    <div ref={ref} className="sc-window">
+      {FAMILIES.map(([title, fams]) => (
+        <div key={title} className="sc-family">
+          <div className="sc-subhead">{title}</div>
+          <div className="sc-grid sc-grid--cards">
+            {THEMES.filter((t) => fams.includes(THEME_META[t].family)).map((t) => (
+              <ThemeCard key={t} t={t} active={t === theme} onPick={() => onPickTheme(t)} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /* ---------- layout & text ---------- */
 
@@ -295,16 +345,7 @@ import { ArtinosTheme } from './artinos-ui';
 // or with no React at all:
 <div data-ar-theme="studio-light"> … </div>`}
       >
-        {FAMILIES.map(([title, fams]) => (
-          <div key={title} className="sc-family">
-            <div className="sc-subhead">{title}</div>
-            <div className="sc-grid sc-grid--cards">
-              {THEMES.filter((t) => fams.includes(THEME_META[t].family)).map((t) => (
-                <ThemeCard key={t} t={t} active={t === theme} onPick={() => onPickTheme(t)} />
-              ))}
-            </div>
-          </div>
-        ))}
+        <ThemeGallery theme={theme} onPickTheme={onPickTheme} />
       </Spec>
 
       <Spec
