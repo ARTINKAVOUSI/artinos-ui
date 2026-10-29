@@ -1,7 +1,7 @@
 /* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
    rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
-import { Badge, Button, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, Switch, Tabs, ToggleGroup } from '../../../src';
+import { Badge, Button, ChipGroup, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, PropertyRow, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, Switch, Tabs, Text, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { MaterialSection } from './demos';
 
@@ -109,6 +109,61 @@ function Inspector() {
         </Section>
       </div>
     </div>
+  );
+}
+
+/** A dense panel as a real app builds one (a character's play panel): text readouts, notes,
+ *  sub-groups, choices, chips with counts and a grid of actions, all in one column. */
+function CharacterPanel() {
+  const [kind, setKind] = useState('Moments');
+  return (
+    <Panel className="sc-character" title="Play" subtitle="Blobby · live">
+      <Section title="Cast" description="Who is on stage as one formation: each emitter's part, what it does and how it answers sound.">
+        <Field label="Template">Custom</Field>
+        <Field label="Feels">exuberant · calm</Field>
+        <Field label="Intends">nothing: at ease</Field>
+        <Field label="Knows you">friend, visit 8</Field>
+        <PropertyRow label="Company" density="compact">
+          <Slider label="Company" defaultValue={0.19} format="percent" decimals={0} />
+        </PropertyRow>
+      </Section>
+      <Section title="Blobby" count="lead · thick glass">
+        <Field label="Doing">Curious · poke 2 · 66%</Field>
+        <Field label="Sound">
+          <Select options={['Auto · world', 'Mic', 'Off']} defaultValue="Auto · world" appearance="well" label="Sound" />
+        </Field>
+        <Field label="Archetype">
+          <Select options={['Curious explorer', 'Shy dreamer', 'Show-off']} defaultValue="Curious explorer" appearance="well" label="Archetype" />
+        </Field>
+        <Field label="Eyes">
+          <Segmented options={['On its body', 'Twins']} defaultValue="Twins" label="Eyes" />
+        </Field>
+        <Slider label="Reactivity gain" min={0} max={2} decimals={2} defaultValue={1.23} />
+      </Section>
+      <Section title="Act" description="Everything it can do on a click: its moments by feeling, its whole-character acts, its body, its surprises.">
+        <Segmented options={['Moments', 'Body', 'Surprises', 'Eyes']} value={kind} onChange={setKind} label="Kind" />
+        <ChipGroup
+          label="Feeling"
+          multiple={false}
+          defaultValue={['glad']}
+          options={[
+            { value: 'glad', label: 'Glad', count: 10 },
+            { value: 'says', label: 'Says', count: 5 },
+            { value: 'curious', label: 'Curious', count: 4 },
+            { value: 'soft', label: 'Soft', count: 7 },
+            { value: 'low', label: 'Low', count: 2 },
+          ]}
+        />
+        <div className="sc-character__acts">
+          {['Hello', 'Wave', 'Joy', 'Giggle', 'Celebrate', 'Groove'].map((a) => (
+            <Button key={a} size="sm">
+              {a}
+            </Button>
+          ))}
+        </div>
+        <Text variant="caption">By hand: double-click the stage and it comes over; stroke it three times and it melts.</Text>
+      </Section>
+    </Panel>
   );
 }
 
@@ -298,6 +353,7 @@ export function LayoutChapter() {
       >
         <div className="sc-stack" style={{ gap: 22 }}>
           <Inspector />
+          <CharacterPanel />
           <ControlStrip />
         </div>
       </Spec>

@@ -1253,3 +1253,13 @@ html::-webkit-scrollbar-thumb:hover {
   background: var(--ar-signal);
   box-shadow: 0 0 6px var(--ar-signal-line);
 }
+
+/* the layout chapter's character panel: one dense column, as an app's play panel */
+.sc-character {
+  max-width: 340px;
+}
+.sc-character__acts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}

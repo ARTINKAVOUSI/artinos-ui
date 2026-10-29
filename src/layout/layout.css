@@ -67,10 +67,13 @@
   padding: calc(var(--ar-space-5) + 2px) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
   min-height: 0;
 }
-/* rows keep the row gap; a group that follows another stands a group gap away */
+/* rows keep the row gap; a group that follows another stands a group gap away, over a hairline,
+   so in a long panel each group reads as its own block */
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel),
 .ar-section__body > .ar-section + .ar-section {
-  margin-top: calc(var(--ar-group-gap) - var(--ar-row-gap));
+  margin-top: max(0px, calc(var(--ar-group-gap) - var(--ar-row-gap)));
+  padding-top: calc(var(--ar-group-gap) * 0.75);
+  border-top: 1px solid var(--ar-line);
 }
 .ar-panel__foot {
   display: flex;
@@ -161,7 +164,7 @@ button.ar-section__trigger:focus-visible {
   color: var(--ar-text-ghost);
 }
 .ar-section__head:hover .ar-section__title {
-  color: var(--ar-text-mid);
+  color: var(--ar-text-hi);
 }
 .ar-section[data-off] .ar-section__chevron {
   cursor: default;
@@ -175,13 +178,14 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* a small heading: the voice at medium weight (a collection may set it in tracked capitals) */
+  /* the group's heading: the strongest text in the panel body, a step above the rows' labels and
+     values (a collection may set it in tracked capitals) */
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) + var(--ar-head-bump));
+  font-size: calc(var(--ar-voice-size) + 1px + var(--ar-head-bump));
   font-weight: var(--ar-weight-medium);
   letter-spacing: var(--ar-head-tracking);
   text-transform: var(--ar-head-case);
-  color: var(--ar-text-mid);
+  color: var(--ar-text-hi);
 }
 .ar-section[data-heading='text'] .ar-section__title {
   font-family: var(--ar-font-ui);
@@ -210,7 +214,7 @@ button.ar-section__trigger:focus-visible {
   font-weight: var(--ar-weight-medium);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  color: var(--ar-text-faint);
+  color: var(--ar-text-low);
   transition:
     color var(--ar-dur-state) var(--ar-ease),
     opacity var(--ar-dur-surface) var(--ar-ease);
@@ -218,10 +222,10 @@ button.ar-section__trigger:focus-visible {
 /* a word that matters inside the note can lift itself: <b>1 changed</b> */
 .ar-section__count b {
   font-weight: inherit;
-  color: var(--ar-text-mid);
+  color: var(--ar-text-hi);
 }
 .ar-section__trigger:hover .ar-section__count {
-  color: var(--ar-text-low);
+  color: var(--ar-text-mid);
 }
 .ar-section[data-off] .ar-section__count {
   opacity: 0.5;
@@ -272,21 +276,28 @@ button.ar-section__trigger:focus-visible {
   min-width: 0;
 }
 .ar-field__label {
-  /* one control row tall, so the text sits level with the control's first line; still truncates */
+  /* one control row tall, so the text sits level with the control's first line; still truncates.
+     A label names, its value speaks: the label is a size smaller and a step quieter */
   line-height: var(--ar-h);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: var(--ar-text-md);
+  font-family: var(--ar-font-ui);
+  font-size: var(--ar-text-sm);
   font-weight: var(--ar-weight-text);
-  color: var(--ar-text-mid);
+  color: var(--ar-text-low);
 }
 .ar-field__control {
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
+  min-height: var(--ar-h);
+  /* a plain value (a readout, a state in words) reads as the row's answer: the panel's brightest
+     ink at body size; controls inside keep their own type */
+  font: var(--ar-weight-text) var(--ar-text-md) / var(--ar-leading-snug) var(--ar-font-ui);
+  color: var(--ar-text-hi);
 }
 .ar-field__control > * {
   flex: 1 1 0;
@@ -492,10 +503,12 @@ button.ar-section__trigger:focus-visible {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+/* what the group is for: a quiet paragraph under its heading, set apart from the rows below */
 .ar-section__description {
   grid-column: 1 / -1;
-  margin: 0 0 4px;
-  font: var(--ar-weight-text) var(--ar-text-sm) / var(--ar-leading-text) var(--ar-font-ui);
+  margin: -2px 0 6px;
+  max-width: 60ch;
+  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-text) var(--ar-font-ui);
   color: var(--ar-text-low);
 }
 /* columns: the rows become cells of a grid */
