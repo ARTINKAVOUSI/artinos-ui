@@ -199,6 +199,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
    are optional overrides for special cases. */
 
 export const THEMES = [
+  'veil', 'hairline', 'obsidian', 'midnight', 'sable', 'daylight',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered',
   'frost-etched', 'frost-silk', 'frost-mist', 'frost-deep',
   'nocturne', 'lagoon', 'argent', 'garnet', 'ivory', 'glacier', 'wisteria', 'dune',
@@ -211,7 +212,7 @@ export const THEMES = [
 ] as const;
 export type ThemeName = (typeof THEMES)[number];
 
-export type ThemeFamily = 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
+export type ThemeFamily = 'hairline' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
 
 export interface ThemeMeta {
   label: string;
@@ -224,6 +225,12 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  veil: { label: 'Veil', family: 'hairline', kind: 'glass', description: 'Vibrant clear glass. The scene\'s own colour, brightened, behind white hairlines; white selection.', swatch: ['#6d6f76', '#c9cacf', '#f4f6f8'] },
+  hairline: { label: 'Hairline', family: 'hairline', kind: 'glass', description: 'Neutral clear glass with the lightest touch: outlines instead of fills, a crisp live edge, a mint signal.', swatch: ['#3a3b3e', '#77797d', '#8fe3cf'] },
+  obsidian: { label: 'Obsidian', family: 'hairline', kind: 'glass', description: 'Deep smoked glass in monochrome. Warm-white hairlines, thin glass values, no colour at all.', swatch: ['#0c0c0e', '#3a3936', '#ece6da'] },
+  midnight: { label: 'Midnight', family: 'hairline', kind: 'glass', description: 'Navy smoked glass with blue-white hairlines and a periwinkle signal.', swatch: ['#0c1428', '#4b5a7e', '#8fb4ff'] },
+  sable: { label: 'Sable', family: 'hairline', kind: 'glass', description: 'Warm bronze smoked glass with champagne hairlines and a soft gold signal.', swatch: ['#211910', '#6e5a40', '#e3c48f'] },
+  daylight: { label: 'Daylight', family: 'hairline', kind: 'glass', description: 'Bright clear glass for light scenes: white hairlines outside, graphite ink and a graphite live edge.', swatch: ['#e9eaec', '#ffffff', '#1d2024'] },
   'clear-air': { label: 'Air Glass', family: 'untinted-glass', kind: 'glass', description: 'Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge.', swatch: ['#383838', '#656565', '#4fd1ba'] },
   'clear-polished': { label: 'Polished Glass', family: 'untinted-glass', kind: 'glass', description: 'Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast.', swatch: ['#404040', '#8a8a8a', '#4fd1ba'] },
   'clear-lens': { label: 'Lens Glass', family: 'untinted-glass', kind: 'glass', description: 'Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection.', swatch: ['#484848', '#787878', '#4fd1ba'] },
