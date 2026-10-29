@@ -52,6 +52,12 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `shade` | Shade | glass | A dense dark veil with a lit top edge; values carry the same thin light along their top. |
 |  | `linen` | Linen | glass | Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. |
 |  | `cloud` | Cloud | glass | Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. |
+|  | `groove-light` | Groove Light | glass | Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink. |
+|  | `inset-light` | Inset Light | glass | Inset in white frost: tracks set a hair into the pane, white values. Graphite ink. |
+|  | `carve` | Carve | glass | Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them. |
+|  | `carve-light` | Carve Light | glass | Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink. |
+|  | `groove-smoke` | Groove Smoke | glass | Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values. |
+|  | `inset-smoke` | Inset Smoke | glass | Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane. |
 | materials | `marble` | Marble Frost | glass | Carrara marble values with soft grey veins, pressed into bright frost. |
 |  | `slate` | Slate Glass | glass | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
 |  | `travertine` | Travertine | glass | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |

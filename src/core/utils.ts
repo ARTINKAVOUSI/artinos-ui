@@ -201,6 +201,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
   'lift', 'edge', 'inset', 'halo', 'tile', 'groove', 'drift', 'shade', 'linen', 'cloud',
+  'groove-light', 'inset-light', 'carve', 'carve-light', 'groove-smoke', 'inset-smoke',
   'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
   'quartz', 'loupe', 'shell', 'engrave', 'machined', 'matte', 'glaze', 'pebble', 'vellum', 'lumen',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered', 'clear-bevel', 'clear-cut',
@@ -228,6 +229,12 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  'groove-light': { label: 'Groove Light', family: 'scene', kind: 'glass', description: 'Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink.', swatch: ['#e9e9e9', '#ffffff', '#0a8a78'] },
+  'inset-light': { label: 'Inset Light', family: 'scene', kind: 'glass', description: 'Inset in white frost: tracks set a hair into the pane, white values. Graphite ink.', swatch: ['#e9e9e9', '#ffffff', '#0a8a78'] },
+  'carve': { label: 'Carve', family: 'scene', kind: 'glass', description: 'Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them.', swatch: ['#3c3c3c', '#5c5c5c', '#4fd1ba'] },
+  'carve-light': { label: 'Carve Light', family: 'scene', kind: 'glass', description: 'Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink.', swatch: ['#e9e9e9', '#ffffff', '#0a8a78'] },
+  'groove-smoke': { label: 'Groove Smoke', family: 'scene', kind: 'glass', description: 'Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values.', swatch: ['#3c3c3c', '#5c5c5c', '#4fd1ba'] },
+  'inset-smoke': { label: 'Inset Smoke', family: 'scene', kind: 'glass', description: 'Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane.', swatch: ['#3c3c3c', '#5c5c5c', '#4fd1ba'] },
   lift: { label: 'Lift', family: 'scene', kind: 'glass', description: 'Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
   edge: { label: 'Edge', family: 'scene', kind: 'glass', description: 'Flat glass with one hairline round each value and a lit top edge on the pane.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
   inset: { label: 'Inset', family: 'scene', kind: 'glass', description: 'Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },

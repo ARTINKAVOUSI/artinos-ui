@@ -31,6 +31,12 @@
  *     shade           A dense dark veil with a lit top edge; values carry the same thin light along their top.
  *     linen           Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink.
  *     cloud           Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink.
+ *     groove-light    Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink.
+ *     inset-light     Inset in white frost: tracks set a hair into the pane, white values. Graphite ink.
+ *     carve           Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them.
+ *     carve-light     Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink.
+ *     groove-smoke    Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values.
+ *     inset-smoke     Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane.
  *   materials
  *     marble          Carrara marble values with soft grey veins, pressed into bright frost.
  *     slate           Matte slate tiles in smoked glass; a faint stone grain shows through the pane.
@@ -2040,7 +2046,10 @@
 [data-ar-theme='tile'],
 [data-ar-theme='groove'],
 [data-ar-theme='drift'],
-[data-ar-theme='shade'] {
+[data-ar-theme='shade'],
+[data-ar-theme='carve'],
+[data-ar-theme='groove-smoke'],
+[data-ar-theme='inset-smoke'] {
   --ar-bg-app: #2b2b2b;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.07);
@@ -2080,7 +2089,10 @@
 [data-ar-theme='mist'],
 [data-ar-theme='chalk'],
 [data-ar-theme='linen'],
-[data-ar-theme='cloud'] {
+[data-ar-theme='cloud'],
+[data-ar-theme='groove-light'],
+[data-ar-theme='inset-light'],
+[data-ar-theme='carve-light'] {
   --ar-bg-app: #e8e8e8;
   --ar-bg-surface: rgba(0, 0, 0, 0.03);
   --ar-bg-raised: rgba(0, 0, 0, 0.05);
@@ -3061,6 +3073,58 @@
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 24px 50px -24px rgba(0, 0, 0, 0.25);
   --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* ---------- FLAT GLASS, carved — Groove and Inset, taken further ---------- */
+
+/* GROOVE LIGHT — Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink. */
+[data-ar-theme='groove-light'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.56);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* INSET LIGHT — Inset in white frost: tracks set a hair into the pane, white values. Graphite ink. */
+[data-ar-theme='inset-light'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.52);
+  --ar-panel-blur: blur(44px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* CARVE — Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them. */
+[data-ar-theme='carve'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.18);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(22, 22, 22, 0.8);
+}
+
+/* CARVE LIGHT — Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink. */
+[data-ar-theme='carve-light'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.55);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* GROOVE SMOKE — Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values. */
+[data-ar-theme='groove-smoke'] {
+  --ar-panel-tint: rgba(10, 10, 10, 0.55);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(22, 22, 22, 0.8);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* INSET SMOKE — Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane. */
+[data-ar-theme='inset-smoke'] {
+  --ar-panel-tint: rgba(10, 10, 10, 0.55);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(22, 22, 22, 0.8);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------

@@ -1855,7 +1855,10 @@
 [data-ar-theme='tile']:not([data-ar-material]),
 [data-ar-theme='groove']:not([data-ar-material]),
 [data-ar-theme='drift']:not([data-ar-material]),
-[data-ar-theme='shade']:not([data-ar-material]) {
+[data-ar-theme='shade']:not([data-ar-material]),
+[data-ar-theme='carve']:not([data-ar-material]),
+[data-ar-theme='groove-smoke']:not([data-ar-material]),
+[data-ar-theme='inset-smoke']:not([data-ar-material]) {
   --ar-trough: rgba(255, 255, 255, 0.08);
   --ar-trough-backdrop: none;
   --ar-well: none;
@@ -1904,7 +1907,10 @@
 [data-ar-theme='mist']:not([data-ar-material]),
 [data-ar-theme='chalk']:not([data-ar-material]),
 [data-ar-theme='linen']:not([data-ar-material]),
-[data-ar-theme='cloud']:not([data-ar-material]) {
+[data-ar-theme='cloud']:not([data-ar-material]),
+[data-ar-theme='groove-light']:not([data-ar-material]),
+[data-ar-theme='inset-light']:not([data-ar-material]),
+[data-ar-theme='carve-light']:not([data-ar-material]) {
   --ar-trough: rgba(0, 0, 0, 0.06);
   --ar-trough-backdrop: none;
   --ar-well: none;
@@ -2975,4 +2981,66 @@
 [data-ar-theme='cloud']:not([data-ar-material]) {
   --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(0, 0, 0, 0.14);
   --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- FLAT GLASS, carved — finishes ---------- */
+
+/* GROOVE LIGHT */
+[data-ar-theme='groove-light']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.03);
+  --ar-well: inset 0 1px 0 rgba(0, 0, 0, 0.14), 0 1px 0 rgba(255, 255, 255, 0.85);
+  --ar-insert: rgba(255, 255, 255, 0.92);
+  --ar-list-insert: rgba(255, 255, 255, 0.92);
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 10px -4px rgba(0, 0, 0, 0.14);
+  --ar-cell: rgba(0, 0, 0, 0.02);
+  --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* INSET LIGHT */
+[data-ar-theme='inset-light']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.05);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.85);
+  --ar-insert: rgba(255, 255, 255, 0.92);
+  --ar-list-insert: rgba(255, 255, 255, 0.92);
+  --ar-insert-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+  --ar-cell: rgba(0, 0, 0, 0.04);
+  --ar-cell-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.09), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* CARVE */
+[data-ar-theme='carve']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.1);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.26), inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.08);
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  --ar-cell: rgba(0, 0, 0, 0.08);
+  --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.28), 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* CARVE LIGHT */
+[data-ar-theme='carve-light']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.04);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.85);
+  --ar-insert: rgba(255, 255, 255, 0.92);
+  --ar-list-insert: rgba(255, 255, 255, 0.92);
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 10px -4px rgba(0, 0, 0, 0.14);
+  --ar-cell: rgba(0, 0, 0, 0.03);
+  --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* GROOVE SMOKE */
+[data-ar-theme='groove-smoke']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.04);
+  --ar-well: inset 0 1px 0 rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-insert: rgba(255, 255, 255, 0.14);
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* INSET SMOKE */
+[data-ar-theme='inset-smoke']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.2);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-insert: rgba(255, 255, 255, 0.16);
+  --ar-cell: rgba(0, 0, 0, 0.16);
+  --ar-cell-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06);
 }
