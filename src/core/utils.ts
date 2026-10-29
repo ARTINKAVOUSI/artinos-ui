@@ -200,6 +200,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
+  'haze-rim', 'haze-lift', 'haze-carve', 'haze-glow', 'haze-bevel', 'haze-night', 'haze-day',
   'lift', 'edge', 'inset', 'halo', 'tile', 'groove', 'drift', 'shade', 'linen', 'cloud',
   'groove-light', 'inset-light', 'carve', 'carve-light', 'groove-smoke', 'inset-smoke',
   'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
@@ -229,6 +230,13 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  'haze-rim': { label: 'Haze Rim', family: 'scene', kind: 'glass', description: 'Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-lift': { label: 'Haze Lift', family: 'scene', kind: 'glass', description: 'Haze floating high: the pane rides a deep soft shadow and the values float over their tracks.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-carve': { label: 'Haze Carve', family: 'scene', kind: 'glass', description: 'Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-glow': { label: 'Haze Glow', family: 'scene', kind: 'glass', description: 'Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-bevel': { label: 'Haze Bevel', family: 'scene', kind: 'glass', description: 'Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-night': { label: 'Haze Night', family: 'scene', kind: 'glass', description: 'The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
+  'haze-day': { label: 'Haze Day', family: 'scene', kind: 'glass', description: 'The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow.', swatch: ['#e4e4e4', '#ffffff', '#0a8a78'] },
   'groove-light': { label: 'Groove Light', family: 'scene', kind: 'glass', description: 'Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink.', swatch: ['#e9e9e9', '#ffffff', '#0a8a78'] },
   'inset-light': { label: 'Inset Light', family: 'scene', kind: 'glass', description: 'Inset in white frost: tracks set a hair into the pane, white values. Graphite ink.', swatch: ['#e9e9e9', '#ffffff', '#0a8a78'] },
   'carve': { label: 'Carve', family: 'scene', kind: 'glass', description: 'Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them.', swatch: ['#3c3c3c', '#5c5c5c', '#4fd1ba'] },

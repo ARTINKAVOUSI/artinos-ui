@@ -21,6 +21,13 @@
  *     pressed         Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows.
  *     hairline        Flat glass held by one 1px line around the pane and each track. No highlights, no colour.
  *     frosted         A clearer pane with frosted controls: each track and value frosts the scene further.
+ *     haze-rim        Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline.
+ *     haze-lift       Haze floating high: the pane rides a deep soft shadow and the values float over their tracks.
+ *     haze-carve      Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.
+ *     haze-glow       Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline.
+ *     haze-bevel      Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value.
+ *     haze-night      The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values.
+ *     haze-day        The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow.
  *     lift            Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene.
  *     edge            Flat glass with one hairline round each value and a lit top edge on the pane.
  *     inset           Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below.
@@ -2049,7 +2056,13 @@
 [data-ar-theme='shade'],
 [data-ar-theme='carve'],
 [data-ar-theme='groove-smoke'],
-[data-ar-theme='inset-smoke'] {
+[data-ar-theme='inset-smoke'],
+[data-ar-theme='haze-rim'],
+[data-ar-theme='haze-lift'],
+[data-ar-theme='haze-carve'],
+[data-ar-theme='haze-glow'],
+[data-ar-theme='haze-bevel'],
+[data-ar-theme='haze-night'] {
   --ar-bg-app: #2b2b2b;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.07);
@@ -2092,7 +2105,8 @@
 [data-ar-theme='cloud'],
 [data-ar-theme='groove-light'],
 [data-ar-theme='inset-light'],
-[data-ar-theme='carve-light'] {
+[data-ar-theme='carve-light'],
+[data-ar-theme='haze-day'] {
   --ar-bg-app: #e8e8e8;
   --ar-bg-surface: rgba(0, 0, 0, 0.03);
   --ar-bg-raised: rgba(0, 0, 0, 0.05);
@@ -3125,6 +3139,67 @@
   --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(22, 22, 22, 0.8);
   --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- FLAT GLASS, Haze — the deepest blur with edges and depth ---------- */
+
+/* HAZE RIM — Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. */
+[data-ar-theme='haze-rim'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* HAZE LIFT — Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. */
+[data-ar-theme='haze-lift'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 30px 64px -28px rgba(0, 0, 0, 0.55), 0 8px 18px -10px rgba(0, 0, 0, 0.25);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* HAZE CARVE — Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. */
+[data-ar-theme='haze-carve'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* HAZE GLOW — Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. */
+[data-ar-theme='haze-glow'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.09);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 0 32px rgba(255, 255, 255, 0.07), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* HAZE BEVEL — Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. */
+[data-ar-theme='haze-bevel'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* HAZE NIGHT — The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. */
+[data-ar-theme='haze-night'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.3);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* HAZE DAY — The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. */
+[data-ar-theme='haze-day'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.46);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------

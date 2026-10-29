@@ -42,6 +42,13 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
 |  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
 |  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
+|  | `haze-rim` | Haze Rim | glass | Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. |
+|  | `haze-lift` | Haze Lift | glass | Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. |
+|  | `haze-carve` | Haze Carve | glass | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
+|  | `haze-glow` | Haze Glow | glass | Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. |
+|  | `haze-bevel` | Haze Bevel | glass | Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. |
+|  | `haze-night` | Haze Night | glass | The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. |
+|  | `haze-day` | Haze Day | glass | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
 |  | `lift` | Lift | glass | Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. |
 |  | `edge` | Edge | glass | Flat glass with one hairline round each value and a lit top edge on the pane. |
 |  | `inset` | Inset | glass | Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. |
