@@ -200,6 +200,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
+  'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered', 'clear-bevel', 'clear-cut',
   'frost-etched', 'frost-silk', 'frost-mist', 'frost-deep', 'frost-satin', 'frost-ceramic',
   'nocturne', 'lagoon', 'argent', 'garnet', 'ivory', 'glacier', 'wisteria', 'dune',
@@ -212,7 +213,7 @@ export const THEMES = [
 ] as const;
 export type ThemeName = (typeof THEMES)[number];
 
-export type ThemeFamily = 'scene' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
+export type ThemeFamily = 'scene' | 'materials' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
 
 export interface ThemeMeta {
   label: string;
@@ -225,6 +226,14 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  marble: { label: 'Marble Frost', family: 'materials', kind: 'glass', description: 'Carrara marble values with soft grey veins, pressed into bright frost.', swatch: ['#e9e8e4', '#f6f5f2', '#9a7a3e'] },
+  slate: { label: 'Slate Glass', family: 'materials', kind: 'glass', description: 'Matte slate tiles in smoked glass; a faint stone grain shows through the pane.', swatch: ['#2a2e33', '#454b51', '#9fc3d9'] },
+  travertine: { label: 'Travertine', family: 'materials', kind: 'glass', description: 'Warm porous stone values in pressed, sand-toned frost, with a terracotta signal.', swatch: ['#e6dac6', '#dccdb2', '#b0703a'] },
+  basalt: { label: 'Basalt', family: 'materials', kind: 'glass', description: 'Black volcanic stone values with one polished edge, on smoked glass. An ember signal.', swatch: ['#121213', '#262628', '#e0a15a'] },
+  steel: { label: 'Brushed Steel', family: 'materials', kind: 'glass', description: 'Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost.', swatch: ['#2a3038', '#c4c9cf', '#5fb0ff'] },
+  bisque: { label: 'Bisque', family: 'materials', kind: 'glass', description: 'Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal.', swatch: ['#f1eee9', '#ffffff', '#6f8a5e'] },
+  concrete: { label: 'Concrete', family: 'materials', kind: 'glass', description: 'Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal.', swatch: ['#3a3a3a', '#b1b0ab', '#ff8a3d'] },
+  walnut: { label: 'Walnut Glass', family: 'materials', kind: 'glass', description: 'Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal.', swatch: ['#2a1c12', '#6b4629', '#e8b26a'] },
   pressed: { label: 'Pressed', family: 'scene', kind: 'glass', description: 'Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows.', swatch: ['#5a5a5a', '#7a7a7a', '#ffffff'] },
   hairline: { label: 'Hairline', family: 'scene', kind: 'glass', description: 'Flat glass held by one 1px line around the pane and each track. No highlights, no colour.', swatch: ['#555555', '#757575', '#ffffff'] },
   frosted: { label: 'Frosted', family: 'scene', kind: 'glass', description: 'A clearer pane with frosted controls: each track and value frosts the scene further.', swatch: ['#686868', '#9a9a9a', '#ffffff'] },

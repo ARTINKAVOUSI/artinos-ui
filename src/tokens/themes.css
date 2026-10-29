@@ -21,6 +21,15 @@
  *     pressed         Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows.
  *     hairline        Flat glass held by one 1px line around the pane and each track. No highlights, no colour.
  *     frosted         A clearer pane with frosted controls: each track and value frosts the scene further.
+ *   materials
+ *     marble          Carrara marble values with soft grey veins, pressed into bright frost.
+ *     slate           Matte slate tiles in smoked glass; a faint stone grain shows through the pane.
+ *     travertine      Warm porous stone values in pressed, sand-toned frost, with a terracotta signal.
+ *     basalt          Black volcanic stone values with one polished edge, on smoked glass. An ember signal.
+ *     steel           Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost.
+ *     bisque          Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal.
+ *     concrete        Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal.
+ *     walnut          Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal.
  *   untinted-glass
  *     clear-air       Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur.
  *     clear-polished  Clear glass with depth: values float on a soft shadow under one reflected line.
@@ -2217,6 +2226,340 @@
   --ar-shadow-well: inset 0 0 0 1px var(--ar-line-subtle);
   --ar-rim: 0 0 0 0 transparent;
   --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+}
+
+/* ---------- MATERIALS — real materials set into glass and frost ----------
+ * The pane stays glass or frost so it sits in the scene; the controls are drawn in a material:
+ * marble, slate, travertine, basalt, brushed steel, porcelain, concrete, walnut. Textures are
+ * layered gradients (veins, grain, pores), so they stay crisp at any density and load nothing.
+ */
+
+/* MARBLE FROST — Carrara marble values with soft grey veins, pressed into bright frost. */
+[data-ar-theme='marble'] {
+  --ar-bg-app: #e9e8e4;
+  --ar-bg-surface: rgba(255, 255, 255, 0.4);
+  --ar-bg-raised: rgba(255, 255, 255, 0.72);
+  --ar-bg-hover: rgba(29, 31, 34, 0.06);
+  --ar-bg-active: rgba(29, 31, 34, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.04);
+  --ar-text-hi: rgb(29, 31, 34);
+  --ar-text-mid: rgba(29, 31, 34, 0.84);
+  --ar-text-low: rgba(29, 31, 34, 0.62);
+  --ar-text-faint: rgba(29, 31, 34, 0.45);
+  --ar-text-ghost: rgba(29, 31, 34, 0.3);
+  --ar-line-subtle: rgba(29, 31, 34, 0.07);
+  --ar-line: rgba(29, 31, 34, 0.12);
+  --ar-line-strong: rgba(29, 31, 34, 0.2);
+  --ar-signal: #9a7a3e;
+  --ar-signal-hi: #7a5e2a;
+  --ar-signal-line: color-mix(in srgb, #9a7a3e 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #9a7a3e 14%, transparent);
+  --ar-signal-ink: #ffffff;
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
+  --ar-tick: rgba(29, 31, 34, 0.3);
+  --ar-tick-major: rgba(29, 31, 34, 0.72);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.6);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.62), 0 20px 44px -24px rgba(0, 0, 0, 0.25);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(250, 249, 247, 0.84);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.62);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.22);
+  --ar-float-ink: rgb(29, 31, 34);
+  --ar-float-ink-low: rgba(29, 31, 34, 0.62);
+  color-scheme: light;
+}
+
+/* SLATE GLASS — Matte slate tiles in smoked glass; a faint stone grain shows through the pane. */
+[data-ar-theme='slate'] {
+  --ar-bg-app: #2a2e33;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(241, 243, 245, 0.06);
+  --ar-bg-active: rgba(241, 243, 245, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.2);
+  --ar-text-hi: rgb(241, 243, 245);
+  --ar-text-mid: rgba(241, 243, 245, 0.84);
+  --ar-text-low: rgba(241, 243, 245, 0.62);
+  --ar-text-faint: rgba(241, 243, 245, 0.45);
+  --ar-text-ghost: rgba(241, 243, 245, 0.3);
+  --ar-line-subtle: rgba(241, 243, 245, 0.07);
+  --ar-line: rgba(241, 243, 245, 0.12);
+  --ar-line-strong: rgba(241, 243, 245, 0.2);
+  --ar-signal: #9fc3d9;
+  --ar-signal-hi: #cfe3ef;
+  --ar-signal-line: color-mix(in srgb, #9fc3d9 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #9fc3d9 14%, transparent);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(241, 243, 245, 0.3);
+  --ar-tick-major: rgba(241, 243, 245, 0.72);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(20, 22, 26, 0.46);
+  --ar-panel-sheen: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.02) 0 1px, rgba(255, 255, 255, 0) 1px 6px);
+  --ar-panel-blur: blur(30px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 26px 54px -26px rgba(0, 0, 0, 0.55);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(24, 24, 26, 0.86);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.5);
+  --ar-float-ink: rgb(241, 243, 245);
+  --ar-float-ink-low: rgba(241, 243, 245, 0.62);
+  color-scheme: dark;
+}
+
+/* TRAVERTINE — Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. */
+[data-ar-theme='travertine'] {
+  --ar-bg-app: #e6dac6;
+  --ar-bg-surface: rgba(255, 255, 255, 0.4);
+  --ar-bg-raised: rgba(255, 255, 255, 0.72);
+  --ar-bg-hover: rgba(58, 47, 34, 0.06);
+  --ar-bg-active: rgba(58, 47, 34, 0.1);
+  --ar-bg-well: rgba(90, 70, 40, 0.05);
+  --ar-text-hi: rgb(58, 47, 34);
+  --ar-text-mid: rgba(58, 47, 34, 0.84);
+  --ar-text-low: rgba(58, 47, 34, 0.62);
+  --ar-text-faint: rgba(58, 47, 34, 0.45);
+  --ar-text-ghost: rgba(58, 47, 34, 0.3);
+  --ar-line-subtle: rgba(58, 47, 34, 0.07);
+  --ar-line: rgba(58, 47, 34, 0.12);
+  --ar-line-strong: rgba(58, 47, 34, 0.2);
+  --ar-signal: #b0703a;
+  --ar-signal-hi: #8c5426;
+  --ar-signal-line: color-mix(in srgb, #b0703a 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #b0703a 14%, transparent);
+  --ar-signal-ink: #ffffff;
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
+  --ar-tick: rgba(58, 47, 34, 0.3);
+  --ar-tick-major: rgba(58, 47, 34, 0.72);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(244, 236, 222, 0.62);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(44px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 20px 44px -24px rgba(0, 0, 0, 0.25);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(250, 249, 247, 0.84);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.22);
+  --ar-float-ink: rgb(58, 47, 34);
+  --ar-float-ink-low: rgba(58, 47, 34, 0.62);
+  color-scheme: light;
+}
+
+/* BASALT — Black volcanic stone values with one polished edge, on smoked glass. An ember signal. */
+[data-ar-theme='basalt'] {
+  --ar-bg-app: #121213;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(242, 240, 236, 0.06);
+  --ar-bg-active: rgba(242, 240, 236, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.3);
+  --ar-text-hi: rgb(242, 240, 236);
+  --ar-text-mid: rgba(242, 240, 236, 0.84);
+  --ar-text-low: rgba(242, 240, 236, 0.62);
+  --ar-text-faint: rgba(242, 240, 236, 0.45);
+  --ar-text-ghost: rgba(242, 240, 236, 0.3);
+  --ar-line-subtle: rgba(242, 240, 236, 0.07);
+  --ar-line: rgba(242, 240, 236, 0.12);
+  --ar-line-strong: rgba(242, 240, 236, 0.2);
+  --ar-signal: #e0a15a;
+  --ar-signal-hi: #f2c690;
+  --ar-signal-line: color-mix(in srgb, #e0a15a 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #e0a15a 14%, transparent);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(242, 240, 236, 0.3);
+  --ar-tick-major: rgba(242, 240, 236, 0.72);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(8, 8, 9, 0.55);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(36px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 26px 54px -26px rgba(0, 0, 0, 0.55);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(24, 24, 26, 0.86);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.5);
+  --ar-float-ink: rgb(242, 240, 236);
+  --ar-float-ink-low: rgba(242, 240, 236, 0.62);
+  color-scheme: dark;
+}
+
+/* BRUSHED STEEL — Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. */
+[data-ar-theme='steel'] {
+  --ar-bg-app: #2a3038;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(240, 243, 247, 0.06);
+  --ar-bg-active: rgba(240, 243, 247, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.22);
+  --ar-text-hi: rgb(240, 243, 247);
+  --ar-text-mid: rgba(240, 243, 247, 0.84);
+  --ar-text-low: rgba(240, 243, 247, 0.62);
+  --ar-text-faint: rgba(240, 243, 247, 0.45);
+  --ar-text-ghost: rgba(240, 243, 247, 0.3);
+  --ar-line-subtle: rgba(240, 243, 247, 0.07);
+  --ar-line: rgba(240, 243, 247, 0.12);
+  --ar-line-strong: rgba(240, 243, 247, 0.2);
+  --ar-signal: #5fb0ff;
+  --ar-signal-hi: #a6d2ff;
+  --ar-signal-line: color-mix(in srgb, #5fb0ff 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #5fb0ff 14%, transparent);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(240, 243, 247, 0.3);
+  --ar-tick-major: rgba(240, 243, 247, 0.72);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(30, 34, 40, 0.3);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 26px 54px -26px rgba(0, 0, 0, 0.55);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(24, 24, 26, 0.86);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.5);
+  --ar-float-ink: rgb(240, 243, 247);
+  --ar-float-ink-low: rgba(240, 243, 247, 0.62);
+  color-scheme: dark;
+}
+
+/* BISQUE — Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. */
+[data-ar-theme='bisque'] {
+  --ar-bg-app: #f1eee9;
+  --ar-bg-surface: rgba(255, 255, 255, 0.4);
+  --ar-bg-raised: rgba(255, 255, 255, 0.72);
+  --ar-bg-hover: rgba(43, 42, 40, 0.06);
+  --ar-bg-active: rgba(43, 42, 40, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.03);
+  --ar-text-hi: rgb(43, 42, 40);
+  --ar-text-mid: rgba(43, 42, 40, 0.84);
+  --ar-text-low: rgba(43, 42, 40, 0.62);
+  --ar-text-faint: rgba(43, 42, 40, 0.45);
+  --ar-text-ghost: rgba(43, 42, 40, 0.3);
+  --ar-line-subtle: rgba(43, 42, 40, 0.07);
+  --ar-line: rgba(43, 42, 40, 0.12);
+  --ar-line-strong: rgba(43, 42, 40, 0.2);
+  --ar-signal: #6f8a5e;
+  --ar-signal-hi: #55704a;
+  --ar-signal-line: color-mix(in srgb, #6f8a5e 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #6f8a5e 14%, transparent);
+  --ar-signal-ink: #ffffff;
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
+  --ar-tick: rgba(43, 42, 40, 0.3);
+  --ar-tick-major: rgba(43, 42, 40, 0.72);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(250, 248, 245, 0.66);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(48px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 20px 44px -24px rgba(0, 0, 0, 0.25);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(250, 249, 247, 0.84);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.22);
+  --ar-float-ink: rgb(43, 42, 40);
+  --ar-float-ink-low: rgba(43, 42, 40, 0.62);
+  color-scheme: light;
+}
+
+/* CONCRETE — Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal. */
+[data-ar-theme='concrete'] {
+  --ar-bg-app: #3a3a3a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(245, 245, 243, 0.06);
+  --ar-bg-active: rgba(245, 245, 243, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.22);
+  --ar-text-hi: rgb(245, 245, 243);
+  --ar-text-mid: rgba(245, 245, 243, 0.84);
+  --ar-text-low: rgba(245, 245, 243, 0.62);
+  --ar-text-faint: rgba(245, 245, 243, 0.45);
+  --ar-text-ghost: rgba(245, 245, 243, 0.3);
+  --ar-line-subtle: rgba(245, 245, 243, 0.07);
+  --ar-line: rgba(245, 245, 243, 0.12);
+  --ar-line-strong: rgba(245, 245, 243, 0.2);
+  --ar-signal: #ff8a3d;
+  --ar-signal-hi: #ffb27f;
+  --ar-signal-line: color-mix(in srgb, #ff8a3d 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #ff8a3d 14%, transparent);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(245, 245, 243, 0.3);
+  --ar-tick-major: rgba(245, 245, 243, 0.72);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(40, 40, 40, 0.36);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(32px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 26px 54px -26px rgba(0, 0, 0, 0.55);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(24, 24, 26, 0.86);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.5);
+  --ar-float-ink: rgb(245, 245, 243);
+  --ar-float-ink-low: rgba(245, 245, 243, 0.62);
+  color-scheme: dark;
+}
+
+/* WALNUT GLASS — Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. */
+[data-ar-theme='walnut'] {
+  --ar-bg-app: #2a1c12;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(251, 239, 226, 0.06);
+  --ar-bg-active: rgba(251, 239, 226, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.26);
+  --ar-text-hi: rgb(251, 239, 226);
+  --ar-text-mid: rgba(251, 239, 226, 0.84);
+  --ar-text-low: rgba(251, 239, 226, 0.62);
+  --ar-text-faint: rgba(251, 239, 226, 0.45);
+  --ar-text-ghost: rgba(251, 239, 226, 0.3);
+  --ar-line-subtle: rgba(251, 239, 226, 0.07);
+  --ar-line: rgba(251, 239, 226, 0.12);
+  --ar-line-strong: rgba(251, 239, 226, 0.2);
+  --ar-signal: #e8b26a;
+  --ar-signal-hi: #f6d39f;
+  --ar-signal-line: color-mix(in srgb, #e8b26a 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, #e8b26a 14%, transparent);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(251, 239, 226, 0.3);
+  --ar-tick-major: rgba(251, 239, 226, 0.72);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 220, 180, 0.07);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(28, 18, 10, 0.46);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(34px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(230, 190, 140, 0.2), 0 26px 54px -26px rgba(0, 0, 0, 0.55);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(24, 24, 26, 0.86);
+  --ar-float-ring: inset 0 0 0 1px rgba(230, 190, 140, 0.2);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.5);
+  --ar-float-ink: rgb(251, 239, 226);
+  --ar-float-ink-low: rgba(251, 239, 226, 0.62);
+  color-scheme: dark;
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------

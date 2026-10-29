@@ -42,6 +42,14 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
 |  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
 |  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
+| materials | `marble` | Marble Frost | glass | Carrara marble values with soft grey veins, pressed into bright frost. |
+|  | `slate` | Slate Glass | glass | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
+|  | `travertine` | Travertine | glass | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |
+|  | `basalt` | Basalt | glass | Black volcanic stone values with one polished edge, on smoked glass. An ember signal. |
+|  | `steel` | Brushed Steel | glass | Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. |
+|  | `bisque` | Bisque | glass | Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. |
+|  | `concrete` | Concrete | glass | Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal. |
+|  | `walnut` | Walnut Glass | glass | Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. |
 | untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
 |  | `clear-polished` | Polished Glass | glass | Clear glass with depth: values float on a soft shadow under one reflected line. |
 |  | `clear-lens` | Lens Glass | glass | Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene. |
