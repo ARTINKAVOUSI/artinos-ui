@@ -1847,7 +1847,15 @@
 [data-ar-theme='veil']:not([data-ar-material]),
 [data-ar-theme='haze']:not([data-ar-material]),
 [data-ar-theme='smoke']:not([data-ar-material]),
-[data-ar-theme='ink']:not([data-ar-material]) {
+[data-ar-theme='ink']:not([data-ar-material]),
+[data-ar-theme='lift']:not([data-ar-material]),
+[data-ar-theme='edge']:not([data-ar-material]),
+[data-ar-theme='inset']:not([data-ar-material]),
+[data-ar-theme='halo']:not([data-ar-material]),
+[data-ar-theme='tile']:not([data-ar-material]),
+[data-ar-theme='groove']:not([data-ar-material]),
+[data-ar-theme='drift']:not([data-ar-material]),
+[data-ar-theme='shade']:not([data-ar-material]) {
   --ar-trough: rgba(255, 255, 255, 0.08);
   --ar-trough-backdrop: none;
   --ar-well: none;
@@ -1894,7 +1902,9 @@
   --ar-list-hover: rgba(255, 255, 255, 0.06);
 }
 [data-ar-theme='mist']:not([data-ar-material]),
-[data-ar-theme='chalk']:not([data-ar-material]) {
+[data-ar-theme='chalk']:not([data-ar-material]),
+[data-ar-theme='linen']:not([data-ar-material]),
+[data-ar-theme='cloud']:not([data-ar-material]) {
   --ar-trough: rgba(0, 0, 0, 0.06);
   --ar-trough-backdrop: none;
   --ar-well: none;
@@ -2906,4 +2916,63 @@
   --ar-list-ink-hi: #121212;
   --ar-list-text-shadow: none;
   --ar-list-hover: rgba(18, 18, 18, 0.06);
+}
+
+/* ---------- FLAT GLASS, more — finishes ---------- */
+
+/* LIFT */
+[data-ar-theme='lift']:not([data-ar-material]) {
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  --ar-list-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* EDGE */
+[data-ar-theme='edge']:not([data-ar-material]) {
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* INSET */
+[data-ar-theme='inset']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.08);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.07);
+  --ar-cell: rgba(0, 0, 0, 0.06);
+  --ar-cell-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* HALO */
+[data-ar-theme='halo']:not([data-ar-material]) {
+  --ar-insert-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+/* TILE */
+[data-ar-theme='tile']:not([data-ar-material]) {
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 0 rgba(0, 0, 0, 0.28);
+  --ar-list-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/* GROOVE */
+[data-ar-theme='groove']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.06);
+  --ar-well: inset 0 1px 0 rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.08);
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
+  --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.26), 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* SHADE */
+[data-ar-theme='shade']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.07);
+  --ar-insert: rgba(255, 255, 255, 0.16);
+  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* LINEN */
+[data-ar-theme='linen']:not([data-ar-material]) {
+  --ar-insert-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* CLOUD */
+[data-ar-theme='cloud']:not([data-ar-material]) {
+  --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 10px -4px rgba(0, 0, 0, 0.14);
+  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.06);
 }

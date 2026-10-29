@@ -42,6 +42,16 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
 |  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
 |  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
+|  | `lift` | Lift | glass | Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. |
+|  | `edge` | Edge | glass | Flat glass with one hairline round each value and a lit top edge on the pane. |
+|  | `inset` | Inset | glass | Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. |
+|  | `halo` | Halo | glass | Flat glass with volume: a soft light inside the pane edge and inside each value. |
+|  | `tile` | Tile | glass | Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. |
+|  | `groove` | Groove | glass | Flat glass with tracks drawn as fine grooves and values floating softly over them. |
+|  | `drift` | Drift | glass | The flattest controls on the pane that floats highest: all the depth is in the pane. |
+|  | `shade` | Shade | glass | A dense dark veil with a lit top edge; values carry the same thin light along their top. |
+|  | `linen` | Linen | glass | Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. |
+|  | `cloud` | Cloud | glass | Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. |
 | materials | `marble` | Marble Frost | glass | Carrara marble values with soft grey veins, pressed into bright frost. |
 |  | `slate` | Slate Glass | glass | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
 |  | `travertine` | Travertine | glass | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |

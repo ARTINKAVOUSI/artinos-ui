@@ -200,6 +200,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
+  'lift', 'edge', 'inset', 'halo', 'tile', 'groove', 'drift', 'shade', 'linen', 'cloud',
   'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
   'quartz', 'loupe', 'shell', 'engrave', 'machined', 'matte', 'glaze', 'pebble', 'vellum', 'lumen',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered', 'clear-bevel', 'clear-cut',
@@ -227,6 +228,16 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  lift: { label: 'Lift', family: 'scene', kind: 'glass', description: 'Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  edge: { label: 'Edge', family: 'scene', kind: 'glass', description: 'Flat glass with one hairline round each value and a lit top edge on the pane.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  inset: { label: 'Inset', family: 'scene', kind: 'glass', description: 'Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  halo: { label: 'Halo', family: 'scene', kind: 'glass', description: 'Flat glass with volume: a soft light inside the pane edge and inside each value.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  tile: { label: 'Tile', family: 'scene', kind: 'glass', description: 'Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  groove: { label: 'Groove', family: 'scene', kind: 'glass', description: 'Flat glass with tracks drawn as fine grooves and values floating softly over them.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  drift: { label: 'Drift', family: 'scene', kind: 'glass', description: 'The flattest controls on the pane that floats highest: all the depth is in the pane.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  shade: { label: 'Shade', family: 'scene', kind: 'glass', description: 'A dense dark veil with a lit top edge; values carry the same thin light along their top.', swatch: ['#4a4a4a', '#6a6a6a', '#4fd1ba'] },
+  linen: { label: 'Linen', family: 'scene', kind: 'glass', description: 'Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink.', swatch: ['#e9e9e9', '#f6f6f6', '#0a8a78'] },
+  cloud: { label: 'Cloud', family: 'scene', kind: 'glass', description: 'Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink.', swatch: ['#e9e9e9', '#f6f6f6', '#0a8a78'] },
   quartz: { label: 'Quartz', family: 'blends', kind: 'glass', description: 'Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
   loupe: { label: 'Loupe', family: 'blends', kind: 'glass', description: 'Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
   shell: { label: 'Shell', family: 'blends', kind: 'glass', description: 'Deep frost and neumorphism: pressed tracks and softly domed values.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },

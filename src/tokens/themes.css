@@ -21,6 +21,16 @@
  *     pressed         Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows.
  *     hairline        Flat glass held by one 1px line around the pane and each track. No highlights, no colour.
  *     frosted         A clearer pane with frosted controls: each track and value frosts the scene further.
+ *     lift            Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene.
+ *     edge            Flat glass with one hairline round each value and a lit top edge on the pane.
+ *     inset           Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below.
+ *     halo            Flat glass with volume: a soft light inside the pane edge and inside each value.
+ *     tile            Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom.
+ *     groove          Flat glass with tracks drawn as fine grooves and values floating softly over them.
+ *     drift           The flattest controls on the pane that floats highest: all the depth is in the pane.
+ *     shade           A dense dark veil with a lit top edge; values carry the same thin light along their top.
+ *     linen           Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink.
+ *     cloud           Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink.
  *   materials
  *     marble          Carrara marble values with soft grey veins, pressed into bright frost.
  *     slate           Matte slate tiles in smoked glass; a faint stone grain shows through the pane.
@@ -2022,7 +2032,15 @@
 [data-ar-theme='veil'],
 [data-ar-theme='haze'],
 [data-ar-theme='smoke'],
-[data-ar-theme='ink'] {
+[data-ar-theme='ink'],
+[data-ar-theme='lift'],
+[data-ar-theme='edge'],
+[data-ar-theme='inset'],
+[data-ar-theme='halo'],
+[data-ar-theme='tile'],
+[data-ar-theme='groove'],
+[data-ar-theme='drift'],
+[data-ar-theme='shade'] {
   --ar-bg-app: #2b2b2b;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.07);
@@ -2060,7 +2078,9 @@
   color-scheme: dark;
 }
 [data-ar-theme='mist'],
-[data-ar-theme='chalk'] {
+[data-ar-theme='chalk'],
+[data-ar-theme='linen'],
+[data-ar-theme='cloud'] {
   --ar-bg-app: #e8e8e8;
   --ar-bg-surface: rgba(0, 0, 0, 0.03);
   --ar-bg-raised: rgba(0, 0, 0, 0.05);
@@ -2956,6 +2976,91 @@
   --ar-float-ink: rgb(18, 18, 18);
   --ar-float-ink-low: rgba(18, 18, 18, 0.64);
   color-scheme: light;
+}
+
+/* ---------- FLAT GLASS, more — the flat pane with one quiet touch of hairline or depth ---------- */
+
+/* LIFT — Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. */
+[data-ar-theme='lift'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.08);
+  --ar-panel-blur: blur(30px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* EDGE — Flat glass with one hairline round each value and a lit top edge on the pane. */
+[data-ar-theme='edge'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.14);
+  --ar-panel-blur: blur(24px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* INSET — Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. */
+[data-ar-theme='inset'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.06);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* HALO — Flat glass with volume: a soft light inside the pane edge and inside each value. */
+[data-ar-theme='halo'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.2);
+  --ar-panel-blur: blur(32px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 0 24px rgba(255, 255, 255, 0.05), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* TILE — Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. */
+[data-ar-theme='tile'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.1);
+  --ar-panel-blur: blur(28px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* GROOVE — Flat glass with tracks drawn as fine grooves and values floating softly over them. */
+[data-ar-theme='groove'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.24);
+  --ar-panel-blur: blur(36px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* DRIFT — The flattest controls on the pane that floats highest: all the depth is in the pane. */
+[data-ar-theme='drift'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.05);
+  --ar-panel-blur: blur(56px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 40px 80px -30px rgba(0, 0, 0, 0.6), 0 8px 20px -10px rgba(0, 0, 0, 0.3);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+}
+
+/* SHADE — A dense dark veil with a lit top edge; values carry the same thin light along their top. */
+[data-ar-theme='shade'] {
+  --ar-panel-tint: rgba(10, 10, 10, 0.6);
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* LINEN — Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. */
+[data-ar-theme='linen'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.58);
+  --ar-panel-blur: blur(36px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* CLOUD — Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. */
+[data-ar-theme='cloud'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.44);
+  --ar-panel-blur: blur(64px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 24px 50px -24px rgba(0, 0, 0, 0.25);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------
