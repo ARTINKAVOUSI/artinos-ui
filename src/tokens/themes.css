@@ -1903,11 +1903,11 @@
   --ar-line-subtle: rgba(255, 255, 255, 0.08);
   --ar-line: rgba(255, 255, 255, 0.12);
   --ar-line-strong: rgba(255, 255, 255, 0.22);
-  --ar-signal: #ffffff;
-  --ar-signal-hi: #ffffff;
-  --ar-signal-line: rgba(255, 255, 255, 0.5);
-  --ar-signal-wash: rgba(255, 255, 255, 0.12);
-  --ar-signal-ink: #111111;
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
   --ar-bind: rgba(255, 255, 255, 0.8);
   --ar-warn: rgba(255, 255, 255, 0.8);
   --ar-fault: rgba(255, 255, 255, 0.8);
@@ -1915,7 +1915,7 @@
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px rgba(255, 255, 255, 0.8);
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -1941,10 +1941,10 @@
   --ar-line-subtle: rgba(0, 0, 0, 0.06);
   --ar-line: rgba(0, 0, 0, 0.1);
   --ar-line-strong: rgba(0, 0, 0, 0.18);
-  --ar-signal: #111111;
-  --ar-signal-hi: #000000;
-  --ar-signal-line: rgba(0, 0, 0, 0.4);
-  --ar-signal-wash: rgba(0, 0, 0, 0.07);
+  --ar-signal: #0a8a78;
+  --ar-signal-hi: #06695c;
+  --ar-signal-line: rgba(10, 138, 120, 0.42);
+  --ar-signal-wash: rgba(10, 138, 120, 0.1);
   --ar-signal-ink: #ffffff;
   --ar-bind: rgba(17, 17, 17, 0.8);
   --ar-warn: rgba(17, 17, 17, 0.8);
@@ -1953,7 +1953,7 @@
   --ar-tick-major: rgba(0, 0, 0, 0.7);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px rgba(17, 17, 17, 0.75);
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -2017,11 +2017,11 @@
   --ar-line-subtle: rgba(255, 255, 255, 0.08);
   --ar-line: rgba(255, 255, 255, 0.12);
   --ar-line-strong: rgba(255, 255, 255, 0.22);
-  --ar-signal: #ffffff;
-  --ar-signal-hi: #ffffff;
-  --ar-signal-line: rgba(255, 255, 255, 0.5);
-  --ar-signal-wash: rgba(255, 255, 255, 0.12);
-  --ar-signal-ink: #111111;
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
   --ar-bind: rgba(255, 255, 255, 0.8);
   --ar-warn: rgba(255, 255, 255, 0.8);
   --ar-fault: rgba(255, 255, 255, 0.8);
@@ -2029,7 +2029,7 @@
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px rgba(255, 255, 255, 0.8);
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -2061,4 +2061,48 @@
   --ar-panel-tint: rgba(255, 255, 255, 0.05);
   --ar-panel-blur: blur(12px);
   --ar-float-bg: rgba(40, 40, 40, 0.6);
+}
+
+/* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------
+ * Any theme can take any accent: the signal (live edges, LEDs, focus, selection) changes and
+ * nothing else does. Each accent carries a value for dark themes and one for light themes;
+ * light-dark() picks by the theme's color-scheme. Keep this block last in the file: it wins
+ * over a theme's own signal on the same element by coming after it.
+ */
+[data-ar-accent] {
+  --ar-signal-line: color-mix(in srgb, var(--ar-signal) 50%, transparent);
+  --ar-signal-wash: color-mix(in srgb, var(--ar-signal) 14%, transparent);
+  --ar-signal-ink: light-dark(#ffffff, #0b0f10);
+}
+[data-ar-accent='teal'] {
+  --ar-signal: light-dark(#0a8a78, #4fd1ba);
+  --ar-signal-hi: light-dark(#06695c, #9eeede);
+}
+[data-ar-accent='azure'] {
+  --ar-signal: light-dark(#1f6fd1, #6cb4ff);
+  --ar-signal-hi: light-dark(#1556a8, #a8d2ff);
+}
+[data-ar-accent='violet'] {
+  --ar-signal: light-dark(#6a4fd8, #a99bff);
+  --ar-signal-hi: light-dark(#5236b8, #cdc4ff);
+}
+[data-ar-accent='rose'] {
+  --ar-signal: light-dark(#c8325a, #ff8fab);
+  --ar-signal-hi: light-dark(#a3203f, #ffbccd);
+}
+[data-ar-accent='coral'] {
+  --ar-signal: light-dark(#c4502a, #ff9a76);
+  --ar-signal-hi: light-dark(#a03c1a, #ffc2ab);
+}
+[data-ar-accent='amber'] {
+  --ar-signal: light-dark(#a86a00, #ffc46b);
+  --ar-signal-hi: light-dark(#835200, #ffdca3);
+}
+[data-ar-accent='lime'] {
+  --ar-signal: light-dark(#4d8a12, #b8e86a);
+  --ar-signal-hi: light-dark(#3a6a0b, #d6f3a6);
+}
+[data-ar-accent='mono'] {
+  --ar-signal: light-dark(#111111, #ffffff);
+  --ar-signal-hi: light-dark(#000000, #ffffff);
 }

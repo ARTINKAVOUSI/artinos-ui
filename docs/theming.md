@@ -115,6 +115,10 @@ For React Three Fiber, the controls are DOM. Put them in an HTML overlay above t
 
 `dense` (24px) · `standard` (26px, default) · `comfort` (30px). Per control: `density="dense"`. Per scope: `<ArtinosTheme density="comfort">` or `data-ar-density="comfort"`. Type size, padding and radii follow.
 
+## Accents
+
+Any theme can take any accent: `<ArtinosTheme theme="veil" accent="violet">` or `data-ar-accent="violet"` on the theme's element. Only the signal changes (live edges, LEDs, focus, selection, the ruler index). The accents are `teal` · `azure` · `violet` · `rose` · `coral` · `amber` · `lime` · `mono`; each has a bright value for dark themes and a deeper one for light themes, chosen by the theme's `color-scheme` through `light-dark()`. `ACCENTS` and `ACCENT_META` list them for a picker. Themes that draw their live edge in their own metal (the luxe themes, for example) keep it; the accent still sets focus and selection.
+
 ## Type collections
 
 By default type is two voices of one family: a sans sets words and its mono sibling sets figures and small marks, so numbers line up and read as measurements; headings are sentence case, with no tracked capitals. A **type collection** swaps the faces and re-tunes only what the faces change (the figures face, caps, tracking, the thinnest weight a face has); sizes, weights and leading stay, so every component keeps its proportions. Some collections add a display face for titles at 22px and up (`--ar-font-display`).

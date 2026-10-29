@@ -7,8 +7,8 @@
 // design system
 export { ArtinosTheme, themeStyle } from './core/Theme';
 export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
-export { THEMES, THEME_META, GLASS_THEMES, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
-export type { ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
+export { THEMES, THEME_META, GLASS_THEMES, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
+export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
 export { ThemedPortal, themeScopeOf } from './core/portal';

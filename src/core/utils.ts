@@ -294,6 +294,20 @@ export const GLASS_THEMES = THEMES.filter((t) => THEME_META[t].kind === 'glass')
 /** Control finishes. Each theme already picks one — use these only to override. */
 export const MATERIALS = ['optical', 'frost', 'milk', 'clear', 'tint', 'smoked', 'metal', 'soft', 'reference'] as const;
 export const DENSITIES = ['dense', 'standard', 'comfort'] as const;
+/** Accents any theme can take (data-ar-accent): the signal changes, nothing else does. */
+export const ACCENTS = ['teal', 'azure', 'violet', 'rose', 'coral', 'amber', 'lime', 'mono'] as const;
+export type Accent = (typeof ACCENTS)[number];
+/** Each accent's label and its value on dark and on light themes, for pickers. */
+export const ACCENT_META: Record<Accent, { label: string; dark: string; light: string }> = {
+  teal: { label: 'Teal', dark: '#4fd1ba', light: '#0a8a78' },
+  azure: { label: 'Azure', dark: '#6cb4ff', light: '#1f6fd1' },
+  violet: { label: 'Violet', dark: '#a99bff', light: '#6a4fd8' },
+  rose: { label: 'Rose', dark: '#ff8fab', light: '#c8325a' },
+  coral: { label: 'Coral', dark: '#ff9a76', light: '#c4502a' },
+  amber: { label: 'Amber', dark: '#ffc46b', light: '#a86a00' },
+  lime: { label: 'Lime', dark: '#b8e86a', light: '#4d8a12' },
+  mono: { label: 'Mono', dark: '#ffffff', light: '#111111' },
+};
 export type MaterialName = (typeof MATERIALS)[number];
 export type Density = (typeof DENSITIES)[number];
 

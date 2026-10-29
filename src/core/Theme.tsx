@@ -1,6 +1,6 @@
 import type { CSSProperties, ElementType, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './utils';
-import type { Density, MaterialName, ThemeName, TypeCollection } from './utils';
+import type { Accent, Density, MaterialName, ThemeName, TypeCollection } from './utils';
 
 /** Token overrides: `{ signal: '#ff4fa3', 'radius-control': '6px' }` or full `--ar-*` names. */
 export type TokenOverrides = Record<string, string | number>;
@@ -22,6 +22,9 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   /** A type collection (see TYPE_COLLECTIONS): the faces and their tuning. Inherits when omitted;
    *  the default is `instrument` (Geist and Geist Mono). */
   type?: TypeCollection | (string & {});
+  /** An accent (see ACCENTS) in place of the theme's own signal: live edges, LEDs, focus and
+   *  selection take it, nothing else changes. Each accent has a dark and a light value. */
+  accent?: Accent;
   /** Inline token overrides for a custom look — applied on top of the theme. */
   tokens?: TokenOverrides;
   /** What the glass sits over. Over a scene of the other kind than the theme's ink (frost-deep
@@ -38,7 +41,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
  * Optional scope wrapper. It only sets data attributes and inline tokens, so the
  * same result is available without React: <div data-ar-theme="frost">.
  */
-export function ArtinosTheme({ theme = 'studio', material, density, type, scene, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+export function ArtinosTheme({ theme = 'studio', material, density, type, accent, scene, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'div';
@@ -49,6 +52,7 @@ export function ArtinosTheme({ theme = 'studio', material, density, type, scene,
       data-ar-material={material}
       data-ar-density={density}
       data-ar-type={type}
+      data-ar-accent={accent}
       data-ar-scene={scene}
       className={cx('ar-theme', ground && 'ar-theme--ground', className)}
       style={{ ...themeStyle(tokens), ...style }}

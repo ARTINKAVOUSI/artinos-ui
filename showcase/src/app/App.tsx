@@ -3,7 +3,7 @@
    The app shell: theme / density / backdrop state, view routing (page · #studio),
    the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { ComponentChapters } from '../chapters';
 import { FoundationsChapter } from '../chapters/Foundations';
@@ -57,6 +57,7 @@ export function App() {
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
   const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'instrument'));
+  const [accent, setAccent] = useState<string>(pick('accent', ['theme', ...ACCENTS] as const, 'theme'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera', 'studio'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');
 
@@ -75,7 +76,7 @@ export function App() {
     );
 
   return (
-    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
+    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} accent={accent === 'theme' ? undefined : (accent as (typeof ACCENTS)[number])} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
 
       <header className="sc-bar">
@@ -92,6 +93,10 @@ export function App() {
         <label className="sc-pick">
           <span>Type</span>
           <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
+        </label>
+        <label className="sc-pick">
+          <span>Accent</span>
+          <Select options={[{ value: 'theme', label: 'Theme' }, ...ACCENTS.map((a) => ({ value: a, label: ACCENT_META[a].label }))]} value={accent} onChange={setAccent} appearance="well" label="Accent" />
         </label>
         <label className="sc-pick">
           <span>Density</span>
