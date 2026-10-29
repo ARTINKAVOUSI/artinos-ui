@@ -199,7 +199,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
    are optional overrides for special cases. */
 
 export const THEMES = [
-  'veil', 'hairline', 'obsidian', 'midnight', 'sable', 'daylight',
+  'sheer', 'veil', 'haze', 'smoke', 'mist',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered',
   'frost-etched', 'frost-silk', 'frost-mist', 'frost-deep',
   'nocturne', 'lagoon', 'argent', 'garnet', 'ivory', 'glacier', 'wisteria', 'dune',
@@ -212,7 +212,7 @@ export const THEMES = [
 ] as const;
 export type ThemeName = (typeof THEMES)[number];
 
-export type ThemeFamily = 'hairline' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
+export type ThemeFamily = 'scene' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
 
 export interface ThemeMeta {
   label: string;
@@ -225,12 +225,11 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
-  veil: { label: 'Veil', family: 'hairline', kind: 'glass', description: 'Vibrant clear glass. The scene\'s own colour, brightened, behind white hairlines; white selection.', swatch: ['#6d6f76', '#c9cacf', '#f4f6f8'] },
-  hairline: { label: 'Hairline', family: 'hairline', kind: 'glass', description: 'Neutral clear glass with the lightest touch: outlines instead of fills, a crisp live edge, a mint signal.', swatch: ['#3a3b3e', '#77797d', '#8fe3cf'] },
-  obsidian: { label: 'Obsidian', family: 'hairline', kind: 'glass', description: 'Deep smoked glass in monochrome. Warm-white hairlines, thin glass values, no colour at all.', swatch: ['#0c0c0e', '#3a3936', '#ece6da'] },
-  midnight: { label: 'Midnight', family: 'hairline', kind: 'glass', description: 'Navy smoked glass with blue-white hairlines and a periwinkle signal.', swatch: ['#0c1428', '#4b5a7e', '#8fb4ff'] },
-  sable: { label: 'Sable', family: 'hairline', kind: 'glass', description: 'Warm bronze smoked glass with champagne hairlines and a soft gold signal.', swatch: ['#211910', '#6e5a40', '#e3c48f'] },
-  daylight: { label: 'Daylight', family: 'hairline', kind: 'glass', description: 'Bright clear glass for light scenes: white hairlines outside, graphite ink and a graphite live edge.', swatch: ['#e9eaec', '#ffffff', '#1d2024'] },
+  sheer: { label: 'Sheer', family: 'scene', kind: 'glass', description: 'The clearest pane: the scene only softened, held by a hairline. Controls are lenses cut from it; the only colour is the scene\'s.', swatch: ['#5a5a5a', '#9a9a9a', '#ffffff'] },
+  veil: { label: 'Veil', family: 'scene', kind: 'glass', description: 'Clear glass, no tint: the scene softened to shapes and light, hairline edges, white live edge.', swatch: ['#4e4e4e', '#8e8e8e', '#ffffff'] },
+  haze: { label: 'Haze', family: 'scene', kind: 'glass', description: 'Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white.', swatch: ['#626262', '#a4a4a4', '#ffffff'] },
+  smoke: { label: 'Smoke', family: 'scene', kind: 'glass', description: 'The scene dimmed, not tinted: white ink holds over bright or busy imagery.', swatch: ['#262626', '#5e5e5e', '#ffffff'] },
+  mist: { label: 'Mist', family: 'scene', kind: 'glass', description: 'The scene lightened, not whitened: graphite ink and a graphite live edge for light imagery.', swatch: ['#d8d8d8', '#f4f4f4', '#1a1a1a'] },
   'clear-air': { label: 'Air Glass', family: 'untinted-glass', kind: 'glass', description: 'Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge.', swatch: ['#383838', '#656565', '#4fd1ba'] },
   'clear-polished': { label: 'Polished Glass', family: 'untinted-glass', kind: 'glass', description: 'Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast.', swatch: ['#404040', '#8a8a8a', '#4fd1ba'] },
   'clear-lens': { label: 'Lens Glass', family: 'untinted-glass', kind: 'glass', description: 'Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection.', swatch: ['#484848', '#787878', '#4fd1ba'] },

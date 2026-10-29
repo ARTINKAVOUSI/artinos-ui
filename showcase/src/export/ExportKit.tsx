@@ -13,7 +13,7 @@ import { zip } from '../../../tools/zip.mjs';
 import './export.css';
 
 const FAMILY_LABEL: Record<string, string> = {
-  hairline: 'Hairline glass',
+  scene: 'Scene glass',
   studio: 'Studio',
   signature: 'Signature',
   glass: 'Glass',

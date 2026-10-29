@@ -32,12 +32,11 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 <!-- themes:start -->
 | family | id | name | kind | look |
 |---|---|---|---|---|
-| hairline | `veil` | Veil | glass | Vibrant clear glass. The scene's own colour, brightened, behind white hairlines; white selection. |
-|  | `hairline` | Hairline | glass | Neutral clear glass with the lightest touch: outlines instead of fills, a crisp live edge, a mint signal. |
-|  | `obsidian` | Obsidian | glass | Deep smoked glass in monochrome. Warm-white hairlines, thin glass values, no colour at all. |
-|  | `midnight` | Midnight | glass | Navy smoked glass with blue-white hairlines and a periwinkle signal. |
-|  | `sable` | Sable | glass | Warm bronze smoked glass with champagne hairlines and a soft gold signal. |
-|  | `daylight` | Daylight | glass | Bright clear glass for light scenes: white hairlines outside, graphite ink and a graphite live edge. |
+| scene | `sheer` | Sheer | glass | The clearest pane: the scene only softened, held by a hairline. Controls are lenses cut from it; the only colour is the scene's. |
+|  | `veil` | Veil | glass | Clear glass, no tint: the scene softened to shapes and light, hairline edges, white live edge. |
+|  | `haze` | Haze | glass | Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white. |
+|  | `smoke` | Smoke | glass | The scene dimmed, not tinted: white ink holds over bright or busy imagery. |
+|  | `mist` | Mist | glass | The scene lightened, not whitened: graphite ink and a graphite live edge for light imagery. |
 | untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge. |
 |  | `clear-polished` | Polished Glass | glass | Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast. |
 |  | `clear-lens` | Lens Glass | glass | Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection. |
