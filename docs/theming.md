@@ -42,14 +42,18 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
 |  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
 |  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
-| untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge. |
-|  | `clear-polished` | Polished Glass | glass | Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast. |
-|  | `clear-lens` | Lens Glass | glass | Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection. |
-|  | `clear-layered` | Layered Glass | glass | Clear panes with luminous laminated inserts. Restrained double reflections and dark engraved readouts. |
-| untinted-frost | `frost-etched` | Etched Frost | glass | Fine etched glass. Light diffusion, translucent matte inserts and delicate satin edges. |
-|  | `frost-silk` | Silk Frost | glass | Silky continuous frost. Soft diffusion beneath translucent white inserts with understated dark lettering. |
-|  | `frost-mist` | Mist Frost | glass | Airy diffuse glass. A soft reflected veil, floating translucent inserts and a gently lit perimeter. |
-|  | `frost-deep` | Deep Frost | glass | Deep optical diffusion. The scene melts behind clear frost; dense satin inserts carry crisp charcoal numerals. |
+| untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
+|  | `clear-polished` | Polished Glass | glass | Clear glass with depth: values float on a soft shadow under one reflected line. |
+|  | `clear-lens` | Lens Glass | glass | Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene. |
+|  | `clear-layered` | Layered Glass | glass | Flat glass with neumorphic depth: tracks pressed in, luminous white values raised. |
+|  | `clear-bevel` | Bevel Glass | glass | Clear glass with bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass. |
+|  | `clear-cut` | Cut Glass | glass | Values faceted like crystal: one diagonal light across each, held by hairline rims. |
+| untinted-frost | `frost-etched` | Etched Frost | glass | Light frost with softly pressed tracks and flat frosted values. |
+|  | `frost-silk` | Silk Frost | glass | Neumorphic frost: pressed tracks, raised white silk values, dark lettering. |
+|  | `frost-mist` | Mist Frost | glass | Airy frost in hairlines, lifted off the scene on a soft shadow. |
+|  | `frost-deep` | Deep Frost | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
+|  | `frost-satin` | Satin Frost | glass | Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering. |
+|  | `frost-ceramic` | Ceramic Frost | glass | Glazed white values with a soft gloss band, set into pressed frost. |
 | atelier-glass | `nocturne` | Nocturne | glass | Architectural smoke glass. Cut corners, black crystal controls and a fine champagne edge. |
 |  | `lagoon` | Lagoon | glass | Deep petrol crystal. Rounded aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
 |  | `argent` | Argent | glass | Daylight silver glass. Crisp square edges, polished silver inserts and precise ink-blue accents. |

@@ -22,15 +22,19 @@
  *     hairline        Flat glass held by one 1px line around the pane and each track. No highlights, no colour.
  *     frosted         A clearer pane with frosted controls: each track and value frosts the scene further.
  *   untinted-glass
- *     clear-air       Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge.
- *     clear-polished  Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast.
- *     clear-lens      Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection.
- *     clear-layered   Clear panes with luminous laminated inserts. Restrained double reflections and dark engraved readouts.
+ *     clear-air       Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur.
+ *     clear-polished  Clear glass with depth: values float on a soft shadow under one reflected line.
+ *     clear-lens      Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene.
+ *     clear-layered   Flat glass with neumorphic depth: tracks pressed in, luminous white values raised.
+ *     clear-bevel     Clear glass with bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass.
+ *     clear-cut       Values faceted like crystal: one diagonal light across each, held by hairline rims.
  *   untinted-frost
- *     frost-etched    Fine etched glass. Light diffusion, translucent matte inserts and delicate satin edges.
- *     frost-silk      Silky continuous frost. Soft diffusion beneath translucent white inserts with understated dark lettering.
- *     frost-mist      Airy diffuse glass. A soft reflected veil, floating translucent inserts and a gently lit perimeter.
- *     frost-deep      Deep optical diffusion. The scene melts behind clear frost; dense satin inserts carry crisp charcoal numerals.
+ *     frost-etched    Light frost with softly pressed tracks and flat frosted values.
+ *     frost-silk      Neumorphic frost: pressed tracks, raised white silk values, dark lettering.
+ *     frost-mist      Airy frost in hairlines, lifted off the scene on a soft shadow.
+ *     frost-deep      The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals.
+ *     frost-satin     Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering.
+ *     frost-ceramic   Glazed white values with a soft gloss band, set into pressed frost.
  *   atelier-glass
  *     nocturne        Architectural smoke glass. Cut corners, black crystal controls and a fine champagne edge.
  *     lagoon          Deep petrol crystal. Rounded aquamarine lenses, luminous sea-glass edges and cool ivory ink.
@@ -88,10 +92,11 @@
  * themes:end
  */
 
-/* ---------- UNTINTED — clear transmission and frost in the default forms ----------
- * All optical layers are achromatic. Panel tint is fully transparent; backdrop
- * filters change diffusion only, never hue, saturation or brightness.
- * Geometry, typography, density and motion inherit the default token values.
+/* ---------- UNTINTED — clear glass and frost, flat and colourless ----------
+ * No hue, no glossy gradients, no rims or drop shadows: a pane is the scene blurred under at
+ * most a faint veil, held by one hairline. Controls are flat translucent fills; the accent
+ * draws only the live edge, the LEDs and focus. The glass row differs in how clear the pane
+ * stays (air → layered); the frost row in how deep the diffusion goes (etched → deep).
  */
 [data-ar-theme='clear-air'],
 [data-ar-theme='clear-polished'],
@@ -100,106 +105,136 @@
 [data-ar-theme='frost-etched'],
 [data-ar-theme='frost-silk'],
 [data-ar-theme='frost-mist'],
-[data-ar-theme='frost-deep'] {
+[data-ar-theme='frost-deep'],
+[data-ar-theme='clear-bevel'],
+[data-ar-theme='clear-cut'],
+[data-ar-theme='frost-satin'],
+[data-ar-theme='frost-ceramic'] {
   --ar-bg-app: #303030;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
-  --ar-bg-raised: rgba(255, 255, 255, 0.08);
+  --ar-bg-raised: rgba(255, 255, 255, 0.07);
   --ar-bg-hover: rgba(255, 255, 255, 0.07);
   --ar-bg-active: rgba(255, 255, 255, 0.12);
+  --ar-bg-well: rgba(255, 255, 255, 0.07);
   --ar-text-hi: #ffffff;
-  --ar-text-mid: #ededed;
-  --ar-text-low: #d4d4d4;
-  --ar-text-faint: #aeaeae;
-  --ar-text-ghost: #858585;
-  --ar-line-subtle: rgba(255, 255, 255, 0.12);
-  --ar-line: rgba(255, 255, 255, 0.22);
-  --ar-line-strong: rgba(255, 255, 255, 0.38);
-  /* the glass is untinted; the accents are the ARTINOS set (teal lifted for dark glass) */
+  --ar-text-mid: rgba(255, 255, 255, 0.9);
+  --ar-text-low: rgba(255, 255, 255, 0.68);
+  --ar-text-faint: rgba(255, 255, 255, 0.5);
+  --ar-text-ghost: rgba(255, 255, 255, 0.32);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.14);
+  --ar-line-strong: rgba(255, 255, 255, 0.26);
   --ar-signal: #4fd1ba;
   --ar-signal-hi: #9eeede;
-  --ar-signal-line: rgba(79, 209, 186, 0.55);
-  --ar-signal-wash: rgba(79, 209, 186, 0.16);
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
   --ar-signal-ink: #04120f;
   --ar-bind: var(--ar-azure-500);
   --ar-warn: var(--ar-amber-500);
   --ar-fault: var(--ar-rose-500);
-  --ar-tick: rgba(255, 255, 255, 0.32);
-  --ar-tick-major: #d4d4d4;
-  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.13);
-  --ar-rim: 0 1px 0 rgba(255, 255, 255, 0.06);
-  --ar-focus-ring: 0 0 0 1px #ffffff, 0 0 0 3px rgba(0, 0, 0, 0.45);
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.78);
+  --ar-shadow-well: none;
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
-  --ar-float-bg: rgba(28, 28, 28, 0.92);
-  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  --ar-float-shadow: 0 12px 30px -14px rgba(0, 0, 0, 0.42);
+  --ar-panel-sheen: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.72);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.4);
   --ar-float-ink: #ffffff;
-  --ar-float-ink-low: #c6c6c6;
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
   color-scheme: dark;
 }
 
-/* AIR GLASS — Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge. */
+/* AIR GLASS — almost invisible: a whisper of blur and a hairline. */
 [data-ar-theme='clear-air'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.22);
-  --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 28%);
-  --ar-panel-blur: blur(3px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.36), 0 18px 44px -24px rgba(0, 0, 0, 0.2);
+  --ar-panel-blur: blur(4px);
+  --ar-panel-tint: rgba(0, 0, 0, 0.06);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* POLISHED GLASS — Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast. */
+/* POLISHED GLASS — clear glass with one reflected line along its top edge. */
 [data-ar-theme='clear-polished'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.26);
-  --ar-panel-sheen: linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0) 76%, rgba(255, 255, 255, 0.035) 100%);
-  --ar-panel-blur: blur(8px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.62), 0 18px 44px -24px rgba(0, 0, 0, 0.28);
-}
-
-/* LENS GLASS — Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection. */
-[data-ar-theme='clear-lens'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.2);
-  --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.025) 100%);
-  --ar-panel-blur: blur(14px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 18px 44px -24px rgba(0, 0, 0, 0.35);
-}
-
-/* LAYERED GLASS — Clear panes with luminous laminated inserts. Restrained double reflections and dark engraved readouts. */
-[data-ar-theme='clear-layered'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.18);
-  --ar-panel-sheen: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 46%);
   --ar-panel-blur: blur(10px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 18px 44px -24px rgba(0, 0, 0, 0.3);
+  --ar-panel-tint: rgba(0, 0, 0, 0.08);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* ETCHED FROST — Fine etched glass. Light diffusion, translucent matte inserts and delicate satin edges. */
+/* LENS GLASS — optical clarity: values brighten the scene behind them like a lens. */
+[data-ar-theme='clear-lens'] {
+  --ar-panel-blur: blur(16px);
+  --ar-panel-tint: rgba(0, 0, 0, 0.06);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 24px 48px -24px rgba(0, 0, 0, 0.45);
+}
+
+/* LAYERED GLASS — a clear pane with luminous white laminated values and dark readouts. */
+[data-ar-theme='clear-layered'] {
+  --ar-panel-blur: blur(12px);
+  --ar-panel-tint: rgba(0, 0, 0, 0.1);
+}
+
+/* ETCHED FROST — light diffusion under a faint white veil. */
 [data-ar-theme='frost-etched'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.18);
-  --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 60%);
   --ar-panel-blur: blur(24px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 18px 44px -24px rgba(0, 0, 0, 0.22);
+  --ar-panel-tint: rgba(255, 255, 255, 0.05);
 }
 
-/* SILK FROST — Silky continuous frost. Soft diffusion beneath translucent white inserts with understated dark lettering. */
+/* SILK FROST — soft continuous frost with white silk values and dark lettering. */
 [data-ar-theme='frost-silk'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.14);
-  --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 70%);
   --ar-panel-blur: blur(40px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 18px 44px -24px rgba(0, 0, 0, 0.27);
+  --ar-panel-tint: rgba(255, 255, 255, 0.08);
 }
 
-/* MIST FROST — Airy diffuse glass. A soft reflected veil, floating translucent inserts and a gently lit perimeter. */
+/* MIST FROST — airy diffusion, the brightest veil of the row. */
 [data-ar-theme='frost-mist'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.2);
-  --ar-panel-sheen: linear-gradient(155deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.025) 75%);
   --ar-panel-blur: blur(56px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.52), 0 18px 44px -24px rgba(0, 0, 0, 0.2);
+  --ar-panel-tint: rgba(255, 255, 255, 0.12);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), 0 24px 48px -24px rgba(0, 0, 0, 0.45);
 }
 
-/* DEEP FROST — Deep optical diffusion. The scene melts behind clear frost; dense satin inserts carry crisp charcoal numerals. */
+/* DEEP FROST — the deepest diffusion: the scene melts; dense white values carry crisp numerals. */
 [data-ar-theme='frost-deep'] {
-  --ar-bg-well: rgba(0, 0, 0, 0.24);
-  --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 80%);
   --ar-panel-blur: blur(72px);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 18px 44px -24px rgba(0, 0, 0, 0.38);
+  --ar-panel-tint: rgba(0, 0, 0, 0.06);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 30px 60px -28px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- UNTINTED tactile — skeuomorphic material cues, still colourless ---------- */
+
+/* BEVEL GLASS — bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass. */
+[data-ar-theme='clear-bevel'] {
+  --ar-panel-blur: blur(14px);
+  --ar-panel-tint: rgba(0, 0, 0, 0.08);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 20px 44px -24px rgba(0, 0, 0, 0.4);
+  --ar-panel-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* CUT GLASS — values faceted like crystal: one diagonal light across each, hairline rims. */
+[data-ar-theme='clear-cut'] {
+  --ar-panel-blur: blur(10px);
+  --ar-panel-tint: rgba(0, 0, 0, 0.06);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* SATIN FROST — brushed-satin values with a lit edge, in machined tracks on frost. */
+[data-ar-theme='frost-satin'] {
+  --ar-panel-blur: blur(44px);
+  --ar-panel-tint: rgba(255, 255, 255, 0.06);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 24px 48px -24px rgba(0, 0, 0, 0.45);
+}
+
+/* CERAMIC FROST — glazed white values with a soft gloss band, set into pressed frost. */
+[data-ar-theme='frost-ceramic'] {
+  --ar-panel-blur: blur(60px);
+  --ar-panel-tint: rgba(255, 255, 255, 0.1);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 26px 56px -28px rgba(0, 0, 0, 0.45);
 }
 
 /* ---------- ATELIER — eight complete glass and frost palettes ----------

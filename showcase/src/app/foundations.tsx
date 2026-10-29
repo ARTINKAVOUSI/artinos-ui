@@ -38,8 +38,8 @@ export function TokenTable({ deps }: { deps: unknown[] }) {
 /** Theme gallery rows: four looks each. */
 export const FAMILIES: Array<[string, string[]]> = [
   ['Flat glass — the scene blurred under one flat veil: no colour, no border, no highlight', ['scene']],
-  ['Untinted glass — air, polish, optical depth and layered reflections', ['untinted-glass']],
-  ['Untinted frost — etched, silk, mist and deep diffusion', ['untinted-frost']],
+  ['Untinted glass — clear and colourless: hairlines, depth, lenses, bevels and cut facets', ['untinted-glass']],
+  ['Untinted frost — colourless frost: pressed, raised, lifted, brushed satin and glazed ceramic', ['untinted-frost']],
   ['Atelier glass — smoke, sea glass, silver and garnet crystal', ['atelier-glass']],
   ['Atelier frost — vellum, polar ice, lilac silk and smoked sand', ['atelier-frost']],
   ['Studio & signature — solid grounds and the original ARTINOS looks', ['studio', 'signature']],
