@@ -365,7 +365,7 @@
   --ar-value-weight: 500;
   --ar-trough: var(--ar-bg-well);
   --ar-trough-backdrop: blur(6px);
-  --ar-well: var(--ar-shadow-well), var(--ar-rim);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-label-ink: var(--ar-text-mid);
   --ar-value-ink: var(--ar-text-hi);
   --ar-value-ink-hi: var(--ar-text-hi);
@@ -375,16 +375,16 @@
   --ar-base-text-shadow: none;
   --ar-insert-text-shadow: none;
   --ar-insert-off-filter: grayscale(0.8) opacity(0.55);
-  --ar-seam-glow: 0 0 0 0.5px var(--ar-seam-active);
+  --ar-seam-glow: none;
   --ar-seam-scale-hot: 0.6;
   --ar-cell: var(--ar-bg-hover);
-  --ar-cell-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-cell-radius: var(--ar-insert-radius);
   --ar-led-on: var(--ar-seam-active);
   --ar-led-off: var(--ar-text-ghost);
-  --ar-led-glow: var(--ar-signal-line);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px var(--ar-line-strong);
-  --ar-grad-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 65%);
+  --ar-grad-sheen: none;
   --ar-swatch-rim: inset 0 0 0 1px var(--ar-line-strong), inset 0 1px 0 rgba(255, 255, 255, 0.35);
   --ar-list-bg: var(--ar-sheet-bg);
   --ar-list-backdrop: var(--ar-sheet-blur);
@@ -394,6 +394,8 @@
   --ar-list-ink: var(--ar-float-ink);
   --ar-list-ink-hi: var(--ar-signal-hi);
   --ar-list-hover: var(--ar-bg-hover);
+  --ar-insert-shadow: inset 0 0 0 1px var(--ar-line-strong), 1px 1px 3px rgba(0, 0, 0, 0.28), -1px -1px 2px rgba(255, 255, 255, 0.08);
+  --ar-seam-edge: none;
 }
 
 /* NOCTURNE — dark insert with dedicated seam contrast. */
@@ -402,19 +404,24 @@
   --ar-insert-radius: 2px;
   --ar-inset: 2px;
   --ar-label-tracking: .19em;
-  --ar-insert: linear-gradient(180deg, rgba(116, 108, 91, 0.38) 0%, rgba(51, 50, 48, 0.72) 48%, rgba(24, 25, 29, 0.86) 52%, rgba(68, 65, 57, 0.62) 100%);
+  --ar-insert: rgba(65, 62, 56, 0.65);
   --ar-insert-backdrop: blur(5px) saturate(0.6);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 0 0 1px rgba(223, 198, 156, 0.44), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(223, 198, 156, 0.44), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-ink: #fff3d9;
   --ar-insert-unit-ink: #d8c9ad;
   --ar-seam: #dfc69c;
   --ar-seam-hover: #fff3d9;
   --ar-seam-active: #f9e6bd;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-edge: none;
   --ar-seam-w: 3px;
   --ar-seam-a: 33%;
   --ar-seam-b: 67%;
   --ar-seam-scale: 0.4;
+  --ar-well: inset 0 0 0 1px var(--ar-line);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* LAGOON — dark insert with dedicated seam contrast. */
@@ -423,20 +430,25 @@
   --ar-insert-radius: 11px;
   --ar-inset: 2px;
   --ar-label-tracking: .08em;
-  --ar-insert: linear-gradient(180deg, rgba(143, 235, 218, 0.34) 0%, rgba(30, 112, 123, 0.48) 55%, rgba(24, 80, 91, 0.68) 100%);
+  --ar-insert: rgba(66, 142, 144, 0.5);
   --ar-insert-backdrop: blur(8px) saturate(1.4);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), inset 0 0 0 1px rgba(171, 247, 225, 0.45), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(171, 247, 225, 0.45), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-ink: #ecfff8;
   --ar-insert-unit-ink: #bee7de;
   --ar-seam: #b5f4e2;
   --ar-seam-hover: #ecfff8;
   --ar-seam-active: #d9fff0;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-edge: none;
   --ar-seam-w: 2px;
   --ar-seam-a: 100%;
   --ar-seam-b: 100%;
   --ar-seam-scale: 0.32;
   --ar-control-font: var(--ar-font-ui);
+  --ar-well: inset 0 0 0 1px var(--ar-line);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* ARGENT — light insert with dedicated seam contrast. */
@@ -445,19 +457,24 @@
   --ar-insert-radius: 1px;
   --ar-inset: 2px;
   --ar-label-tracking: .16em;
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(227, 237, 247, 0.86) 47%, rgba(192, 207, 222, 0.72) 51%, rgba(248, 252, 255, 0.94) 100%);
+  --ar-insert: rgba(231, 238, 245, 0.87);
   --ar-insert-backdrop: blur(4px) saturate(0.3);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(83, 108, 133, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(83, 108, 133, 0.3), 0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 8px -3px rgba(0, 0, 0, 0.16);
   --ar-insert-ink: #203244;
   --ar-insert-unit-ink: #4b6075;
   --ar-seam: #4b647e;
   --ar-seam-hover: #203244;
   --ar-seam-active: #344f72;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-edge: none;
   --ar-seam-w: 1px;
   --ar-seam-a: 100%;
   --ar-seam-b: 100%;
   --ar-seam-scale: 0.58;
+  --ar-well: inset 0 0 0 1px var(--ar-line);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* GARNET — dark insert with dedicated seam contrast. */
@@ -466,19 +483,24 @@
   --ar-insert-radius: 5px;
   --ar-inset: 2px;
   --ar-label-tracking: .14em;
-  --ar-insert: linear-gradient(180deg, rgba(246, 180, 169, 0.38) 0%, rgba(156, 83, 110, 0.56) 42%, rgba(102, 42, 69, 0.7) 46%, rgba(63, 25, 43, 0.85) 100%);
+  --ar-insert: rgba(142, 83, 98, 0.62);
   --ar-insert-backdrop: blur(6px) saturate(1.25);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 0 1px rgba(250, 200, 180, 0.48), inset 0 -1px 0 rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(250, 200, 180, 0.48), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-ink: #fff2ed;
   --ar-insert-unit-ink: #f2d0ce;
   --ar-seam: #f2b3ad;
   --ar-seam-hover: #fff2ed;
   --ar-seam-active: #ffded1;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.15);
+  --ar-seam-edge: none;
   --ar-seam-w: 3px;
   --ar-seam-a: 33%;
   --ar-seam-b: 67%;
   --ar-seam-scale: 0.38;
+  --ar-well: inset 0 0 0 1px var(--ar-line);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* IVORY — light insert with dedicated seam contrast. */
@@ -487,20 +509,26 @@
   --ar-insert-radius: 8px;
   --ar-inset: 3px;
   --ar-label-tracking: .1em;
-  --ar-insert: linear-gradient(180deg, rgba(255, 253, 247, 0.98) 0%, rgba(250, 242, 223, 0.92) 65%, rgba(232, 219, 193, 0.8) 100%);
+  --ar-insert: rgba(246, 238, 221, 0.9);
   --ar-insert-backdrop: blur(18px) saturate(0.6);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(159, 126, 77, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(159, 126, 77, 0.25), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #3b3021;
   --ar-insert-unit-ink: #756044;
   --ar-seam: #957446;
   --ar-seam-hover: #3b3021;
   --ar-seam-active: #80613a;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-edge: none;
   --ar-seam-w: 2px;
   --ar-seam-a: 100%;
   --ar-seam-b: 100%;
   --ar-seam-scale: 0.32;
   --ar-control-font: var(--ar-font-ui);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* GLACIER — light insert with dedicated seam contrast. */
@@ -509,19 +537,25 @@
   --ar-insert-radius: 4px;
   --ar-inset: 2px;
   --ar-label-tracking: .12em;
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 253, 255, 0.95) 38%, rgba(206, 233, 243, 0.85) 100%);
+  --ar-insert: rgba(234, 247, 251, 0.93);
   --ar-insert-backdrop: blur(22px) saturate(0.5);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 0 0 1px rgba(91, 149, 174, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(91, 149, 174, 0.3), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #183e52;
   --ar-insert-unit-ink: #42687c;
   --ar-seam: #28728e;
   --ar-seam-hover: #183e52;
   --ar-seam-active: #17617e;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-edge: none;
   --ar-seam-w: 2px;
   --ar-seam-a: 100%;
   --ar-seam-b: 100%;
   --ar-seam-scale: 0.5;
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* WISTERIA — light insert with dedicated seam contrast. */
@@ -530,20 +564,26 @@
   --ar-insert-radius: 10px;
   --ar-inset: 3px;
   --ar-label-tracking: .07em;
-  --ar-insert: linear-gradient(155deg, rgba(255, 251, 255, 0.97) 0%, rgba(247, 233, 252, 0.92) 55%, rgba(214, 211, 240, 0.86) 100%);
+  --ar-insert: rgba(239, 232, 249, 0.92);
   --ar-insert-backdrop: blur(20px) saturate(0.6);
-  --ar-insert-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 0 0 1px rgba(144, 111, 164, 0.24), inset 0 -1px 0 rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.16);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(144, 111, 164, 0.24), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #412b50;
   --ar-insert-unit-ink: #755d85;
   --ar-seam: #8e6ca1;
   --ar-seam-hover: #412b50;
   --ar-seam-active: #715084;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam-edge: none;
   --ar-seam-w: 2px;
   --ar-seam-a: 100%;
   --ar-seam-b: 100%;
   --ar-seam-scale: 0.3;
   --ar-control-font: var(--ar-font-ui);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
+  --ar-grad-sheen: none;
 }
 
 /* DUNE — light insert with dedicated seam contrast. */
@@ -1062,9 +1102,9 @@
   --ar-label-tracking: 0.18em;
   --ar-value-weight: 300;
   --ar-trough: rgba(0, 0, 0, 0.34);
-  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(212, 175, 106, 0.12);
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.04) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.48), inset 0 1px 0 rgba(240, 217, 164, 0.36), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --ar-well: inset 0 0 0 1px rgba(212, 175, 106, 0.12);
+  --ar-insert: rgba(255, 255, 255, 0.09);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.48), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.05) saturate(1.1);
   --ar-insert-ink: #f6f1e7;
   --ar-insert-unit-ink: rgba(246, 241, 231, 0.6);
@@ -1075,12 +1115,12 @@
   --ar-seam-hover: #f0d9a4;
   --ar-seam-active: #f0d9a4;
   --ar-seam-edge: none;
-  --ar-seam-glow: 0 0 8px rgba(212, 175, 106, 0.6);
+  --ar-seam-glow: none;
   --ar-cell: rgba(212, 175, 106, 0.04);
   --ar-cell-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.12);
   --ar-led-on: #d4af6a;
   --ar-led-off: rgba(246, 241, 231, 0.3);
-  --ar-led-glow: rgba(212, 175, 106, 0.6);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(212, 175, 106, 0.32);
   --ar-grad-sheen: none;
   --ar-ruler-ink: rgba(240, 217, 164, 0.72);
@@ -1090,6 +1130,7 @@
   --ar-list-insert: rgba(212, 175, 106, 0.05);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.2);
   --ar-list-hover: rgba(212, 175, 106, 0.09);
+  --ar-insert-text-shadow: none;
 }
 
 /* SAPPHIRE — icy clear inserts with a platinum rim; silver-blue live edge. */
@@ -1097,9 +1138,9 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 500;
   --ar-trough: rgba(0, 6, 24, 0.3);
-  --ar-well: inset 0 1px 2px rgba(0, 4, 20, 0.35), inset 0 0 0 1px rgba(180, 205, 255, 0.1);
-  --ar-insert: linear-gradient(180deg, rgba(200, 222, 255, 0.28) 0%, rgba(150, 185, 255, 0.12) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(200, 222, 255, 0.36), inset 0 1px 0 rgba(235, 244, 255, 0.52), 0 1px 3px rgba(0, 6, 24, 0.5);
+  --ar-well: inset 0 0 0 1px rgba(180, 205, 255, 0.1);
+  --ar-insert: rgba(175, 204, 255, 0.2);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(200, 222, 255, 0.36), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.1) saturate(1.3);
   --ar-insert-ink: #ffffff;
   --ar-insert-unit-ink: rgba(242, 246, 255, 0.72);
@@ -1109,8 +1150,8 @@
   --ar-seam: rgba(235, 244, 255, 0.85);
   --ar-seam-hover: #ffffff;
   --ar-seam-active: var(--ar-signal-hi);
-  --ar-seam-edge: 0 0 0 0.5px rgba(0, 6, 24, 0.3);
-  --ar-seam-glow: 0 0 8px rgba(156, 200, 255, 0.6);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(180, 205, 255, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(180, 205, 255, 0.1);
   --ar-led-on: var(--ar-signal-hi);
@@ -1124,6 +1165,8 @@
   --ar-list-insert: rgba(180, 205, 255, 0.06);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(190, 215, 255, 0.16);
   --ar-list-hover: rgba(180, 205, 255, 0.09);
+  --ar-insert-text-shadow: none;
+  --ar-led-glow: none;
 }
 
 /* CHAMPAGNE — ivory frosted inserts with an antique-gold rim, espresso ink. */
@@ -1131,9 +1174,9 @@
   --ar-label-tracking: 0.18em;
   --ar-value-weight: 500;
   --ar-trough: rgba(40, 26, 8, 0.14);
-  --ar-well: inset 0 1px 2px rgba(40, 26, 8, 0.16), inset 0 0 0 1px rgba(255, 236, 200, 0.18);
-  --ar-insert: linear-gradient(180deg, rgba(255, 251, 242, 0.95) 0%, rgba(247, 236, 214, 0.84) 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(214, 184, 120, 0.55), 0 1px 3px rgba(60, 40, 0, 0.18);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --ar-insert: rgba(251, 244, 228, 0.9);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(214, 184, 120, 0.55), 1px 1px 3px rgba(0, 0, 0, 0.28), -1px -1px 2px rgba(255, 255, 255, 0.08);
   --ar-insert-backdrop: blur(14px) saturate(1.15) brightness(1.06);
   --ar-insert-ink: #2e2213;
   --ar-insert-unit-ink: rgba(46, 34, 19, 0.55);
@@ -1145,13 +1188,13 @@
   --ar-seam: #b8904a;
   --ar-seam-hover: #8f6a2c;
   --ar-seam-active: #8f6a2c;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
-  --ar-seam-glow: 0 0 0 0.5px #8f6a2c, 0 0 8px rgba(214, 184, 120, 0.7);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 244, 220, 0.08);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.18);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-led-on: #b8904a;
   --ar-led-off: #cdbfa4;
-  --ar-led-glow: rgba(214, 184, 120, 0.7);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(255, 236, 200, 0.3);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1161,15 +1204,16 @@
   --ar-list-insert: rgba(255, 244, 220, 0.1);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 236, 200, 0.24);
   --ar-list-hover: rgba(255, 244, 220, 0.12);
+  --ar-insert-text-shadow: none;
 }
 
 /* PEARL — soft nacre inserts in a milky well, lilac live edge. */
 [data-ar-theme='pearl']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
   --ar-trough: rgba(255, 255, 255, 0.34);
-  --ar-well: inset 0 1px 1px rgba(40, 30, 60, 0.1), inset 0 0 0 1px rgba(40, 30, 60, 0.07);
-  --ar-insert: linear-gradient(180deg, #ffffff 0%, #f8f3f9 45%, #eef2f8 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(60, 40, 80, 0.18), 0 1px 3px rgba(60, 40, 80, 0.14);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert: rgba(247, 247, 251, 1);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(60, 40, 80, 0.18), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #1d1a22;
   --ar-insert-unit-ink: rgba(29, 26, 34, 0.5);
   --ar-insert-off-filter: grayscale(1) opacity(0.65);
@@ -1179,7 +1223,7 @@
   --ar-seam-active: var(--ar-signal);
   --ar-seam-edge: none;
   --ar-cell: rgba(255, 255, 255, 0.36);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(40, 30, 60, 0.06);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: #cdc6d2;
   --ar-grad-well: inset 0 0 0 1px rgba(40, 30, 60, 0.12);
@@ -1189,6 +1233,9 @@
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(40, 30, 60, 0.08);
   --ar-list-hover: rgba(40, 30, 60, 0.05);
   --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-insert-text-shadow: none;
+  --ar-seam-glow: none;
+  --ar-led-glow: none;
 }
 
 /* ---------- LUXE GLASS finishes ---------- */
@@ -1198,26 +1245,26 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 400;
   --ar-trough: rgba(0, 0, 0, 0.16);
-  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.12) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.28);
+  --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-insert: rgba(255, 255, 255, 0.21);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.12) saturate(1.3);
   --ar-insert-ink: #ffffff;
   --ar-insert-unit-ink: rgba(255, 255, 255, 0.74);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-insert-text-shadow: none;
   --ar-insert-off-filter: grayscale(1) opacity(0.5);
   --ar-value-ink: var(--ar-text-hi);
   --ar-unit-ink: var(--ar-text-low);
   --ar-seam: #ffffff;
   --ar-seam-hover: #ffffff;
   --ar-seam-active: #ffffff;
-  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
-  --ar-seam-glow: 0 0 8px rgba(255, 255, 255, 0.55);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 255, 255, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --ar-led-on: #ffffff;
   --ar-led-off: rgba(255, 255, 255, 0.28);
-  --ar-led-glow: rgba(255, 255, 255, 0.6);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.34);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1234,13 +1281,13 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 400;
   --ar-trough: rgba(0, 0, 0, 0.1);
-  --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
-  --ar-insert: linear-gradient(100deg, rgba(255, 222, 236, 0.26) 0%, rgba(222, 240, 255, 0.28) 50%, rgba(226, 255, 240, 0.22) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.66), inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.24);
+  --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --ar-insert: rgba(234, 239, 244, 0.25);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.66), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.16) saturate(1.5) contrast(1.05);
   --ar-insert-ink: #ffffff;
   --ar-insert-unit-ink: rgba(255, 255, 255, 0.78);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+  --ar-insert-text-shadow: none;
   --ar-insert-off-filter: grayscale(1) opacity(0.5);
   --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
   --ar-value-ink: var(--ar-text-hi);
@@ -1248,13 +1295,13 @@
   --ar-seam: #ffffff;
   --ar-seam-hover: #ffffff;
   --ar-seam-active: var(--ar-signal);
-  --ar-seam-edge: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
-  --ar-seam-glow: 0 0 10px rgba(196, 236, 255, 0.7);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 255, 255, 0.06);
   --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: rgba(255, 255, 255, 0.3);
-  --ar-led-glow: rgba(196, 236, 255, 0.7);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1271,9 +1318,9 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 400;
   --ar-trough: rgba(0, 16, 10, 0.3);
-  --ar-well: inset 0 1px 2px rgba(0, 16, 10, 0.36), inset 0 0 0 1px rgba(230, 204, 146, 0.12);
-  --ar-insert: linear-gradient(180deg, rgba(160, 245, 205, 0.24) 0%, rgba(60, 180, 130, 0.1) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.46), inset 0 1px 0 rgba(240, 222, 176, 0.42), 0 1px 3px rgba(0, 16, 10, 0.5);
+  --ar-well: inset 0 0 0 1px rgba(230, 204, 146, 0.12);
+  --ar-insert: rgba(110, 213, 168, 0.17);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.46), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.08) saturate(1.3);
   --ar-insert-ink: #f3fbf6;
   --ar-insert-unit-ink: rgba(243, 251, 246, 0.66);
@@ -1284,12 +1331,12 @@
   --ar-seam-hover: #f4e2b8;
   --ar-seam-active: var(--ar-signal-hi);
   --ar-seam-edge: none;
-  --ar-seam-glow: 0 0 8px rgba(95, 220, 170, 0.6);
+  --ar-seam-glow: none;
   --ar-cell: rgba(160, 240, 200, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.12);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: rgba(243, 251, 246, 0.28);
-  --ar-led-glow: rgba(95, 220, 170, 0.6);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(230, 204, 146, 0.32);
   --ar-grad-sheen: none;
   --ar-ruler-ink: rgba(240, 222, 176, 0.74);
@@ -1299,6 +1346,7 @@
   --ar-list-insert: rgba(160, 240, 200, 0.06);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(230, 204, 146, 0.2);
   --ar-list-hover: rgba(160, 240, 200, 0.09);
+  --ar-insert-text-shadow: none;
 }
 
 /* ROSE GOLD — blush-clear inserts with a rose-gold rim and seam. */
@@ -1306,13 +1354,13 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 400;
   --ar-trough: rgba(30, 6, 10, 0.24);
-  --ar-well: inset 0 1px 2px rgba(30, 6, 10, 0.3), inset 0 0 0 1px rgba(236, 178, 158, 0.14);
-  --ar-insert: linear-gradient(180deg, rgba(255, 226, 216, 0.3) 0%, rgba(240, 180, 165, 0.12) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.58), inset 0 1px 0 rgba(255, 230, 220, 0.62), 0 1px 3px rgba(30, 6, 10, 0.42);
+  --ar-well: inset 0 0 0 1px rgba(236, 178, 158, 0.14);
+  --ar-insert: rgba(248, 203, 191, 0.21);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.58), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.1) saturate(1.2);
   --ar-insert-ink: #fff6f3;
   --ar-insert-unit-ink: rgba(255, 246, 243, 0.7);
-  --ar-insert-text-shadow: 0 1px 2px rgba(30, 6, 10, 0.3);
+  --ar-insert-text-shadow: none;
   --ar-insert-off-filter: grayscale(1) opacity(0.5);
   --ar-value-ink: var(--ar-text-hi);
   --ar-unit-ink: var(--ar-text-low);
@@ -1320,12 +1368,12 @@
   --ar-seam-hover: #fad6ca;
   --ar-seam-active: #fad6ca;
   --ar-seam-edge: none;
-  --ar-seam-glow: 0 0 8px rgba(234, 169, 148, 0.65);
+  --ar-seam-glow: none;
   --ar-cell: rgba(240, 190, 175, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(236, 178, 158, 0.14);
   --ar-led-on: #eaa994;
   --ar-led-off: rgba(255, 246, 243, 0.3);
-  --ar-led-glow: rgba(234, 169, 148, 0.65);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(236, 178, 158, 0.36);
   --ar-grad-sheen: none;
   --ar-ruler-ink: rgba(250, 214, 202, 0.76);
@@ -1342,9 +1390,9 @@
   --ar-label-tracking: 0.18em;
   --ar-value-weight: 400;
   --ar-trough: rgba(20, 8, 0, 0.32);
-  --ar-well: inset 0 1px 2px rgba(20, 8, 0, 0.4), inset 0 0 0 1px rgba(222, 170, 102, 0.12);
-  --ar-insert: linear-gradient(180deg, rgba(255, 206, 150, 0.24) 0%, rgba(200, 120, 50, 0.1) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.52), inset 0 1px 0 rgba(248, 211, 160, 0.44), 0 1px 3px rgba(20, 8, 0, 0.5);
+  --ar-well: inset 0 0 0 1px rgba(222, 170, 102, 0.12);
+  --ar-insert: rgba(228, 163, 100, 0.17);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.52), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.06) saturate(1.2);
   --ar-insert-ink: #fff4e6;
   --ar-insert-unit-ink: rgba(255, 244, 230, 0.64);
@@ -1355,12 +1403,12 @@
   --ar-seam-hover: #f8d3a0;
   --ar-seam-active: #f8d3a0;
   --ar-seam-edge: none;
-  --ar-seam-glow: 0 0 8px rgba(230, 164, 92, 0.62);
+  --ar-seam-glow: none;
   --ar-cell: rgba(240, 180, 110, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.13);
   --ar-led-on: #e6a45c;
   --ar-led-off: rgba(255, 244, 230, 0.28);
-  --ar-led-glow: rgba(230, 164, 92, 0.62);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(222, 170, 102, 0.34);
   --ar-grad-sheen: none;
   --ar-ruler-ink: rgba(248, 211, 160, 0.74);
@@ -1370,6 +1418,7 @@
   --ar-list-insert: rgba(240, 180, 110, 0.06);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(222, 170, 102, 0.2);
   --ar-list-hover: rgba(240, 180, 110, 0.09);
+  --ar-insert-text-shadow: none;
 }
 
 /* AMETHYST — violet-clear inserts with a silver rim; lavender live edge. */
@@ -1377,9 +1426,9 @@
   --ar-label-tracking: 0.16em;
   --ar-value-weight: 400;
   --ar-trough: rgba(10, 0, 24, 0.28);
-  --ar-well: inset 0 1px 2px rgba(10, 0, 24, 0.36), inset 0 0 0 1px rgba(225, 220, 240, 0.1);
-  --ar-insert: linear-gradient(180deg, rgba(225, 210, 255, 0.28) 0%, rgba(150, 110, 240, 0.12) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(232, 226, 248, 0.42), inset 0 1px 0 rgba(245, 240, 255, 0.56), 0 1px 3px rgba(10, 0, 24, 0.5);
+  --ar-well: inset 0 0 0 1px rgba(225, 220, 240, 0.1);
+  --ar-insert: rgba(188, 160, 248, 0.2);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(232, 226, 248, 0.42), 0 1px 2px rgba(0, 0, 0, 0.2), 0 3px 8px -3px rgba(0, 0, 0, 0.35);
   --ar-insert-backdrop: brightness(1.1) saturate(1.3);
   --ar-insert-ink: #ffffff;
   --ar-insert-unit-ink: rgba(248, 245, 255, 0.7);
@@ -1389,13 +1438,13 @@
   --ar-seam: rgba(240, 236, 255, 0.88);
   --ar-seam-hover: #ffffff;
   --ar-seam-active: var(--ar-signal-hi);
-  --ar-seam-edge: 0 0 0 0.5px rgba(10, 0, 24, 0.3);
-  --ar-seam-glow: 0 0 8px rgba(197, 166, 255, 0.65);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(210, 190, 255, 0.05);
   --ar-cell-shadow: inset 0 0 0 1px rgba(225, 220, 240, 0.1);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: rgba(248, 245, 255, 0.28);
-  --ar-led-glow: rgba(197, 166, 255, 0.65);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(225, 220, 240, 0.28);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1405,6 +1454,7 @@
   --ar-list-insert: rgba(210, 190, 255, 0.06);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(225, 220, 240, 0.18);
   --ar-list-hover: rgba(210, 190, 255, 0.09);
+  --ar-insert-text-shadow: none;
 }
 
 /* ---------- LUXE FROST finishes ---------- */
@@ -1413,9 +1463,9 @@
 [data-ar-theme='alabaster']:not([data-ar-material]) {
   --ar-label-tracking: 0.18em;
   --ar-trough: rgba(255, 252, 246, 0.36);
-  --ar-well: inset 0 1px 1px rgba(80, 56, 20, 0.1), inset 0 0 0 1px rgba(80, 56, 20, 0.07);
-  --ar-insert: linear-gradient(180deg, #fffdf8 0%, #f6efe2 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(120, 86, 40, 0.32), 0 1px 3px rgba(70, 50, 20, 0.14);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert: rgba(251, 246, 237, 1);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(120, 86, 40, 0.32), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #221b12;
   --ar-insert-unit-ink: rgba(34, 27, 18, 0.5);
   --ar-insert-off-filter: grayscale(1) opacity(0.65);
@@ -1423,13 +1473,13 @@
   --ar-seam: #9a7040;
   --ar-seam-hover: #7a532a;
   --ar-seam-active: #7a532a;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
-  --ar-seam-glow: 0 0 6px rgba(154, 112, 64, 0.4);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 252, 246, 0.4);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(80, 56, 20, 0.07);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: #d6cbb8;
-  --ar-led-glow: rgba(154, 112, 64, 0.45);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(80, 56, 20, 0.14);
   --ar-grad-sheen: none;
   --ar-swatch-rim: inset 0 0 0 1px rgba(80, 56, 20, 0.16);
@@ -1437,15 +1487,16 @@
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(80, 56, 20, 0.1);
   --ar-list-hover: rgba(80, 56, 20, 0.05);
   --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-insert-text-shadow: none;
 }
 
 /* PORCELAIN — glazed white inserts with a crisp gloss line; cobalt seam. */
 [data-ar-theme='porcelain']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
   --ar-trough: rgba(255, 255, 255, 0.38);
-  --ar-well: inset 0 1px 1px rgba(14, 24, 50, 0.1), inset 0 0 0 1px rgba(14, 24, 50, 0.06);
-  --ar-insert: linear-gradient(180deg, #ffffff 0%, #ffffff 42%, #eef2f9 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 -1px 0 rgba(14, 24, 50, 0.05), 0 0 0 0.5px rgba(14, 24, 50, 0.2), 0 1px 3px rgba(14, 24, 50, 0.14);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert: rgba(249, 251, 253, 1);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(14, 24, 50, 0.2), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #0e1628;
   --ar-insert-unit-ink: rgba(14, 22, 40, 0.5);
   --ar-insert-off-filter: grayscale(1) opacity(0.65);
@@ -1453,13 +1504,13 @@
   --ar-seam: #2a4fb0;
   --ar-seam-hover: #1c3a8a;
   --ar-seam-active: #1c3a8a;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.7);
-  --ar-seam-glow: 0 0 6px rgba(42, 79, 176, 0.36);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 255, 255, 0.4);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(14, 24, 50, 0.06);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: #c8cedb;
-  --ar-led-glow: rgba(42, 79, 176, 0.4);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(14, 24, 50, 0.12);
   --ar-grad-sheen: none;
   --ar-swatch-rim: inset 0 0 0 1px rgba(14, 24, 50, 0.14);
@@ -1467,15 +1518,16 @@
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(14, 24, 50, 0.08);
   --ar-list-hover: rgba(14, 24, 50, 0.05);
   --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-insert-text-shadow: none;
 }
 
 /* JADE — pale celadon inserts, polished; jade seam. */
 [data-ar-theme='jade']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
   --ar-trough: rgba(255, 255, 255, 0.32);
-  --ar-well: inset 0 1px 1px rgba(10, 40, 26, 0.1), inset 0 0 0 1px rgba(10, 40, 26, 0.07);
-  --ar-insert: linear-gradient(180deg, #fbfefc 0%, #eaf4ee 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(20, 70, 46, 0.24), 0 1px 3px rgba(10, 40, 26, 0.14);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
+  --ar-insert: rgba(243, 249, 245, 1);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(20, 70, 46, 0.24), 1px 1px 3px rgba(0, 0, 0, 0.12), -1px -1px 2px rgba(255, 255, 255, 0.8);
   --ar-insert-ink: #0f2219;
   --ar-insert-unit-ink: rgba(15, 34, 25, 0.5);
   --ar-insert-off-filter: grayscale(1) opacity(0.65);
@@ -1483,13 +1535,13 @@
   --ar-seam: #2c7a58;
   --ar-seam-hover: #1d5c41;
   --ar-seam-active: #1d5c41;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
-  --ar-seam-glow: 0 0 6px rgba(44, 122, 88, 0.36);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 255, 255, 0.36);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(10, 40, 26, 0.07);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: #c3d2c9;
-  --ar-led-glow: rgba(44, 122, 88, 0.42);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(10, 40, 26, 0.12);
   --ar-grad-sheen: none;
   --ar-swatch-rim: inset 0 0 0 1px rgba(10, 40, 26, 0.14);
@@ -1497,15 +1549,16 @@
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(10, 40, 26, 0.08);
   --ar-list-hover: rgba(10, 40, 26, 0.05);
   --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
+  --ar-insert-text-shadow: none;
 }
 
 /* MOONSTONE — milky blue-white frosted inserts, cool blue live edge. */
 [data-ar-theme='moonstone']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
   --ar-trough: rgba(10, 20, 40, 0.12);
-  --ar-well: inset 0 1px 2px rgba(10, 20, 40, 0.16), inset 0 0 0 1px rgba(220, 232, 255, 0.18);
-  --ar-insert: linear-gradient(180deg, rgba(246, 250, 255, 0.94) 0%, rgba(218, 230, 248, 0.84) 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(200, 220, 255, 0.5), 0 1px 3px rgba(10, 20, 40, 0.2);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --ar-insert: rgba(232, 240, 252, 0.89);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(200, 220, 255, 0.5), 1px 1px 3px rgba(0, 0, 0, 0.28), -1px -1px 2px rgba(255, 255, 255, 0.08);
   --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.08);
   --ar-insert-ink: #152033;
   --ar-insert-unit-ink: rgba(21, 32, 51, 0.54);
@@ -1517,13 +1570,13 @@
   --ar-seam: #6f9ee8;
   --ar-seam-hover: #3f72c8;
   --ar-seam-active: #3f72c8;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
-  --ar-seam-glow: 0 0 0 0.5px #3f72c8, 0 0 8px rgba(170, 205, 255, 0.7);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(230, 240, 255, 0.08);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(220, 232, 255, 0.18);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-led-on: #cfe2ff;
   --ar-led-off: rgba(247, 249, 253, 0.34);
-  --ar-led-glow: rgba(170, 205, 255, 0.75);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(220, 232, 255, 0.34);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1533,15 +1586,16 @@
   --ar-list-insert: rgba(230, 240, 255, 0.1);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(220, 232, 255, 0.24);
   --ar-list-hover: rgba(230, 240, 255, 0.12);
+  --ar-insert-text-shadow: none;
 }
 
 /* CASHMERE — oat-white frosted inserts with a caramel rim, cocoa ink. */
 [data-ar-theme='cashmere']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
   --ar-trough: rgba(40, 26, 14, 0.12);
-  --ar-well: inset 0 1px 2px rgba(40, 26, 14, 0.16), inset 0 0 0 1px rgba(255, 240, 222, 0.18);
-  --ar-insert: linear-gradient(180deg, rgba(253, 249, 243, 0.95) 0%, rgba(238, 228, 214, 0.86) 100%);
-  --ar-insert-shadow: inset 0 1px 0 #ffffff, inset 0 0 0 1px rgba(220, 180, 136, 0.5), 0 1px 3px rgba(40, 26, 14, 0.2);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --ar-insert: rgba(246, 239, 229, 0.91);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(220, 180, 136, 0.5), 1px 1px 3px rgba(0, 0, 0, 0.28), -1px -1px 2px rgba(255, 255, 255, 0.08);
   --ar-insert-backdrop: blur(14px) saturate(1.1) brightness(1.06);
   --ar-insert-ink: #2c2119;
   --ar-insert-unit-ink: rgba(44, 33, 25, 0.54);
@@ -1553,13 +1607,13 @@
   --ar-seam: #b98352;
   --ar-seam-hover: #8f5f34;
   --ar-seam-active: #8f5f34;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
-  --ar-seam-glow: 0 0 0 0.5px #8f5f34, 0 0 8px rgba(220, 170, 120, 0.7);
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 244, 230, 0.08);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 240, 222, 0.18);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-led-on: #f1cfa6;
   --ar-led-off: rgba(252, 248, 243, 0.34);
-  --ar-led-glow: rgba(220, 170, 120, 0.75);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(255, 240, 222, 0.32);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
@@ -1569,6 +1623,7 @@
   --ar-list-insert: rgba(255, 244, 230, 0.1);
   --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 240, 222, 0.24);
   --ar-list-hover: rgba(255, 244, 230, 0.12);
+  --ar-insert-text-shadow: none;
 }
 
 /* VELVET — rosy frosted inserts on bordeaux, silver rim; rose live edge. */
@@ -1576,13 +1631,13 @@
   --ar-label-tracking: 0.18em;
   --ar-value-weight: 400;
   --ar-trough: rgba(20, 0, 8, 0.26);
-  --ar-well: inset 0 1px 2px rgba(20, 0, 8, 0.34), inset 0 0 0 1px rgba(236, 226, 232, 0.1);
-  --ar-insert: linear-gradient(180deg, rgba(255, 228, 238, 0.3) 0%, rgba(255, 200, 220, 0.14) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(240, 230, 236, 0.4), inset 0 1px 0 rgba(255, 240, 246, 0.5), 0 1px 3px rgba(20, 0, 8, 0.5);
+  --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --ar-insert: rgba(255, 214, 229, 0.22);
+  --ar-insert-shadow: inset 0 0 0 1px rgba(240, 230, 236, 0.4), 1px 1px 3px rgba(0, 0, 0, 0.28), -1px -1px 2px rgba(255, 255, 255, 0.08);
   --ar-insert-backdrop: blur(14px) saturate(1.2) brightness(1.12);
   --ar-insert-ink: #ffffff;
   --ar-insert-unit-ink: rgba(251, 241, 244, 0.7);
-  --ar-insert-text-shadow: 0 1px 2px rgba(20, 0, 8, 0.3);
+  --ar-insert-text-shadow: none;
   --ar-insert-off-filter: grayscale(1) opacity(0.5);
   --ar-value-ink: var(--ar-text-hi);
   --ar-unit-ink: var(--ar-text-low);
@@ -1590,12 +1645,12 @@
   --ar-seam-hover: #ffd3de;
   --ar-seam-active: #ffd3de;
   --ar-seam-edge: none;
-  --ar-seam-glow: 0 0 8px rgba(240, 155, 176, 0.62);
+  --ar-seam-glow: none;
   --ar-cell: rgba(255, 210, 225, 0.05);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(236, 226, 232, 0.1);
+  --ar-cell-shadow: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-led-on: var(--ar-signal);
   --ar-led-off: rgba(251, 241, 244, 0.28);
-  --ar-led-glow: rgba(240, 155, 176, 0.62);
+  --ar-led-glow: none;
   --ar-grad-well: inset 0 0 0 1px rgba(236, 226, 232, 0.28);
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
