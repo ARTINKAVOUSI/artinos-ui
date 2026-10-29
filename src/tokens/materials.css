@@ -1646,121 +1646,191 @@
   --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
 }
 
-/* ---------- SCENE GLASS finishes — lenses cut from the pane ----------
- * A well shows the scene a little darker; a value shows it a little brighter under a glass
- * rim with a specular top line. Nothing is filled with a colour or a grey. */
+/* ---------- FLAT GLASS finishes — flat translucent fills, no rims, no glow ---------- */
 [data-ar-theme='sheer']:not([data-ar-material]),
 [data-ar-theme='veil']:not([data-ar-material]),
 [data-ar-theme='haze']:not([data-ar-material]),
-[data-ar-theme='smoke']:not([data-ar-material]) {
-  --ar-trough: rgba(0, 0, 0, 0.05);
-  --ar-trough-backdrop: brightness(0.86);
-  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 1px 0 rgba(255, 255, 255, 0.08);
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.05) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.12), 0 1px 2px rgba(0, 0, 0, 0.14);
-  --ar-insert-backdrop: brightness(1.32);
+[data-ar-theme='smoke']:not([data-ar-material]),
+[data-ar-theme='ink']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.08);
+  --ar-trough-backdrop: none;
+  --ar-well: none;
+  --ar-insert: rgba(255, 255, 255, 0.2);
+  --ar-insert-shadow: none;
+  --ar-insert-backdrop: none;
   --ar-insert-ink: #ffffff;
-  --ar-insert-unit-ink: rgba(255, 255, 255, 0.75);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --ar-insert-off-filter: grayscale(1) opacity(0.5);
-  --ar-label-ink: var(--ar-text-hi);
-  --ar-value-ink: var(--ar-text-hi);
-  --ar-value-ink-hi: var(--ar-text-hi);
-  --ar-unit-ink: var(--ar-text-low);
-  --ar-off-ink: var(--ar-text-faint);
-  --ar-dim-ink: var(--ar-text-low);
-  --ar-base-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --ar-seam: rgba(255, 255, 255, 0.9);
-  --ar-seam-hover: #ffffff;
-  --ar-seam-active: #ffffff;
-  --ar-seam-edge: 1px 0 0 rgba(0, 0, 0, 0.18);
-  --ar-seam-glow: 0 0 6px rgba(255, 255, 255, 0.4);
-  --ar-cell: rgba(255, 255, 255, 0.02);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --ar-led-on: #ffffff;
-  --ar-led-off: rgba(255, 255, 255, 0.28);
-  --ar-led-glow: rgba(255, 255, 255, 0.6);
-  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
-  --ar-grad-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 55%);
-  --ar-ruler-ink: var(--ar-text-mid);
-  --ar-index: #ffffff;
-  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  --ar-sheet-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)), var(--ar-float-bg);
-  --ar-sheet-blur: blur(32px);
-  --ar-sheet-shadow: var(--ar-float-ring), var(--ar-float-shadow);
-  --ar-list-bg: var(--ar-sheet-bg);
-  --ar-list-backdrop: blur(32px);
-  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
-  --ar-list-insert: rgba(255, 255, 255, 0.1);
-  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.24);
-  --ar-list-ink: var(--ar-float-ink);
-  --ar-list-ink-hi: #ffffff;
-  --ar-list-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  --ar-list-hover: rgba(255, 255, 255, 0.08);
-}
-
-/* SHEER — sharper lenses over a barely blurred pane */
-[data-ar-theme='sheer']:not([data-ar-material]) {
-  --ar-trough-backdrop: blur(4px) brightness(0.8);
-  --ar-insert-backdrop: blur(10px) brightness(1.3);
-}
-
-/* HAZE — the values frost a little further than the pane */
-[data-ar-theme='haze']:not([data-ar-material]) {
-  --ar-insert-backdrop: brightness(1.28);
-}
-
-/* SMOKE — darker wells, values lit back towards the scene */
-[data-ar-theme='smoke']:not([data-ar-material]) {
-  --ar-trough-backdrop: brightness(0.8);
-  --ar-insert-backdrop: brightness(1.55);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.46), inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* MIST — the light pane: wells a touch darker, values brighter still, graphite ink */
-[data-ar-theme='mist']:not([data-ar-material]) {
-  --ar-trough: rgba(0, 0, 0, 0.03);
-  --ar-trough-backdrop: brightness(0.92);
-  --ar-well: inset 0 1px 1px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(18, 18, 18, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5);
-  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.28) 100%);
-  --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75), inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --ar-insert-backdrop: brightness(1.12);
-  --ar-insert-ink: #121212;
-  --ar-insert-unit-ink: rgba(18, 18, 18, 0.55);
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.7);
   --ar-insert-text-shadow: none;
-  --ar-insert-off-filter: grayscale(1) opacity(0.6);
-  --ar-label-ink: var(--ar-text-hi);
+  --ar-insert-off-filter: opacity(0.45);
+  --ar-label-ink: var(--ar-text-mid);
   --ar-value-ink: var(--ar-text-hi);
   --ar-value-ink-hi: var(--ar-text-hi);
   --ar-unit-ink: var(--ar-text-low);
   --ar-off-ink: var(--ar-text-faint);
   --ar-dim-ink: var(--ar-text-low);
   --ar-base-text-shadow: none;
-  --ar-seam: rgba(18, 18, 18, 0.62);
-  --ar-seam-hover: #121212;
-  --ar-seam-active: #121212;
-  --ar-seam-edge: 1px 0 0 rgba(255, 255, 255, 0.6);
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: none;
   --ar-seam-glow: none;
-  --ar-cell: rgba(255, 255, 255, 0.1);
-  --ar-cell-shadow: inset 0 0 0 1px rgba(18, 18, 18, 0.07);
-  --ar-led-on: #121212;
-  --ar-led-off: rgba(18, 18, 18, 0.22);
+  --ar-cell: rgba(255, 255, 255, 0.06);
+  --ar-cell-shadow: none;
+  --ar-led-on: #ffffff;
+  --ar-led-off: rgba(255, 255, 255, 0.28);
   --ar-led-glow: none;
-  --ar-grad-well: inset 0 0 0 1px rgba(18, 18, 18, 0.1);
+  --ar-grad-well: none;
   --ar-grad-sheen: none;
   --ar-ruler-ink: var(--ar-text-mid);
-  --ar-index: #121212;
-  --ar-swatch-rim: inset 0 0 0 1px rgba(18, 18, 18, 0.12);
-  --ar-sheet-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2)), var(--ar-float-bg);
-  --ar-sheet-blur: blur(32px) brightness(1.2);
-  --ar-sheet-shadow: var(--ar-float-ring), var(--ar-float-shadow);
-  --ar-list-bg: var(--ar-sheet-bg);
-  --ar-list-backdrop: blur(32px) brightness(1.2);
-  --ar-list-shadow: var(--ar-float-ring), var(--ar-float-shadow);
-  --ar-list-insert: rgba(255, 255, 255, 0.55);
-  --ar-list-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.8), 0 0 0 0.5px rgba(0, 0, 0, 0.08);
+  --ar-index: #ffffff;
+  --ar-swatch-rim: none;
+  --ar-sheet-bg: var(--ar-float-bg);
+  --ar-sheet-blur: blur(40px);
+  --ar-sheet-shadow: none;
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(40px);
+  --ar-list-shadow: none;
+  --ar-list-insert: rgba(255, 255, 255, 0.2);
+  --ar-list-insert-shadow: none;
   --ar-list-ink: var(--ar-float-ink);
-  --ar-list-ink-hi: #000000;
+  --ar-list-ink-hi: #ffffff;
   --ar-list-text-shadow: none;
-  --ar-list-hover: rgba(0, 0, 0, 0.05);
+  --ar-list-hover: rgba(255, 255, 255, 0.06);
+}
+[data-ar-theme='mist']:not([data-ar-material]),
+[data-ar-theme='chalk']:not([data-ar-material]) {
+  --ar-trough: rgba(0, 0, 0, 0.06);
+  --ar-trough-backdrop: none;
+  --ar-well: none;
+  --ar-insert: rgba(0, 0, 0, 0.13);
+  --ar-insert-shadow: none;
+  --ar-insert-backdrop: none;
+  --ar-insert-ink: #111111;
+  --ar-insert-unit-ink: rgba(17, 17, 17, 0.6);
+  --ar-insert-text-shadow: none;
+  --ar-insert-off-filter: opacity(0.45);
+  --ar-label-ink: var(--ar-text-mid);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-value-ink-hi: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-off-ink: var(--ar-text-faint);
+  --ar-dim-ink: var(--ar-text-low);
+  --ar-base-text-shadow: none;
+  --ar-seam: #111111;
+  --ar-seam-hover: #111111;
+  --ar-seam-active: #111111;
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
+  --ar-cell: rgba(0, 0, 0, 0.045);
+  --ar-cell-shadow: none;
+  --ar-led-on: #111111;
+  --ar-led-off: rgba(0, 0, 0, 0.22);
+  --ar-led-glow: none;
+  --ar-grad-well: none;
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #111111;
+  --ar-swatch-rim: none;
+  --ar-sheet-bg: var(--ar-float-bg);
+  --ar-sheet-blur: blur(40px);
+  --ar-sheet-shadow: none;
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(40px);
+  --ar-list-shadow: none;
+  --ar-list-insert: rgba(0, 0, 0, 0.13);
+  --ar-list-insert-shadow: none;
+  --ar-list-ink: var(--ar-float-ink);
+  --ar-list-ink-hi: #111111;
+  --ar-list-text-shadow: none;
+  --ar-list-hover: rgba(0, 0, 0, 0.045);
+}
+/* over the darkest veil the fills step up so they still read */
+[data-ar-theme='ink']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.07);
+  --ar-insert: rgba(255, 255, 255, 0.16);
+  --ar-list-insert: rgba(255, 255, 255, 0.16);
+}
+
+/* ---------- FLAT GLASS blends finishes ---------- */
+[data-ar-theme='pressed']:not([data-ar-material]),
+[data-ar-theme='hairline']:not([data-ar-material]),
+[data-ar-theme='frosted']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.08);
+  --ar-trough-backdrop: none;
+  --ar-well: none;
+  --ar-insert: rgba(255, 255, 255, 0.2);
+  --ar-insert-shadow: none;
+  --ar-insert-backdrop: none;
+  --ar-insert-ink: #ffffff;
+  --ar-insert-unit-ink: rgba(255, 255, 255, 0.7);
+  --ar-insert-text-shadow: none;
+  --ar-insert-off-filter: opacity(0.45);
+  --ar-label-ink: var(--ar-text-mid);
+  --ar-value-ink: var(--ar-text-hi);
+  --ar-value-ink-hi: var(--ar-text-hi);
+  --ar-unit-ink: var(--ar-text-low);
+  --ar-off-ink: var(--ar-text-faint);
+  --ar-dim-ink: var(--ar-text-low);
+  --ar-base-text-shadow: none;
+  --ar-seam: #ffffff;
+  --ar-seam-hover: #ffffff;
+  --ar-seam-active: #ffffff;
+  --ar-seam-edge: none;
+  --ar-seam-glow: none;
+  --ar-cell: rgba(255, 255, 255, 0.06);
+  --ar-cell-shadow: none;
+  --ar-led-on: #ffffff;
+  --ar-led-off: rgba(255, 255, 255, 0.28);
+  --ar-led-glow: none;
+  --ar-grad-well: none;
+  --ar-grad-sheen: none;
+  --ar-ruler-ink: var(--ar-text-mid);
+  --ar-index: #ffffff;
+  --ar-swatch-rim: none;
+  --ar-sheet-bg: var(--ar-float-bg);
+  --ar-sheet-blur: blur(40px);
+  --ar-sheet-shadow: var(--ar-float-ring);
+  --ar-list-bg: var(--ar-float-bg);
+  --ar-list-backdrop: blur(40px);
+  --ar-list-shadow: var(--ar-float-ring);
+  --ar-list-insert: rgba(255, 255, 255, 0.18);
+  --ar-list-insert-shadow: none;
+  --ar-list-ink: var(--ar-float-ink);
+  --ar-list-ink-hi: #ffffff;
+  --ar-list-text-shadow: none;
+  --ar-list-hover: rgba(255, 255, 255, 0.06);
+}
+
+/* PRESSED — paired soft shadows, no colour: light from the top left */
+[data-ar-theme='pressed']:not([data-ar-material]) {
+  --ar-radius: 9px;
+  --ar-insert-radius: 7px;
+  --ar-inset: 3px;
+  --ar-trough: rgba(0, 0, 0, 0.06);
+  --ar-well: inset 2px 2px 5px rgba(0, 0, 0, 0.22), inset -1px -1px 3px rgba(255, 255, 255, 0.14);
+  --ar-insert: rgba(255, 255, 255, 0.16);
+  --ar-insert-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2), -1px -1px 3px rgba(255, 255, 255, 0.1);
+  --ar-cell: rgba(0, 0, 0, 0.05);
+  --ar-cell-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.18), inset -1px -1px 3px rgba(255, 255, 255, 0.12);
+  --ar-grad-well: inset 2px 2px 5px rgba(0, 0, 0, 0.22), inset -1px -1px 3px rgba(255, 255, 255, 0.14);
+  --ar-list-insert-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2), -1px -1px 3px rgba(255, 255, 255, 0.1);
+}
+
+/* HAIRLINE — a 1px line around each track, flat values */
+[data-ar-theme='hairline']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.04);
+  --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-insert: rgba(255, 255, 255, 0.16);
+  --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --ar-grad-well: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-swatch-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* FROSTED — tracks and values frost the scene further than the pane */
+[data-ar-theme='frosted']:not([data-ar-material]) {
+  --ar-trough: rgba(255, 255, 255, 0.1);
+  --ar-trough-backdrop: blur(16px);
+  --ar-insert: rgba(255, 255, 255, 0.22);
+  --ar-insert-backdrop: blur(24px);
+  --ar-cell: rgba(255, 255, 255, 0.08);
 }

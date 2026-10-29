@@ -32,11 +32,16 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 <!-- themes:start -->
 | family | id | name | kind | look |
 |---|---|---|---|---|
-| scene | `sheer` | Sheer | glass | The clearest pane: the scene only softened, held by a hairline. Controls are lenses cut from it; the only colour is the scene's. |
-|  | `veil` | Veil | glass | Clear glass, no tint: the scene softened to shapes and light, hairline edges, white live edge. |
-|  | `haze` | Haze | glass | Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white. |
-|  | `smoke` | Smoke | glass | The scene dimmed, not tinted: white ink holds over bright or busy imagery. |
-|  | `mist` | Mist | glass | The scene lightened, not whitened: graphite ink and a graphite live edge for light imagery. |
+| scene | `sheer` | Sheer | glass | A light blur under a thin dark veil: the scene stays close. White ink, flat fills, nothing else. |
+|  | `veil` | Veil | glass | The scene blurred under a thin white veil. Flat fills, no border, no highlight, no colour. |
+|  | `haze` | Haze | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. |
+|  | `smoke` | Smoke | glass | The scene blurred under a dark veil, for bright or busy imagery. Flat white fills. |
+|  | `ink` | Ink | glass | A dense dark veil over the blur: nearly solid black glass, flat and quiet. |
+|  | `mist` | Mist | glass | The scene blurred under a white veil, graphite ink and flat graphite fills. |
+|  | `chalk` | Chalk | glass | A dense white veil over the blur: nearly solid white glass, graphite ink. |
+|  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
+|  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
+|  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
 | untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge. |
 |  | `clear-polished` | Polished Glass | glass | Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast. |
 |  | `clear-lens` | Lens Glass | glass | Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection. |

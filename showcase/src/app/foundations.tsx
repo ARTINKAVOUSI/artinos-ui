@@ -37,7 +37,7 @@ export function TokenTable({ deps }: { deps: unknown[] }) {
 
 /** Theme gallery rows: four looks each. */
 export const FAMILIES: Array<[string, string[]]> = [
-  ['Scene glass — neutral, untinted panes; the only colour is the scene behind them', ['scene']],
+  ['Flat glass — the scene blurred under one flat veil: no colour, no border, no highlight', ['scene']],
   ['Untinted glass — air, polish, optical depth and layered reflections', ['untinted-glass']],
   ['Untinted frost — etched, silk, mist and deep diffusion', ['untinted-frost']],
   ['Atelier glass — smoke, sea glass, silver and garnet crystal', ['atelier-glass']],

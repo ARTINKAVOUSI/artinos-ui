@@ -11,11 +11,16 @@
  *
  * themes:start
  *   scene
- *     sheer           The clearest pane: the scene only softened, held by a hairline. Controls are lenses cut from it; the only colour is the scene's.
- *     veil            Clear glass, no tint: the scene softened to shapes and light, hairline edges, white live edge.
- *     haze            Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white.
- *     smoke           The scene dimmed, not tinted: white ink holds over bright or busy imagery.
- *     mist            The scene lightened, not whitened: graphite ink and a graphite live edge for light imagery.
+ *     sheer           A light blur under a thin dark veil: the scene stays close. White ink, flat fills, nothing else.
+ *     veil            The scene blurred under a thin white veil. Flat fills, no border, no highlight, no colour.
+ *     haze            The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills.
+ *     smoke           The scene blurred under a dark veil, for bright or busy imagery. Flat white fills.
+ *     ink             A dense dark veil over the blur: nearly solid black glass, flat and quiet.
+ *     mist            The scene blurred under a white veil, graphite ink and flat graphite fills.
+ *     chalk           A dense white veil over the blur: nearly solid white glass, graphite ink.
+ *     pressed         Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows.
+ *     hairline        Flat glass held by one 1px line around the pane and each track. No highlights, no colour.
+ *     frosted         A clearer pane with frosted controls: each track and value frosts the scene further.
  *   untinted-glass
  *     clear-air       Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge.
  *     clear-polished  Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast.
@@ -1873,121 +1878,187 @@
   --ar-panel-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-/* ---------- SCENE GLASS — neutral panes that become part of what is behind ----------
- * No tint, no hue, no saturation shift: a pane is the scene itself, blurred (and on Smoke
- * and Mist, darkened or lightened), held by a 1px hairline and a brighter top edge. Controls
- * are lenses cut from it: a well is the scene a little darker, a value is the scene a
- * little brighter and sharper under a glass rim. The accent is white (graphite on Mist),
- * so the only colour on screen is the scene's. The five differ in clarity and light only.
+/* ---------- FLAT GLASS — blur and one flat veil, nothing else ----------
+ * No colour, no border, no highlight, no sheen, no shadow: a pane is the scene blurred under
+ * a single flat veil of white or black. Controls are flat translucent fills of the same ink:
+ * a track a little more than the pane, a value a little more than the track. The variants
+ * differ only in how deep the blur goes and which way the veil leans.
  */
 [data-ar-theme='sheer'],
 [data-ar-theme='veil'],
 [data-ar-theme='haze'],
-[data-ar-theme='smoke'] {
-  --ar-bg-app: #2a2a2a;
-  --ar-bg-surface: rgba(255, 255, 255, 0.03);
-  --ar-bg-raised: rgba(255, 255, 255, 0.06);
+[data-ar-theme='smoke'],
+[data-ar-theme='ink'] {
+  --ar-bg-app: #2b2b2b;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.07);
   --ar-bg-hover: rgba(255, 255, 255, 0.07);
   --ar-bg-active: rgba(255, 255, 255, 0.12);
-  --ar-bg-well: rgba(0, 0, 0, 0.04);
+  --ar-bg-well: rgba(255, 255, 255, 0.08);
   --ar-text-hi: #ffffff;
-  --ar-text-mid: rgba(255, 255, 255, 0.9);
-  --ar-text-low: rgba(255, 255, 255, 0.72);
-  --ar-text-faint: rgba(255, 255, 255, 0.54);
-  --ar-text-ghost: rgba(255, 255, 255, 0.36);
-  --ar-line-subtle: rgba(255, 255, 255, 0.1);
-  --ar-line: rgba(255, 255, 255, 0.18);
-  --ar-line-strong: rgba(255, 255, 255, 0.32);
+  --ar-text-mid: rgba(255, 255, 255, 0.88);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.12);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
   --ar-signal: #ffffff;
   --ar-signal-hi: #ffffff;
-  --ar-signal-line: rgba(255, 255, 255, 0.55);
-  --ar-signal-wash: rgba(255, 255, 255, 0.14);
-  --ar-signal-ink: #141414;
-  --ar-bind: rgba(255, 255, 255, 0.85);
-  --ar-warn: #f0c27e;
-  --ar-fault: #ff9a9a;
-  --ar-tick: rgba(255, 255, 255, 0.32);
-  --ar-tick-major: rgba(255, 255, 255, 0.78);
-  --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-  --ar-rim: 0 1px 0 rgba(255, 255, 255, 0.08);
-  --ar-focus-ring: 0 0 0 1px #ffffff, 0 0 0 3px rgba(255, 255, 255, 0.2);
-  --ar-panel-tint: rgba(0, 0, 0, 0);
-  --ar-panel-sheen: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 32%);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.06), 0 20px 50px -30px rgba(0, 0, 0, 0.35);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --ar-float-bg: rgba(40, 40, 40, 0.42);
-  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.34);
-  --ar-float-shadow: 0 18px 44px -20px rgba(0, 0, 0, 0.45);
+  --ar-signal-line: rgba(255, 255, 255, 0.5);
+  --ar-signal-wash: rgba(255, 255, 255, 0.12);
+  --ar-signal-ink: #111111;
+  --ar-bind: rgba(255, 255, 255, 0.8);
+  --ar-warn: rgba(255, 255, 255, 0.8);
+  --ar-fault: rgba(255, 255, 255, 0.8);
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.75);
+  --ar-shadow-well: none;
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px rgba(255, 255, 255, 0.8);
+  --ar-panel-sheen: none;
+  --ar-panel-shadow: none;
+  --ar-panel-text-shadow: none;
+  --ar-float-ring: inset 0 0 0 0 transparent;
+  --ar-float-shadow: none;
   --ar-float-ink: #ffffff;
-  --ar-float-ink-low: rgba(255, 255, 255, 0.7);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+[data-ar-theme='mist'],
+[data-ar-theme='chalk'] {
+  --ar-bg-app: #e8e8e8;
+  --ar-bg-surface: rgba(0, 0, 0, 0.03);
+  --ar-bg-raised: rgba(0, 0, 0, 0.05);
+  --ar-bg-hover: rgba(0, 0, 0, 0.05);
+  --ar-bg-active: rgba(0, 0, 0, 0.09);
+  --ar-bg-well: rgba(0, 0, 0, 0.06);
+  --ar-text-hi: #111111;
+  --ar-text-mid: rgba(17, 17, 17, 0.86);
+  --ar-text-low: rgba(17, 17, 17, 0.6);
+  --ar-text-faint: rgba(17, 17, 17, 0.44);
+  --ar-text-ghost: rgba(17, 17, 17, 0.28);
+  --ar-line-subtle: rgba(0, 0, 0, 0.06);
+  --ar-line: rgba(0, 0, 0, 0.1);
+  --ar-line-strong: rgba(0, 0, 0, 0.18);
+  --ar-signal: #111111;
+  --ar-signal-hi: #000000;
+  --ar-signal-line: rgba(0, 0, 0, 0.4);
+  --ar-signal-wash: rgba(0, 0, 0, 0.07);
+  --ar-signal-ink: #ffffff;
+  --ar-bind: rgba(17, 17, 17, 0.8);
+  --ar-warn: rgba(17, 17, 17, 0.8);
+  --ar-fault: rgba(17, 17, 17, 0.8);
+  --ar-tick: rgba(0, 0, 0, 0.28);
+  --ar-tick-major: rgba(0, 0, 0, 0.7);
+  --ar-shadow-well: none;
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px rgba(17, 17, 17, 0.75);
+  --ar-panel-sheen: none;
+  --ar-panel-shadow: none;
+  --ar-panel-text-shadow: none;
+  --ar-float-ring: inset 0 0 0 0 transparent;
+  --ar-float-shadow: none;
+  --ar-float-ink: #111111;
+  --ar-float-ink-low: rgba(17, 17, 17, 0.6);
+  color-scheme: light;
+}
+[data-ar-theme='sheer'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.2);
+  --ar-panel-blur: blur(14px);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
+}
+[data-ar-theme='veil'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.1);
+  --ar-panel-blur: blur(30px);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
+}
+[data-ar-theme='haze'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
+}
+[data-ar-theme='smoke'] {
+  --ar-panel-tint: rgba(0, 0, 0, 0.36);
+  --ar-panel-blur: blur(32px);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
+}
+[data-ar-theme='ink'] {
+  --ar-panel-tint: rgba(12, 12, 12, 0.74);
+  --ar-panel-blur: blur(40px);
+  --ar-float-bg: rgba(14, 14, 14, 0.86);
+}
+[data-ar-theme='mist'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.6);
+  --ar-panel-blur: blur(40px);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+[data-ar-theme='chalk'] {
+  --ar-panel-tint: rgba(248, 248, 248, 0.86);
+  --ar-panel-blur: blur(40px);
+  --ar-float-bg: rgba(250, 250, 250, 0.82);
+}
+
+/* ---------- FLAT GLASS blends — the flat pane crossed with neumorph, glass and frost ---------- */
+[data-ar-theme='pressed'],
+[data-ar-theme='hairline'],
+[data-ar-theme='frosted'] {
+  --ar-bg-app: #2b2b2b;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.07);
+  --ar-bg-hover: rgba(255, 255, 255, 0.07);
+  --ar-bg-active: rgba(255, 255, 255, 0.12);
+  --ar-bg-well: rgba(255, 255, 255, 0.08);
+  --ar-text-hi: #ffffff;
+  --ar-text-mid: rgba(255, 255, 255, 0.88);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.12);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #ffffff;
+  --ar-signal-hi: #ffffff;
+  --ar-signal-line: rgba(255, 255, 255, 0.5);
+  --ar-signal-wash: rgba(255, 255, 255, 0.12);
+  --ar-signal-ink: #111111;
+  --ar-bind: rgba(255, 255, 255, 0.8);
+  --ar-warn: rgba(255, 255, 255, 0.8);
+  --ar-fault: rgba(255, 255, 255, 0.8);
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.75);
+  --ar-shadow-well: none;
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px rgba(255, 255, 255, 0.8);
+  --ar-panel-sheen: none;
+  --ar-panel-shadow: none;
+  --ar-panel-text-shadow: none;
+  --ar-float-ring: inset 0 0 0 0 transparent;
+  --ar-float-shadow: none;
+  --ar-float-ink: #ffffff;
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
   color-scheme: dark;
 }
 
-/* SHEER — the clearest: the scene only softened, so the pane reads as a sheet of glass. */
-[data-ar-theme='sheer'] {
-  --ar-panel-blur: blur(8px);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px -30px rgba(0, 0, 0, 0.3);
+/* PRESSED — flat glass with neumorphic controls: wells pressed in, values raised, neutral shadows only. */
+[data-ar-theme='pressed'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.1);
+  --ar-panel-blur: blur(34px);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
 }
 
-/* VEIL — clear glass: the scene softened to shapes and light. */
-[data-ar-theme='veil'] {
-  --ar-panel-blur: blur(22px);
+/* HAIRLINE — flat glass held by one 1px line around the pane and each track; no highlights. */
+[data-ar-theme='hairline'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.06);
+  --ar-panel-blur: blur(26px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --ar-float-bg: rgba(30, 30, 30, 0.7);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
-/* HAZE — deep frost: the scene becomes a field of its own colour. */
-[data-ar-theme='haze'] {
-  --ar-panel-blur: blur(56px);
-  --ar-panel-sheen: linear-gradient(160deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 60%);
-}
-
-/* SMOKE — the scene dimmed, not tinted: white ink holds over bright or busy imagery. */
-[data-ar-theme='smoke'] {
-  --ar-panel-blur: blur(32px) brightness(0.62);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 24px 60px -30px rgba(0, 0, 0, 0.5);
-  --ar-panel-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  --ar-float-bg: rgba(20, 20, 20, 0.5);
-}
-
-/* MIST — the scene lightened under a white wash (white, never a hue): graphite ink that holds
-   over light and dark imagery alike. */
-[data-ar-theme='mist'] {
-  --ar-bg-app: #e6e6e6;
-  --ar-bg-surface: rgba(255, 255, 255, 0.2);
-  --ar-bg-raised: rgba(255, 255, 255, 0.36);
-  --ar-bg-hover: rgba(0, 0, 0, 0.05);
-  --ar-bg-active: rgba(0, 0, 0, 0.08);
-  --ar-bg-well: rgba(255, 255, 255, 0.08);
-  --ar-text-hi: #121212;
-  --ar-text-mid: rgba(18, 18, 18, 0.84);
-  --ar-text-low: rgba(18, 18, 18, 0.62);
-  --ar-text-faint: rgba(18, 18, 18, 0.46);
-  --ar-text-ghost: rgba(18, 18, 18, 0.3);
-  --ar-line-subtle: rgba(18, 18, 18, 0.07);
-  --ar-line: rgba(18, 18, 18, 0.12);
-  --ar-line-strong: rgba(18, 18, 18, 0.22);
-  --ar-signal: #1a1a1a;
-  --ar-signal-hi: #000000;
-  --ar-signal-line: rgba(26, 26, 26, 0.42);
-  --ar-signal-wash: rgba(26, 26, 26, 0.08);
-  --ar-signal-ink: #ffffff;
-  --ar-bind: rgba(18, 18, 18, 0.8);
-  --ar-warn: #8f5c10;
-  --ar-fault: #a8222f;
-  --ar-tick: rgba(18, 18, 18, 0.3);
-  --ar-tick-major: rgba(18, 18, 18, 0.72);
-  --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(18, 18, 18, 0.08);
-  --ar-rim: 0 1px 0 rgba(255, 255, 255, 0.5);
-  --ar-focus-ring: 0 0 0 1px #121212, 0 0 0 3px rgba(18, 18, 18, 0.14);
-  --ar-panel-tint: rgba(255, 255, 255, 0.46);
-  --ar-panel-sheen: linear-gradient(160deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 40%);
-  --ar-panel-blur: blur(36px) brightness(1.25);
-  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 50px -30px rgba(0, 0, 0, 0.25);
-  --ar-panel-text-shadow: none;
-  --ar-float-bg: rgba(245, 245, 245, 0.72);
-  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.08);
-  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.25);
-  --ar-float-ink: #121212;
-  --ar-float-ink-low: rgba(18, 18, 18, 0.6);
-  color-scheme: light;
+/* FROSTED — a clearer pane with frosted controls: each track and value frosts the scene further. */
+[data-ar-theme='frosted'] {
+  --ar-panel-tint: rgba(255, 255, 255, 0.05);
+  --ar-panel-blur: blur(12px);
+  --ar-float-bg: rgba(40, 40, 40, 0.6);
 }
