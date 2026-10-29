@@ -2302,8 +2302,6 @@
 
 /* BISQUE */
 [data-ar-theme='bisque']:not([data-ar-material]) {
-  --ar-radius: 10px;
-  --ar-insert-radius: 8px;
   --ar-trough: rgba(0, 0, 0, 0.03);
   --ar-trough-backdrop: none;
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
@@ -2352,8 +2350,6 @@
 
 /* CONCRETE */
 [data-ar-theme='concrete']:not([data-ar-material]) {
-  --ar-radius: 2px;
-  --ar-insert-radius: 1px;
   --ar-trough: rgba(0, 0, 0, 0.22);
   --ar-trough-backdrop: none;
   --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
@@ -2548,8 +2544,6 @@
 
 /* SHELL */
 [data-ar-theme='shell']:not([data-ar-material]) {
-  --ar-radius: 12px;
-  --ar-insert-radius: 10px;
   --ar-trough: rgba(0, 0, 0, 0.06);
   --ar-trough-backdrop: none;
   --ar-well: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.12);
@@ -2646,8 +2640,6 @@
 
 /* MACHINED */
 [data-ar-theme='machined']:not([data-ar-material]) {
-  --ar-radius: 4px;
-  --ar-insert-radius: 3px;
   --ar-trough: rgba(0, 0, 0, 0.25);
   --ar-trough-backdrop: none;
   --ar-well: inset 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -2792,8 +2784,6 @@
 
 /* PEBBLE */
 [data-ar-theme='pebble']:not([data-ar-material]) {
-  --ar-radius: 13px;
-  --ar-insert-radius: 11px;
   --ar-trough: rgba(0, 0, 0, 0.08);
   --ar-trough-backdrop: none;
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.28), inset -1px -1px 2px rgba(255, 255, 255, 0.1);

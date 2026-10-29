@@ -28,17 +28,17 @@
  *     basalt          Black volcanic stone values with one polished edge, on smoked glass. An ember signal.
  *     steel           Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost.
  *     bisque          Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal.
- *     concrete        Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal.
+ *     concrete        Raw speckled concrete values cut into grey frost. A safety-orange signal.
  *     walnut          Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal.
  *   blends
  *     quartz          Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim.
  *     loupe           Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane.
- *     shell           Deep frost and neumorphism: rounded, pressed tracks and softly domed values.
+ *     shell           Deep frost and neumorphism: pressed tracks and softly domed values.
  *     engrave         Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline.
- *     machined        Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered.
+ *     machined        Glass and skeuomorphism: deep machined grooves and chamfered glass caps.
  *     matte           Frost and depth: matte values float on soft shadows, with no highlights and no rims.
  *     glaze           Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass.
- *     pebble          Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks.
+ *     pebble          Glass and neumorphism: raised pebble values in pressed tracks.
  *     vellum          Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink.
  *     lumen           Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink.
  *   untinted-glass
@@ -2491,7 +2491,7 @@
   color-scheme: light;
 }
 
-/* CONCRETE — Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal. */
+/* CONCRETE — Raw speckled concrete values cut into grey frost. A safety-orange signal. */
 [data-ar-theme='concrete'] {
   --ar-bg-app: #3a3a3a;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
@@ -2662,7 +2662,7 @@
   color-scheme: dark;
 }
 
-/* SHELL — Deep frost and neumorphism: rounded, pressed tracks and softly domed values. */
+/* SHELL — Deep frost and neumorphism: pressed tracks and softly domed values. */
 [data-ar-theme='shell'] {
   --ar-bg-app: #2a2a2a;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
@@ -2744,7 +2744,7 @@
   color-scheme: dark;
 }
 
-/* MACHINED — Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered. */
+/* MACHINED — Glass and skeuomorphism: deep machined grooves and chamfered glass caps. */
 [data-ar-theme='machined'] {
   --ar-bg-app: #2a2a2a;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
@@ -2867,7 +2867,7 @@
   color-scheme: dark;
 }
 
-/* PEBBLE — Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks. */
+/* PEBBLE — Glass and neumorphism: raised pebble values in pressed tracks. */
 [data-ar-theme='pebble'] {
   --ar-bg-app: #2a2a2a;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
@@ -2905,8 +2905,6 @@
   --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
   --ar-float-ink: rgb(255, 255, 255);
   --ar-float-ink-low: rgba(255, 255, 255, 0.64);
-  --ar-radius-shell: 22px;
-  --ar-radius-panel: 18px;
   color-scheme: dark;
 }
 

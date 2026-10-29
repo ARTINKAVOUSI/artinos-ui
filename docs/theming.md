@@ -48,16 +48,16 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `basalt` | Basalt | glass | Black volcanic stone values with one polished edge, on smoked glass. An ember signal. |
 |  | `steel` | Brushed Steel | glass | Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. |
 |  | `bisque` | Bisque | glass | Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. |
-|  | `concrete` | Concrete | glass | Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal. |
+|  | `concrete` | Concrete | glass | Raw speckled concrete values cut into grey frost. A safety-orange signal. |
 |  | `walnut` | Walnut Glass | glass | Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. |
 | blends | `quartz` | Quartz | glass | Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim. |
 |  | `loupe` | Loupe | glass | Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane. |
-|  | `shell` | Shell | glass | Deep frost and neumorphism: rounded, pressed tracks and softly domed values. |
+|  | `shell` | Shell | glass | Deep frost and neumorphism: pressed tracks and softly domed values. |
 |  | `engrave` | Engrave | glass | Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline. |
-|  | `machined` | Machined | glass | Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered. |
+|  | `machined` | Machined | glass | Glass and skeuomorphism: deep machined grooves and chamfered glass caps. |
 |  | `matte` | Matte | glass | Frost and depth: matte values float on soft shadows, with no highlights and no rims. |
 |  | `glaze` | Glaze | glass | Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass. |
-|  | `pebble` | Pebble | glass | Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks. |
+|  | `pebble` | Pebble | glass | Glass and neumorphism: raised pebble values in pressed tracks. |
 |  | `vellum` | Vellum | glass | Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink. |
 |  | `lumen` | Lumen | glass | Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink. |
 | untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
