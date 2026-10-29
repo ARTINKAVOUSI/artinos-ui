@@ -18,7 +18,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  *  `default` is a quiet raised face with a hairline, for every other action. `ghost` is bare text.
  *  A label cut by an ellipsis shows in full as the tooltip. */
 export function Button({ variant = 'default', size = 'md', icon, trailing, block = false, className, children, type = 'button', onPointerEnter, ...rest }: ButtonProps) {
-  const ghost = variant === 'ghost';
   const raised = variant === 'primary' || variant === 'danger';
   return (
     <button

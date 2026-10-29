@@ -1,9 +1,11 @@
 'use client';
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
 import { useField } from '../core/field';
 
-export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement>, 'onChange' | 'size' | 'value'> {
+export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement>, 'onChange' | 'onKeyDown' | 'size' | 'value'> {
   value: string;
+  /** A key on the field: the event is the input's, or the textarea's when `multiline`. */
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onChange: (value: string) => void;
   /** Accessible name when no visible label is associated (a Field's label is associated for you). */
   label?: string;
