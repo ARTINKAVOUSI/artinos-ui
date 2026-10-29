@@ -2,8 +2,9 @@
    two voices of text, density, and the motion tokens. */
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
-import { Badge, Button, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEME_META, THEMES, TYPE_COLLECTIONS } from '../../../src';
-import { FAMILIES, ThemeCard, TokenTable, TypeCard } from '../app/foundations';
+import { Badge, Button, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS } from '../../../src';
+import { TokenTable, TypeCard } from '../app/foundations';
+import { ThemeTile, themeFamilies } from '../themes/ThemesPage';
 import { Chapter, Spec } from '../shared';
 
 /* ---------- the theme gallery, on the bare backdrop ---------- */
@@ -39,18 +40,23 @@ function useOpenWindow(ref: RefObject<HTMLElement | null>) {
 function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useOpenWindow(ref);
+  const families = themeFamilies();
+  const [family, setFamily] = useState(families[0].name);
+  const shown = families.find((f) => f.name === family) ?? families[0];
   return (
     <div ref={ref} className="sc-window">
-      {FAMILIES.map(([title, fams]) => (
-        <div key={title} className="sc-family">
-          <div className="sc-subhead">{title}</div>
-          <div className="sc-grid sc-grid--cards">
-            {THEMES.filter((t) => fams.includes(THEME_META[t].family)).map((t) => (
-              <ThemeCard key={t} t={t} active={t === theme} onPick={() => onPickTheme(t)} />
-            ))}
-          </div>
-        </div>
-      ))}
+      <div className="sc-themes-inline__bar">
+        <ChipGroup label="Family" multiple={false} options={families.map((f) => ({ value: f.name, label: f.name }))} value={[family]} onChange={(v) => v[0] && setFamily(v[0])} />
+        <Button size="sm" variant="primary" onClick={() => (location.hash = '#themes')}>
+          Open the theme gallery
+        </Button>
+      </div>
+      <p className="sc-themes-inline__about">{shown.about}</p>
+      <div className="sc-tiles">
+        {shown.themes.map((t) => (
+          <ThemeTile key={t} t={t} active={t === theme} onPick={() => onPickTheme(t)} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -334,7 +340,7 @@ export function FoundationsChapter({ theme, onPickTheme, type, onPickType }: { t
     <Chapter id="foundations">
       <Spec
         id="themes"
-        text={`A theme is the whole look: ground, ink, signal, panel glass and a control finish tuned for it. You pick one — nothing else. Solid themes paint their own ground; glass themes are panes over whatever is behind them (try the backdrops in the bar). There are ${THEMES.length}. Click a card to apply it; each card is its own data-ar-theme scope, so themes nest.`}
+        text={`A theme is the whole look: ground, ink, signal, panel glass and a control finish tuned for it. You pick one — nothing else. Solid themes paint their own ground; glass themes are panes over whatever is behind them (try the backdrops in the bar). There are ${THEMES.length}, in families. Pick a family and click a tile to apply it; each tile is its own data-ar-theme scope, so themes nest. The theme gallery shows every theme on the bare backdrop, with a stage that dresses a small working setup in the one you pick.`}
         code={`
 import { ArtinosTheme } from './artinos-ui';
 

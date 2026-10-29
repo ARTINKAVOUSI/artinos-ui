@@ -1,0 +1,239 @@
+/* Theme gallery (#themes) and the theme tiles shared with the inline gallery. Everything sits
+   on the bare backdrop: the tiles and the stage are the themes' own glass, nothing between. */
+
+.sc-themes {
+  position: relative;
+  min-height: 100vh;
+  background: #1d1d1f;
+  color: var(--ar-text-hi);
+}
+
+/* ---------- bar: the chosen theme's own glass ---------- */
+.sc-themes__bar {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  max-width: 1440px;
+  margin: 12px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 8px 12px;
+  border-radius: var(--ar-radius-panel);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+}
+.sc-themes__bar .ar-select {
+  width: 160px;
+}
+.sc-themes__title {
+  font: var(--ar-weight-medium) var(--ar-text-md) / 1 var(--ar-font-ui);
+  color: var(--ar-text-hi);
+  margin-right: 6px;
+}
+.sc-stage__spacer {
+  flex: 1;
+}
+
+.sc-themes__main {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 16px 96px;
+}
+
+/* ---------- stage: the chosen theme as a small working setup ---------- */
+.sc-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .sc-stage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .sc-stage__intro {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 680px) {
+  .sc-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.sc-stage__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border-radius: var(--ar-radius-shell);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  text-shadow: var(--ar-panel-text-shadow);
+}
+.sc-stage__kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: var(--ar-weight-medium) var(--ar-text-sm) / 1 var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+.sc-stage__intro h1 {
+  margin: 0;
+  font: var(--ar-weight-light) 44px / 1.02 var(--ar-font-display);
+  letter-spacing: -0.02em;
+  color: var(--ar-text-hi);
+}
+.sc-stage__intro p {
+  margin: 0;
+  max-width: 44ch;
+  font: var(--ar-weight-text) var(--ar-text-md) / 1.55 var(--ar-font-ui);
+  color: var(--ar-text-mid);
+}
+.sc-stage__tokens {
+  display: flex;
+  gap: 6px;
+}
+.sc-stage__tokens i {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+}
+.sc-stage__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 4px;
+}
+.sc-stage__actions code {
+  font: var(--ar-text-sm) / 1 var(--ar-font-code);
+  color: var(--ar-text-low);
+}
+.sc-stage__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.sc-stage__layers {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 12px 0;
+}
+.sc-stage__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------- the collection ---------- */
+.sc-themes__family {
+  margin-top: 56px;
+}
+.sc-themes__family-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-bottom: 16px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+}
+.sc-themes__family-head h2 {
+  margin: 0;
+  font: var(--ar-weight-light) 26px / 1.1 var(--ar-font-display);
+  letter-spacing: -0.01em;
+}
+.sc-themes__family-head span {
+  font: var(--ar-text-sm) / 1 var(--ar-font-num);
+  opacity: 0.7;
+}
+.sc-themes__family-head p {
+  flex-basis: 100%;
+  margin: 0;
+  font: var(--ar-text-md) / 1.5 var(--ar-font-ui);
+  opacity: 0.86;
+}
+
+/* ---------- tile: one theme as a small live panel ---------- */
+.sc-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.sc-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--ar-radius-shell);
+  cursor: pointer;
+  color: var(--ar-text-hi);
+  text-align: left;
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  transition:
+    transform var(--ar-dur-surface) var(--ar-ease),
+    box-shadow var(--ar-dur-state) var(--ar-ease);
+}
+.sc-tile.ar-theme--ground {
+  background: var(--ar-bg-app);
+}
+.sc-tile:hover {
+  transform: translateY(-2px);
+}
+.sc-tile:focus-visible {
+  outline: none;
+  box-shadow: var(--ar-panel-shadow), var(--ar-focus-ring);
+}
+.sc-tile[data-active] {
+  box-shadow: var(--ar-panel-shadow), 0 0 0 2px var(--ar-signal);
+}
+.sc-tile__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: var(--ar-weight-medium) var(--ar-text-md) / 1 var(--ar-font-ui);
+}
+.sc-tile__head span {
+  margin-left: auto;
+  font: var(--ar-text-xs) / 1 var(--ar-font-num);
+  color: var(--ar-text-faint);
+}
+.sc-tile__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: default;
+}
+.sc-tile__text {
+  margin: 0;
+  font: var(--ar-weight-text) var(--ar-text-sm) / 1.45 var(--ar-font-ui);
+  color: var(--ar-text-low);
+}
+
+/* ---------- the inline gallery on the main page ---------- */
+.sc-themes-inline__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+}
+.sc-themes-inline__about {
+  margin: 0 0 14px;
+  font: var(--ar-text-md) / 1.5 var(--ar-font-ui);
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}

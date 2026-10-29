@@ -1,6 +1,6 @@
 /* ARTINOS UI — full showcase. Every control on this page is live and comes from
    ../src (the package) exactly as a consuming app would import it.
-   The app shell: theme / density / backdrop state, view routing (page · #studio),
+   The app shell: theme / density / backdrop state, view routing (page · #studio · #themes),
    the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
 import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
@@ -14,6 +14,7 @@ import { KIT_COMPONENTS } from '../export/kit';
 import { BACKDROPS, BACKDROP_OPTIONS, LIGHT_BACKDROPS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
+import { ThemesPage } from '../themes/ThemesPage';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 
@@ -23,9 +24,11 @@ export function App() {
   const pick = <T extends string>(k: string, list: readonly T[], d: T) => (list.includes(q.get(k) as T) ? (q.get(k) as T) : d);
   const [theme, setTheme] = useState<string>(pick('theme', THEMES, 'frost-deep'));
   const [customs, setCustoms] = useState<CustomTheme[]>(() => loadThemes());
-  const [view, setView] = useState<'showcase' | 'studio'>(() => (location.hash === '#studio' ? 'studio' : 'showcase'));
+  type View = 'showcase' | 'studio' | 'themes';
+  const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : 'showcase');
+  const [view, setView] = useState<View>(viewOf);
   useEffect(() => {
-    const h = () => setView(location.hash === '#studio' ? 'studio' : 'showcase');
+    const h = () => setView(viewOf());
     window.addEventListener('hashchange', h);
     window.addEventListener('popstate', h);
     return () => {
@@ -33,8 +36,8 @@ export function App() {
       window.removeEventListener('popstate', h);
     };
   }, []);
-  const go = (v: 'showcase' | 'studio') => {
-    history.pushState(null, '', v === 'studio' ? '#studio' : location.pathname + location.search);
+  const go = (v: View) => {
+    history.pushState(null, '', v === 'showcase' ? location.pathname + location.search : '#' + v);
     setView(v);
     window.scrollTo(0, 0);
   };
@@ -75,6 +78,24 @@ export function App() {
       />
     );
 
+  if (view === 'themes')
+    return (
+      <ThemesPage
+        initial={baseTheme}
+        accent={accent}
+        onAccent={setAccent}
+        bg={bg}
+        onBg={setBg}
+        type={type}
+        density={density}
+        onUse={(t) => {
+          setTheme(t);
+          go('showcase');
+        }}
+        onExit={() => go('showcase')}
+      />
+    );
+
   return (
     <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} accent={accent === 'theme' ? undefined : (accent as (typeof ACCENTS)[number])} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
@@ -107,6 +128,9 @@ export function App() {
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
         </label>
         <span className="sc-bar__actions">
+          <Button size="sm" onClick={() => go('themes')}>
+            Themes
+          </Button>
           <Button size="sm" onClick={() => setExporting(true)}>
             Export kit
           </Button>

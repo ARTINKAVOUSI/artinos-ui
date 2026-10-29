@@ -1,12 +1,12 @@
-/* Showcase — the Foundations sections: live token table, theme cards and the
+/* Showcase — the Foundations sections: live token table, the type cards and the
    quick-token builder. */
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArtinosTheme, GLASS_THEMES, THEME_META, TYPE_META,
+  ArtinosTheme, TYPE_META,
   Slider, RangeSlider, NumberField, Switch, Segmented, ColorField, Select, Field,
 } from '../../../src';
 import type { ThemeName, TypeCollection } from '../../../src';
-import { Swatch, THEME_OPTIONS, Code } from '../shared';
+import { THEME_OPTIONS, Code } from '../shared';
 
 /* ---------- foundations ---------- */
 export function TokenTable({ deps }: { deps: unknown[] }) {
@@ -53,8 +53,6 @@ export const FAMILIES: Array<[string, string[]]> = [
   ['Luxe frost — coloured premium frost: satin and glazed controls, precious-metal accents', ['luxe-frost']],
 ];
 
-const isGlass = (t: ThemeName) => (GLASS_THEMES as readonly string[]).includes(t);
-
 /** A type collection as a specimen: the display face, the sans title, the mono caps and a live
  *  control, each card its own data-ar-type scope inside the page's theme. */
 export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boolean; onPick: () => void }) {
@@ -85,40 +83,6 @@ export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boo
         <Slider label="Exposure" defaultValue={0.62} format="percent" decimals={0} density="dense" />
       </div>
     </figure>
-  );
-}
-
-export function ThemeCard({ t, active, onPick }: { t: ThemeName; active: boolean; onPick: () => void }) {
-  const glass = isGlass(t);
-  return (
-    <ArtinosTheme
-      theme={t}
-      ground={!glass}
-      className={glass ? 'sc-card sc-card--glass' : 'sc-card'}
-      data-active={active ? '' : undefined}
-      role="button"
-      tabIndex={0}
-      aria-pressed={active}
-      onClick={onPick}
-      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPick())}
-    >
-      <div className="sc-card__head">
-        <Swatch t={t} />
-        <span className="sc-card__name">{THEME_META[t].label}</span>
-        <span className="sc-card__meta">{THEME_META[t].kind}</span>
-      </div>
-      <p className="sc-card__text">{THEME_META[t].description}</p>
-      <div className="sc-card__swatches">
-        {['bg-app', 'bg-raised', 'text-mid', 'text-hi', 'signal', 'bind', 'warn', 'fault'].map((k) => (
-          <i key={k} style={{ background: `var(--ar-${k})` }} />
-        ))}
-      </div>
-      <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <Slider label="Roughness" defaultValue={0.52} toggleable />
-        <Slider variant="stepped" steps={5} label="Samples" min={1} max={5} decimals={0} defaultValue={3} />
-        <Segmented options={['Low', 'Med', 'High']} defaultValue="MED" label="Quality" />
-      </div>
-    </ArtinosTheme>
   );
 }
 
