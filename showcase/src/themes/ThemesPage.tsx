@@ -1,8 +1,10 @@
 /* The theme gallery (#themes): every theme on the bare backdrop, as it would sit over an app's
    own scene. A stage dresses a small working setup in the chosen theme; below, the whole
    collection by family. The page wears the chosen theme, so the bar and the stage switch with
-   each pick. ThemeTile and themeFamilies also serve the inline gallery on the main page. */
+   each pick, and the bar and stage stay pinned while the collection scrolls under them.
+   ThemeTile and themeFamilies also serve the inline gallery on the main page. */
 import { useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, THEMES, THEME_META } from '../../../src';
 import type { Accent, Density, ThemeName } from '../../../src';
 import { FAMILIES } from '../app/foundations';
@@ -150,31 +152,27 @@ export function ThemesPage({
   const families = useMemo(themeFamilies, []);
   const acc = accent === 'theme' ? undefined : (accent as Accent);
   const shown = families.filter((f) => family === 'all' || f.name === family);
-  const pick = (t: ThemeName) => {
-    setSel(t);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
   return (
-    <ArtinosTheme theme={sel} accent={acc} type={type} density={density} className="sc-themes">
-      {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
-
-      <header className="sc-themes__bar">
-        <Button size="sm" variant="ghost" onClick={onExit}>
-          ← Showcase
-        </Button>
-        <b className="sc-themes__title">Themes · {THEMES.length}</b>
-        <Select options={[{ value: 'all', label: 'Every family' }, ...families.map((f) => ({ value: f.name, label: f.name }))]} value={family} onChange={setFamily} appearance="well" label="Family" />
-        <Select options={[{ value: 'theme', label: 'Theme accent' }, ...ACCENTS.map((a) => ({ value: a, label: ACCENT_META[a].label }))]} value={accent} onChange={onAccent} appearance="well" label="Accent" />
-        <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => onBg(v as Backdrop)} appearance="well" label="Backdrop" />
-        <span className="sc-stage__spacer" />
-        <Button size="sm" variant="primary" onClick={() => onUse(sel)}>
-          Use {THEME_META[sel].label}
-        </Button>
-      </header>
+    <ArtinosTheme theme={sel} accent={acc} type={type} density={density} className="sc-themes" style={{ '--sc-scene': bg !== 'none' ? `url(${BACKDROPS[bg]})` : 'none' } as CSSProperties}>
+      {/* the bar and the stage stay pinned; the collection scrolls under them */}
+      <div className="sc-themes__top">
+        <header className="sc-themes__bar">
+          <Button size="sm" variant="ghost" onClick={onExit}>
+            ← Showcase
+          </Button>
+          <b className="sc-themes__title">Themes · {THEMES.length}</b>
+          <Select options={[{ value: 'all', label: 'Every family' }, ...families.map((f) => ({ value: f.name, label: f.name }))]} value={family} onChange={setFamily} appearance="well" label="Family" />
+          <Select options={[{ value: 'theme', label: 'Theme accent' }, ...ACCENTS.map((a) => ({ value: a, label: ACCENT_META[a].label }))]} value={accent} onChange={onAccent} appearance="well" label="Accent" />
+          <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => onBg(v as Backdrop)} appearance="well" label="Backdrop" />
+          <span className="sc-stage__spacer" />
+          <Button size="sm" variant="primary" onClick={() => onUse(sel)}>
+            Use {THEME_META[sel].label}
+          </Button>
+        </header>
+        <Stage t={sel} onUse={() => onUse(sel)} />
+      </div>
 
       <main className="sc-themes__main">
-        <Stage t={sel} onUse={() => onUse(sel)} />
-
         {shown.map((f) => (
           <section key={f.name} className="sc-themes__family">
             <header className="sc-themes__family-head">
@@ -184,7 +182,7 @@ export function ThemesPage({
             </header>
             <div className="sc-tiles">
               {f.themes.map((t) => (
-                <ThemeTile key={t} t={t} accent={acc} active={t === sel} onPick={() => pick(t)} />
+                <ThemeTile key={t} t={t} accent={acc} active={t === sel} onPick={() => setSel(t)} />
               ))}
             </div>
           </section>
