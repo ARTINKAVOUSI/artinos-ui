@@ -14,6 +14,7 @@ import './export.css';
 
 const FAMILY_LABEL: Record<string, string> = {
   scene: 'Flat glass',
+  blends: 'Blends',
   materials: 'Materials',
   studio: 'Studio',
   signature: 'Signature',

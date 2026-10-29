@@ -30,6 +30,17 @@
  *     bisque          Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal.
  *     concrete        Raw speckled concrete values with square corners, cut into grey frost. A safety-orange signal.
  *     walnut          Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal.
+ *   blends
+ *     quartz          Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim.
+ *     loupe           Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane.
+ *     shell           Deep frost and neumorphism: rounded, pressed tracks and softly domed values.
+ *     engrave         Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline.
+ *     machined        Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered.
+ *     matte           Frost and depth: matte values float on soft shadows, with no highlights and no rims.
+ *     glaze           Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass.
+ *     pebble          Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks.
+ *     vellum          Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink.
+ *     lumen           Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink.
  *   untinted-glass
  *     clear-air       Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur.
  *     clear-polished  Clear glass with depth: values float on a soft shadow under one reflected line.
@@ -2560,6 +2571,425 @@
   --ar-float-ink: rgb(251, 239, 226);
   --ar-float-ink-low: rgba(251, 239, 226, 0.62);
   color-scheme: dark;
+}
+
+/* ---------- BLENDS — colourless glass and frost crossed with hairlines, neumorphism and
+ * skeuomorphism ----------
+ * No tint and no hue anywhere in the pane: the scene is blurred under at most a white or black
+ * veil. Each theme mixes the flat pane with one or two older ideas, drawn in light and shadow
+ * only; the accent (teal by default) draws the live edge, LEDs and focus.
+ */
+
+/* QUARTZ — Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim. */
+[data-ar-theme='quartz'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.08);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.28), inset -1px -1px 2px rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.06);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* LOUPE — Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane. */
+[data-ar-theme='loupe'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.1);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(0, 0, 0, 0.08);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(8px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.36), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* SHELL — Deep frost and neumorphism: rounded, pressed tracks and softly domed values. */
+[data-ar-theme='shell'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.06);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.12);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.1);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(60px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* ENGRAVE — Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline. */
+[data-ar-theme='engrave'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 0 rgba(255, 255, 255, 0.14);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(0, 0, 0, 0.12);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(24px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* MACHINED — Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered. */
+[data-ar-theme='machined'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.25);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.1);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(0, 0, 0, 0.18);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(20px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.26), inset 0 -1px 0 rgba(0, 0, 0, 0.3), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* MATTE — Frost and depth: matte values float on soft shadows, with no highlights and no rims. */
+[data-ar-theme='matte'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.14);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: none;
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(0, 0, 0, 0.22);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(48px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 30px 64px -28px rgba(0, 0, 0, 0.6);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* GLAZE — Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass. */
+[data-ar-theme='glaze'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.06);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 0 0 2px rgba(0, 0, 0, 0.12);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.04);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(30px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 0 0 2px rgba(0, 0, 0, 0.16), inset 0 2px 0 rgba(255, 255, 255, 0.12), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  color-scheme: dark;
+}
+
+/* PEBBLE — Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks. */
+[data-ar-theme='pebble'] {
+  --ar-bg-app: #2a2a2a;
+  --ar-bg-surface: rgba(255, 255, 255, 0.04);
+  --ar-bg-raised: rgba(255, 255, 255, 0.1);
+  --ar-bg-hover: rgba(255, 255, 255, 0.06);
+  --ar-bg-active: rgba(255, 255, 255, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.08);
+  --ar-text-hi: rgb(255, 255, 255);
+  --ar-text-mid: rgba(255, 255, 255, 0.86);
+  --ar-text-low: rgba(255, 255, 255, 0.64);
+  --ar-text-faint: rgba(255, 255, 255, 0.46);
+  --ar-text-ghost: rgba(255, 255, 255, 0.3);
+  --ar-line-subtle: rgba(255, 255, 255, 0.08);
+  --ar-line: rgba(255, 255, 255, 0.13);
+  --ar-line-strong: rgba(255, 255, 255, 0.22);
+  --ar-signal: #4fd1ba;
+  --ar-signal-hi: #9eeede;
+  --ar-signal-line: rgba(79, 209, 186, 0.5);
+  --ar-signal-wash: rgba(79, 209, 186, 0.14);
+  --ar-signal-ink: #0b0f10;
+  --ar-warn: #f0c27e;
+  --ar-fault: #ff8f8f;
+  --ar-tick: rgba(255, 255, 255, 0.3);
+  --ar-tick-major: rgba(255, 255, 255, 0.74);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.28), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(0, 0, 0, 0.1);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(18px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 26px 54px -26px rgba(0, 0, 0, 0.5);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(30, 30, 30, 0.74);
+  --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.45);
+  --ar-float-ink: rgb(255, 255, 255);
+  --ar-float-ink-low: rgba(255, 255, 255, 0.64);
+  --ar-radius-shell: 22px;
+  --ar-radius-panel: 18px;
+  color-scheme: dark;
+}
+
+/* VELLUM — Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink. */
+[data-ar-theme='vellum'] {
+  --ar-bg-app: #e6e6e6;
+  --ar-bg-surface: rgba(255, 255, 255, 0.4);
+  --ar-bg-raised: rgba(255, 255, 255, 0.72);
+  --ar-bg-hover: rgba(18, 18, 18, 0.06);
+  --ar-bg-active: rgba(18, 18, 18, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.03);
+  --ar-text-hi: rgb(18, 18, 18);
+  --ar-text-mid: rgba(18, 18, 18, 0.86);
+  --ar-text-low: rgba(18, 18, 18, 0.64);
+  --ar-text-faint: rgba(18, 18, 18, 0.46);
+  --ar-text-ghost: rgba(18, 18, 18, 0.3);
+  --ar-line-subtle: rgba(18, 18, 18, 0.08);
+  --ar-line: rgba(18, 18, 18, 0.13);
+  --ar-line-strong: rgba(18, 18, 18, 0.22);
+  --ar-signal: #0a8a78;
+  --ar-signal-hi: #06695c;
+  --ar-signal-line: rgba(10, 138, 120, 0.42);
+  --ar-signal-wash: rgba(10, 138, 120, 0.1);
+  --ar-signal-ink: #ffffff;
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
+  --ar-tick: rgba(18, 18, 18, 0.3);
+  --ar-tick-major: rgba(18, 18, 18, 0.74);
+  --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.52);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(40px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.24);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(248, 248, 248, 0.82);
+  --ar-float-ring: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.22);
+  --ar-float-ink: rgb(18, 18, 18);
+  --ar-float-ink-low: rgba(18, 18, 18, 0.64);
+  color-scheme: light;
+}
+
+/* LUMEN — Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink. */
+[data-ar-theme='lumen'] {
+  --ar-bg-app: #e6e6e6;
+  --ar-bg-surface: rgba(255, 255, 255, 0.4);
+  --ar-bg-raised: rgba(255, 255, 255, 0.72);
+  --ar-bg-hover: rgba(18, 18, 18, 0.06);
+  --ar-bg-active: rgba(18, 18, 18, 0.1);
+  --ar-bg-well: rgba(0, 0, 0, 0.04);
+  --ar-text-hi: rgb(18, 18, 18);
+  --ar-text-mid: rgba(18, 18, 18, 0.86);
+  --ar-text-low: rgba(18, 18, 18, 0.64);
+  --ar-text-faint: rgba(18, 18, 18, 0.46);
+  --ar-text-ghost: rgba(18, 18, 18, 0.3);
+  --ar-line-subtle: rgba(18, 18, 18, 0.08);
+  --ar-line: rgba(18, 18, 18, 0.13);
+  --ar-line-strong: rgba(18, 18, 18, 0.22);
+  --ar-signal: #0a8a78;
+  --ar-signal-hi: #06695c;
+  --ar-signal-line: rgba(10, 138, 120, 0.42);
+  --ar-signal-wash: rgba(10, 138, 120, 0.1);
+  --ar-signal-ink: #ffffff;
+  --ar-warn: #8f5c10;
+  --ar-fault: #b3263a;
+  --ar-tick: rgba(18, 18, 18, 0.3);
+  --ar-tick-major: rgba(18, 18, 18, 0.74);
+  --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, 0.75);
+  --ar-rim: 0 0 0 0 transparent;
+  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
+  --ar-panel-tint: rgba(255, 255, 255, 0.5);
+  --ar-panel-sheen: none;
+  --ar-panel-blur: blur(20px);
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 1px 0 #ffffff, 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 20px 44px -24px rgba(0, 0, 0, 0.24);
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: rgba(248, 248, 248, 0.82);
+  --ar-float-ring: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --ar-float-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.22);
+  --ar-float-ink: rgb(18, 18, 18);
+  --ar-float-ink-low: rgba(18, 18, 18, 0.64);
+  color-scheme: light;
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------

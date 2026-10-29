@@ -38,6 +38,7 @@ export function TokenTable({ deps }: { deps: unknown[] }) {
 /** Theme gallery rows: four looks each. */
 export const FAMILIES: Array<[string, string[]]> = [
   ['Flat glass — the scene blurred under one flat veil: no colour, no border, no highlight', ['scene']],
+  ['Blends — colourless glass and frost crossed with hairlines, neumorphism and skeuomorphism', ['blends']],
   ['Materials — marble, slate, travertine, basalt, steel, porcelain, concrete and walnut, set into glass and frost', ['materials']],
   ['Untinted glass — clear and colourless: hairlines, depth, lenses, bevels and cut facets', ['untinted-glass']],
   ['Untinted frost — colourless frost: pressed, raised, lifted, brushed satin and glazed ceramic', ['untinted-frost']],

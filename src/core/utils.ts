@@ -201,6 +201,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
   'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
+  'quartz', 'loupe', 'shell', 'engrave', 'machined', 'matte', 'glaze', 'pebble', 'vellum', 'lumen',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered', 'clear-bevel', 'clear-cut',
   'frost-etched', 'frost-silk', 'frost-mist', 'frost-deep', 'frost-satin', 'frost-ceramic',
   'nocturne', 'lagoon', 'argent', 'garnet', 'ivory', 'glacier', 'wisteria', 'dune',
@@ -213,7 +214,7 @@ export const THEMES = [
 ] as const;
 export type ThemeName = (typeof THEMES)[number];
 
-export type ThemeFamily = 'scene' | 'materials' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
+export type ThemeFamily = 'scene' | 'blends' | 'materials' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
 
 export interface ThemeMeta {
   label: string;
@@ -226,6 +227,16 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  quartz: { label: 'Quartz', family: 'blends', kind: 'glass', description: 'Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  loupe: { label: 'Loupe', family: 'blends', kind: 'glass', description: 'Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  shell: { label: 'Shell', family: 'blends', kind: 'glass', description: 'Deep frost and neumorphism: rounded, pressed tracks and softly domed values.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  engrave: { label: 'Engrave', family: 'blends', kind: 'glass', description: 'Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  machined: { label: 'Machined', family: 'blends', kind: 'glass', description: 'Glass and skeuomorphism: deep machined grooves and chamfered glass caps, square-shouldered.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  matte: { label: 'Matte', family: 'blends', kind: 'glass', description: 'Frost and depth: matte values float on soft shadows, with no highlights and no rims.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  glaze: { label: 'Glaze', family: 'blends', kind: 'glass', description: 'Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  pebble: { label: 'Pebble', family: 'blends', kind: 'glass', description: 'Glass and neumorphism: pill-shaped controls, raised pebble values, pressed tracks.', swatch: ['#3a3a3a', '#8a8a8a', '#4fd1ba'] },
+  vellum: { label: 'Vellum', family: 'blends', kind: 'glass', description: 'Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink.', swatch: ['#e6e6e6', '#ffffff', '#0a8a78'] },
+  lumen: { label: 'Lumen', family: 'blends', kind: 'glass', description: 'Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink.', swatch: ['#e6e6e6', '#ffffff', '#0a8a78'] },
   marble: { label: 'Marble Frost', family: 'materials', kind: 'glass', description: 'Carrara marble values with soft grey veins, pressed into bright frost.', swatch: ['#e9e8e4', '#f6f5f2', '#9a7a3e'] },
   slate: { label: 'Slate Glass', family: 'materials', kind: 'glass', description: 'Matte slate tiles in smoked glass; a faint stone grain shows through the pane.', swatch: ['#2a2e33', '#454b51', '#9fc3d9'] },
   travertine: { label: 'Travertine', family: 'materials', kind: 'glass', description: 'Warm porous stone values in pressed, sand-toned frost, with a terracotta signal.', swatch: ['#e6dac6', '#dccdb2', '#b0703a'] },
