@@ -200,6 +200,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'mist',
+  'neumorph', 'hardware', 'paper', 'flat', 'clay', 'brutal', 'wire',
   'clear-air', 'clear-polished', 'clear-lens', 'clear-layered',
   'frost-etched', 'frost-silk', 'frost-mist', 'frost-deep',
   'nocturne', 'lagoon', 'argent', 'garnet', 'ivory', 'glacier', 'wisteria', 'dune',
@@ -212,7 +213,7 @@ export const THEMES = [
 ] as const;
 export type ThemeName = (typeof THEMES)[number];
 
-export type ThemeFamily = 'scene' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
+export type ThemeFamily = 'scene' | 'styles' | 'studio' | 'signature' | 'glass' | 'frost' | 'clear' | 'clear-frost' | 'luxe' | 'luxe-frost' | 'atelier-glass' | 'atelier-frost' | 'untinted-glass' | 'untinted-frost';
 
 export interface ThemeMeta {
   label: string;
@@ -225,6 +226,13 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
+  neumorph: { label: 'Neumorph', family: 'styles', kind: 'solid', description: 'Neumorphism. One soft material raised and pressed by paired light and dark shadows; low contrast, rounded, calm.', swatch: ['#e3e6eb', '#d9dce2', '#6c7bd9'] },
+  hardware: { label: 'Hardware', family: 'styles', kind: 'solid', description: 'Skeuomorphism. Brushed anodised aluminium, deep black wells, machined metal caps and amber LEDs.', swatch: ['#2b2c2f', '#b4b4b0', '#ffb238'] },
+  paper: { label: 'Paper', family: 'styles', kind: 'solid', description: 'Minimalism. White, hairline rules and black ink; nothing filled, nothing raised.', swatch: ['#ffffff', '#f0f0f0', '#111111'] },
+  flat: { label: 'Flat', family: 'styles', kind: 'solid', description: 'Flat 2D. Solid colour blocks with no shadow and no gradient: a grey well, a blue value.', swatch: ['#eef1f6', '#3b6cf6', '#3b6cf6'] },
+  clay: { label: 'Clay', family: 'styles', kind: 'solid', description: 'Claymorphism, the 3D feel. Puffy rounded forms, soft drop shadows and light from inside.', swatch: ['#dcd6f2', '#a996ff', '#7d68f0'] },
+  brutal: { label: 'Brutal', family: 'styles', kind: 'solid', description: 'Neo-brutalism. Black outlines, hard offset shadows, square corners and flat yellow.', swatch: ['#f4eedc', '#ffd23f', '#ff5a36'] },
+  wire: { label: 'Wire', family: 'styles', kind: 'glass', description: 'Wireframe HUD over the scene. Outlines and hatched fills, square corners, no surfaces.', swatch: ['#0e0f10', '#5a5a5a', '#ffffff'] },
   sheer: { label: 'Sheer', family: 'scene', kind: 'glass', description: 'The clearest pane: the scene only softened, held by a hairline. Controls are lenses cut from it; the only colour is the scene\'s.', swatch: ['#5a5a5a', '#9a9a9a', '#ffffff'] },
   veil: { label: 'Veil', family: 'scene', kind: 'glass', description: 'Clear glass, no tint: the scene softened to shapes and light, hairline edges, white live edge.', swatch: ['#4e4e4e', '#8e8e8e', '#ffffff'] },
   haze: { label: 'Haze', family: 'scene', kind: 'glass', description: 'Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white.', swatch: ['#626262', '#a4a4a4', '#ffffff'] },

@@ -37,6 +37,13 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `haze` | Haze | glass | Deep frost, no tint: the scene becomes a soft field of its own colour; lenses and hairlines in white. |
 |  | `smoke` | Smoke | glass | The scene dimmed, not tinted: white ink holds over bright or busy imagery. |
 |  | `mist` | Mist | glass | The scene lightened, not whitened: graphite ink and a graphite live edge for light imagery. |
+| styles | `neumorph` | Neumorph | solid | Neumorphism. One soft material raised and pressed by paired light and dark shadows; low contrast, rounded, calm. |
+|  | `hardware` | Hardware | solid | Skeuomorphism. Brushed anodised aluminium, deep black wells, machined metal caps and amber LEDs. |
+|  | `paper` | Paper | solid | Minimalism. White, hairline rules and black ink; nothing filled, nothing raised. |
+|  | `flat` | Flat | solid | Flat 2D. Solid colour blocks with no shadow and no gradient: a grey well, a blue value. |
+|  | `clay` | Clay | solid | Claymorphism, the 3D feel. Puffy rounded forms, soft drop shadows and light from inside. |
+|  | `brutal` | Brutal | solid | Neo-brutalism. Black outlines, hard offset shadows, square corners and flat yellow. |
+|  | `wire` | Wire | glass | Wireframe HUD over the scene. Outlines and hatched fills, square corners, no surfaces. |
 | untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass. A fine perimeter, clear inserts and a quiet reflected edge. |
 |  | `clear-polished` | Polished Glass | glass | Polished clear glass. A narrow reflected highlight, glossy inserts and precise edge contrast. |
 |  | `clear-lens` | Lens Glass | glass | Clear optical depth. Softly focused panes, transparent lenses and a fine inner reflection. |
