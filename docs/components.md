@@ -194,7 +194,7 @@ A tab strip with a travelling underline. Props: `items: OptionInput[]`, `value` 
 
 ## RollingValue
 
-The rolling readout used by every number in the family: slider, range and number readouts, the Knob, the XYPad, the Meter, ColorField's opacity, Section counts and the graph's readouts. Only the characters that change move: the old one slides out and the new one slides in, in the direction of the change. Every changed character moves at the same moment, so the columns travel as one line and land on one baseline.
+The odometer readout used by every number in the family: slider, range and number readouts, the Knob, the XYPad, the Meter, ColorField's opacity, Section counts and the graph's readouts. Only the digits that change roll, in the direction of the change; every changed digit starts at the same moment and takes the same time, so the columns land together on one baseline.
 
 Props:
 - `text` (required): the formatted number. Any characters other than digits stay still.

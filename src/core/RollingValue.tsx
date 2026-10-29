@@ -1,21 +1,32 @@
 'use client';
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef } from 'react';
 import { reducedMotion } from './utils';
 
-/* Rolling readout — only the characters that change move, in the direction of change.
+/* Rolling readout — only the digits that change move, in the direction of change.
  *
- * Each changed character slides: the old one leaves upward (or downward for a falling
- * value) and fades, the new one rises in from the other side with a breath of motion blur.
- * Every changed character moves at the same moment over the same distance, so the columns
- * travel as one line and land on one baseline. A value that streams (a meter, a live
- * readout) slides short; an interrupted slide starts again from where the value now is.
- * Digits past `base` decimals grow in and out.
+ * Every digit slot is an odometer drum: a vertical strip 0-9 repeated three times
+ * in one text node. A change rolls the drum through the intermediate digits
+ * (up = increasing), ease-out. Every changed digit starts at the same moment and
+ * takes the same time however far it travels, so the columns land together on one
+ * baseline. An interrupted roll resumes from the drum's live position; on finish the
+ * strip re-normalises to the middle repeat so it never runs out. Digits past `base`
+ * decimals grow in and out.
  */
 
+const CELL = 1.3; // em — the readout line-height
+const STRIP = Array.from({ length: 30 }, (_, i) => i % 10).join('\n');
+const MASK = 'linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%)';
 const ROLL = 'cubic-bezier(.22,1,.36,1)';
-const RISE = 0.62; // em — how far a character travels
-const MASK = 'linear-gradient(180deg, transparent 0%, #000 24%, #000 76%, transparent 100%)';
 const isDigit = (c: string) => c >= '0' && c <= '9';
+
+function offsetY(el: HTMLElement) {
+  const m = getComputedStyle(el).transform;
+  if (!m || m === 'none') return 0;
+  const v = m.match(/matrix.*\((.+)\)/);
+  if (!v) return 0;
+  const a = v[1].split(',').map(Number);
+  return a.length === 6 ? a[5] : a[13] || 0;
+}
 
 interface SlotProps {
   ch: string;
@@ -26,17 +37,21 @@ interface SlotProps {
 
 const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
   const host = useRef<HTMLSpanElement>(null);
-  const incoming = useRef<HTMLSpanElement>(null);
-  const outgoing = useRef<HTMLSpanElement>(null);
+  const strip = useRef<HTMLSpanElement>(null);
   const prev = useRef(ch);
-  const turn = useRef(0);
-  const anims = useRef<Animation[]>([]);
-  // the character leaving, keyed by turn so a second change mid-slide starts a fresh one
-  const [leaving, setLeaving] = useState<{ ch: string; turn: number } | null>(null);
+  const anim = useRef<Animation | null>(null);
+  const pos = useRef(isDigit(ch) ? +ch + 10 : 10);
 
-  const mask = (on: boolean) => {
+  const place = (i: number) => {
+    if (strip.current) strip.current.style.transform = `translateY(${-i * CELL}em)`;
+  };
+  // only while it moves does the slot show the drum; at rest it shows its digit as plain text in
+  // the readout's own line, so every column settles on the same pixel row as the "." and the unit
+  // (a drum offset is a fraction of a pixel that differs per digit, and text snaps to it unevenly)
+  const rolling = (on: boolean) => {
     const h = host.current;
     if (!h) return;
+    h.toggleAttribute('data-rolling', on);
     h.style.maskImage = on ? MASK : '';
     h.style.setProperty('-webkit-mask-image', on ? MASK : '');
   };
@@ -48,63 +63,66 @@ const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
         { duration: 260, easing: ROLL },
       );
     }
-    return () => anims.current.forEach((a) => a.cancel());
+    return () => anim.current?.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {
     const p = prev.current;
     prev.current = ch;
-    if (p === ch) return;
-    anims.current.forEach((a) => a.cancel());
-    anims.current = [];
-    if (reducedMotion() || !dur || !host.current?.animate) {
-      mask(false);
-      setLeaving(null);
+    if (p === ch || !isDigit(ch)) return;
+    const s = strip.current;
+    if (!s || !host.current) return;
+    const target = +ch;
+    if (!isDigit(p) || reducedMotion() || !dur || !s.animate) {
+      anim.current?.cancel();
+      anim.current = null;
+      rolling(false);
+      pos.current = target + 10;
+      place(pos.current);
       return;
     }
-    setLeaving({ ch: p, turn: ++turn.current });
+    const H = host.current.getBoundingClientRect().height || 14;
+    let cur = pos.current;
+    if (anim.current) {
+      cur = -offsetY(s) / H;
+      anim.current.cancel();
+      anim.current = null;
+    }
+    const from = ((Math.round(pos.current) % 10) + 10) % 10;
+    const delta = dir >= 0 ? (target - from + 10) % 10 : -((from - target + 10) % 10);
+    let tgt = pos.current + delta;
+    const shift = -10 * Math.floor(Math.min(cur, tgt) / 10);
+    cur += shift;
+    tgt += shift;
+    pos.current = tgt;
+    const travel = Math.abs(tgt - cur);
+    place(tgt);
+    rolling(true);
+    const a = s.animate(
+      [
+        { transform: `translateY(${-cur * CELL}em)`, filter: travel > 2.5 ? 'blur(.35px)' : 'blur(0)' },
+        { transform: `translateY(${-tgt * CELL}em)`, filter: 'blur(0)' },
+      ],
+      { duration: dur, easing: ROLL },
+    );
+    anim.current = a;
+    a.onfinish = () => {
+      if (anim.current !== a) return;
+      anim.current = null;
+      rolling(false);
+      pos.current = (((tgt % 10) + 10) % 10) + 10;
+      place(pos.current);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ch]);
 
-  useLayoutEffect(() => {
-    const a = incoming.current;
-    const b = outgoing.current;
-    if (!leaving || !a || !b) return;
-    const d = dir >= 0 ? 1 : -1; // a rising value enters from below
-    const timing = { duration: dur, easing: ROLL };
-    mask(true);
-    const enter = a.animate(
-      [
-        { transform: `translateY(${RISE * d}em)`, opacity: 0, filter: 'blur(0.8px)' },
-        { transform: 'translateY(0)', opacity: 1, filter: 'blur(0)' },
-      ],
-      timing,
-    );
-    const exit = b.animate(
-      [
-        { transform: 'translateY(0)', opacity: 1, filter: 'blur(0)' },
-        { transform: `translateY(${-RISE * d}em)`, opacity: 0, filter: 'blur(0.8px)' },
-      ],
-      { ...timing, fill: 'forwards' },
-    );
-    anims.current = [enter, exit];
-    exit.onfinish = () => {
-      if (turn.current !== leaving.turn) return;
-      mask(false);
-      setLeaving(null);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [leaving]);
-
   return (
     <span ref={host} className="ar-roll__slot" data-char={isDigit(ch) ? undefined : ''} aria-hidden="true">
-      <span ref={incoming} className="ar-roll__char">
-        {ch}
-      </span>
-      {leaving ? (
-        <span ref={outgoing} className="ar-roll__char ar-roll__char--out">
-          {leaving.ch}
+      <span className="ar-roll__char">{ch}</span>
+      {isDigit(ch) ? (
+        <span ref={strip} aria-hidden="true" className="ar-roll__strip" style={{ transform: `translateY(${-pos.current * CELL}em)` }}>
+          {STRIP}
         </span>
       ) : null}
     </span>
@@ -148,7 +166,7 @@ export function RollingValue({ text, unit, dir, fast, base = 2, className }: Rol
   useEffect(() => {
     prev.current = text;
   });
-  const dur = quick ? 140 : 300;
+  const dur = quick ? 160 : 460;
   return (
     <span className={'ar-roll' + (className ? ' ' + className : '')}>
       <span className="ar-sr">{text + (unit ? ' ' + unit : '')}</span>
@@ -171,7 +189,7 @@ const BARE_NUMBER = /^[-+−]?[\d.,:]+\s?[^\s\d]{0,4}$/;
 /**
  * Any readout text. A bare number (with at most a short unit) rolls as one readout; in a
  * sentence ("56.1 L · 50 of its seed") only the numbers roll and the words stay plain text,
- * so letters never sit in a digit's slot. No digits: plain text ("—", "true", a name).
+ * so letters never sit in a digit's drum. No digits: plain text ("—", "true", a name).
  */
 export function RollingText({ text, base = 3, className }: { text: string; base?: number; className?: string }) {
   if (!/\d/.test(text)) return <span className={className}>{text}</span>;
