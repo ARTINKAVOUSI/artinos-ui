@@ -2154,13 +2154,14 @@
   --ar-float-bg: rgba(30, 30, 30, 0.7);
 }
 [data-ar-theme='haze'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.04);
-  --ar-panel-blur: blur(64px) brightness(0.72);
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
   --ar-float-bg: rgba(30, 30, 30, 0.7);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 [data-ar-theme='smoke'] {
   --ar-panel-tint: rgba(0, 0, 0, 0.36);
@@ -3149,77 +3150,83 @@
 
 /* HAZE RIM — Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. */
 [data-ar-theme='haze-rim'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.04);
-  --ar-panel-blur: blur(64px) brightness(0.72);
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
   --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE LIFT — Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. */
 [data-ar-theme='haze-lift'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.04);
-  --ar-panel-blur: blur(64px) brightness(0.72);
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 30px 64px -28px rgba(0, 0, 0, 0.55), 0 8px 18px -10px rgba(0, 0, 0, 0.25);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE CARVE — Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. */
 [data-ar-theme='haze-carve'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.04);
-  --ar-panel-blur: blur(64px) brightness(0.72);
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE GLOW — Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. */
 [data-ar-theme='haze-glow'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.06);
-  --ar-panel-blur: blur(64px) brightness(0.68);
+  --ar-panel-tint: rgba(255, 255, 255, 0.09);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 0 32px rgba(255, 255, 255, 0.07), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
   --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE BEVEL — Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. */
 [data-ar-theme='haze-bevel'] {
-  --ar-panel-tint: rgba(255, 255, 255, 0.04);
-  --ar-panel-blur: blur(64px) brightness(0.72);
+  --ar-panel-tint: rgba(255, 255, 255, 0.07);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE NIGHT — The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. */
 [data-ar-theme='haze-night'] {
-  --ar-panel-tint: rgba(0, 0, 0, 0.2);
-  --ar-panel-blur: blur(64px) brightness(0.55);
+  --ar-panel-tint: rgba(0, 0, 0, 0.3);
+  --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
   --ar-float-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-  --ar-text-low: rgba(255, 255, 255, 0.74);
-  --ar-text-faint: rgba(255, 255, 255, 0.58);
-  --ar-text-ghost: rgba(255, 255, 255, 0.4);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ar-text-low: rgba(255, 255, 255, 0.82);
+  --ar-text-faint: rgba(255, 255, 255, 0.66);
+  --ar-text-ghost: rgba(255, 255, 255, 0.46);
+  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
+  --ar-text-mid: rgba(255, 255, 255, 0.94);
 }
 
 /* HAZE DAY — The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. */

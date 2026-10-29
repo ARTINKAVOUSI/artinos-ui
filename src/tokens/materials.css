@@ -3060,7 +3060,7 @@
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   --ar-cell-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3069,7 +3069,7 @@
   --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
   --ar-list-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3081,7 +3081,7 @@
   --ar-cell: rgba(0, 0, 0, 0.06);
   --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.24), 0 1px 0 rgba(255, 255, 255, 0.08);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3089,7 +3089,7 @@
 [data-ar-theme='haze-glow']:not([data-ar-material]) {
   --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 0 10px rgba(255, 255, 255, 0.12);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3099,7 +3099,7 @@
   --ar-well: inset 0 1px 0 rgba(0, 0, 0, 0.2), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   --ar-cell-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.07);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3107,7 +3107,7 @@
 [data-ar-theme='haze-night']:not([data-ar-material]) {
   --ar-insert-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
@@ -3119,9 +3119,9 @@
   --ar-well: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
-/* HAZE — values a touch lighter in fill so their white labels keep their contrast */
+/* HAZE — values a touch lighter in fill, and their labels carry a halo, so they read over bright scenes */
 [data-ar-theme='haze']:not([data-ar-material]) {
   --ar-insert: rgba(255, 255, 255, 0.13);
-  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
