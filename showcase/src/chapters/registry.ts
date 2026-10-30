@@ -31,6 +31,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
       { id: 'type', title: 'Type collections' },
       { id: 'density', title: 'Density' },
       { id: 'layout', title: 'Layout & text' },
+      { id: 'typography', title: 'Typography' },
       { id: 'motion', title: 'Motion' },
     ],
   },

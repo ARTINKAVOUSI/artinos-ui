@@ -385,7 +385,7 @@ export interface TypeMeta {
 
 /* one entry per line: the kit builder reads this table from the source */
 export const TYPE_META: Record<TypeCollection, TypeMeta> = {
-  instrument: { label: 'Instrument', ui: 'Geist', mono: 'Geist Mono', display: '', description: 'The default. Geist for words, its mono sibling Geist Mono for every figure, so numbers line up and read as measurements; sentence-case headings.', fonts: 'family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@200;300;400;500' },
+  instrument: { label: 'Instrument', ui: 'Geist', mono: 'Geist Mono', display: '', description: 'The default. Geist for words, its mono sibling Geist Mono for every figure, so numbers line up and read as measurements; sentence-case headings.', fonts: 'family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@200;300;400;500&family=Instrument+Serif:ital@0;1' },
   geist: { label: 'Geist', ui: 'Geist', mono: 'Geist Mono', display: '', description: 'The default faces with small headings and marks in tracked capitals: the exact, technical look.', fonts: 'family=Geist:wght@200;300;400;500&family=Geist+Mono:wght@200;300;400;500' },
   grotesk: { label: 'Grotesk', ui: 'Chivo', mono: 'Chivo Mono', display: '', description: 'Chivo and Chivo Mono: a grotesk with an engineering edge, crisp caps and a mono with character. The first voice of the family.', fonts: 'family=Chivo:wght@200;300;400;500&family=Chivo+Mono:wght@200;300;400;500' },
   editorial: { label: 'Editorial', ui: 'IBM Plex Sans', mono: 'IBM Plex Mono', display: '', description: 'IBM Plex, the superfamily with a drawn, editorial tone: open counters, a humanist rhythm and a mono with real character.', fonts: 'family=IBM+Plex+Sans:wght@200;300;400;500&family=IBM+Plex+Mono:wght@200;300;400;500' },

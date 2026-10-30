@@ -138,6 +138,8 @@
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* code */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* a serif for the editorial voice: quotes, and titles set as editorial */
+  --ar-font-serif: 'Instrument Serif', Newsreader, Georgia, 'Times New Roman', serif;
   /* titles at 2xl and up; a type collection may give it a serif or a display face */
   --ar-font-display: var(--ar-font-ui);
 
@@ -155,6 +157,7 @@
   --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
   --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
+  --ar-text-lead: 15px; /* a lead paragraph: the opening lines of a view */
   --ar-text-xl: 17px; /* panel titles */
   --ar-text-2xl: 22px; /* page section titles */
   --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */

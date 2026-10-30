@@ -451,12 +451,25 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 |---|---|---|
 | `display` | one hero figure or headline per page | 34 px thin, the display face |
 | `title` | a panel or page title (a Panel's `title` already is one) | 17 px light, bright |
-| `heading` | a group's name inside prose | 14 px regular, bright |
-| `body` | a paragraph | 13 px, 1.5 leading, at most `--ar-measure` (62ch) wide |
-| `caption` | a note under the thing it describes | 11 px, low ink |
+| `heading` | a group's name inside prose | 14 px medium, bright |
+| `subheading` | a step under a heading | 13 px medium, mid ink |
+| `overline` | a category or count above a title | 11 px medium, the accent |
 | `kicker` | a small label above a title | small capitals |
+| `lead` | the opening paragraph that says what a view is for | 15 px light, mid ink |
+| `body` | a paragraph | 13 px, 1.55 leading, at most `--ar-measure` (62ch) wide |
+| `note` | help or an aside | 12 px, low ink |
+| `caption` | a line under the thing it describes | 11 px, low ink |
+| `label` | a name beside a value outside a Field | 12 px, low ink |
 | `value` | a figure | the mono, tabular |
+| `quote` | a principle or a quoted line | the serif, italic, 17 px, an accent rule |
+| `code` | a token, key or file name | the mono, in a chip |
 
+Neighbouring roles differ in at least two ways at once — size and weight, or size and ink, or face — so the step reads at a glance.
+
+- **Three faces, three jobs.** The sans speaks (titles, prose, labels); the mono measures (figures, code); the serif quotes and can set an editorial title (`face="serif"`). Don't mix in a fourth.
+- **Inline emphasis inside a body:** `strong` rises to the bright ink, `em` slants, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
+- **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
+- **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.
 - At most three sizes in one panel: its title, its labels and rows, its captions. Figures are the mono at the control size.
 - `tone` changes ink only for meaning: `low` / `faint` for quieter, `signal` / `warn` / `fault` for state. Never colour text for decoration.
 - Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.

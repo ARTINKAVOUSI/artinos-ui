@@ -22,6 +22,7 @@
 @import './layout/PropertyRow.css';
 @import './layout/ItemRow.css';
 @import './layout/Text.css';
+@import './layout/Callout.css';
 @import './overlays/overlays.css';
 @import './dock/metablock/WorkspaceView.css';
 @import './dock/Dock.css';

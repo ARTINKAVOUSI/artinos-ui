@@ -36,6 +36,7 @@ export const COMPONENTS = [
   { group: 'Layout', id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
   { group: 'Layout', id: 'PropertyRow', label: 'PropertyRow', file: 'layout/PropertyRow.tsx', note: 'label · control inspector row' },
   { group: 'Layout', id: 'Text', label: 'Text · Stack · Inline', file: 'layout/Text.tsx', note: 'type roles and spacing primitives' },
+  { group: 'Layout', id: 'Callout', label: 'Callout', file: 'layout/Callout.tsx', note: 'note · tip · warn · fault, set apart from the text' },
   { group: 'Layout', id: 'ItemRow', label: 'ItemList · ItemRow', file: 'layout/ItemRow.tsx', note: 'a list of things: layers, bodies, presets' },
   { group: 'Overlays', id: 'Menu', label: 'Menu · ContextMenu', file: 'overlays/Menu.tsx', note: 'dropdown and right-click menus' },
   { group: 'Overlays', id: 'Dialog', label: 'Dialog', file: 'overlays/Dialog.tsx', note: 'modal' },
