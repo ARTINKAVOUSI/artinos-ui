@@ -43,10 +43,11 @@
   line-height: var(--ar-leading-snug);
   text-wrap: balance;
 }
-/* a heading inside a group: the body size, medium, one ink step down */
+/* a heading inside a group: a size under the body, medium, one ink step down, so it sits clearly
+   below a heading or a section title (both bright, 13–14px) */
 .ar-type[data-variant='subheading'] {
   --_ink: var(--ar-text-mid);
-  font-size: var(--ar-text-md);
+  font-size: var(--ar-text-sm);
   font-weight: var(--ar-weight-medium);
   line-height: var(--ar-leading-snug);
   text-wrap: balance;
@@ -89,8 +90,9 @@
   line-height: 1.45;
   text-wrap: pretty;
 }
+/* a caption is a size and an ink step under a note, so the two never read as one */
 .ar-type[data-variant='caption'] {
-  --_ink: var(--ar-text-low);
+  --_ink: var(--ar-text-faint);
   font-size: var(--ar-text-xs);
   line-height: 1.45;
   text-wrap: pretty;

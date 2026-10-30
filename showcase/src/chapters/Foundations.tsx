@@ -71,12 +71,12 @@ const ROLES: Role[] = [
   ['title', 'title · sans 17 light', 'Material and light'],
   ['title', 'title · serif 17', 'An editorial title', 'serif'],
   ['heading', 'heading · 14 medium', 'Surface response'],
-  ['subheading', 'subheading · 13 medium', 'Roughness and gloss'],
+  ['subheading', 'subheading · 12 medium · mid', 'Roughness and gloss'],
   ['overline', 'overline · 11 · accent', 'Material · glass'],
   ['lead', 'lead · 15 light', 'A lead paragraph says what the view is for, a size up.'],
   ['body', 'body · 13 · 1.55', 'Body text carries the explanation at a comfortable line length.'],
   ['note', 'note · 12 · quieter', 'A note is help or an aside, a size down from the body.'],
-  ['caption', 'caption · 11', 'A caption sits under a figure.'],
+  ['caption', 'caption · 11 · faintest', 'A caption sits under a figure.'],
   ['label', 'label · 12 · quiet', 'Exposure'],
   ['value', 'value · mono · aligned', '0.71 · 1,284 · −4.5 dB'],
 ];
@@ -94,7 +94,7 @@ function Typography() {
           </div>
         ))}
       </div>
-      <Panel className="sc-typo__article" title="Glass shell" subtitle="Material · thick glass">
+      <Panel className="sc-typo__article">
         <Stack gap={0}>
           <Text variant="overline">Material · 3 changed</Text>
           <Text variant="title">How the shell catches light</Text>
@@ -109,15 +109,15 @@ function Typography() {
             <li>Roughness, how soft the refraction is</li>
             <li>Rim, how bright the edge glows</li>
           </Text>
+          <Callout tone="tip" title="Start from a preset">
+            Pick <strong>Thick glass</strong> in Templates, then tune only Roughness.
+          </Callout>
+          <Callout tone="warn">High transmission with heavy blur costs frame time on integrated GPUs.</Callout>
           <Text variant="quote">Glass reads as glass when its edge is brighter than its face.</Text>
         </Stack>
         <Section title="Readout">
           <Field label="Index">1.52</Field>
           <Field label="Thickness">4.0 mm</Field>
-          <Callout tone="tip" title="Start from a preset">
-            Pick <strong>Thick glass</strong> in Templates, then tune only Roughness.
-          </Callout>
-          <Callout tone="warn">High transmission with heavy blur costs frame time on integrated GPUs.</Callout>
           <Text variant="note">Values are in the scene's units; the rim is unitless.</Text>
         </Section>
       </Panel>
@@ -497,7 +497,17 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 
       <Spec
         id="typography"
-        text="Every kind of text has its own role, and neighbouring roles differ in more than one way at once: size, weight, ink, face and leading. Titles balance their lines; paragraphs avoid a lone last word and keep to a comfortable measure; figures sit in the mono and line up. Three faces each have a job: the sans speaks, the mono measures, the serif quotes and sets an editorial title. Inside a paragraph, strong rises to the ink, a mark is washed in the accent, code is a mono chip, a key is a cap and a link carries an accent underline; list bullets take the accent. A Callout sets apart what must not be missed: an icon, an accent rule and a wash in its tone."
+        text={
+          <>
+            <p>Every kind of text has its own role, and neighbouring roles differ in at least two ways at once.</p>
+            <ul>
+              <li>Three faces, three jobs: the sans speaks, the mono measures, the serif quotes.</li>
+              <li>Titles balance their lines; paragraphs keep a comfortable measure and no lone last word.</li>
+              <li>Inside a paragraph, strong, mark, code, key and link each have their own look.</li>
+              <li>A Callout sets apart what must not be missed, after the text it qualifies.</li>
+            </ul>
+          </>
+        }
         code={"<Text variant=\"overline\">Material · 3 changed</Text>\n<Text variant=\"title\">How the shell catches light</Text>\n<Text variant=\"lead\">The shell is thick glass…</Text>\n<Text>Raise <strong>Transmission</strong>… <mark>past 0.8 it glows</mark>… <kbd>Alt</kbd>…</Text>\n<Text variant=\"subheading\">What changes it</Text>\n<Text as=\"ul\"><li>Transmission…</li></Text>\n<Text variant=\"quote\">Glass reads as glass when its edge is brighter than its face.</Text>\n<Callout tone=\"tip\" title=\"Start from a preset\">Pick <strong>Thick glass</strong>…</Callout>\n<Text variant=\"note\">Values are in the scene's units.</Text>"}
       >
         <Typography />

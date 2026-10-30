@@ -521,6 +521,19 @@ html::-webkit-scrollbar-thumb:hover {
   color: var(--ar-text-mid);
   text-wrap: pretty;
 }
+.sc-text p {
+  margin: 0;
+}
+.sc-text ul {
+  margin: 10px 0 0;
+  padding-left: 14px;
+}
+.sc-text li + li {
+  margin-top: 6px;
+}
+.sc-text li::marker {
+  color: var(--ar-signal);
+}
 .sc-keys {
   display: grid;
   grid-template-columns: auto 1fr;

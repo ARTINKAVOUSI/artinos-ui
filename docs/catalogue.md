@@ -452,13 +452,13 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 | `display` | one hero figure or headline per page | 34 px thin, the display face |
 | `title` | a panel or page title (a Panel's `title` already is one) | 17 px light, bright |
 | `heading` | a group's name inside prose | 14 px medium, bright |
-| `subheading` | a step under a heading | 13 px medium, mid ink |
+| `subheading` | a step under a heading | 12 px medium, mid ink |
 | `overline` | a category or count above a title | 11 px medium, the accent |
 | `kicker` | a small label above a title | small capitals |
 | `lead` | the opening paragraph that says what a view is for | 15 px light, mid ink |
 | `body` | a paragraph | 13 px, 1.55 leading, at most `--ar-measure` (62ch) wide |
 | `note` | help or an aside | 12 px, low ink |
-| `caption` | a line under the thing it describes | 11 px, low ink |
+| `caption` | a line under the thing it describes | 11 px, the faintest ink |
 | `label` | a name beside a value outside a Field | 12 px, low ink |
 | `value` | a figure | the mono, tabular |
 | `quote` | a principle or a quoted line | the serif, italic, 17 px, an accent rule |

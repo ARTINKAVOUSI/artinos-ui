@@ -101,7 +101,7 @@ export function Spec({ id, text, keys, code, wide, children }: { id: string; tex
       <div className="sc-about">
         <span className="sc-num">{def.n}</span>
         <b className="sc-title">{def.title}</b>
-        <p className="sc-text">{text}</p>
+        {typeof text === 'string' ? <p className="sc-text">{text}</p> : <div className="sc-text">{text}</div>}
         {keys ? (
           <div className="sc-keys">
             {keys.map(([k, v]) => (
