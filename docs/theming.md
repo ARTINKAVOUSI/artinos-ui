@@ -253,7 +253,7 @@ The design language in one paragraph: every part is built from five materials. *
 
 Roles (theme level):
 - ground and surfaces: `--ar-bg-app`, `--ar-bg-surface`, `--ar-bg-raised`, `--ar-bg-well`, `--ar-bg-hover`, `--ar-bg-active`
-- ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint`, `--ar-text-ghost`
+- ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint`, `--ar-text-ghost` — a theme sets `--ar-text-hi`; the quieter steps are derived from it at fixed strengths (90 · 74 · 60 · 40%), so titles, values, labels and notes keep the same distance in every theme and in its own hue. Override a step with an inline token (`tokens={{ 'text-low': … }}`) when you need to.
 - lines: `--ar-line-subtle`, `--ar-line`, `--ar-line-strong`, `--ar-tick`, `--ar-tick-major`
 - accents: `--ar-signal`, `--ar-signal-hi`, `--ar-signal-line`, `--ar-signal-wash`, `--ar-signal-ink`, `--ar-bind`, `--ar-warn`, `--ar-fault`, `--ar-focus-ring`
 - panel glass: `--ar-edge-light` (the lit top edge of a Panel or dock pane, brightest in the middle; `transparent` turns it off), `--ar-panel-tint`, `--ar-panel-floor` (set by `scene`), `--ar-floor-amount`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`

@@ -17,6 +17,15 @@
 :root,
 [data-ar-theme],
 [data-ar-material] {
+  /* the text ramp: every quieter step is a fixed strength of the theme's main ink, so a title, a
+     value, a label and a note keep the same distance from each other in every theme, in the
+     theme's own hue, and the quiet steps stay readable. (A theme's own values for these steps are
+     superseded here; inline tokens, as the Theme Studio writes them, still win.) */
+  --ar-text-mid: color-mix(in srgb, var(--ar-text-hi) 90%, transparent);
+  --ar-text-low: color-mix(in srgb, var(--ar-text-hi) 74%, transparent);
+  --ar-text-faint: color-mix(in srgb, var(--ar-text-hi) 60%, transparent);
+  --ar-text-ghost: color-mix(in srgb, var(--ar-text-hi) 40%, transparent);
+
   /* type */
   --ar-control-font: var(--ar-font-num);
   --ar-label-weight: 500;
