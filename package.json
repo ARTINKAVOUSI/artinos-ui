@@ -1,7 +1,7 @@
 {
   "name": "artinos-ui",
   "version": "1.0.0",
-  "description": "ARTINOS UI — a precision-instrument React control system: 40 components (sliders to a dockable workspace and a node editor) with 52 themes. TypeScript source, no build step.",
+  "description": "ARTINOS UI — a precision-instrument React control system: 44 components (sliders to a dockable workspace and a node editor) with 107 themes. TypeScript source, no build step.",
   "private": true,
   "type": "module",
   "main": "./src/index.ts",

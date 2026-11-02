@@ -223,18 +223,21 @@
 
 /* ETCHED FROST — light diffusion under a faint white veil. */
 [data-ar-theme='frost-etched'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-blur: blur(24px);
   --ar-panel-tint: rgba(255, 255, 255, 0.05);
 }
 
 /* SILK FROST — soft continuous frost with white silk values and dark lettering. */
 [data-ar-theme='frost-silk'] {
+  --ar-floor-amount: 76%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-blur: blur(40px);
   --ar-panel-tint: rgba(255, 255, 255, 0.08);
 }
 
 /* MIST FROST — airy diffusion, the brightest veil of the row. */
 [data-ar-theme='frost-mist'] {
+  --ar-floor-amount: 80%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-blur: blur(56px);
   --ar-panel-tint: rgba(255, 255, 255, 0.12);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
@@ -268,6 +271,7 @@
 
 /* SATIN FROST — brushed-satin values with a lit edge, in machined tracks on frost. */
 [data-ar-theme='frost-satin'] {
+  --ar-floor-amount: 74%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-blur: blur(44px);
   --ar-panel-tint: rgba(255, 255, 255, 0.06);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 24px 48px -24px rgba(0, 0, 0, 0.45);
@@ -275,6 +279,7 @@
 
 /* CERAMIC FROST — glazed white values with a soft gloss band, set into pressed frost. */
 [data-ar-theme='frost-ceramic'] {
+  --ar-floor-amount: 78%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-blur: blur(60px);
   --ar-panel-tint: rgba(255, 255, 255, 0.1);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 26px 56px -28px rgba(0, 0, 0, 0.45);
@@ -755,6 +760,7 @@
 /* FROST — frosted glass. A soft, diffuse pane that lightens the view; frosted-white
    controls with dark ink; white type on the pane held by a faint shadow. */
 [data-ar-theme='frost'] {
+  --ar-floor-amount: 79%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #2a2c2e;
@@ -973,6 +979,7 @@
 
 /* ICE — clean cool frost: a faint blue-white pane, icy controls, deep navy ink. */
 [data-ar-theme='ice'] {
+  --ar-floor-amount: 78%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #1c2a36;
@@ -1169,6 +1176,7 @@
 
 /* CHAMPAGNE — warm gold-tinted frost, ivory controls with an antique-gold rim, espresso ink. */
 [data-ar-theme='champagne'] {
+  --ar-floor-amount: 79%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #2b241a;
@@ -1312,6 +1320,7 @@
 
 /* DIAMOND — the clearest pane, with a faint prismatic fire in the sheen and the controls. */
 [data-ar-theme='diamond'] {
+  --ar-floor-amount: 77%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #5a5d61;
@@ -1697,6 +1706,7 @@
 
 /* MOONSTONE — blue-grey milky frost with a cool adularescent glow, white ink. */
 [data-ar-theme='moonstone'] {
+  --ar-floor-amount: 85%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #3d4656;
@@ -1744,6 +1754,7 @@
 
 /* CASHMERE — soft taupe frost, oat-white controls, caramel signal. */
 [data-ar-theme='cashmere'] {
+  --ar-floor-amount: 75%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-bg-app: #4a3f36;
@@ -1990,6 +2001,7 @@
 /* MONOLITH — deep neutral frost carrying the warmth of what is behind;
    milky frosted fills that let that colour through. */
 [data-ar-theme='monolith'] {
+  --ar-floor-amount: 78%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
   --ar-panel-tint: rgba(255, 255, 255, 0.04);
@@ -2149,11 +2161,13 @@
   --ar-float-bg: rgba(30, 30, 30, 0.7);
 }
 [data-ar-theme='veil'] {
+  --ar-floor-amount: 76%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.1);
   --ar-panel-blur: blur(30px);
   --ar-float-bg: rgba(30, 30, 30, 0.7);
 }
 [data-ar-theme='haze'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);
   --ar-float-bg: rgba(30, 30, 30, 0.7);
@@ -2227,6 +2241,7 @@
 
 /* PRESSED — flat glass with neumorphic controls: wells pressed in, values raised, neutral shadows only. */
 [data-ar-theme='pressed'] {
+  --ar-floor-amount: 76%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.1);
   --ar-panel-blur: blur(34px);
   --ar-float-bg: rgba(30, 30, 30, 0.7);
@@ -2683,6 +2698,7 @@
 
 /* SHELL — Deep frost and neumorphism: pressed tracks and softly domed values. */
 [data-ar-theme='shell'] {
+  --ar-floor-amount: 75%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-bg-app: #2a2a2a;
   --ar-bg-surface: rgba(255, 255, 255, 0.04);
   --ar-bg-raised: rgba(255, 255, 255, 0.1);
@@ -3013,6 +3029,7 @@
 
 /* LIFT — Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. */
 [data-ar-theme='lift'] {
+  --ar-floor-amount: 74%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.08);
   --ar-panel-blur: blur(30px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
@@ -3047,6 +3064,7 @@
 
 /* TILE — Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. */
 [data-ar-theme='tile'] {
+  --ar-floor-amount: 76%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.1);
   --ar-panel-blur: blur(28px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -3150,6 +3168,7 @@
 
 /* HAZE RIM — Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. */
 [data-ar-theme='haze-rim'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32);
@@ -3164,6 +3183,7 @@
 
 /* HAZE LIFT — Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. */
 [data-ar-theme='haze-lift'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 30px 64px -28px rgba(0, 0, 0, 0.55), 0 8px 18px -10px rgba(0, 0, 0, 0.25);
@@ -3177,6 +3197,7 @@
 
 /* HAZE CARVE — Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. */
 [data-ar-theme='haze-carve'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
@@ -3190,6 +3211,7 @@
 
 /* HAZE GLOW — Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. */
 [data-ar-theme='haze-glow'] {
+  --ar-floor-amount: 75%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.09);
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 0 32px rgba(255, 255, 255, 0.07), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
@@ -3204,6 +3226,7 @@
 
 /* HAZE BEVEL — Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. */
 [data-ar-theme='haze-bevel'] {
+  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);
   --ar-panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 24px 50px -26px rgba(0, 0, 0, 0.45);

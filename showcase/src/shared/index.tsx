@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { THEMES, THEME_META, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
+import { HERO_THEMES, THEMES, THEME_META, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import type { ThemeName } from '../../../src';
 import persianGarden from '../assets/persian-garden.jpg';
@@ -18,6 +18,8 @@ export const Swatch = ({ t }: { t: ThemeName }) => {
   return <i className="sc-swatch" style={{ '--a': a, '--b': b, '--c': c } as CSSProperties} />;
 };
 export const THEME_OPTIONS = THEMES.map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> }));
+/** The eight hero themes, the place to start; each one's variations are picked beside it. */
+export const HERO_OPTIONS = HERO_THEMES.map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> }));
 export const TYPE_OPTIONS = TYPE_COLLECTIONS.map((t) => ({ value: t, label: TYPE_META[t].label }));
 /* a light product-shot room — wall, horizon, floor — the scene glass themes are not drawn for */
 const studioRoom =

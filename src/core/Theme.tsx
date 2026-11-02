@@ -28,8 +28,9 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   /** Inline token overrides for a custom look — applied on top of the theme. */
   tokens?: TokenOverrides;
   /** What the glass sits over. Over a scene of the other kind than the theme's ink (frost-deep
-   *  over a light room), a wash of the theme's own ground goes under every glass surface so the
-   *  text keeps its contrast. Omit over a scene the theme was drawn for. */
+   *  over a light room), a wash of the theme's own ground goes under every glass surface and the
+   *  quiet inks step up to mid, so every text role holds 4.5:1. Omit over a scene the theme was
+   *  drawn for. */
   scene?: 'light' | 'dark';
   /** Paint the theme's app ground (background + text colour). */
   ground?: boolean;

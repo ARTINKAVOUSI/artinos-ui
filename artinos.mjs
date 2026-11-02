@@ -76,13 +76,18 @@ const readGuides = () => Object.fromEntries(GUIDES.map((g) => [g, fs.readFileSyn
 
 /* ---------- list ---------- */
 function list() {
-  const { themes, meta } = readRegistry(readSources());
-  console.log(`ARTINOS UI — ${ROOT}\n\nThemes (${themes.length})   id · label · kind · look`);
+  const { themes, meta, heroes } = readRegistry(readSources());
+  console.log(`ARTINOS UI — ${ROOT}\n\nStart here: ${heroes.length} hero themes   id · label · kind · variations · look`);
+  for (const t of heroes) {
+    const n = themes.filter((x) => meta[x].parent === t).length;
+    console.log(`    ${t.padEnd(16)} ${meta[t].label.padEnd(16)} ${meta[t].kind.padEnd(6)} ${String(n).padStart(2)}  ${meta[t].description}`);
+  }
+  console.log(`\nEvery theme (${themes.length})   id · label · kind · variation of · look`);
   for (const fam of [...new Set(themes.map((t) => meta[t].family))]) {
     console.log(`\n  [${fam}]`);
     for (const t of themes.filter((x) => meta[x].family === fam)) {
       const m = meta[t];
-      console.log(`    ${t.padEnd(16)} ${m.label.padEnd(16)} ${m.kind.padEnd(6)} ${m.description}`);
+      console.log(`    ${t.padEnd(16)} ${m.label.padEnd(16)} ${m.kind.padEnd(6)} ${(m.parent ?? '(hero)').padEnd(12)} ${m.description}`);
     }
   }
   const { types, meta: tmeta } = readTypes(readSources());
@@ -230,7 +235,7 @@ function installSkill(target) {
 
 /* ---------- sync (maintainers) ---------- */
 function sync() {
-  const { themes, meta } = readRegistry(readSources());
+  const { themes, meta, heroes } = readRegistry(readSources());
   const fams = [...new Set(themes.map((t) => meta[t].family))];
   const replaceBetween = (file, start, end, body) => {
     const s = fs.readFileSync(file, 'utf8');
@@ -239,9 +244,12 @@ function sync() {
     if (a < 0 || b < 0) die(`${slash(path.relative(ROOT, file))}: markers ${start} … ${end} not found`);
     fs.writeFileSync(file, s.slice(0, a + start.length) + body + s.slice(b));
   };
-  // docs/theming.md: the full theme table
-  const rows = fams.flatMap((f) => themes.filter((t) => meta[t].family === f).map((t, i) => `| ${i ? '' : f} | \`${t}\` | ${meta[t].label} | ${meta[t].kind} | ${meta[t].description} |`));
-  replaceBetween(path.join(DOCS, 'theming.md'), '<!-- themes:start -->', '<!-- themes:end -->', `\n| family | id | name | kind | look |\n|---|---|---|---|---|\n${rows.join('\n')}\n`);
+  // docs/theming.md: the heroes with their variations, then the full theme table
+  const variations = (h) => themes.filter((t) => meta[t].parent === h);
+  const heroRows = heroes.map((h) => `| \`${h}\` | ${meta[h].kind} | ${meta[h].description} | ${variations(h).map((t) => `\`${t}\``).join(' ') || '—'} |`);
+  replaceBetween(path.join(DOCS, 'theming.md'), '<!-- heroes:start -->', '<!-- heroes:end -->', `\n| hero | kind | look | variations |\n|---|---|---|---|\n${heroRows.join('\n')}\n`);
+  const rows = fams.flatMap((f) => themes.filter((t) => meta[t].family === f).map((t, i) => `| ${i ? '' : f} | \`${t}\` | ${meta[t].label} | ${meta[t].kind} | ${meta[t].parent ? `\`${meta[t].parent}\`` : '**hero**'} | ${meta[t].description} |`));
+  replaceBetween(path.join(DOCS, 'theming.md'), '<!-- themes:start -->', '<!-- themes:end -->', `\n| family | id | name | kind | variation of | look |\n|---|---|---|---|---|---|\n${rows.join('\n')}\n`);
   // src/tokens/themes.css: the header list
   const head = fams.map((f) => ` *   ${f}\n` + themes.filter((t) => meta[t].family === f).map((t) => ` *     ${t.padEnd(16)}${meta[t].description}`).join('\n')).join('\n');
   replaceBetween(path.join(SRC, 'tokens', 'themes.css'), ' * themes:start', ' * themes:end', `\n${head}\n`);

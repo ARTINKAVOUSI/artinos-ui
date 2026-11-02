@@ -452,6 +452,13 @@
   --_part: calc(max(var(--ar-label-size), var(--ar-value-size)) * 0.5 + 1px);
   height: calc(var(--_h) - 2 * var(--ar-inset) - 2px);
 }
+/* at rest the stubs read as a cut between letters; the fill edge and the ink change already
+   mark the value, so a parted seam waits for the hand (hover, drag or focus) */
+.ar-slider[data-parted]:not(:hover, [data-hot], :focus-within) .ar-slider__seam,
+.ar-range[data-part-lo]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--lo,
+.ar-range[data-part-hi]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--hi {
+  opacity: 0;
+}
 .ar-range__thumb {
   position: absolute;
   inset: 0;

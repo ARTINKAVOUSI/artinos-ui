@@ -38,8 +38,8 @@ export const COMPONENTS = [
   { group: 'Layout', id: 'Tabs', label: 'Tabs', file: 'layout/Tabs.tsx', note: 'tab bar' },
   { group: 'Layout', id: 'PropertyRow', label: 'PropertyRow', file: 'layout/PropertyRow.tsx', note: 'label · control inspector row' },
   { group: 'Layout', id: 'Text', label: 'Text · Stack · Inline', file: 'layout/Text.tsx', note: 'type roles and spacing primitives' },
-  { group: 'Layout', id: 'Callout', label: 'Callout', file: 'layout/Callout.tsx', note: 'note · tip · warn · fault, set apart from the text' },
   { group: 'Layout', id: 'StatStrip', label: 'StatStrip', file: 'layout/StatStrip.tsx', note: 'key figures side by side at the top of a panel' },
+  { group: 'Layout', id: 'Callout', label: 'Callout', file: 'layout/Callout.tsx', note: 'note · tip · warn · fault, set apart from the text' },
   { group: 'Layout', id: 'ItemRow', label: 'ItemList · ItemRow', file: 'layout/ItemRow.tsx', note: 'a list of things: layers, bodies, presets' },
   { group: 'Overlays', id: 'Menu', label: 'Menu · ContextMenu', file: 'overlays/Menu.tsx', note: 'dropdown and right-click menus' },
   { group: 'Overlays', id: 'Dialog', label: 'Dialog', file: 'overlays/Dialog.tsx', note: 'modal' },
@@ -68,9 +68,12 @@ export function readRegistry(sources) {
   const meta = {};
   for (const line of utils.split('\n')) {
     const m = line.match(META_RE);
-    if (m) meta[m[1] ?? m[2]] = { label: m[3], family: m[4], kind: m[5], description: m[6].replace(/\\'/g, "'") };
+    if (m) meta[m[1] ?? m[2]] = { label: m[3], family: m[4], kind: m[5], description: m[6].replace(/\\'/g, "'"), parent: line.match(/, parent: '([^']+)'/)?.[1] };
   }
-  return { themes, meta };
+  // the heroes (no parent), in HERO_RANK order, as HERO_THEMES has them
+  const rank = Object.fromEntries([...(utils.match(/const HERO_RANK[^{]*\{([^}]*)\}/)?.[1] ?? '').matchAll(/'?([\w-]+)'?: (\d+)/g)].map((r) => [r[1], +r[2]]));
+  const heroes = themes.filter((t) => meta[t] && !meta[t].parent).sort((a, b) => (rank[a] ?? 99) - (rank[b] ?? 99));
+  return { themes, meta, heroes };
 }
 
 /* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
@@ -237,6 +240,8 @@ function trimUtils(src, ordered, materials) {
       const m = line.match(/^ {2}(?:'([^']+)'|([\w-]+)): \{ label:/);
       return !m || ordered.includes(m[1] ?? m[2]);
     })
+    // a variation whose hero is not in the kit becomes a hero there
+    .map((line) => line.replace(/, parent: '([^']+)'/, (p, hero) => (ordered.includes(hero) ? p : '')))
     .join('\n');
   s = s.slice(0, start) + block + s.slice(end);
   if (!materials) s = s.replace(/export const MATERIALS = \[[^\]]*\] as const;/, 'export const MATERIALS = [] as const; // finish overrides were left out of this kit');

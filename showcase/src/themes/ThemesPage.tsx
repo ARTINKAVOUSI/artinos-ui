@@ -5,7 +5,7 @@
    ThemeTile and themeFamilies also serve the inline gallery on the main page. */
 import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, THEMES, THEME_META } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, HERO_THEMES, THEMES, THEME_META } from '../../../src';
 import type { Accent, Density, ThemeName } from '../../../src';
 import { FAMILIES } from '../app/foundations';
 import { IC, useLiveSeries } from '../chapters/demos';
@@ -13,12 +13,16 @@ import { BACKDROPS, BACKDROP_OPTIONS, Swatch } from '../shared';
 import type { Backdrop } from '../shared';
 import './themes.css';
 
-/** The gallery's families: a short name, what they share, and their themes. */
+const START = 'Start here';
+
+/** The gallery's families: a short name, what they share, and their themes. The heroes come first. */
 export function themeFamilies() {
-  return FAMILIES.map(([title, fams]) => {
+  const hero = { name: START, about: `The ${HERO_THEMES.length} hero themes, one per kind of look. Every other theme is a variation of one of them.`, themes: [...HERO_THEMES] };
+  const families = FAMILIES.map(([title, fams]) => {
     const [name, about = ''] = title.split(' — ');
     return { name, about: about.charAt(0).toUpperCase() + about.slice(1) + '.', themes: THEMES.filter((t) => fams.includes(THEME_META[t].family)) };
   }).filter((f) => f.themes.length);
+  return [hero, ...families];
 }
 
 /** One theme as a small live panel: click it to pick the theme. */
@@ -62,7 +66,8 @@ function Stage({ t, onUse }: { t: ThemeName; onUse: () => void }) {
     <div className="sc-stage">
       <section className="sc-stage__intro">
         <span className="sc-stage__kicker">
-          <Swatch t={t} /> {themeFamilies().find((f) => f.themes.includes(t))?.name ?? m.family} · {m.kind}
+          <Swatch t={t} /> {themeFamilies().find((f) => f.name !== START && f.themes.includes(t))?.name ?? m.family} · {m.kind}
+          {m.parent ? ` · a variation of ${THEME_META[m.parent].label}` : ' · hero'}
         </span>
         <h1>{m.label}</h1>
         <p>{m.description}</p>

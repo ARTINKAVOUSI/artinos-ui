@@ -228,7 +228,7 @@
 }
 .ar-graph__group header button {
   padding: 0 3px;
-  font-size: 9px;
+  font-size: var(--ar-text-xs);
   color: var(--ar-text-low);
   cursor: pointer;
 }

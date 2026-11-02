@@ -89,7 +89,7 @@ html::-webkit-scrollbar-thumb:hover {
   gap: 10px 18px;
   padding: 10px 14px;
   border-radius: var(--ar-radius-panel);
-  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--ar-panel-shadow);
@@ -182,7 +182,7 @@ html::-webkit-scrollbar-thumb:hover {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--ar-panel-shadow);
@@ -691,7 +691,7 @@ html::-webkit-scrollbar-thumb:hover {
   transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
 .sc-card--glass {
-  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
   box-shadow: var(--ar-panel-shadow);
@@ -1074,7 +1074,7 @@ html::-webkit-scrollbar-thumb:hover {
   gap: 4px;
   padding: 6px;
   border-radius: var(--ar-radius-panel);
-  background: var(--ar-panel-sheen), var(--ar-panel-tint);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   box-shadow: var(--ar-panel-shadow);
 }
 .sc-dock__card {

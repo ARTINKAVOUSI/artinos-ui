@@ -231,7 +231,7 @@
 }
 [data-ar-density='dense'] {
   --ar-h: 24px;
-  --ar-label-size: 10.5px;
+  --ar-label-size: 11px;
   --ar-value-size: 11.5px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
@@ -278,7 +278,7 @@
 }
 [data-ar-scene] {
   --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) var(--ar-floor-amount), transparent);
-}
+}/* the quiet inks under a scene are stepped up in core/core.css, after the material ramps */
 
 @media (prefers-reduced-motion: reduce) {
   :root,

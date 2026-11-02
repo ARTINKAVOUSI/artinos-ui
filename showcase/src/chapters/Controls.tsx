@@ -10,7 +10,7 @@ function TextFields() {
   return (
     <div className="sc-grid">
       <TextField label="Name" value={text} onChange={setText} />
-      <TextField type="search" placeholder="Filter parameters…" value={search} onChange={setSearch} />
+      <TextField type="search" label="Filter parameters" placeholder="Filter parameters…" value={search} onChange={setSearch} />
       <TextField size="sm" label="Tag" value={tag} placeholder="Small, for tight rows" onChange={setTag} />
     </div>
   );

@@ -1,6 +1,6 @@
 # ARTINOS UI — theming
 
-Contents: picking a theme (all 52) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
+Contents: picking a theme (all 107) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
 
 `<artinos-ui>` below means the ARTINOS UI package folder.
 
@@ -17,10 +17,25 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 - **In a project with a kit:** `THEMES` / `THEME_META` from the kit's `index.ts`, or the header of its `tokens/themes.css`, list exactly the themes that kit contains. An id that isn't there silently falls back to the studio look.
 - **Adding a theme to a kit:** re-export with it rather than hand-copying CSS blocks, because a theme lives in two files and shares rules. Run `node <artinos-ui>/artinos.mjs export --project . --themes satin,onyx --components <same list> --force`.
 
+**Start here.** Eight hero themes cover the kinds of look; every other theme is a variation of one of them (`THEME_META[t].parent`; `HERO_THEMES` and `variationsOf(hero)` in code). Pick the hero for the job, then look through its variations only if you want a different finish.
+
+<!-- heroes:start -->
+| hero | kind | look | variations |
+|---|---|---|---|
+| `studio` | solid | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default. | `optical` `reference` |
+| `studio-light` | solid | The same instrument on a light neutral desk. White satin controls. | — |
+| `frost-deep` | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. | `slate` `steel` `concrete` `quartz` `shell` `matte` `pebble` `frost-etched` `frost-silk` `frost-mist` `frost-satin` `frost-ceramic` `frost` `frost-dark` `ice` |
+| `frost-light` | glass | Bright milky frost with dark ink. Daylight over imagery. | `mist` `chalk` `haze-day` `linen` `cloud` `groove-light` `inset-light` `carve-light` `marble` `travertine` `bisque` `vellum` `lumen` `argent` `ivory` `glacier` `wisteria` `glass-light` `pane-light` `pearl` `alabaster` `porcelain` `jade` |
+| `glass` | glass | Clean clear glass. A neutral veil, clear-rim controls, white ink. | `loupe` `engrave` `machined` `glaze` `clear-air` `clear-polished` `clear-lens` `clear-layered` `clear-bevel` `clear-cut` `glass-dark` `crystal` `pane` `lucid` `gallery` `platinum` `diamond` |
+| `haze` | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. | `sheer` `veil` `smoke` `ink` `pressed` `hairline` `frosted` `haze-rim` `haze-lift` `haze-carve` `haze-glow` `haze-bevel` `haze-night` `lift` `edge` `inset` `halo` `tile` `groove` `drift` `shade` `carve` `groove-smoke` `inset-smoke` |
+| `satin` | glass | Continuous frost. The view melts into soft colour; glossy white pills. | `dune` `monolith` `opal` `graphite` `champagne` `moonstone` `cashmere` |
+| `onyx` | glass | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. | `basalt` `walnut` `nocturne` `lagoon` `garnet` `sapphire` `emerald` `rose-gold` `cognac` `amethyst` `velvet` |
+<!-- heroes:end -->
+
 **Choosing:**
-- **Dark app:** `frost-deep` (the showcase default), `studio`, or an untinted, atelier glass or luxe glass theme.
-- **Light app:** `studio-light`, `glass-light`, `frost-light`, `pane-light`, `argent`, `ivory`, `porcelain` or `pearl`.
-- **UI over a 3D canvas, video or photo:** any glass or frost theme, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page. Most glass themes have light ink drawn for dark scenes; over a light one their frost turns the colour of the ink and labels wash out.
+- **Dark app:** `studio` (solid) or `frost-deep` (the showcase default).
+- **Light app:** `studio-light` (solid) or `frost-light`; its variations hold the other light, dark-ink panes.
+- **UI over a 3D canvas, video or photo:** `frost-deep`, `glass`, `haze` or `satin`, or `onyx` for a coloured premium look, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page. Most glass themes have light ink drawn for dark scenes; over a light one their frost turns the colour of the ink and labels wash out.
 
 **Families:**
 - **Untinted:** achromatic panes with no tint, only blur. Accents are the ARTINOS set: teal signal, azure bind, amber warn, rose fault.
@@ -30,115 +45,115 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 - **Studio and signature:** solid grounds. `optical` and `reference` are the original prototype and the Figma source.
 
 <!-- themes:start -->
-| family | id | name | kind | look |
-|---|---|---|---|---|
-| scene | `sheer` | Sheer | glass | A light blur under a thin dark veil: the scene stays close. White ink, flat fills, nothing else. |
-|  | `veil` | Veil | glass | The scene blurred under a thin white veil. Flat fills, no border, no highlight, no colour. |
-|  | `haze` | Haze | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. |
-|  | `smoke` | Smoke | glass | The scene blurred under a dark veil, for bright or busy imagery. Flat white fills. |
-|  | `ink` | Ink | glass | A dense dark veil over the blur: nearly solid black glass, flat and quiet. |
-|  | `mist` | Mist | glass | The scene blurred under a white veil, graphite ink and flat graphite fills. |
-|  | `chalk` | Chalk | glass | A dense white veil over the blur: nearly solid white glass, graphite ink. |
-|  | `pressed` | Pressed | glass | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
-|  | `hairline` | Hairline | glass | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
-|  | `frosted` | Frosted | glass | A clearer pane with frosted controls: each track and value frosts the scene further. |
-|  | `haze-rim` | Haze Rim | glass | Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. |
-|  | `haze-lift` | Haze Lift | glass | Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. |
-|  | `haze-carve` | Haze Carve | glass | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
-|  | `haze-glow` | Haze Glow | glass | Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. |
-|  | `haze-bevel` | Haze Bevel | glass | Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. |
-|  | `haze-night` | Haze Night | glass | The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. |
-|  | `haze-day` | Haze Day | glass | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
-|  | `lift` | Lift | glass | Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. |
-|  | `edge` | Edge | glass | Flat glass with one hairline round each value and a lit top edge on the pane. |
-|  | `inset` | Inset | glass | Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. |
-|  | `halo` | Halo | glass | Flat glass with volume: a soft light inside the pane edge and inside each value. |
-|  | `tile` | Tile | glass | Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. |
-|  | `groove` | Groove | glass | Flat glass with tracks drawn as fine grooves and values floating softly over them. |
-|  | `drift` | Drift | glass | The flattest controls on the pane that floats highest: all the depth is in the pane. |
-|  | `shade` | Shade | glass | A dense dark veil with a lit top edge; values carry the same thin light along their top. |
-|  | `linen` | Linen | glass | Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. |
-|  | `cloud` | Cloud | glass | Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. |
-|  | `groove-light` | Groove Light | glass | Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink. |
-|  | `inset-light` | Inset Light | glass | Inset in white frost: tracks set a hair into the pane, white values. Graphite ink. |
-|  | `carve` | Carve | glass | Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them. |
-|  | `carve-light` | Carve Light | glass | Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink. |
-|  | `groove-smoke` | Groove Smoke | glass | Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values. |
-|  | `inset-smoke` | Inset Smoke | glass | Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane. |
-| materials | `marble` | Marble Frost | glass | Carrara marble values with soft grey veins, pressed into bright frost. |
-|  | `slate` | Slate Glass | glass | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
-|  | `travertine` | Travertine | glass | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |
-|  | `basalt` | Basalt | glass | Black volcanic stone values with one polished edge, on smoked glass. An ember signal. |
-|  | `steel` | Brushed Steel | glass | Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. |
-|  | `bisque` | Bisque | glass | Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. |
-|  | `concrete` | Concrete | glass | Raw speckled concrete values cut into grey frost. A safety-orange signal. |
-|  | `walnut` | Walnut Glass | glass | Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. |
-| blends | `quartz` | Quartz | glass | Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim. |
-|  | `loupe` | Loupe | glass | Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane. |
-|  | `shell` | Shell | glass | Deep frost and neumorphism: pressed tracks and softly domed values. |
-|  | `engrave` | Engrave | glass | Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline. |
-|  | `machined` | Machined | glass | Glass and skeuomorphism: deep machined grooves and chamfered glass caps. |
-|  | `matte` | Matte | glass | Frost and depth: matte values float on soft shadows, with no highlights and no rims. |
-|  | `glaze` | Glaze | glass | Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass. |
-|  | `pebble` | Pebble | glass | Glass and neumorphism: raised pebble values in pressed tracks. |
-|  | `vellum` | Vellum | glass | Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink. |
-|  | `lumen` | Lumen | glass | Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink. |
-| untinted-glass | `clear-air` | Air Glass | glass | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
-|  | `clear-polished` | Polished Glass | glass | Clear glass with depth: values float on a soft shadow under one reflected line. |
-|  | `clear-lens` | Lens Glass | glass | Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene. |
-|  | `clear-layered` | Layered Glass | glass | Flat glass with neumorphic depth: tracks pressed in, luminous white values raised. |
-|  | `clear-bevel` | Bevel Glass | glass | Clear glass with bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass. |
-|  | `clear-cut` | Cut Glass | glass | Values faceted like crystal: one diagonal light across each, held by hairline rims. |
-| untinted-frost | `frost-etched` | Etched Frost | glass | Light frost with softly pressed tracks and flat frosted values. |
-|  | `frost-silk` | Silk Frost | glass | Neumorphic frost: pressed tracks, raised white silk values, dark lettering. |
-|  | `frost-mist` | Mist Frost | glass | Airy frost in hairlines, lifted off the scene on a soft shadow. |
-|  | `frost-deep` | Deep Frost | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
-|  | `frost-satin` | Satin Frost | glass | Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering. |
-|  | `frost-ceramic` | Ceramic Frost | glass | Glazed white values with a soft gloss band, set into pressed frost. |
-| atelier-glass | `nocturne` | Nocturne | glass | Architectural smoke glass. Black crystal controls and a fine champagne edge. |
-|  | `lagoon` | Lagoon | glass | Deep petrol crystal. Aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
-|  | `argent` | Argent | glass | Daylight silver glass. Polished silver inserts and precise ink-blue accents. |
-|  | `garnet` | Garnet | glass | Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals. |
-| atelier-frost | `ivory` | Ivory | glass | Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details. |
-|  | `glacier` | Glacier | glass | Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals. |
-|  | `wisteria` | Wisteria | glass | Lilac silk frost. Opaline controls, plum lettering and muted violet accents. |
-|  | `dune` | Dune | glass | Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering. |
-| studio | `studio` | Studio | solid | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default. |
-|  | `studio-light` | Studio Light | solid | The same instrument on a light neutral desk. White satin controls. |
-| signature | `optical` | Optical | solid | The original ARTINOS prototype: polished translucent insert on graphite. |
-|  | `reference` | Reference | glass | The ARTINOS Figma source: polished bar, double-line handle, mono 700. |
-| glass | `glass` | Glass | glass | Clean clear glass. A neutral veil, clear-rim controls, white ink. |
-|  | `glass-light` | Glass Light | glass | Clear glass with a light veil. The view stays bright, the ink is dark. |
-|  | `glass-dark` | Glass Dark | glass | Clean smoked glass. A deeper veil, the same clarity, cool blue signal. |
-|  | `crystal` | Crystal | glass | The clearest pane: a whisper of tint, bright double hairline, all-rim controls. |
-| frost | `frost` | Frost | glass | Frosted glass. A soft diffuse pane, frosted-white controls, dark ink. |
-|  | `frost-light` | Frost Light | glass | Bright milky frost with dark ink. Daylight over imagery. |
-|  | `frost-dark` | Frost Dark | glass | Dark frosted glass: heavy diffusion under a charcoal veil, frosted-grey controls. |
-|  | `ice` | Ice | glass | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
-| clear | `pane` | Pane | glass | Clear glass with a soft light sweep and silver-pearl pills. No tint: the colour is whatever is behind. |
-|  | `pane-light` | Pane Light | glass | The same clear glass under a light veil. White pills, dark ink. |
-|  | `lucid` | Lucid | glass | The clearest pane. Clear glass fills with a bright lit edge, white ink. |
-|  | `gallery` | Gallery | glass | Gallery glass: lightly blurred under a neutral shade, hairline rules, crisp frosted fills. |
-| clear-frost | `satin` | Satin | glass | Continuous frost. The view melts into soft colour; glossy white pills. |
-|  | `monolith` | Monolith | glass | Deep neutral frost that carries the warmth of what is behind; milky frosted fills. |
-|  | `opal` | Opal | glass | A smoky column: frost under a deep neutral shade, bright rims, soft glass fills. |
-|  | `graphite` | Graphite | glass | Grey frost with the colour drained, translucent grey-glass fills. |
-| luxe | `onyx` | Onyx | glass | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. |
-|  | `sapphire` | Sapphire | glass | Deep-blue crystal, platinum hairlines, icy clear controls, silver-blue signal. |
-|  | `platinum` | Platinum | glass | Colourless clear glass with a bright platinum double hairline, crystal-clear controls and white ink. |
-|  | `diamond` | Diamond | glass | The clearest pane, with a faint prismatic fire in the sheen and the controls. Ice-white signal. |
-|  | `emerald` | Emerald | glass | Deep green crystal with pale-gold hairlines and seams, and a fresh emerald signal. |
-|  | `rose-gold` | Rose Gold | glass | Clear glass under a blush veil, with rose-gold hairlines, rims and seams. |
-|  | `cognac` | Cognac | glass | Warm amber smoked glass with brushed-brass hairlines and candle-lit ink. |
-|  | `amethyst` | Amethyst | glass | Deep violet crystal with silver hairlines, clear violet controls and a lavender signal. |
-| luxe-frost | `champagne` | Champagne | glass | Warm gold-tinted frost, ivory controls with an antique-gold rim, espresso ink. |
-|  | `pearl` | Pearl | glass | Nacreous white frost with a faint iridescent sheen, soft pearl controls, lilac signal. |
-|  | `alabaster` | Alabaster | glass | Thick warm-cream frost, cream satin controls with a bronze hairline, umber ink. |
-|  | `porcelain` | Porcelain | glass | Cool white glazed frost, glossy white controls, cobalt signal and ink-blue text. |
-|  | `jade` | Jade | glass | Pale celadon frost with polished pale-green controls, a jade signal and forest ink. |
-|  | `moonstone` | Moonstone | glass | Blue-grey milky frost with a cool glow, milk-white controls and white ink. |
-|  | `cashmere` | Cashmere | glass | Soft taupe frost, oat-white controls with a caramel rim, cocoa ink on the controls. |
-|  | `velvet` | Velvet | glass | Deep bordeaux frost with silver hairlines, rosy frosted controls and a soft rose signal. |
+| family | id | name | kind | variation of | look |
+|---|---|---|---|---|---|
+| scene | `sheer` | Sheer | glass | `haze` | A light blur under a thin dark veil: the scene stays close. White ink, flat fills, nothing else. |
+|  | `veil` | Veil | glass | `haze` | The scene blurred under a thin white veil. Flat fills, no border, no highlight, no colour. |
+|  | `haze` | Haze | glass | **hero** | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. |
+|  | `smoke` | Smoke | glass | `haze` | The scene blurred under a dark veil, for bright or busy imagery. Flat white fills. |
+|  | `ink` | Ink | glass | `haze` | A dense dark veil over the blur: nearly solid black glass, flat and quiet. |
+|  | `mist` | Mist | glass | `frost-light` | The scene blurred under a white veil, graphite ink and flat graphite fills. |
+|  | `chalk` | Chalk | glass | `frost-light` | A dense white veil over the blur: nearly solid white glass, graphite ink. |
+|  | `pressed` | Pressed | glass | `haze` | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
+|  | `hairline` | Hairline | glass | `haze` | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
+|  | `frosted` | Frosted | glass | `haze` | A clearer pane with frosted controls: each track and value frosts the scene further. |
+|  | `haze-rim` | Haze Rim | glass | `haze` | Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. |
+|  | `haze-lift` | Haze Lift | glass | `haze` | Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. |
+|  | `haze-carve` | Haze Carve | glass | `haze` | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
+|  | `haze-glow` | Haze Glow | glass | `haze` | Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. |
+|  | `haze-bevel` | Haze Bevel | glass | `haze` | Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. |
+|  | `haze-night` | Haze Night | glass | `haze` | The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. |
+|  | `haze-day` | Haze Day | glass | `frost-light` | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
+|  | `lift` | Lift | glass | `haze` | Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. |
+|  | `edge` | Edge | glass | `haze` | Flat glass with one hairline round each value and a lit top edge on the pane. |
+|  | `inset` | Inset | glass | `haze` | Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. |
+|  | `halo` | Halo | glass | `haze` | Flat glass with volume: a soft light inside the pane edge and inside each value. |
+|  | `tile` | Tile | glass | `haze` | Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. |
+|  | `groove` | Groove | glass | `haze` | Flat glass with tracks drawn as fine grooves and values floating softly over them. |
+|  | `drift` | Drift | glass | `haze` | The flattest controls on the pane that floats highest: all the depth is in the pane. |
+|  | `shade` | Shade | glass | `haze` | A dense dark veil with a lit top edge; values carry the same thin light along their top. |
+|  | `linen` | Linen | glass | `frost-light` | Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. |
+|  | `cloud` | Cloud | glass | `frost-light` | Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. |
+|  | `groove-light` | Groove Light | glass | `frost-light` | Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink. |
+|  | `inset-light` | Inset Light | glass | `frost-light` | Inset in white frost: tracks set a hair into the pane, white values. Graphite ink. |
+|  | `carve` | Carve | glass | `haze` | Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them. |
+|  | `carve-light` | Carve Light | glass | `frost-light` | Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink. |
+|  | `groove-smoke` | Groove Smoke | glass | `haze` | Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values. |
+|  | `inset-smoke` | Inset Smoke | glass | `haze` | Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane. |
+| materials | `marble` | Marble Frost | glass | `frost-light` | Carrara marble values with soft grey veins, pressed into bright frost. |
+|  | `slate` | Slate Glass | glass | `frost-deep` | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
+|  | `travertine` | Travertine | glass | `frost-light` | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |
+|  | `basalt` | Basalt | glass | `onyx` | Black volcanic stone values with one polished edge, on smoked glass. An ember signal. |
+|  | `steel` | Brushed Steel | glass | `frost-deep` | Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. |
+|  | `bisque` | Bisque | glass | `frost-light` | Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. |
+|  | `concrete` | Concrete | glass | `frost-deep` | Raw speckled concrete values cut into grey frost. A safety-orange signal. |
+|  | `walnut` | Walnut Glass | glass | `onyx` | Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. |
+| blends | `quartz` | Quartz | glass | `frost-deep` | Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim. |
+|  | `loupe` | Loupe | glass | `glass` | Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane. |
+|  | `shell` | Shell | glass | `frost-deep` | Deep frost and neumorphism: pressed tracks and softly domed values. |
+|  | `engrave` | Engrave | glass | `glass` | Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline. |
+|  | `machined` | Machined | glass | `glass` | Glass and skeuomorphism: deep machined grooves and chamfered glass caps. |
+|  | `matte` | Matte | glass | `frost-deep` | Frost and depth: matte values float on soft shadows, with no highlights and no rims. |
+|  | `glaze` | Glaze | glass | `glass` | Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass. |
+|  | `pebble` | Pebble | glass | `frost-deep` | Glass and neumorphism: raised pebble values in pressed tracks. |
+|  | `vellum` | Vellum | glass | `frost-light` | Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink. |
+|  | `lumen` | Lumen | glass | `frost-light` | Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink. |
+| untinted-glass | `clear-air` | Air Glass | glass | `glass` | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
+|  | `clear-polished` | Polished Glass | glass | `glass` | Clear glass with depth: values float on a soft shadow under one reflected line. |
+|  | `clear-lens` | Lens Glass | glass | `glass` | Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene. |
+|  | `clear-layered` | Layered Glass | glass | `glass` | Flat glass with neumorphic depth: tracks pressed in, luminous white values raised. |
+|  | `clear-bevel` | Bevel Glass | glass | `glass` | Clear glass with bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass. |
+|  | `clear-cut` | Cut Glass | glass | `glass` | Values faceted like crystal: one diagonal light across each, held by hairline rims. |
+| untinted-frost | `frost-etched` | Etched Frost | glass | `frost-deep` | Light frost with softly pressed tracks and flat frosted values. |
+|  | `frost-silk` | Silk Frost | glass | `frost-deep` | Neumorphic frost: pressed tracks, raised white silk values, dark lettering. |
+|  | `frost-mist` | Mist Frost | glass | `frost-deep` | Airy frost in hairlines, lifted off the scene on a soft shadow. |
+|  | `frost-deep` | Deep Frost | glass | **hero** | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
+|  | `frost-satin` | Satin Frost | glass | `frost-deep` | Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering. |
+|  | `frost-ceramic` | Ceramic Frost | glass | `frost-deep` | Glazed white values with a soft gloss band, set into pressed frost. |
+| atelier-glass | `nocturne` | Nocturne | glass | `onyx` | Architectural smoke glass. Black crystal controls and a fine champagne edge. |
+|  | `lagoon` | Lagoon | glass | `onyx` | Deep petrol crystal. Aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
+|  | `argent` | Argent | glass | `frost-light` | Daylight silver glass. Polished silver inserts and precise ink-blue accents. |
+|  | `garnet` | Garnet | glass | `onyx` | Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals. |
+| atelier-frost | `ivory` | Ivory | glass | `frost-light` | Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details. |
+|  | `glacier` | Glacier | glass | `frost-light` | Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals. |
+|  | `wisteria` | Wisteria | glass | `frost-light` | Lilac silk frost. Opaline controls, plum lettering and muted violet accents. |
+|  | `dune` | Dune | glass | `satin` | Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering. |
+| studio | `studio` | Studio | solid | **hero** | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default. |
+|  | `studio-light` | Studio Light | solid | **hero** | The same instrument on a light neutral desk. White satin controls. |
+| signature | `optical` | Optical | solid | `studio` | The original ARTINOS prototype: polished translucent insert on graphite. |
+|  | `reference` | Reference | glass | `studio` | The ARTINOS Figma source: polished bar, double-line handle, mono 700. |
+| glass | `glass` | Glass | glass | **hero** | Clean clear glass. A neutral veil, clear-rim controls, white ink. |
+|  | `glass-light` | Glass Light | glass | `frost-light` | Clear glass with a light veil. The view stays bright, the ink is dark. |
+|  | `glass-dark` | Glass Dark | glass | `glass` | Clean smoked glass. A deeper veil, the same clarity, cool blue signal. |
+|  | `crystal` | Crystal | glass | `glass` | The clearest pane: a whisper of tint, bright double hairline, all-rim controls. |
+| frost | `frost` | Frost | glass | `frost-deep` | Frosted glass. A soft diffuse pane, frosted-white controls, dark ink. |
+|  | `frost-light` | Frost Light | glass | **hero** | Bright milky frost with dark ink. Daylight over imagery. |
+|  | `frost-dark` | Frost Dark | glass | `frost-deep` | Dark frosted glass: heavy diffusion under a charcoal veil, frosted-grey controls. |
+|  | `ice` | Ice | glass | `frost-deep` | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
+| clear | `pane` | Pane | glass | `glass` | Clear glass with a soft light sweep and silver-pearl pills. No tint: the colour is whatever is behind. |
+|  | `pane-light` | Pane Light | glass | `frost-light` | The same clear glass under a light veil. White pills, dark ink. |
+|  | `lucid` | Lucid | glass | `glass` | The clearest pane. Clear glass fills with a bright lit edge, white ink. |
+|  | `gallery` | Gallery | glass | `glass` | Gallery glass: lightly blurred under a neutral shade, hairline rules, crisp frosted fills. |
+| clear-frost | `satin` | Satin | glass | **hero** | Continuous frost. The view melts into soft colour; glossy white pills. |
+|  | `monolith` | Monolith | glass | `satin` | Deep neutral frost that carries the warmth of what is behind; milky frosted fills. |
+|  | `opal` | Opal | glass | `satin` | A smoky column: frost under a deep neutral shade, bright rims, soft glass fills. |
+|  | `graphite` | Graphite | glass | `satin` | Grey frost with the colour drained, translucent grey-glass fills. |
+| luxe | `onyx` | Onyx | glass | **hero** | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. |
+|  | `sapphire` | Sapphire | glass | `onyx` | Deep-blue crystal, platinum hairlines, icy clear controls, silver-blue signal. |
+|  | `platinum` | Platinum | glass | `glass` | Colourless clear glass with a bright platinum double hairline, crystal-clear controls and white ink. |
+|  | `diamond` | Diamond | glass | `glass` | The clearest pane, with a faint prismatic fire in the sheen and the controls. Ice-white signal. |
+|  | `emerald` | Emerald | glass | `onyx` | Deep green crystal with pale-gold hairlines and seams, and a fresh emerald signal. |
+|  | `rose-gold` | Rose Gold | glass | `onyx` | Clear glass under a blush veil, with rose-gold hairlines, rims and seams. |
+|  | `cognac` | Cognac | glass | `onyx` | Warm amber smoked glass with brushed-brass hairlines and candle-lit ink. |
+|  | `amethyst` | Amethyst | glass | `onyx` | Deep violet crystal with silver hairlines, clear violet controls and a lavender signal. |
+| luxe-frost | `champagne` | Champagne | glass | `satin` | Warm gold-tinted frost, ivory controls with an antique-gold rim, espresso ink. |
+|  | `pearl` | Pearl | glass | `frost-light` | Nacreous white frost with a faint iridescent sheen, soft pearl controls, lilac signal. |
+|  | `alabaster` | Alabaster | glass | `frost-light` | Thick warm-cream frost, cream satin controls with a bronze hairline, umber ink. |
+|  | `porcelain` | Porcelain | glass | `frost-light` | Cool white glazed frost, glossy white controls, cobalt signal and ink-blue text. |
+|  | `jade` | Jade | glass | `frost-light` | Pale celadon frost with polished pale-green controls, a jade signal and forest ink. |
+|  | `moonstone` | Moonstone | glass | `satin` | Blue-grey milky frost with a cool glow, milk-white controls and white ink. |
+|  | `cashmere` | Cashmere | glass | `satin` | Soft taupe frost, oat-white controls with a caramel rim, cocoa ink on the controls. |
+|  | `velvet` | Velvet | glass | `onyx` | Deep bordeaux frost with silver hairlines, rosy frosted controls and a soft rose signal. |
 <!-- themes:end -->
 
 `THEMES`, `THEME_META` (label, family, kind, description and a three-colour swatch) and `GLASS_THEMES` are exported, so a theme picker is a few lines:
@@ -152,7 +167,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 `THEME_META[id].kind` is `'solid'` or `'glass'`.
 - **Solid** themes paint their own ground. Use `<ArtinosTheme theme="studio" ground>` on the page or panel container.
 - **Glass** themes are panes: `Panel` uses `backdrop-filter` over whatever is behind it. They look right over imagery, video or a live canvas. Over a flat colour they look like a plain tinted card, which is expected. Don't add `ground` to a glass scope that should show the scene through it.
-- **Scene.** Glass ink is drawn for a scene that contrasts with it. `scene="light" | "dark"` on `ArtinosTheme` (`data-ar-scene`) sets `--ar-panel-floor`, a wash of the theme's `--ar-bg-app` at `--ar-floor-amount` (72%), under Panel, Dock panes and the floating Toolbar. Over a scene that already contrasts it barely shows; over a mismatched one it keeps the ink at about 4.5:1. Lower `--ar-floor-amount` for more glass, raise it for more ground.
+- **Scene.** Glass ink is drawn for a scene that contrasts with it. `scene="light" | "dark"` on `ArtinosTheme` (`data-ar-scene`) sets `--ar-panel-floor`, a wash of the theme's `--ar-bg-app` at `--ar-floor-amount` (72%, more on the 23 themes whose ink needs it), under Panel, Dock panes and the floating Toolbar, and steps `--ar-text-low` and `--ar-text-faint` up to `--ar-text-mid`. Over a mismatched scene every text role then holds 4.5:1; over a scene that already contrasts the floor barely shows. Lower `--ar-floor-amount` for more glass (and less contrast), raise it for more ground. Without `scene`, glass has no floor: right over the scene a theme was drawn for, unreadable over the other kind.
 
 For React Three Fiber, the controls are DOM. Put them in an HTML overlay above the `<Canvas>` (a sibling `div` with `position: absolute`), not inside the Canvas tree, so the glass blurs the rendered scene. drei `<Html>` works for UI attached to 3D objects, but inspector panels belong in the overlay.
 
@@ -265,6 +280,10 @@ Roles (theme level):
   - durations: `--ar-dur-value` (70ms, a value following the hand), `--ar-dur-state` (130ms, hover and press), `--ar-dur-surface` (220ms, a material changing), `--ar-dur-layout` (380ms, things moving apart), `--ar-dur-enter` (200ms, an overlay arriving), `--ar-dur-exit` (130ms, leaving, always quicker);
   - curves: `--ar-ease` (general), `--ar-ease-roll` (settling: rolls, glides, sheets), `--ar-ease-spring` (a small overshoot: pops, knobs, pucks), `--ar-ease-exit` (departures);
   - `prefers-reduced-motion: reduce` sets every duration to 0. Set them to 0 yourself on a scope to turn motion off there.
+- the reader's settings (in `core/core.css`, after the ramps):
+  - `prefers-contrast: more`: every text role takes `--ar-text-hi` and the glass gets a 92% floor of its own ground;
+  - `prefers-reduced-transparency: reduce`: panes and sheets become the solid `--ar-bg-app`, with no blur;
+  - `forced-colors: active` (Windows High Contrast): focus is a 2px `Highlight` outline, wells, panels and overlays get a 1px `CanvasText` outline, and fills, knobs, chosen segments and seams take `Highlight` / `CanvasText`, since the system drops the box-shadows they are drawn with.
 
 Control finish (materials level):
 - well: `--ar-trough`, `--ar-trough-backdrop`, `--ar-well`, `--ar-inset`, `--ar-radius` (7px)

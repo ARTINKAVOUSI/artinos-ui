@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 40 components, on a token-based design system with **52 themes** (glass, frost, studio, atelier and luxe):
+A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 44 components, on a token-based design system with **107 themes** (glass, frost, studio, atelier and luxe):
 - sliders, ranges, knobs and XY pads;
 - number, text and colour fields, file drops, switches, toggles, segmented controls and selects;
 - buttons, toolbars, badges, meters, frequency bars and sparklines;
@@ -68,7 +68,7 @@ With Claude Code, you can also just ask in any project:
 ## Documentation
 
 - [`docs/components.md`](docs/components.md): every component (props, defaults, examples, interaction), requirements and performance.
-- [`docs/theming.md`](docs/theming.md): the 52 themes, solid vs glass, density, token overrides, custom themes and key tokens.
+- [`docs/theming.md`](docs/theming.md): the 107 themes, solid vs glass, density, token overrides, custom themes and key tokens.
 
 Every kit carries both guides in its own `docs/`.
 

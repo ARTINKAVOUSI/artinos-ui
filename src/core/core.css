@@ -242,7 +242,7 @@
 }
 .ar-roll .ar-roll__unit {
   margin-left: 0.45em;
-  font-size: 0.8em;
+  font-size: max(0.8em, var(--ar-text-xs)); /* never under the 11px floor */
 }
 .ar-roll__unit[data-tight] {
   margin-left: 0.12em;
@@ -436,4 +436,82 @@ html[data-ar-sorting] * {
   backdrop-filter: var(--ar-panel-blur, blur(20px));
   box-shadow: var(--ar-panel-shadow, none), var(--ar-float-depth, 0 10px 28px -12px rgba(0, 0, 0, 0.4)), 0 0 0 1px var(--ar-signal-line, rgba(79, 209, 186, 0.55));
   border-radius: var(--ar-radius-panel, 12px);
+}
+
+/* ---------- the reader's settings: scene, contrast, transparency, forced colours ----------
+   Last in core so they follow the theme and material ramps (tokens → themes → materials → core). */
+
+/* a declared scene sizes the floor (per theme, --ar-floor-amount) for the hi and mid inks; the
+   quiet text steps up to mid, so every role that carries words holds 4.5:1 over the other kind
+   of scene. The hierarchy keeps size, weight and hi over mid; ghost stays for disabled text. */
+[data-ar-scene]:is([data-ar-theme], [data-ar-material]),
+[data-ar-scene] :is([data-ar-theme], [data-ar-material]) {
+  --ar-text-low: var(--ar-text-mid);
+  --ar-text-faint: var(--ar-text-mid);
+}
+
+/* more contrast: one ink for words, and the glass held by its own ground */
+@media (prefers-contrast: more) {
+  :root,
+  :is([data-ar-theme], [data-ar-material]):not([data-ar-none]) {
+    --ar-text-mid: var(--ar-text-hi);
+    --ar-text-low: var(--ar-text-hi);
+    --ar-text-faint: var(--ar-text-hi);
+    --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) 92%, transparent);
+  }
+}
+
+/* less transparency: every pane and sheet becomes the theme's solid ground */
+@media (prefers-reduced-transparency: reduce) {
+  :root,
+  :is([data-ar-theme], [data-ar-material]):not([data-ar-none]) {
+    --ar-panel-floor: var(--ar-bg-app);
+    --ar-panel-blur: none;
+    --ar-float-bg: var(--ar-bg-app);
+    --ar-sheet-bg: var(--ar-bg-app);
+    --ar-sheet-blur: none;
+    --ar-list-backdrop: none;
+  }
+}
+
+/* forced colours (Windows High Contrast) drop every box-shadow, which is where the rings, wells
+   and seams live: give them real outlines and system colours instead */
+@media (forced-colors: active) {
+  [data-ar-theme] :focus-visible,
+  .ar-well:has(:focus-visible) {
+    outline: 2px solid Highlight !important;
+    outline-offset: 1px;
+  }
+  .ar-well,
+  .ar-panel,
+  .ar-item,
+  [role='menu'],
+  [role='listbox'],
+  [role='dialog'],
+  [role='tooltip'] {
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+  /* the value-bearing inserts (fills, knobs, the chosen segment or chip) take the selection
+     pair; a button or select face stays a system button */
+  .ar-insert:not(.ar-button__face, .ar-select__face),
+  .ar-insert:not(.ar-button__face, .ar-select__face) *,
+  .ar-text--over,
+  .ar-slider__readout--over,
+  .ar-slider__readout--over * {
+    forced-color-adjust: none;
+    color: HighlightText !important;
+  }
+  .ar-insert:not(.ar-button__face, .ar-select__face) {
+    background: Highlight;
+  }
+  .ar-seam {
+    forced-color-adjust: none;
+    background: CanvasText;
+    opacity: 1 !important;
+  }
+  .ar-led[data-on] {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
 }

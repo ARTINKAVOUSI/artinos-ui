@@ -3,7 +3,7 @@
    The app shell: theme / density / backdrop state, view routing (page · #studio · #themes),
    the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS, variationsOf } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { ComponentChapters } from '../chapters';
 import { FoundationsChapter } from '../chapters/Foundations';
@@ -11,7 +11,7 @@ import { MakeItYoursChapter } from '../chapters/MakeItYours';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import { ExportKit } from '../export/ExportKit';
 import { KIT_COMPONENTS } from '../export/kit';
-import { BACKDROPS, BACKDROP_OPTIONS, LIGHT_BACKDROPS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
+import { BACKDROPS, BACKDROP_OPTIONS, HERO_OPTIONS, LIGHT_BACKDROPS, Swatch, TYPE_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
 import { ThemesPage } from '../themes/ThemesPage';
@@ -47,7 +47,10 @@ export function App() {
   };
   const custom = theme.startsWith('c:') ? customs.find((c) => c.id === theme.slice(2)) : undefined;
   const baseTheme: ThemeName = custom ? custom.base : (THEMES as readonly string[]).includes(theme) ? (theme as ThemeName) : 'frost-deep';
-  const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...THEME_OPTIONS];
+  const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...HERO_OPTIONS];
+  // the bar picks a hero, then one of its variations; a custom theme has neither
+  const hero = custom ? undefined : (THEME_META[baseTheme].parent ?? baseTheme);
+  const variationOptions = hero ? [hero, ...variationsOf(hero)].map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> })) : [];
 
   // A link straight to a chapter or section (#c-sliders, #s-meters): the browser tries to scroll
   // before the page has rendered, so scroll once the anchor exists.
@@ -109,8 +112,14 @@ export function App() {
         </a>
         <label className="sc-pick sc-pick--theme">
           <span>Theme</span>
-          <Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" />
+          <Select options={themeOptions} value={hero ?? theme} onChange={setTheme} appearance="well" label="Theme" />
         </label>
+        {variationOptions.length > 1 ? (
+          <label className="sc-pick sc-pick--theme">
+            <span>Variation</span>
+            <Select options={variationOptions} value={baseTheme} onChange={setTheme} appearance="well" label={`Variation of ${THEME_META[hero!].label}`} />
+          </label>
+        ) : null}
         <label className="sc-pick">
           <span>Type</span>
           <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
@@ -167,6 +176,9 @@ export function App() {
 
 /* ---------- hero ---------- */
 
+/** The chapter a kit group is shown in, so the index counts the same parts as the Components stat. */
+const chapterOfGroup = (group: string) => (group === 'Dock' || group === 'Graph' ? 'workspace' : group.toLowerCase());
+
 function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => void }) {
   const componentChapters = CHAPTERS.filter((c) => !c.meta);
   return (
@@ -200,7 +212,7 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
             <b>
               <CountUp to={GLASS_THEMES.length} delay={120} />
             </b>
-            <span>GLASS &amp; FROST</span>
+            <span>Glass &amp; frost</span>
           </div>
           <div className="sc-stat">
             <b>
@@ -214,7 +226,7 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
             <a key={c.id} href={'#' + chapterAnchor(c.id)}>
               <span className="sc-num">{chapterNumber(c.id)}</span>
               <b>{c.title}</b>
-              <span className="sc-hero__count">{c.components?.length ?? 0}</span>
+              <span className="sc-hero__count">{KIT_COMPONENTS.filter((k) => chapterOfGroup(k.group) === c.id).length}</span>
             </a>
           ))}
         </nav>

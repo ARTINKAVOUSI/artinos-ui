@@ -7,7 +7,7 @@
 // design system
 export { ArtinosTheme, themeStyle } from './core/Theme';
 export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
-export { THEMES, THEME_META, GLASS_THEMES, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
+export { THEMES, THEME_META, GLASS_THEMES, HERO_THEMES, variationsOf, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
 export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
@@ -64,10 +64,10 @@ export { Kbd } from './actions/Kbd';
 export type { KbdProps } from './actions/Kbd';
 export { Badge } from './actions/Badge';
 export type { BadgeProps } from './actions/Badge';
-
-// display
 export { Tag } from './actions/Tag';
 export type { TagProps } from './actions/Tag';
+
+// display
 export { Meter } from './display/Meter';
 export type { MeterProps } from './display/Meter';
 export { Spectrum } from './display/Spectrum';
@@ -83,13 +83,13 @@ export type { ProgressProps } from './display/Progress';
 // layout
 export { Panel, Section, SectionGroup, Field } from './layout/Panel';
 export type { PanelProps, SectionProps, SectionGroupProps, FieldProps } from './layout/Panel';
+export { StatStrip } from './layout/StatStrip';
+export type { StatStripProps, StatStripItem } from './layout/StatStrip';
 export { Tabs } from './layout/Tabs';
 export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
 export { ItemList, ItemRow } from './layout/ItemRow';
-export { StatStrip } from './layout/StatStrip';
-export type { StatStripProps, StatStripItem } from './layout/StatStrip';
 export { moveBetween } from './core/sortable';
 export type { SortPlace } from './core/sortable';
 export { Inline, Stack, Text } from './layout/Text';
