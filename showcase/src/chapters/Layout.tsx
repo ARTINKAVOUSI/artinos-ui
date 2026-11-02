@@ -1,7 +1,7 @@
 /* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
    rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
-import { Badge, Button, Callout, ChipGroup, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, PropertyRow, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, StatStrip, Switch, Tabs, Tag, Text, ToggleGroup } from '../../../src';
+import { Badge, Button, Callout, ChipGroup, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, StatStrip, Switch, Tabs, Tag, Text, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { MaterialSection } from './demos';
 
