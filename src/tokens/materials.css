@@ -1871,6 +1871,7 @@
 [data-ar-theme='haze-rim']:not([data-ar-material]),
 [data-ar-theme='haze-lift']:not([data-ar-material]),
 [data-ar-theme='haze-carve']:not([data-ar-material]),
+[data-ar-theme='haze-carve-custom']:not([data-ar-material]),
 [data-ar-theme='haze-glow']:not([data-ar-material]),
 [data-ar-theme='haze-bevel']:not([data-ar-material]),
 [data-ar-theme='haze-night']:not([data-ar-material]) {
@@ -3083,7 +3084,8 @@
 }
 
 /* HAZE CARVE */
-[data-ar-theme='haze-carve']:not([data-ar-material]) {
+[data-ar-theme='haze-carve']:not([data-ar-material]),
+[data-ar-theme='haze-carve-custom']:not([data-ar-material]) {
   --ar-trough: rgba(0, 0, 0, 0.08);
   --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 0 rgba(255, 255, 255, 0.1);
   --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
@@ -3092,6 +3094,20 @@
   --ar-insert: rgba(255, 255, 255, 0.13);
   --ar-insert-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 6px rgba(0, 0, 0, 0.2);
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
+}
+
+/* HAZE CARVE CUSTOM: the changes made in the Theme Studio for BLOBBY, on top of Haze Carve */
+[data-ar-theme='haze-carve-custom']:not([data-ar-material]) {
+  --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.275) 100%);
+  --ar-insert-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.67);
+  --ar-inset: 1.5px;
+  --ar-radius-shell: 16px;
+  --ar-well: inset 0 1px 4.3px rgba(0, 0, 0, 0.41), inset 0 0 0 1px rgba(255, 255, 255, 0.145), 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+/* its control size gives way to a density the host asks for */
+[data-ar-theme='haze-carve-custom']:not([data-ar-density]) {
+  --ar-h: 27px;
+  --ar-pad-x: 10px;
 }
 
 /* HAZE GLOW */

@@ -1,6 +1,6 @@
 # ARTINOS UI — theming
 
-Contents: picking a theme (all 107) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
+Contents: picking a theme (all 108) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
 
 `<artinos-ui>` below means the ARTINOS UI package folder.
 
@@ -27,7 +27,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 | `frost-deep` | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. | `slate` `steel` `concrete` `quartz` `shell` `matte` `pebble` `frost-etched` `frost-silk` `frost-mist` `frost-satin` `frost-ceramic` `frost` `frost-dark` `ice` |
 | `frost-light` | glass | Bright milky frost with dark ink. Daylight over imagery. | `mist` `chalk` `haze-day` `linen` `cloud` `groove-light` `inset-light` `carve-light` `marble` `travertine` `bisque` `vellum` `lumen` `argent` `ivory` `glacier` `wisteria` `glass-light` `pane-light` `pearl` `alabaster` `porcelain` `jade` |
 | `glass` | glass | Clean clear glass. A neutral veil, clear-rim controls, white ink. | `loupe` `engrave` `machined` `glaze` `clear-air` `clear-polished` `clear-lens` `clear-layered` `clear-bevel` `clear-cut` `glass-dark` `crystal` `pane` `lucid` `gallery` `platinum` `diamond` |
-| `haze` | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. | `sheer` `veil` `smoke` `ink` `pressed` `hairline` `frosted` `haze-rim` `haze-lift` `haze-carve` `haze-glow` `haze-bevel` `haze-night` `lift` `edge` `inset` `halo` `tile` `groove` `drift` `shade` `carve` `groove-smoke` `inset-smoke` |
+| `haze` | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. | `sheer` `veil` `smoke` `ink` `pressed` `hairline` `frosted` `haze-rim` `haze-lift` `haze-carve` `haze-carve-custom` `haze-glow` `haze-bevel` `haze-night` `lift` `edge` `inset` `halo` `tile` `groove` `drift` `shade` `carve` `groove-smoke` `inset-smoke` |
 | `satin` | glass | Continuous frost. The view melts into soft colour; glossy white pills. | `dune` `monolith` `opal` `graphite` `champagne` `moonstone` `cashmere` |
 | `onyx` | glass | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. | `basalt` `walnut` `nocturne` `lagoon` `garnet` `sapphire` `emerald` `rose-gold` `cognac` `amethyst` `velvet` |
 <!-- heroes:end -->
@@ -60,6 +60,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 |  | `haze-rim` | Haze Rim | glass | `haze` | Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. |
 |  | `haze-lift` | Haze Lift | glass | `haze` | Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. |
 |  | `haze-carve` | Haze Carve | glass | `haze` | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
+|  | `haze-carve-custom` | Haze Carve Custom | glass | `haze` | Haze Carve as used in BLOBBY: softer carved wells, a brighter value gradient, a touch taller and roomier. |
 |  | `haze-glow` | Haze Glow | glass | `haze` | Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. |
 |  | `haze-bevel` | Haze Bevel | glass | `haze` | Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. |
 |  | `haze-night` | Haze Night | glass | `haze` | The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. |

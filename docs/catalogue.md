@@ -423,7 +423,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 ## Scopes
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
-- **theme**: the whole look (107; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
+- **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
 - **type**: the type collection, a font pairing with its own tuning (`instrument` default, `editorial`, `geist`, `modern`, `atelier`, `red-hat`, `luxe`). It inherits through nested themes and follows portalled overlays.
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
