@@ -67,60 +67,84 @@ function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: 
 type Role = [TextVariant, string, string, TextFace?];
 /** Every text role with its rule beside it: the ladder a page is set by. */
 const ROLES: Role[] = [
-  ['display', 'display · sans 34 thin', 'Light, held'],
-  ['title', 'title · sans 17 light', 'Material and light'],
-  ['title', 'title · serif 17', 'An editorial title', 'serif'],
-  ['heading', 'heading · 14 medium', 'Surface response'],
-  ['subheading', 'subheading · 12 medium · mid', 'Roughness and gloss'],
-  ['overline', 'overline · 11 · accent', 'Material · glass'],
-  ['lead', 'lead · 15 light', 'A lead paragraph says what the view is for, a size up.'],
-  ['body', 'body · 13 · 1.55', 'Body text carries the explanation at a comfortable line length.'],
-  ['note', 'note · 12 · quieter', 'A note is help or an aside, a size down from the body.'],
-  ['caption', 'caption · 11 · faintest', 'A caption sits under a figure.'],
-  ['label', 'label · 12 · quiet', 'Exposure'],
+  ['display', 'display · serif 68', 'Light, held'],
+  ['title', 'title · sans 30 bold', 'Material and light'],
+  ['title', 'title · face="serif"', 'An editorial title', 'serif'],
+  ['heading', 'heading · sans 20 bold', 'Surface response'],
+  ['subheading', 'subheading · 14 bold · mid', 'Roughness and gloss'],
+  ['overline', 'overline · mono caps · quiet', 'Material · glass'],
+  ['lead', 'lead · serif 22 · bright', 'A lead says what the view is for, in a different voice.'],
+  ['body', 'body · sans 14 · 1.6', 'Body text carries the explanation at a comfortable line length.'],
+  ['note', 'note · 12 · quiet', 'A note is help or an aside, a step quieter than the body.'],
+  ['caption', 'caption · mono 11 · faintest', 'Fig. 3, the rim at grazing angles'],
+  ['label', 'label · 12 medium · quiet', 'Exposure'],
   ['value', 'value · mono · aligned', '0.71 · 1,284 · −4.5 dB'],
+  ['figure', 'figure · sans 48 thin', '1,284'],
 ];
 
 function Typography() {
   return (
     <div className="sc-typo">
+      <article className="sc-typo__page">
+        <Text variant="overline">Material · thick glass</Text>
+        <Text variant="display">How the shell catches light</Text>
+        <Text variant="lead">It bends what is behind it and keeps a bright rim where light grazes its edge.</Text>
+        <Text>
+          Raise <strong>Transmission</strong> to let more of the scene through; lower <em>roughness</em> for a sharper image. The rim follows <code>rimPower</code>, and{' '}
+          <mark>a value past 0.8 starts to glow</mark>. Hold <kbd>Alt</kbd> while dragging for fine steps, or read <a href="#s-typography">the material guide</a>.
+        </Text>
+        <Text variant="heading">What changes it</Text>
+        <Text as="ol">
+          <li>Transmission, how much of the scene shows through</li>
+          <li>Roughness, how soft the refraction is</li>
+          <li>Rim, how bright the edge glows</li>
+        </Text>
+        <Text variant="quote">
+          Glass reads as glass when its edge is brighter than its face.
+          <cite>Shading notes, chapter 4</cite>
+        </Text>
+      </article>
+      <Panel className="sc-typo__panel">
+        <Stack gap={0}>
+          <Text variant="overline">Inside a panel</Text>
+          <Text variant="title">The same roles, a size down</Text>
+          <Text variant="note">In a Panel, Dock pane or Dialog the scale steps down, so nothing outgrows its frame.</Text>
+        </Stack>
+        <div className="sc-typo__figures">
+          <div>
+            <Text variant="figure">
+              1.52<small>IOR</small>
+            </Text>
+            <Text variant="caption">Index</Text>
+          </div>
+          <div>
+            <Text variant="figure">
+              4.0<small>mm</small>
+            </Text>
+            <Text variant="caption">Thickness</Text>
+          </div>
+        </div>
+        <Stack gap={0}>
+          <Callout tone="tip" title="Start from a preset">
+            Pick <strong>Thick glass</strong> in Templates, then tune only Roughness.
+          </Callout>
+          <Callout tone="warn">High transmission with heavy blur costs frame time on integrated GPUs.</Callout>
+        </Stack>
+        <Section title="Readout">
+          <Field label="Dispersion">0.014</Field>
+          <Field label="Rim">0.71</Field>
+        </Section>
+      </Panel>
       <div className="sc-typo__ladder">
         {ROLES.map(([variant, rule, sample, face], i) => (
           <div key={i} className="sc-typo__row">
             <span className="sc-typo__rule">{rule}</span>
-            <Text variant={variant} face={face} measure={false} truncate={variant === 'display'}>
+            <Text variant={variant} face={face} measure={false}>
               {sample}
             </Text>
           </div>
         ))}
       </div>
-      <Panel className="sc-typo__article">
-        <Stack gap={0}>
-          <Text variant="overline">Material · 3 changed</Text>
-          <Text variant="title">How the shell catches light</Text>
-          <Text variant="lead">The shell is thick glass: it bends what is behind it and keeps a bright rim where light grazes its edge.</Text>
-          <Text>
-            Raise <strong>Transmission</strong> to let more of the scene through; lower <em>Roughness</em> for a sharper image. The rim follows <code>rimPower</code>, and{' '}
-            <mark>a value past 0.8 starts to glow</mark>. Hold <kbd>Alt</kbd> while dragging for fine steps, or read <a href="#s-typography">the material guide</a>.
-          </Text>
-          <Text variant="subheading">What changes it</Text>
-          <Text as="ul">
-            <li>Transmission, how much of the scene shows through</li>
-            <li>Roughness, how soft the refraction is</li>
-            <li>Rim, how bright the edge glows</li>
-          </Text>
-          <Callout tone="tip" title="Start from a preset">
-            Pick <strong>Thick glass</strong> in Templates, then tune only Roughness.
-          </Callout>
-          <Callout tone="warn">High transmission with heavy blur costs frame time on integrated GPUs.</Callout>
-          <Text variant="quote">Glass reads as glass when its edge is brighter than its face.</Text>
-        </Stack>
-        <Section title="Readout">
-          <Field label="Index">1.52</Field>
-          <Field label="Thickness">4.0 mm</Field>
-          <Text variant="note">Values are in the scene's units; the rim is unitless.</Text>
-        </Section>
-      </Panel>
     </div>
   );
 }
@@ -136,14 +160,14 @@ function LayoutAndText() {
       <Stack gap="group">
         <Stack gap={2}>
           <Text variant="kicker">Type roles</Text>
-          <Text variant="title">One role per kind of text</Text>
-          <Text variant="caption">Seven roles, three sizes in any one panel.</Text>
+          <Text as="h3" variant="title">One role per kind of text</Text>
+          <Text variant="caption">One role per kind of text, three sizes in any one panel.</Text>
         </Stack>
         <Stack gap={3}>
-          <Text variant="display">60.0</Text>
-          <Text variant="heading">Heading inside prose</Text>
+          <Text variant="figure">60.0</Text>
+          <Text as="h4" variant="heading">Heading inside prose</Text>
           <Text>
-            Body text is the sans at 13 px with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
+            Body text is the sans at 14 px, 13 in a panel, with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
           </Text>
           <Inline align="baseline" gap={3}>
             <Text variant="value">16.4 ms</Text>
@@ -475,7 +499,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 
       <Spec
         id="layout"
-        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one of seven roles, at most three sizes in a panel, paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The catalogue's Layout and text chapter has every rule."
+        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one role per kind, at most three sizes in a panel, paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The catalogue's Layout and text chapter has every rule."
         code={`<Panel title="Export" labelWidth={84}>
   <Text>Every gap comes from the scale…</Text>
   <Section title="Output">
@@ -489,7 +513,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 <Stack gap={2}>
   <Text variant="kicker">Type roles</Text>
   <Text variant="title">One role per kind of text</Text>
-  <Text variant="caption">Seven roles, three sizes in any one panel.</Text>
+  <Text variant="caption">One role per kind of text, three sizes in any one panel.</Text>
 </Stack>`}
       >
         <LayoutAndText />
@@ -497,6 +521,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 
       <Spec
         id="typography"
+        wide
         text={
           <>
             <p>Every kind of text has its own role, and neighbouring roles differ in at least two ways at once.</p>

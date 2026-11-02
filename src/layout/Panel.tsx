@@ -46,6 +46,10 @@ export interface PanelProps {
   id?: string;
 }
 
+/** Sections that are not told otherwise sit on their own card here: directly in a Panel or a dock
+ *  pane. Not inside another Section, and not in an inset Panel, which is already a quiet frame. */
+export const SectionCards = createContext(false);
+
 /** The shared Field label column a Panel or Section hands down. */
 const labelColumn = (w: number | string | undefined): CSSProperties | undefined =>
   w === undefined ? undefined : ({ '--ar-field-label-w': typeof w === 'number' ? w + 'px' : w } as CSSProperties);
@@ -97,7 +101,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 
             data-scroll={maxHeight !== undefined ? '' : undefined}
             style={maxHeight !== undefined ? { maxHeight: typeof maxHeight === 'number' ? maxHeight + 'px' : maxHeight } : undefined}
           >
-            {children}
+            <SectionCards.Provider value={variant !== 'inset'}>{children}</SectionCards.Provider>
           </div>
           {footer ? <footer className="ar-panel__foot">{footer}</footer> : null}
         </div>
@@ -212,7 +216,8 @@ export interface SectionProps {
   storageKey?: string;
   /** caps: a small capitals heading (default) · text: a larger sans title (inspector) */
   heading?: 'caps' | 'text';
-  /** plain: a heading over its rows · card: the group sits in its own soft inset card */
+  /** card: the group sits on its own soft surface (the default directly in a Panel or dock pane) ·
+   *  plain: a heading over its rows (the default anywhere else). */
   variant?: 'plain' | 'card';
   /** Lay the rows out in 2 or 3 columns (each child is a cell). */
   columns?: 1 | 2 | 3;
@@ -242,7 +247,7 @@ export function Section({
   onOpenChange,
   storageKey,
   heading = 'caps',
-  variant = 'plain',
+  variant,
   columns = 1,
   labelWidth,
   id,
@@ -251,6 +256,8 @@ export function Section({
   style,
 }: SectionProps) {
   const group = useContext(SectionGroupContext);
+  const cards = useContext(SectionCards);
+  const look = variant ?? (cards ? 'card' : 'plain');
   const autoId = useId();
   const key = id ?? autoId;
   const inAccordion = !!group?.accordion && open === undefined;
@@ -340,7 +347,7 @@ export function Section({
       id={id}
       className={cx('ar-section', className)}
       data-heading={heading}
-      data-variant={variant === 'card' ? 'card' : undefined}
+      data-variant={look === 'card' ? 'card' : undefined}
       data-open={shown ? '' : undefined}
       data-off={off ? '' : undefined}
       data-switchable={toggleable ? '' : undefined}
@@ -388,7 +395,7 @@ export function Section({
       <div className="ar-section__fold" id={bodyId} inert={!shown || undefined}>
         <div className="ar-section__body" data-columns={columns > 1 ? columns : undefined}>
           {description != null ? <p className="ar-section__description">{description}</p> : null}
-          {children}
+          <SectionCards.Provider value={false}>{children}</SectionCards.Provider>
         </div>
       </div>
     </div>

@@ -15,50 +15,62 @@
   letter-spacing: var(--ar-track-text);
   overflow-wrap: break-word;
 }
-/* Roles. Each kind of text differs from its neighbours in more than one way at once (size,
-   weight, ink, face, leading), so the structure of a page reads at a glance: titles balance their
-   lines, paragraphs avoid a lone last word, figures line up. */
+/* Roles. Neighbours differ in more than one way at once and the sizes jump, so the structure of a
+   page reads from across the room: the serif opens and quotes, the sans at its boldest titles, the
+   mono labels and measures. Sizes come from the --ar-read-* scale. */
+.ar-panel,
+.ar-dock__panel,
+.ar-dialog__body {
+  --ar-read-display: 40px;
+  --ar-read-title: 22px;
+  --ar-read-heading: 16px;
+  --ar-read-subheading: 13px;
+  --ar-read-lead: 18px;
+  --ar-read-body: 13px;
+  --ar-read-quote: 21px;
+  --ar-read-figure: 36px;
+}
 .ar-type[data-variant='display'] {
   --_ink: var(--ar-text-hi);
   font-family: var(--ar-font-display);
-  font-size: var(--ar-text-3xl);
-  font-weight: var(--ar-weight-thin);
-  line-height: 1.08;
-  letter-spacing: var(--ar-track-display);
+  font-size: var(--ar-read-display);
+  font-weight: var(--ar-weight-regular);
+  line-height: 1;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 .ar-type[data-variant='title'] {
   --_ink: var(--ar-text-hi);
-  font-size: var(--ar-text-xl);
-  font-weight: var(--ar-weight-light);
-  line-height: var(--ar-leading-snug);
-  letter-spacing: var(--ar-track-title);
+  font-size: var(--ar-read-title);
+  font-weight: var(--ar-weight-bold);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
-/* a group's name in prose: firm, so a page's structure shows */
 .ar-type[data-variant='heading'] {
   --_ink: var(--ar-text-hi);
-  font-size: var(--ar-text-lg);
-  font-weight: var(--ar-weight-medium);
-  line-height: var(--ar-leading-snug);
+  font-size: var(--ar-read-heading);
+  font-weight: var(--ar-weight-bold);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
-/* a heading inside a group: a size under the body, medium, one ink step down, so it sits clearly
-   below a heading or a section title (both bright, 13–14px) */
 .ar-type[data-variant='subheading'] {
   --_ink: var(--ar-text-mid);
-  font-size: var(--ar-text-sm);
-  font-weight: var(--ar-weight-medium);
+  font-size: var(--ar-read-subheading);
+  font-weight: var(--ar-weight-bold);
   line-height: var(--ar-leading-snug);
   text-wrap: balance;
 }
-/* a small label above a title, in the accent: it names the kind of thing before its name */
+/* the kind of thing, before its name: tracked mono capitals */
 .ar-type[data-variant='overline'] {
-  --_ink: var(--ar-signal);
-  font-size: var(--ar-caps-sm);
+  --_ink: var(--ar-text-low);
+  font-family: var(--ar-font-code);
+  font-size: var(--ar-caps-xs);
   font-weight: var(--ar-weight-medium);
   line-height: var(--ar-leading-snug);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 /* the same small label in the ink, set like a section's heading */
 .ar-type[data-variant='kicker'] {
@@ -70,37 +82,40 @@
   letter-spacing: var(--ar-head-tracking);
   text-transform: var(--ar-head-case);
 }
-/* the opening paragraph: a size up and light, so it reads as the point of what follows */
+/* the opening paragraph: the serif, large and bright, so it reads as the point of what follows */
 .ar-type[data-variant='lead'] {
-  --_ink: var(--ar-text-mid);
-  font-size: var(--ar-text-lead);
-  font-weight: var(--ar-weight-light);
-  line-height: var(--ar-leading-text);
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-serif);
+  font-size: var(--ar-read-lead);
+  line-height: 1.28;
   text-wrap: pretty;
 }
 .ar-type[data-variant='body'] {
-  line-height: 1.55;
+  font-size: var(--ar-read-body);
+  line-height: 1.6;
   text-wrap: pretty;
   hyphens: auto;
 }
-/* help and asides: a size down and a step quieter than the body */
+/* help and asides: a step quieter than the body */
 .ar-type[data-variant='note'] {
   --_ink: var(--ar-text-low);
   font-size: var(--ar-text-sm);
-  line-height: 1.45;
+  line-height: 1.5;
   text-wrap: pretty;
 }
-/* a caption is a size and an ink step under a note, so the two never read as one */
+/* a line under a figure: the mono, faintest, reads as a measurement's tag */
 .ar-type[data-variant='caption'] {
   --_ink: var(--ar-text-faint);
+  font-family: var(--ar-font-code);
   font-size: var(--ar-text-xs);
   line-height: 1.45;
   text-wrap: pretty;
 }
-/* the name of a thing (a field, a stat): small and quiet, so its value speaks */
+/* the name of a thing (a field, a stat): firm and quiet, so its value speaks */
 .ar-type[data-variant='label'] {
   --_ink: var(--ar-text-low);
   font-size: var(--ar-text-sm);
+  font-weight: var(--ar-weight-medium);
   line-height: var(--ar-leading-snug);
 }
 .ar-type[data-variant='value'] {
@@ -111,19 +126,43 @@
   line-height: var(--ar-leading-snug);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  /* a figure and its unit never break apart */
+  /* a figure and its unit never break apart, and a neighbour in a row never squeezes them */
   white-space: nowrap;
+  flex-shrink: 0;
 }
-/* a pull quote: the serif, italic, held by an accent rule */
+/* the one number that matters: huge and thin, its unit a small mono tag */
+.ar-type[data-variant='figure'] {
+  --_ink: var(--ar-text-hi);
+  font-size: var(--ar-read-figure);
+  font-weight: var(--ar-weight-thin);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ar-type[data-variant='figure'] :where(small) {
+  margin-left: 0.28em;
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-code);
+  letter-spacing: 0;
+  color: var(--ar-text-low);
+}
+/* a pull quote: the serif in italic, large, held between two hairlines */
 .ar-type[data-variant='quote'] {
   --_ink: var(--ar-text-hi);
-  padding-left: var(--ar-space-5);
-  box-shadow: inset 2px 0 0 var(--ar-signal-line);
+  padding-block: 0.6em;
+  border-block: 1px solid var(--ar-line);
   font-family: var(--ar-font-serif);
-  font-size: var(--ar-text-xl);
+  font-size: var(--ar-read-quote);
   font-style: italic;
-  line-height: 1.35;
-  text-wrap: pretty;
+  line-height: 1.16;
+  text-wrap: balance;
+}
+.ar-type[data-variant='quote'] :where(cite) {
+  display: block;
+  margin-top: 0.7em;
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 1.3 var(--ar-font-code);
+  color: var(--ar-text-low);
 }
 .ar-type[data-variant='code'],
 .ar-type :where(code) {
@@ -132,29 +171,40 @@
   background: color-mix(in srgb, var(--ar-text-hi) 8%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
   font-family: var(--ar-font-code);
-  font-size: 0.92em;
+  font-size: 0.9em;
   color: var(--ar-text-hi);
 }
 
 /* faces */
+.ar-type[data-face='sans'] {
+  font-family: var(--ar-font-ui);
+}
 .ar-type[data-face='serif'] {
   font-family: var(--ar-font-serif);
   font-weight: var(--ar-weight-regular);
-  letter-spacing: 0;
+  letter-spacing: -0.005em;
 }
 .ar-type[data-face='mono'] {
   font-family: var(--ar-font-code);
   letter-spacing: 0;
 }
 
-/* inside prose: emphasis rises, a mark is washed in the accent, links carry an accent underline,
-   lists set their bullets in the accent */
+/* inside prose: strong is the sans at its boldest in the bright ink; em is the serif's italic (the
+   sans has none, and a change of voice says more); a mark is washed in the accent; links carry an
+   accent underline */
 .ar-type :where(strong, b) {
-  font-weight: var(--ar-weight-medium);
+  font-weight: var(--ar-weight-bold);
   color: var(--ar-text-hi);
 }
 .ar-type :where(em, i) {
+  font-family: var(--ar-font-serif);
+  font-size: 1.14em;
   font-style: italic;
+  line-height: 1;
+  color: var(--ar-text-hi);
+}
+.ar-type:is([data-variant='lead'], [data-variant='quote'], [data-face='serif']) :where(em, i) {
+  font-size: 1em;
 }
 .ar-type :where(mark) {
   padding: 0 0.15em;
@@ -180,11 +230,30 @@
   box-shadow: inset 0 0 0 1px var(--ar-line-strong), 0 1px 0 var(--ar-line);
   color: var(--ar-text-hi);
 }
-:where(ul, ol).ar-type {
+:where(ul).ar-type {
   padding-left: 1.2em;
 }
+/* a numbered list counts in the accent's mono, so its order is a feature */
+:where(ol).ar-type {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: ar-ol;
+}
+:where(ol).ar-type > li {
+  position: relative;
+  padding-left: 2.4em;
+  counter-increment: ar-ol;
+}
+:where(ol).ar-type > li::before {
+  content: counter(ar-ol, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.32em;
+  font: var(--ar-weight-medium) var(--ar-caps-xs) / 1 var(--ar-font-code);
+  color: var(--ar-signal);
+}
 .ar-type :where(li) + :where(li) {
-  margin-top: 0.3em;
+  margin-top: 0.45em;
 }
 .ar-type :where(li)::marker {
   color: var(--ar-signal);
@@ -192,18 +261,21 @@
 
 /* rhythm: paragraphs a short step apart; a heading sits closer to what it heads than to what
    came before it */
-.ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) + .ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) {
-  margin-top: 0.65em;
+.ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) + .ar-type:is([data-variant='body'], [data-variant='note']) {
+  margin-top: 0.9em;
 }
 .ar-type:not([data-variant='overline'], [data-variant='kicker']) + .ar-type:is([data-variant='heading'], [data-variant='subheading']) {
-  margin-top: 1.2em;
+  margin-top: 1.5em;
 }
-.ar-type:is([data-variant='heading'], [data-variant='subheading'], [data-variant='title']) + .ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) {
-  margin-top: 0.35em;
+.ar-type:is([data-variant='heading'], [data-variant='subheading']) + :where(ul, ol).ar-type {
+  margin-top: 0.6em;
+}
+.ar-type:is([data-variant='heading'], [data-variant='subheading'], [data-variant='title'], [data-variant='display']) + .ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) {
+  margin-top: 0.5em;
 }
 .ar-type + .ar-type[data-variant='quote'],
 .ar-type[data-variant='quote'] + .ar-type {
-  margin-top: 0.9em;
+  margin-top: 1.1em;
 }
 .ar-type[data-tone='hi'] {
   --_ink: var(--ar-text-hi);
@@ -251,7 +323,7 @@
 }
 /* an overline, kicker or caption hugs the title it belongs to */
 .ar-type:is([data-variant='kicker'], [data-variant='overline']) + .ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) {
-  margin-top: var(--ar-space-1);
+  margin-top: var(--ar-space-4);
 }
 .ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) + .ar-type[data-variant='caption'] {
   margin-top: calc(var(--ar-space-1) * -1);

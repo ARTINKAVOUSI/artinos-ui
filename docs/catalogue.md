@@ -6,7 +6,7 @@ Contents:
 - [Choosing by parameter](#choosing-by-parameter): the lookup table
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
 - [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
-- [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge
+- [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge · Tag
 - [Display](#display): RollingValue · Stat · Meter · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
@@ -449,25 +449,26 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 
 | variant | for | looks |
 |---|---|---|
-| `display` | one hero figure or headline per page | 34 px thin, the display face |
-| `title` | a panel or page title (a Panel's `title` already is one) | 17 px light, bright |
-| `heading` | a group's name inside prose | 14 px medium, bright |
-| `subheading` | a step under a heading | 12 px medium, mid ink |
-| `overline` | a category or count above a title | 11 px medium, the accent |
+| `display` | one headline per page | the serif, up to 68 px (40 in a panel) |
+| `title` | a page title (a Panel's `title` is its own, 22 px bold) | 30 px bold, bright (22 in a panel) |
+| `heading` | a group's name inside prose | 20 px bold, bright (16 in a panel) |
+| `subheading` | a step under a heading | 14 px bold, mid ink (13 in a panel) |
+| `overline` | a category above a title, or the name of a set of controls | mono capitals, tracked, low ink |
 | `kicker` | a small label above a title | small capitals |
-| `lead` | the opening paragraph that says what a view is for | 15 px light, mid ink |
-| `body` | a paragraph | 13 px, 1.55 leading, at most `--ar-measure` (62ch) wide |
+| `lead` | the opening paragraph that says what a view is for | the serif, 22 px, bright (18 in a panel) |
+| `body` | a paragraph | 14 px (13 in a panel), 1.6 leading, at most `--ar-measure` (62ch) wide |
 | `note` | help or an aside | 12 px, low ink |
-| `caption` | a line under the thing it describes | 11 px, the faintest ink |
-| `label` | a name beside a value outside a Field | 12 px, low ink |
-| `value` | a figure | the mono, tabular |
-| `quote` | a principle or a quoted line | the serif, italic, 17 px, an accent rule |
+| `caption` | a line under the thing it describes | the mono, 11 px, the faintest ink |
+| `label` | a name beside a value outside a Field | 12 px medium, low ink |
+| `value` | a figure in a row | the mono, tabular |
+| `figure` | the one number that matters | 48 px thin (36 in a panel); a `<small>` inside is its unit |
+| `quote` | a principle or a quoted line | the serif, italic, 28 px, between two hairlines; a `<cite>` inside is its source |
 | `code` | a token, key or file name | the mono, in a chip |
 
 Neighbouring roles differ in at least two ways at once — size and weight, or size and ink, or face — so the step reads at a glance.
 
 - **Three faces, three jobs.** The sans speaks (titles, prose, labels); the mono measures (figures, code); the serif quotes and can set an editorial title (`face="serif"`). Don't mix in a fourth.
-- **Inline emphasis inside a body:** `strong` rises to the bright ink, `em` slants, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
+- **Inline emphasis inside a body:** `strong` is bold in the bright ink, `em` turns to the serif's italic, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
 - **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
 - **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.
 - At most three sizes in one panel: its title, its labels and rows, its captions. Figures are the mono at the control size.
@@ -491,7 +492,10 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 
 - A Section holds one idea and about seven rows at most; split a longer one.
 - Related numbers sit side by side: `Section columns={3}` for X · Y · Z, a `RangeSlider` for an interval, an `XYPad` for a pair.
-- Set groups apart with `variant="card"` when a panel has several that stand alone; keep plain sections when they flow as one list.
+- Every part of a panel reads as a part. Sections directly in a Panel or dock pane sit on their own cards, so give each an `icon` and let `count` carry a small fact. `variant="plain"` is for a section that flows on from the one above.
+- Open with what matters: `icon`, a bold `title` and a live `Badge` in `actions` say what this is; a `StatStrip` gives the two to four figures someone looks for first.
+- In a row, the label is quiet and the value firm. A small fact beside a value is a `Tag`, not more words: `Friend` `visit 8`, not "friend, visit 8".
+- Name a set of controls inside a section with `Text variant="overline"`. Help that must be remembered goes in a `Callout`, with `<kbd>` for gestures and keys, not in a caption.
 - Alternatives the user visits one at a time go in a `SectionGroup accordion`; a long panel of groups gets `SectionGroup toolbar`.
 - A list of things is an `ItemList` of `ItemRow`s, never a column of full-width buttons. Let people reorder what has an order (`onReorder`), and let lists or panes that hold the same kind of thing trade it (`group` + `onMove`): layers between scenes, sections between dock panes.
 - One `primary` action per view.
@@ -512,7 +516,8 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Rows that can change show `modified` + `onReset`; driven values show `binding` / `status`.
 - The panel is a `Panel` (or a Dock panel) so the gutter marks and the glass are there.
 - Every gap comes from the space scale (`Stack` / `Inline`, the roles); no hand-set margins.
-- Every piece of text is a `Text` role or a component's own; at most three sizes in the panel.
+- Every piece of text is a `Text` role or a component's own; at most three sizes in the panel's rows.
+- Each section has an icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
 - Sentence case; capitals only for small headings; no full stops on labels.
 - Look at it: take a screenshot and check the rules above before calling it done.

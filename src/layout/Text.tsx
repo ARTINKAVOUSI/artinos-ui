@@ -4,11 +4,11 @@ import { cx } from '../core/utils';
 /* ARTINOS Text and layout — the type roles and the two spacing primitives everything else is
    composed with, so a panel never needs a hand-set font size, margin or gap.
  *   Text    display · title · heading · subheading · overline · lead · body · note · caption ·
- *           label · value · quote · code, in a tone and a face
+ *           label · value · figure · quote · code, in a tone and a face
  *   Stack   a column whose gaps come from the space scale
  *   Inline  a row whose gaps come from the space scale */
 
-export type TextVariant = 'display' | 'title' | 'heading' | 'subheading' | 'overline' | 'kicker' | 'lead' | 'body' | 'note' | 'caption' | 'label' | 'value' | 'quote' | 'code';
+export type TextVariant = 'display' | 'title' | 'heading' | 'subheading' | 'overline' | 'kicker' | 'lead' | 'body' | 'note' | 'caption' | 'label' | 'value' | 'figure' | 'quote' | 'code';
 export type TextFace = 'sans' | 'serif' | 'mono';
 export type TextTone = 'hi' | 'mid' | 'low' | 'faint' | 'signal' | 'warn' | 'fault';
 
@@ -26,6 +26,7 @@ const TAGS: Record<TextVariant, ElementType> = {
   caption: 'p',
   label: 'span',
   value: 'span',
+  figure: 'p',
   quote: 'blockquote',
   code: 'code',
 };
@@ -36,7 +37,7 @@ export interface TextProps {
    *  name in prose) · subheading (a heading inside a group) · overline (a small label above a
    *  title, in the accent; kicker is the same in the ink) · lead (the opening paragraph) · body
    *  (a paragraph) · note (help and asides) · caption (a line under a figure) · label (the name
-   *  of a thing) · value (a figure in the mono) · quote (a pull quote in the serif) · code (inline
+   *  of a thing) · value (a figure in the mono) · figure (the one big number; a <small> inside is its unit) · quote (a pull quote in the serif; a <cite> inside is its source) · code (inline
    *  code). Default body. Inside any of them, strong, em, mark, code, kbd and a are styled. */
   variant?: TextVariant;
   /** The face: sans (default for most roles), serif (an editorial title or quote), mono. */

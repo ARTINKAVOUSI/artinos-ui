@@ -64,6 +64,8 @@ export { Badge } from './actions/Badge';
 export type { BadgeProps } from './actions/Badge';
 
 // display
+export { Tag } from './actions/Tag';
+export type { TagProps } from './actions/Tag';
 export { Meter } from './display/Meter';
 export type { MeterProps } from './display/Meter';
 export { Sparkline } from './display/Sparkline';
@@ -81,6 +83,8 @@ export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
 export { ItemList, ItemRow } from './layout/ItemRow';
+export { StatStrip } from './layout/StatStrip';
+export type { StatStripProps, StatStripItem } from './layout/StatStrip';
 export { moveBetween } from './core/sortable';
 export type { SortPlace } from './core/sortable';
 export { Inline, Stack, Text } from './layout/Text';

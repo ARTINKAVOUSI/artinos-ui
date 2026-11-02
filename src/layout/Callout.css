@@ -15,6 +15,23 @@
     inset 0 0 0 1px color-mix(in srgb, var(--_tone) 18%, transparent);
   color: var(--ar-text-mid);
 }
+/* a note holds no state: a dashed frame and no fill, so it never competes with a warning */
+.ar-callout[data-tone='note'] {
+  background: none;
+  box-shadow: none;
+  outline: 1px dashed var(--ar-line-strong);
+  outline-offset: -1px;
+}
+.ar-callout[data-tone='note'] .ar-callout__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
+  color: var(--ar-text-hi);
+}
+.ar-callout[data-tone='note'] .ar-callout__title {
+  line-height: 22px;
+}
 .ar-callout[data-tone='tip'] {
   --_tone: var(--ar-signal);
 }
@@ -43,7 +60,7 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: var(--ar-weight-medium) var(--ar-text-md) / 18px var(--ar-font-ui);
+  font: var(--ar-weight-bold) var(--ar-text-md) / 18px var(--ar-font-ui);
   color: var(--ar-text-hi);
 }
 .ar-callout__text {
@@ -63,6 +80,13 @@
 }
 .ar-callout__text :where(strong, b) {
   font-weight: var(--ar-weight-medium);
+  color: var(--ar-text-hi);
+}
+.ar-callout__text :where(kbd) {
+  padding: 1px 5px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--ar-line-strong), 0 1px 0 var(--ar-line);
+  font: var(--ar-weight-medium) var(--ar-caps-xs) / 1.3 var(--ar-font-code);
   color: var(--ar-text-hi);
 }
 .ar-callout__text :where(code) {

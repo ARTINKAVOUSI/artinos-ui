@@ -141,23 +141,33 @@
   /* a serif for the editorial voice: quotes, and titles set as editorial */
   --ar-font-serif: 'Instrument Serif', Newsreader, Georgia, 'Times New Roman', serif;
   /* titles at 2xl and up; a type collection may give it a serif or a display face */
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: var(--ar-font-serif);
 
   /* weights — the families are loaded at exactly these; anything between is faked by the browser */
   --ar-weight-thin: 200; /* display: hero figures, big readouts */
   --ar-weight-light: 300; /* the default: prose, titles, values */
   --ar-weight-regular: 400; /* emphasis inside prose; a theme's firmer values */
   --ar-weight-medium: 500; /* caps: labels, kickers, marks */
+  --ar-weight-bold: 600; /* reading titles and strong text (Geist; a face without it shows its 500) */
   /* small sans text (xs–md, inputs, rows, menus): light strokes thin out on glass at these sizes */
   --ar-weight-text: var(--ar-weight-regular);
 
   /* the sans voice: --ar-weight-text up to md, weight 300 (light) from lg up. Control text (labels, rows, buttons) uses the
      --ar-label-* and --ar-value-* tokens instead, which density and themes tune. */
+  /* the reading scale, for pages and prose (the Text roles): wide jumps, so a role shows at a
+     glance. Inside a Panel, Dock pane or Dialog, layout/Text.css sets it a size down. */
+  --ar-read-display: clamp(44px, 5.4vw, 68px);
+  --ar-read-title: 30px;
+  --ar-read-heading: 20px;
+  --ar-read-subheading: 14px;
+  --ar-read-lead: 22px;
+  --ar-read-body: 14px;
+  --ar-read-quote: 28px;
+  --ar-read-figure: 48px;
   --ar-text-xs: 11px; /* hints, captions, port names */
   --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
   --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
-  --ar-text-lead: 15px; /* a lead paragraph: the opening lines of a view */
   --ar-text-xl: 17px; /* panel titles */
   --ar-text-2xl: 22px; /* page section titles */
   --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */

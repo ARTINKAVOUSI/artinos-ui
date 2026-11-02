@@ -28,7 +28,7 @@
 }
 .ar-panel__head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--ar-space-5);
   padding: calc(var(--ar-panel-pad-y) + 2px) var(--ar-panel-pad-x) var(--ar-space-5);
 }
@@ -38,15 +38,19 @@
   gap: 4px;
   min-width: 0;
 }
+/* the panel's name: the strongest text it holds, with what it is in the mono under it */
 .ar-panel__title {
-  font-size: var(--ar-text-xl);
-  font-weight: var(--ar-weight-light);
-  letter-spacing: var(--ar-track-title);
+  font-size: var(--ar-text-2xl);
+  font-weight: var(--ar-weight-bold);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   color: var(--ar-text-hi);
 }
 .ar-panel__subtitle {
-  font-size: var(--ar-text-sm);
+  font-family: var(--ar-font-code);
+  font-size: var(--ar-text-xs);
   font-weight: var(--ar-weight-text);
+  line-height: 1.3;
   color: var(--ar-text-low);
 }
 .ar-panel__actions {
@@ -74,6 +78,27 @@
   margin-top: max(0px, calc(var(--ar-group-gap) - var(--ar-row-gap)));
   padding-top: calc(var(--ar-group-gap) * 0.75);
   border-top: 1px solid var(--ar-line);
+}
+/* cards carry their own edges: no line and no air, only a gap, and the panel's gutter tightens so
+   the cards hold the width; the head keeps a little more, level with the cards' own content */
+.ar-panel__body > .ar-section[data-variant='card'] + :is(.ar-section, .ar-section-group, .ar-panel),
+.ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + .ar-section[data-variant='card'] {
+  margin-top: 4px;
+  padding-top: 0;
+  border-top: 0;
+}
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) {
+  --_gutter: calc(var(--ar-panel-pad-x) * 0.6);
+}
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) > .ar-panel__head {
+  padding-inline: calc(var(--_gutter) + 4px);
+}
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) > .ar-panel__fold > .ar-panel__inner > .ar-panel__body {
+  padding-inline: var(--_gutter);
+}
+.ar-panel__body > .ar-stat-strip + *,
+.ar-panel__body > * + .ar-callout {
+  margin-top: 4px;
 }
 /* a SectionGroup spaces its sections itself (a dock pane's sections, a sortable list): only the line
    and the air under it; cards carry their own edges and keep none */
@@ -187,8 +212,8 @@ button.ar-section__trigger:focus-visible {
   /* the group's heading: the strongest text in the panel body, a step above the rows' labels and
      values (a collection may set it in tracked capitals) */
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) + 1px + var(--ar-head-bump));
-  font-weight: var(--ar-weight-medium);
+  font-size: calc(var(--ar-voice-size) + 2px + var(--ar-head-bump));
+  font-weight: var(--ar-weight-bold);
   letter-spacing: var(--ar-head-tracking);
   text-transform: var(--ar-head-case);
   color: var(--ar-text-hi);
@@ -196,7 +221,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section[data-heading='text'] .ar-section__title {
   font-family: var(--ar-font-ui);
   font-size: var(--ar-text-lg);
-  font-weight: var(--ar-weight-light);
+  font-weight: var(--ar-weight-bold);
   letter-spacing: var(--ar-track-text);
   text-transform: none;
   color: var(--ar-text-hi);
@@ -204,23 +229,30 @@ button.ar-section__trigger:focus-visible {
 .ar-section__rule {
   flex: 1;
   align-self: stretch;
+  order: 1;
 }
 .ar-section__led {
   height: 8px;
 }
 .ar-section__count {
-  /* in a narrow column the note gives way long before the title does */
+  /* a small fact at the end of the title row, set like a Tag; in a narrow column it gives way
+     long before the title does */
+  order: 2;
   flex: 0 100 auto;
   min-width: 0;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
-  font-weight: var(--ar-weight-medium);
+  font-family: var(--ar-font-code);
+  font-size: var(--ar-caps-xs);
+  font-weight: var(--ar-weight-text);
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  color: var(--ar-text-low);
+  color: var(--ar-text-mid);
   transition:
     color var(--ar-dur-state) var(--ar-ease),
     opacity var(--ar-dur-surface) var(--ar-ease);
@@ -302,12 +334,15 @@ button.ar-section__trigger:focus-visible {
   min-height: var(--ar-h);
   /* a plain value (a readout, a state in words) reads as the row's answer: the panel's brightest
      ink at body size; controls inside keep their own type */
-  font: var(--ar-weight-text) var(--ar-text-md) / var(--ar-leading-snug) var(--ar-font-ui);
+  font: var(--ar-weight-medium) var(--ar-text-md) / var(--ar-leading-snug) var(--ar-font-ui);
   color: var(--ar-text-hi);
 }
 .ar-field__control > * {
   flex: 1 1 0;
   min-width: 0;
+}
+.ar-field__control > .ar-tag {
+  flex: none;
 }
 .ar-field__control > .ar-switch--compact {
   flex: none;
@@ -391,18 +426,20 @@ button.ar-section__trigger:focus-visible {
 }
 
 /* ---------- Panel: icon, fold, variants, scrolling body ---------- */
+/* the panel's mark: a solid tile in the ink, the one heavy shape in the panel */
 .ar-panel__icon {
   display: grid;
   flex: none;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  margin-top: 1px;
-  color: var(--ar-text-low);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--ar-text-hi);
+  color: light-dark(#fff, #111);
 }
 .ar-panel__icon svg {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
 }
 :where(.ar-panel__toggle, .ar-panel__chevron) {
   all: unset;
@@ -478,6 +515,15 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-panel[data-variant='inset'] .ar-panel__title {
   font-size: var(--ar-text-lg);
+  font-weight: var(--ar-weight-medium);
+  letter-spacing: 0;
+}
+.ar-panel[data-variant='inset'] .ar-panel__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: none;
+  color: var(--ar-text-low);
 }
 .ar-panel[data-variant='inset'] .ar-panel__body {
   padding: 8px 14px 12px;
@@ -488,13 +534,15 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 14px;
-  height: 14px;
-  color: var(--ar-text-low);
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
+  color: var(--ar-text-hi);
 }
 .ar-section__icon svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 .ar-section__reset {
   --_tool: 18px;
@@ -512,10 +560,11 @@ button.ar-section__trigger:focus-visible {
 /* what the group is for: a quiet paragraph under its heading, set apart from the rows below */
 .ar-section__description {
   grid-column: 1 / -1;
-  margin: -2px 0 6px;
+  margin: -2px 0 4px;
   max-width: 60ch;
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-text) var(--ar-font-ui);
+  font: var(--ar-weight-text) var(--ar-text-sm) / 1.4 var(--ar-font-ui);
   color: var(--ar-text-low);
+  text-wrap: pretty;
 }
 /* columns: the rows become cells of a grid */
 .ar-section__body[data-columns] {
@@ -527,18 +576,21 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body[data-columns='3'] {
   --_cols: 3;
 }
-/* card: the group sits in its own soft inset card */
+/* card: the group sits on its own soft surface, so each part of a panel reads as a part */
 .ar-section[data-variant='card'] {
-  padding: 8px 10px 10px;
+  --_card-pad: max(8px, calc(var(--ar-panel-pad-x) * 0.6));
+  padding: calc(var(--_card-pad) - 2px) var(--_card-pad) var(--_card-pad);
   border-radius: var(--ar-radius-card);
-  background: color-mix(in srgb, var(--ar-text-hi) 3.5%, transparent);
-  box-shadow:
-    inset 0 0 0 1px var(--ar-line-subtle),
-    inset 0 1px 0 color-mix(in srgb, var(--ar-text-hi) 6%, transparent);
+  background: color-mix(in srgb, var(--ar-text-hi) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
   transition: background var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-section[data-variant='card']:not([data-open]) {
   padding-bottom: 4px;
+}
+/* a small name over a set of controls */
+.ar-section__body > .ar-type[data-variant='overline'] {
+  margin-top: 6px;
 }
 .ar-section[data-variant='card'][data-off] {
   background: color-mix(in srgb, var(--ar-text-hi) 1.5%, transparent);
@@ -553,7 +605,7 @@ button.ar-section__trigger:focus-visible {
 }
 /* cards carry their own edges, so they sit closer */
 .ar-section-group:has(> .ar-section[data-variant='card']) {
-  gap: var(--ar-space-4);
+  gap: calc(var(--ar-row-gap) + 4px);
 }
 .ar-section-group__bar {
   display: flex;

@@ -32,7 +32,7 @@
   --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: var(--ar-font-serif);
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
 }

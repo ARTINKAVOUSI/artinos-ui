@@ -353,6 +353,16 @@
 /* ---------- Badge: a small status plate ---------- */
 /* a recessed well like every value's, an LED in the state's colour, calm text: the state is
    carried by light, as everywhere in the family, not by a coloured wash */
+/* a small fact beside a value: quiet and neutral, no LED */
+.ar-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
+  font: var(--ar-weight-text) var(--ar-caps-xs) / 1.2 var(--ar-font-code);
+  white-space: nowrap;
+  color: var(--ar-text-mid);
+}
 .ar-badge {
   --_tone: var(--ar-text-low);
   box-sizing: border-box;

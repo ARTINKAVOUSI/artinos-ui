@@ -1,7 +1,7 @@
 /* 06 · Layout — one inspector: Panel, Section, Field and Tabs composed into a card, property
    rows and switchable groups beside it, and the dense control strip below. */
 import { useState } from 'react';
-import { Badge, Button, ChipGroup, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, PropertyRow, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, Switch, Tabs, Text, ToggleGroup } from '../../../src';
+import { Badge, Button, Callout, ChipGroup, ColorField, Field, IconButton, ItemList, ItemRow, NumberField, Panel, PropertyRow, RangeSlider, Section, SectionGroup, Segmented, Select, Slider, StatStrip, Switch, Tabs, Tag, Text, ToggleGroup } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { MaterialSection } from './demos';
 
@@ -114,21 +114,48 @@ function Inspector() {
 
 /** A dense panel as a real app builds one (a character's play panel): text readouts, notes,
  *  sub-groups, choices, chips with counts and a grid of actions, all in one column. */
+const character = (d: string, fill = 'none') => (
+  <svg viewBox="0 0 16 16" fill={fill} stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d={d} />
+  </svg>
+);
+
 function CharacterPanel() {
   const [kind, setKind] = useState('Moments');
   return (
-    <Panel className="sc-character" title="Play" subtitle="Blobby · live">
-      <Section title="Cast" description="Who is on stage as one formation: each emitter's part, what it does and how it answers sound.">
-        <Field label="Template">Custom</Field>
-        <Field label="Feels">exuberant · calm</Field>
-        <Field label="Intends">nothing: at ease</Field>
-        <Field label="Knows you">friend, visit 8</Field>
-        <PropertyRow label="Company" density="compact">
-          <Slider label="Company" defaultValue={0.19} format="percent" decimals={0} />
-        </PropertyRow>
+    <Panel
+      className="sc-character"
+      icon={character('M5 3.2v9.6L12.5 8z', 'currentColor')}
+      title="Play"
+      subtitle="Blobby · thick glass"
+      actions={
+        <Badge tone="live" dot>
+          Live
+        </Badge>
+      }
+    >
+      <StatStrip
+        items={[
+          { label: 'Curious', value: 66, unit: '%' },
+          { label: 'Visits', value: 8 },
+          { label: 'Reactivity', value: '1.23' },
+        ]}
+      />
+      <Section icon={character('M6 7.2a2.4 2.4 0 100-4.8 2.4 2.4 0 000 4.8zM1.8 13.5c.3-2.6 2-4 4.2-4s3.9 1.4 4.2 4M10.8 2.6a2.4 2.4 0 010 4.5M12 9.8c1.3.5 2 1.8 2.2 3.7')} title="Cast" count="Custom" description="Who is on stage, and how each part answers sound.">
+        <Field label="Feels">
+          <Tag>exuberant</Tag>
+          <Tag>calm</Tag>
+        </Field>
+        <Field label="Intends">Nothing, at ease</Field>
+        <Field label="Knows you">
+          Friend <Tag>visit 8</Tag>
+        </Field>
+        <Slider label="Company" defaultValue={0.19} format="percent" decimals={0} />
       </Section>
-      <Section title="Blobby" count="lead · thick glass">
-        <Field label="Doing">Curious · poke 2 · 66%</Field>
+      <Section icon={character('M8 2.2c3 0 5.6 2.3 5.6 5.5 0 3.5-2.6 6.1-5.7 6.1-3.2 0-5.5-2.5-5.5-5.7 0-3.3 2.6-5.9 5.6-5.9zM6 7v1M10 7v1')} title="Blobby" count="Lead">
+        <Field label="Doing">
+          Curious <Tag>poke 2</Tag>
+        </Field>
         <Field label="Sound">
           <Select options={['Auto · world', 'Mic', 'Off']} defaultValue="Auto · world" appearance="well" label="Sound" />
         </Field>
@@ -140,8 +167,9 @@ function CharacterPanel() {
         </Field>
         <Slider label="Reactivity gain" min={0} max={2} decimals={2} defaultValue={1.23} />
       </Section>
-      <Section title="Act" description="Everything it can do on a click: its moments by feeling, its whole-character acts, its body, its surprises.">
+      <Section icon={character('M9 1.8L3.5 9h4L7 14.2 12.5 7h-4z')} title="Act" description="Everything it can do on a click.">
         <Segmented options={['Moments', 'Body', 'Surprises', 'Eyes']} value={kind} onChange={setKind} label="Kind" />
+        <Text variant="overline">Feeling</Text>
         <ChipGroup
           label="Feeling"
           multiple={false}
@@ -154,6 +182,7 @@ function CharacterPanel() {
             { value: 'low', label: 'Low', count: 2 },
           ]}
         />
+        <Text variant="overline">Moments</Text>
         <div className="sc-character__acts">
           {['Hello', 'Wave', 'Joy', 'Giggle', 'Celebrate', 'Groove'].map((a) => (
             <Button key={a} size="sm">
@@ -161,8 +190,15 @@ function CharacterPanel() {
             </Button>
           ))}
         </div>
-        <Text variant="caption">By hand: double-click the stage and it comes over; stroke it three times and it melts.</Text>
       </Section>
+      <Callout title="By hand" icon={character('M5.5 7.5V3.2a1 1 0 012 0v3.6-1a1 1 0 012 0v1.4a1 1 0 012 0v3.3c0 2-1.4 3.5-3.5 3.5-1.6 0-2.5-.7-3.3-2L3.2 9.4a1 1 0 011.6-1.1z')}>
+        <p>
+          <kbd>Double-click</kbd> the stage and it comes over
+        </p>
+        <p>
+          <kbd>Stroke × 3</kbd> and it melts
+        </p>
+      </Callout>
     </Panel>
   );
 }

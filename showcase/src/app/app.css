@@ -1273,15 +1273,15 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-character__acts {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
 }
 
-/* the Typography specimen: the role ladder beside an article set with it */
+/* the Typography specimen: a page set at full scale beside a panel, then the role ladder */
 .sc-typo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  gap: 48px 40px;
   align-items: start;
 }
 @media (max-width: 900px) {
@@ -1289,21 +1289,28 @@ html::-webkit-scrollbar-thumb:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.sc-typo__figures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.sc-typo__figures .ar-type[data-variant='caption'] {
+  margin-top: 8px;
+}
 .sc-typo__ladder {
+  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
 }
 .sc-typo__row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 4px;
-  padding: 10px 0 11px;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 14px 0;
   border-top: 1px solid var(--ar-line-subtle);
 }
 .sc-typo__rule {
   font: var(--ar-text-xs) / 1.3 var(--ar-font-code);
   color: var(--ar-text-faint);
-}
-.sc-typo__article .ar-panel__body > .ar-stack {
-  margin-bottom: 4px;
 }
