@@ -13,6 +13,8 @@ export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
 export { ThemedPortal, themeScopeOf } from './core/portal';
 export { usePresence, useGlide, useFlip } from './core/motion';
+export { useFollower } from './core/reactive';
+export type { MotionProfile, MotionTuning, ReactiveMotion } from './core/reactive';
 export type { ThemeScope } from './core/portal';
 
 // continuous controls
@@ -68,6 +70,9 @@ export { Tag } from './actions/Tag';
 export type { TagProps } from './actions/Tag';
 export { Meter } from './display/Meter';
 export type { MeterProps } from './display/Meter';
+export { Spectrum } from './display/Spectrum';
+export type { SpectrumProps } from './display/Spectrum';
+export type { InstrumentTone, Zone } from './display/zones';
 export { Sparkline } from './display/Sparkline';
 export type { SparklineProps } from './display/Sparkline';
 export { Stat } from './display/Stat';

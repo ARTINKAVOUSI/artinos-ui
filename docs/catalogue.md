@@ -7,7 +7,7 @@ Contents:
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
 - [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge · Tag
-- [Display](#display): RollingValue · Stat · Meter · Progress · Sparkline
+- [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
@@ -48,7 +48,7 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | a group that can be turned off as a whole (an effect, a pass) | `Section` | `enabled` / `defaultEnabled` | the title row carries the on/off; the body folds |
 | a parameter that can be turned off alone (a post effect, a modifier) | `Slider` / `RangeSlider` | `toggleable` (default) | double-click the body; the value is kept |
 
-Read-only values go to [Display](#display): a figure that matters (with its change and trend) to `Stat`, a level to `Meter`, a task under way to `Progress`, a trend to `Sparkline`, a bare number to `RollingValue`.
+Read-only values go to [Display](#display): a figure that matters (with its change and trend) to `Stat`, a level to `Meter`, many levels at once (a frequency analysis) to `Spectrum`, a task under way to `Progress`, a trend to `Sparkline`, a bare number to `RollingValue`.
 
 ## Sliders
 
@@ -261,16 +261,19 @@ A status tag drawn as a wash and a hairline in its colour, never a solid fill. `
 
 ## Display
 
-Read-only instruments.
+Read-only instruments. All of them take `motion`, which says what the value is so the movement suits it: `'auto'` (default: measures the feed, exact at frame rate), `'instant'` (scrubbing, sync), `'audio'` (sound: instant rise, released fall), `'task'` (work under way), `'smooth'` (slow gauges), or `{ attack, release, refresh, roll }`.
 
-- **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change, all starting together and landing together on one baseline; a streaming value rolls short. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out). **RollingText** takes any readout string: only its numbers roll, the words stay still.
-- **Stat**: one figure that matters, for dashboards and status heads: label, the number large in the mono with its unit, `delta` with an arrow (`better` says which way is good, so it takes the signal or fault colour), a `trend` sparkline with an optional `threshold`, a `caption`. `framed` (default) is a quiet tile; `size="lg"` for the one hero number.
-- **Progress**: a task under way — label, percentage, a slim well whose fill glides every frame toward each new value, with a soft sheen travelling along it while it runs. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
-- **Meter**: a level in a thin well with a signal fill and a rolling readout. `value`, `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it); `peak` holds the highest value for a moment and lets it fall; `tone` `'live' | 'warm' | 'neutral'` cross-fades the fill.
-- **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`.
+- **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change, all starting together and landing together on one baseline; the roll is timed to the feed, and a stream too fast to land changes its digits without rolling. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out), `motion`. **RollingText** takes any readout string: only its numbers roll, the words stay still.
+- **Stat**: one figure that matters, for dashboards and status heads: label, the number large in the mono with its unit and `prefix`, `delta` with an arrow (`better` says which way is good, so it takes the signal or fault colour), a `trend` sparkline with an optional `threshold`, a `level` bar, `zones` that turn the figure as it crosses them, a `caption`. `framed` (default) is a quiet tile; `size="lg"` for the one hero number.
+- **Progress**: a task under way — label, percentage, a well whose fill paces itself to how often the work reports, with a soft sheen (`sheen`) travelling along it while it runs. `variant="ring"` for a compact ring with the percentage inside; `segments` for countable work; `buffer` for what is ready ahead of it; `size`, `tone`. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
+- **Meter**: a level in a well with a signal fill and a rolling readout. `value`, or `source` read every frame for fast signals; `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it) or `format`; `peak` holds the true peak for a moment and lets it fall; `segments` lights cells; `zones` paint ranges along the track, or with `zonePaint="level"` turn the whole fill; `origin` fills out from a centre (pan, difference); `marker` and `ticks` give it a scale; `orientation="vertical"`; `size` `'sm' | 'md' | 'lg' | 'xl'`; `tone` `'live' | 'warm' | 'neutral' | 'hot'` cross-fades the fill.
+- **Spectrum**: a bank of level bars for a frequency analysis or any many-channel signal. Hand `source` your analyser; it reads every frame without React, and gathers more bins than bars on a log `scale`, each bar showing its loudest bin. `bars`, `max` (255 for byte data), `peak` caps, `segments` for LED cells, `mirror` from a centre line, `zones`, `height`, `tone`. `motion` defaults to `'audio'`.
+- **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`; `motion`.
 
 ```tsx
 <Meter label="CPU" value={cpu} valueText={`${Math.round(cpu * 100)}%`} peak />
+<Meter label="Output" source={() => level.current} motion="audio" segments={28} peak zones={[{ from: 0.7, tone: 'warm' }, { from: 0.9, tone: 'hot' }]} />
+<Spectrum label="Spectrum" max={255} bars={48} peak source={() => (analyser.getByteFrequencyData(bins), bins)} />
 <Sparkline label="Frame time" values={frames} threshold={16.7} min={0} max={33} width={220} height={34} />
 <RollingValue text={fps.toFixed(0)} unit="fps" base={0} />
 ```

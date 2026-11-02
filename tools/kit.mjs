@@ -29,6 +29,7 @@ export const COMPONENTS = [
   { group: 'Actions', id: 'Badge', label: 'Badge', file: 'actions/Badge.tsx', note: 'status tag' },
   { group: 'Actions', id: 'Tag', label: 'Tag', file: 'actions/Tag.tsx', note: 'a small fact beside a value' },
   { group: 'Display', id: 'Meter', label: 'Meter', file: 'display/Meter.tsx', note: 'level bar' },
+  { group: 'Display', id: 'Spectrum', label: 'Spectrum', file: 'display/Spectrum.tsx', note: 'a bank of level bars for frequency and audio' },
   { group: 'Display', id: 'Sparkline', label: 'Sparkline', file: 'display/Sparkline.tsx', note: 'inline trend line' },
   { group: 'Display', id: 'Stat', label: 'Stat', file: 'display/Stat.tsx', note: 'a figure with its change and trend' },
   { group: 'Display', id: 'Progress', label: 'Progress', file: 'display/Progress.tsx', note: 'a task under way' },

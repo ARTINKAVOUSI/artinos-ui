@@ -1,6 +1,6 @@
 ---
 name: artinos-ui
-description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace and a NodeGraph editor) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
+description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Spectrum, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace and a NodeGraph editor) with 52 glass, frost, studio and luxe themes — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
 ---
 
 # ARTINOS UI in a project
@@ -117,7 +117,8 @@ Read `references/catalogue.md` first: it lists every *kind* of every component a
 | a dial in a tight spot · two coupled values | `Knob` · `XYPad` |
 | an exact number people type | `NumberField` |
 | on/off · flags · one of 2–4 · one of many · a colour · a file | `Switch` · `ToggleGroup` · `Segmented` · `Select` · `ColorField` · `FileDrop` |
-| a read-only level · trend · figure · task · key figure with its change | `Meter` · `Sparkline` · `RollingValue` · `Progress` · `Stat` |
+| a read-only level · frequency bars · trend · figure · task · key figure with its change | `Meter` · `Spectrum` · `Sparkline` · `RollingValue` · `Progress` · `Stat` |
+| a value that streams or must keep exact time (audio, scrubbing, telemetry) | the instrument's `motion` (`'audio'`, `'instant'`, default `'auto'`), and `source` instead of `value` when it changes faster than React should render |
 
 Conveniences that are easy to miss:
 - `format` (`percent`, `db`, `hz`, `angle`, `time`) and `unit` instead of hand-formatting;

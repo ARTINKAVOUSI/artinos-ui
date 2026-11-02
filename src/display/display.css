@@ -13,22 +13,41 @@
   --ar-meter-tone: var(--_tone);
   transition: --ar-meter-tone var(--ar-dur-surface) var(--ar-ease);
   --_tone: var(--ar-signal);
+  --_thick: 4px;
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
   height: var(--ar-h);
 }
-.ar-meter[data-tone='warm'] {
+.ar-meter[data-size='sm'] {
+  --_thick: 2px;
+}
+.ar-meter[data-size='lg'] {
+  --_thick: 8px;
+}
+.ar-meter[data-size='xl'] {
+  --_thick: 14px;
+}
+.ar-meter[data-tone='warm'],
+.ar-meter[data-zone='warm'] {
   --_tone: var(--ar-warn);
 }
-.ar-meter[data-tone='neutral'] {
+.ar-meter[data-tone='neutral'],
+.ar-meter[data-zone='neutral'] {
   --_tone: var(--ar-text-low);
+}
+.ar-meter[data-tone='hot'],
+.ar-meter[data-zone='hot'] {
+  --_tone: var(--ar-fault);
+}
+.ar-meter[data-zone='live'] {
+  --_tone: var(--ar-signal);
 }
 .ar-meter__track {
   position: relative;
   flex: 1;
-  height: 4px;
+  height: var(--_thick);
   border-radius: 999px;
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
@@ -46,7 +65,150 @@
   background: linear-gradient(90deg, color-mix(in srgb, var(--ar-meter-tone) 18%, transparent), color-mix(in srgb, var(--ar-meter-tone) 70%, transparent) 70%, var(--ar-meter-tone));
   background-size: max(1px, calc(var(--_p, 0) * 100%)) 100%;
   background-repeat: no-repeat;
-  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0 round 999px);
+  clip-path: inset(0 calc((1 - var(--_hi, var(--_p, 0))) * 100%) 0 calc(var(--_lo, 0) * 100%) round 999px);
+}
+/* zones painted along the track: the fill only reveals them, so a colour stays where it belongs */
+.ar-meter[data-bands] .ar-meter__fill {
+  background: var(--_bands);
+}
+/* out from an origin: an even tone, since the bright end could be either side */
+.ar-meter[data-origin] .ar-meter__fill {
+  background: var(--ar-meter-tone);
+}
+/* a heavy bar carries a fine line for a tip, not a dot wider than itself */
+.ar-meter:is([data-size='lg'], [data-size='xl']) .ar-meter__tip {
+  width: 2px;
+  height: calc(var(--_thick) + 2px);
+  margin: calc(var(--_thick) / -2 - 1px) 0 0 -1px;
+  border-radius: 1px;
+}
+/* a reference tick, or the line an origin fill grows from */
+.ar-meter__mark {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: calc(var(--_at) * 100%);
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--ar-tick-major);
+  pointer-events: none;
+}
+.ar-meter__mark:not([data-origin]) {
+  background: var(--ar-text-hi);
+  opacity: 0.8;
+}
+.ar-meter__ticks {
+  position: absolute;
+  top: calc(100% + 3px);
+  right: 0;
+  left: 0;
+  height: 3px;
+  background:
+    linear-gradient(90deg, var(--ar-tick-major) 1px, transparent 0) 0 0 / calc((100% - 1px) / var(--_ticks)) 100%;
+  pointer-events: none;
+}
+/* lit cells: the same mask over the fill and over the unlit cells behind it */
+.ar-meter[data-segmented] {
+  --_cells: linear-gradient(90deg, #000 calc(100% - 2px), transparent 0) 0 0 / calc((100% + 2px) / var(--_n)) 100%;
+}
+.ar-meter[data-segmented]:not([data-size]) {
+  --_thick: 6px;
+}
+.ar-meter[data-segmented] .ar-meter__track {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.ar-meter[data-segmented] .ar-meter__track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  -webkit-mask: var(--_cells);
+  mask: var(--_cells);
+}
+.ar-meter[data-segmented] .ar-meter__fill {
+  background: var(--_bands, var(--ar-meter-tone));
+  border-radius: 0;
+  clip-path: inset(0 calc((1 - var(--_hi, var(--_p, 0))) * 100%) 0 calc(var(--_lo, 0) * 100%));
+  -webkit-mask: var(--_cells);
+  mask: var(--_cells);
+}
+/* the peak is a lit cell of its own */
+.ar-meter[data-segmented] .ar-meter__peak {
+  top: 0;
+  bottom: 0;
+  width: calc((100cqw + 2px) / var(--_n) - 2px);
+  margin-left: 0;
+  border-radius: 0;
+  opacity: 1;
+}
+/* upright: label under, reading over, the level rising through the track */
+.ar-meter[data-orientation='vertical'] {
+  flex-direction: column-reverse;
+  gap: 6px;
+  width: max-content;
+  height: var(--ar-meter-len, 132px);
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__track {
+  flex: 1;
+  width: var(--_thick);
+  height: auto;
+  min-height: 0;
+  container-type: size;
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__fill {
+  background-image: linear-gradient(0deg, color-mix(in srgb, var(--ar-meter-tone) 18%, transparent), color-mix(in srgb, var(--ar-meter-tone) 70%, transparent) 70%, var(--ar-meter-tone));
+  background-size: 100% max(1px, calc(var(--_p, 0) * 100%));
+  background-position: 0 100%;
+  clip-path: inset(calc((1 - var(--_hi, var(--_p, 0))) * 100%) 0 calc(var(--_lo, 0) * 100%) 0 round 999px);
+}
+.ar-meter[data-orientation='vertical'][data-bands] .ar-meter__fill {
+  background: var(--_bands);
+}
+.ar-meter[data-orientation='vertical'][data-segmented] {
+  --_cells: linear-gradient(0deg, #000 calc(100% - 2px), transparent 0) 0 100% / 100% calc((100% + 2px) / var(--_n));
+}
+.ar-meter[data-orientation='vertical'][data-segmented] .ar-meter__fill {
+  clip-path: inset(calc((1 - var(--_hi, var(--_p, 0))) * 100%) 0 calc(var(--_lo, 0) * 100%) 0);
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__tip {
+  top: auto;
+  bottom: 0;
+  left: 50%;
+  margin: 0 0 -3px -3px;
+  transform: translateY(calc(var(--_p, 0) * -100cqh));
+}
+.ar-meter[data-orientation='vertical']:is([data-size='lg'], [data-size='xl']) .ar-meter__tip {
+  left: -1px;
+  width: calc(var(--_thick) + 2px);
+  height: 2px;
+  margin: 0 0 -1px;
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__peak {
+  top: auto;
+  right: -3px;
+  bottom: 0;
+  left: -3px;
+  width: auto;
+  height: 1.5px;
+  margin: 0 0 -1px;
+}
+.ar-meter[data-orientation='vertical'][data-segmented] .ar-meter__peak {
+  right: 0;
+  left: 0;
+  height: calc((100cqh + 2px) / var(--_n) - 2px);
+  margin: 0;
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__label {
+  width: auto;
+  text-align: center;
+}
+.ar-meter[data-orientation='vertical'] .ar-meter__value {
+  min-width: 0;
+  text-align: center;
 }
 /* a soft glowing tip rides the leading edge */
 .ar-meter__tip {
@@ -89,6 +251,70 @@
   color: var(--ar-value-ink);
 }
 
+/* ---------- Spectrum: a bank of level bars, written directly every frame ---------- */
+.ar-spectrum {
+  --_tone: var(--ar-signal);
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--ar-spectrum-gap, 2px);
+  width: 100%;
+  height: var(--_h);
+  contain: layout paint;
+}
+.ar-spectrum[data-tone='warm'] {
+  --_tone: var(--ar-warn);
+}
+.ar-spectrum[data-tone='neutral'] {
+  --_tone: var(--ar-text-low);
+}
+.ar-spectrum[data-tone='hot'] {
+  --_tone: var(--ar-fault);
+}
+.ar-spectrum[data-segmented] {
+  -webkit-mask: linear-gradient(0deg, #000 calc(100% - 2px), transparent 0) 0 100% / 100% calc((100% + 2px) / var(--_n));
+  mask: linear-gradient(0deg, #000 calc(100% - 2px), transparent 0) 0 100% / 100% calc((100% + 2px) / var(--_n));
+}
+.ar-spectrum__bar {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 1.5px;
+  background: var(--ar-trough);
+}
+.ar-spectrum[data-segmented] .ar-spectrum__bar {
+  border-radius: 0;
+}
+.ar-spectrum__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--_tone) 45%, transparent), var(--_tone));
+}
+.ar-spectrum[data-mirror] .ar-spectrum__fill {
+  background: linear-gradient(0deg, color-mix(in srgb, var(--_tone) 45%, transparent), var(--_tone) 50%, color-mix(in srgb, var(--_tone) 45%, transparent));
+}
+.ar-spectrum[data-bands] .ar-spectrum__fill {
+  background: var(--_bands);
+}
+/* a full-height layer whose top edge is the cap: a percent translate needs no measuring */
+.ar-spectrum__cap {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.ar-spectrum__cap::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--ar-value-ink-hi);
+  opacity: 0.85;
+}
+.ar-spectrum[data-segmented] .ar-spectrum__cap::before {
+  height: calc((var(--_h) + 2px) / var(--_n) - 2px);
+}
+
 /* ---------- Sparkline ---------- */
 .ar-sparkline {
   display: block;
@@ -101,6 +327,9 @@
 }
 .ar-sparkline[data-tone='neutral'] {
   color: var(--ar-text-low);
+}
+.ar-sparkline[data-tone='hot'] {
+  color: var(--ar-fault);
 }
 .ar-sparkline__line {
   fill: none;
@@ -178,6 +407,21 @@
 .ar-stat[data-tone='neutral'] {
   --_tone: var(--ar-text-low);
 }
+.ar-stat[data-tone='hot'] {
+  --_tone: var(--ar-fault);
+}
+/* past a zone, the figure itself says so */
+.ar-stat[data-zoned] .ar-stat__value {
+  color: color-mix(in srgb, var(--_tone) 82%, var(--ar-text-hi));
+}
+.ar-stat__prefix {
+  margin-right: 0.08em;
+  font-size: 0.62em;
+  color: var(--ar-text-low);
+}
+.ar-stat__level {
+  height: 10px;
+}
 .ar-stat[data-framed] {
   padding: 12px 14px 12px;
   border-radius: var(--ar-radius-card);
@@ -209,6 +453,7 @@
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ar-text-hi);
+  transition: color var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-stat[data-size='lg'] .ar-stat__value {
   font-size: calc(var(--ar-value-size) * 3);
@@ -261,11 +506,25 @@
 /* ---------- Progress: a task under way ---------- */
 .ar-progress {
   --_tone: var(--ar-signal);
+  --_thick: 4px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
 }
+.ar-progress[data-size='sm'] {
+  --_thick: 2px;
+}
+.ar-progress[data-size='lg'] {
+  --_thick: 8px;
+}
+.ar-progress[data-tone='warm'] {
+  --_tone: var(--ar-warn);
+}
+.ar-progress[data-tone='neutral'] {
+  --_tone: var(--ar-text-low);
+}
+.ar-progress[data-tone='hot'],
 .ar-progress[data-status='error'] {
   --_tone: var(--ar-fault);
 }
@@ -294,7 +553,7 @@
 .ar-progress__track {
   position: relative;
   display: block;
-  height: 4px;
+  height: var(--_thick);
   border-radius: 999px;
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
@@ -336,8 +595,137 @@
 .ar-progress:is([data-status], [data-indeterminate]) .ar-progress__tip {
   opacity: 0;
 }
+/* what is buffered ahead of the work: the same well, a quieter fill */
+.ar-progress__buffer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--_tone) 24%, transparent);
+  clip-path: inset(0 calc((1 - var(--_b, 0)) * 100%) 0 0 round 999px);
+  transition: clip-path var(--ar-dur-surface) var(--ar-ease);
+}
+/* in steps: cells over the fill and over the unlit well behind it */
+.ar-progress[data-segmented] {
+  --_cells: linear-gradient(90deg, #000 calc(100% - 2px), transparent 0) 0 0 / calc((100% + 2px) / var(--_n)) 100%;
+}
+.ar-progress[data-segmented]:not([data-size]) {
+  --_thick: 6px;
+}
+.ar-progress[data-segmented] .ar-progress__track {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.ar-progress[data-segmented] .ar-progress__track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ar-trough);
+  box-shadow: var(--ar-well);
+  -webkit-mask: var(--_cells);
+  mask: var(--_cells);
+}
+.ar-progress[data-segmented] .ar-progress__fill {
+  background: var(--_tone);
+  border-radius: 0;
+  clip-path: inset(0 calc((1 - var(--_p, 0)) * 100%) 0 0);
+  -webkit-mask: var(--_cells);
+  mask: var(--_cells);
+}
+/* a heavy bar carries a fine line for a tip */
+.ar-progress[data-size='lg'] .ar-progress__tip {
+  width: 2px;
+  height: calc(var(--_thick) + 2px);
+  margin: calc(var(--_thick) / -2 - 1px) 0 0 -1px;
+  border-radius: 1px;
+}
+/* the ring: the percentage inside, the label and caption beside it */
+.ar-progress[data-variant='ring'] {
+  --_ring: 56px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.ar-progress[data-variant='ring'][data-size='sm'] {
+  --_ring: 36px;
+}
+.ar-progress[data-variant='ring'][data-size='lg'] {
+  --_ring: 88px;
+}
+.ar-progress__ring {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--_ring);
+  height: var(--_ring);
+}
+.ar-progress__ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+.ar-progress__ring-well,
+.ar-progress__ring-arc {
+  fill: none;
+  stroke-width: 2.5;
+}
+.ar-progress[data-size='sm'] :is(.ar-progress__ring-well, .ar-progress__ring-arc) {
+  stroke-width: 3.5;
+}
+.ar-progress[data-size='lg'] :is(.ar-progress__ring-well, .ar-progress__ring-arc) {
+  stroke-width: 2;
+}
+.ar-progress__ring-well {
+  stroke: color-mix(in srgb, var(--ar-text-hi) 12%, transparent);
+}
+.ar-progress__ring-arc {
+  stroke: var(--_tone);
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--_tone) 50%, transparent));
+}
+.ar-progress[data-indeterminate] .ar-progress__ring-arc {
+  stroke-dasharray: 0.26 0.74;
+  stroke-dashoffset: 0;
+  transform-origin: 50% 50%;
+  animation: ar-progress-spin 1.1s linear infinite;
+}
+@keyframes ar-progress-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ar-progress__ring-value {
+  position: relative;
+  color: var(--ar-value-ink);
+}
+.ar-progress[data-size='lg'] .ar-progress__ring-value {
+  font-size: calc(var(--ar-value-size) * 1.6);
+  font-weight: var(--ar-weight-light);
+}
+.ar-progress[data-size='sm'] .ar-progress__ring-value {
+  font-size: calc(var(--ar-value-size) - 2px);
+}
+.ar-progress[data-size='sm'] .ar-progress__ring-value .ar-roll__unit {
+  display: none;
+}
+.ar-progress[data-status='error'] .ar-progress__ring-value {
+  color: var(--ar-fault);
+}
+.ar-progress__side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
 /* running: a soft sheen travels along the fill, so a task that waits still looks alive */
-.ar-progress:not([data-status]):not([data-indeterminate]) .ar-progress__fill::after {
+.ar-progress[data-sheen]:not([data-status]):not([data-indeterminate]) .ar-progress__fill::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -353,7 +741,10 @@
     background-position: -100% 0;
   }
 }
-/* unknown length: a segment sweeps across, easing in and out of each pass */
+/* unknown length: a segment sweeps across, easing in and out of each pass, inside the well */
+.ar-progress[data-indeterminate] .ar-progress__track {
+  overflow: hidden;
+}
 .ar-progress[data-indeterminate] .ar-progress__fill {
   right: auto;
   width: 38%;
@@ -396,5 +787,8 @@
   .ar-progress__fill::after {
     animation: none !important;
     opacity: 0;
+  }
+  .ar-progress[data-indeterminate] .ar-progress__ring-arc {
+    animation: none;
   }
 }

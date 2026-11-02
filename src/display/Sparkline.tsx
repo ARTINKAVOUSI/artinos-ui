@@ -2,7 +2,9 @@
 import { useId, useLayoutEffect, useRef } from 'react';
 import { spring, useFrames } from '../core/motion';
 import type { Spring } from '../core/motion';
+import { FRAME_GAP, type ReactiveMotion } from '../core/reactive';
 import { reducedMotion } from '../core/utils';
+import type { InstrumentTone } from './zones';
 
 export interface SparklineProps {
   /** Samples, oldest first. */
@@ -16,7 +18,9 @@ export interface SparklineProps {
   fill?: boolean;
   /** Horizontal reference line, e.g. a 16.7ms budget. */
   threshold?: number;
-  tone?: 'live' | 'warm' | 'neutral';
+  tone?: InstrumentTone;
+  /** Default 'auto': scrolls smoothly between slow samples and draws a frame-rate feed exactly. 'instant' or 'audio' never interpolate. */
+  motion?: ReactiveMotion;
   /** Accessible summary. */
   label: string;
   className?: string;
@@ -74,9 +78,10 @@ const fitted = (values: readonly number[], min?: number, max?: number): [number,
  * steady speed: it plays back a moment behind the newest sample, interpolating between the times
  * the samples actually arrived and easing the speed on a spring, so uneven updates never stall,
  * jump or lurch it; a fitted range eases to
- * new extremes; the head rides the line's right edge. Static data draws once and stays still.
+ * new extremes; the head rides the line's right edge. A feed at frame rate needs none of that and
+ * is drawn exactly, newest sample at the edge. Static data draws once and stays still.
  */
-export function Sparkline({ values, min, max, width = 120, height = 28, fill = true, threshold, tone = 'live', label, className }: SparklineProps) {
+export function Sparkline({ values, min, max, width = 120, height = 28, fill = true, threshold, tone = 'live', motion = 'auto', label, className }: SparklineProps) {
   const uid = useId().replace(/:/g, '');
   const gradient = uid + 'g';
   const clip = uid + 'c';
@@ -115,7 +120,7 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
     const s = st.current;
     if (!s || s.values.length < 2) return false;
     const now = performance.now();
-    const reduced = reducedMotion();
+    const reduced = reducedMotion() || motion === 'instant' || motion === 'audio' || s.interval <= FRAME_GAP;
     const [lo, hi] = fitted(s.values, min, max);
     if (reduced) {
       s.lo = { x: lo, v: 0 };
@@ -143,7 +148,7 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
     }
     // the spring evens out uneven arrivals: the speed changes gently instead of per segment
     if (reduced || dt === 0 && s.play.x === 0) s.play = { x: shown, v: 0 };
-    else spring(s.play, shown, dt, 400);
+    else spring(s.play, shown, dt, Math.min(400, s.interval * 1.2));
     const offset = Math.min(s.lead.length, Math.max(0, last.seq - s.play.x));
     const g = draw(s.values, s.lead, s.lo.x, s.hi.x, offset, width, height, threshold);
     lineRef.current?.setAttribute('d', g.line);
@@ -170,7 +175,7 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
       if (k) {
         const prev = s.arrivals[s.arrivals.length - 1];
         // after a pause, pace the first new sample as if it came on time instead of leaping
-        if (prev.t && now - prev.t < s.interval * 4) s.interval = Math.min(2000, Math.max(40, s.interval * 0.75 + (now - prev.t) * 0.25));
+        if (prev.t && now - prev.t < s.interval * 4) s.interval = Math.min(2000, Math.max(8, s.interval * 0.75 + (now - prev.t) * 0.25));
         else s.arrivals.push({ seq: prev.seq, t: now - s.interval });
         s.seq += k;
         s.arrivals.push({ seq: s.seq, t: now });

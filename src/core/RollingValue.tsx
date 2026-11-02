@@ -1,5 +1,6 @@
 'use client';
-import { memo, useEffect, useLayoutEffect, useRef } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { newCadence, noteArrival, refreshFor, rollFor, type Cadence, type ReactiveMotion } from './reactive';
 import { reducedMotion } from './utils';
 
 /* Rolling readout — only the digits that change move, in the direction of change.
@@ -11,6 +12,11 @@ import { reducedMotion } from './utils';
  * baseline. An interrupted roll resumes from the drum's live position; on finish the
  * strip re-normalises to the middle repeat so it never runs out. Digits past `base`
  * decimals grow in and out.
+ *
+ * The roll is timed to the feed so a digit lands before the next reading comes: a value that
+ * changes now and then takes the full roll, a stream rolls shorter and passes fewer digits on
+ * the way, and past the point where a roll could land the digit simply changes. In a stream each
+ * column keeps its own pace, so the last digit cuts while the slower ones ahead of it still roll.
  */
 
 const CELL = 1.3; // em — the readout line-height
@@ -19,28 +25,30 @@ const MASK = 'linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transp
 const ROLL = 'cubic-bezier(.22,1,.36,1)';
 const isDigit = (c: string) => c >= '0' && c <= '9';
 
-function offsetY(el: HTMLElement) {
-  const m = getComputedStyle(el).transform;
-  if (!m || m === 'none') return 0;
-  const v = m.match(/matrix.*\((.+)\)/);
-  if (!v) return 0;
-  const a = v[1].split(',').map(Number);
-  return a.length === 6 ? a[5] : a[13] || 0;
-}
+/** A column slower than the stream it is in may roll this long, however fast the digits after it;
+ *  with less time than the cut it changes without rolling, so a stream reads as numbers, not motion. */
+const COLUMN_ROLL = 140;
+const COLUMN_CUT = 80;
+/** A roll passes about one digit in this many ms; further than that it is a blur, not a reading. */
+const MS_PER_DIGIT = 60;
 
 interface SlotProps {
   ch: string;
   dir: number;
   dur: number;
+  /** The value streams: this column times its roll by its own pace. */
+  stream: boolean;
   grow: boolean;
 }
 
-const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
+const Slot = memo(function Slot({ ch, dir, dur: base, stream, grow }: SlotProps) {
   const host = useRef<HTMLSpanElement>(null);
   const strip = useRef<HTMLSpanElement>(null);
   const prev = useRef(ch);
   const anim = useRef<Animation | null>(null);
   const pos = useRef(isDigit(ch) ? +ch + 10 : 10);
+  const pace = useRef<Cadence>(newCadence());
+  const span = useRef({ from: 0, to: 0 });
 
   const place = (i: number) => {
     if (strip.current) strip.current.style.transform = `translateY(${-i * CELL}em)`;
@@ -73,6 +81,9 @@ const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
     if (p === ch || !isDigit(ch)) return;
     const s = strip.current;
     if (!s || !host.current) return;
+    noteArrival(pace.current, performance.now());
+    const own = Math.min(COLUMN_ROLL, pace.current.interval * 0.6);
+    const dur = stream ? (own < COLUMN_CUT ? 0 : own) : base;
     const target = +ch;
     if (!isDigit(p) || reducedMotion() || !dur || !s.animate) {
       anim.current?.cancel();
@@ -82,10 +93,11 @@ const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
       place(pos.current);
       return;
     }
-    const H = host.current.getBoundingClientRect().height || 14;
     let cur = pos.current;
     if (anim.current) {
-      cur = -offsetY(s) / H;
+      // where the drum is, from the animation's own clock: asking the page would force a layout
+      const done = anim.current.effect?.getComputedTiming().progress ?? 1;
+      cur = span.current.from + (span.current.to - span.current.from) * done;
       anim.current.cancel();
       anim.current = null;
     }
@@ -96,7 +108,11 @@ const Slot = memo(function Slot({ ch, dir, dur, grow }: SlotProps) {
     cur += shift;
     tgt += shift;
     pos.current = tgt;
+    // short of time, start nearer: the new digit slides in instead of a blur of those between
+    const reach = Math.max(1, dur / MS_PER_DIGIT);
+    if (Math.abs(tgt - cur) > reach) cur = tgt - Math.sign(tgt - cur) * reach;
     const travel = Math.abs(tgt - cur);
+    span.current = { from: cur, to: tgt };
     place(tgt);
     rolling(true);
     const a = s.animate(
@@ -136,43 +152,58 @@ export interface RollingValueProps {
   unit?: string;
   /** Direction of the last change: 1 rolls up, -1 rolls down. Default: read from the numbers. */
   dir?: number;
-  /** Short motion while the hand is on the control. Default: on while the value changes rapidly. */
+  /** Hold the roll short while the hand is on the control. */
   fast?: boolean;
   /** Canonical decimal count — digits beyond it grow in and out. */
   base?: number;
+  /** How the digits answer the feed. Default 'auto': fitted to how often the text changes. */
+  motion?: ReactiveMotion;
   className?: string;
 }
 
 const numberIn = (s: string) => parseFloat(s.replace(/−/g, '-').replace(/[^\d.-]/g, ''));
 
-export function RollingValue({ text, unit, dir, fast, base = 2, className }: RollingValueProps) {
-  const prev = useRef(text);
-  // auto direction and pace: a value that rises rolls up; a value that streams (a meter,
-  // a live readout) rolls short so the digits stay legible
-  const auto = useRef({ dir: 1, at: 0, fast: false, seen: text });
-  if (text !== prev.current && text !== auto.current.seen) {
-    auto.current.seen = text; // once per change, even when a render repeats
-    const now = typeof performance !== 'undefined' ? performance.now() : 0;
-    const a = numberIn(text);
-    const b = numberIn(prev.current);
-    if (a !== b && !Number.isNaN(a) && !Number.isNaN(b)) auto.current.dir = a > b ? 1 : -1;
-    auto.current.fast = now - auto.current.at < 450; // sooner than a full roll would settle
-    auto.current.at = now;
+/** Faster than this the value counts as a stream, and its columns keep their own pace. */
+const STREAM = 200;
+const FAST_ROLL = 160;
+
+export function RollingValue({ text, unit, dir, fast, base = 2, motion = 'auto', className }: RollingValueProps) {
+  const st = useRef({ shown: text, shownAt: 0, seen: text, dir: 1, cadence: newCadence() });
+  const s = st.current;
+  const now = typeof performance !== 'undefined' ? performance.now() : 0;
+  if (text !== s.seen) {
+    s.seen = text; // once per change, even when a render repeats
+    noteArrival(s.cadence, now);
   }
-  const direction = dir ?? auto.current.dir;
-  const quick = fast ?? auto.current.fast;
-  const chars = Array.from(text);
-  const di = chars.indexOf('.') < 0 ? chars.length : chars.indexOf('.');
+  // a feed faster than the eye shows its latest reading at a pace digits can be read at; the last
+  // reading always lands, by the timer below when no newer one comes along
+  const refresh = refreshFor(motion, s.cadence.interval);
+  if (text !== s.shown && now - s.shownAt >= refresh - 1) {
+    const a = numberIn(text);
+    const b = numberIn(s.shown);
+    if (a !== b && !Number.isNaN(a) && !Number.isNaN(b)) s.dir = a > b ? 1 : -1;
+    s.shown = text;
+    s.shownAt = now;
+  }
+  const [, wake] = useState(0);
   useEffect(() => {
-    prev.current = text;
+    if (s.shown === s.seen) return;
+    const id = setTimeout(() => wake((n) => n + 1), Math.max(0, refresh - (performance.now() - s.shownAt)));
+    return () => clearTimeout(id);
   });
-  const dur = quick ? 160 : 460;
+  const direction = dir ?? s.dir;
+  const shownEvery = Math.max(refresh, s.cadence.interval);
+  const fitted = rollFor(motion, shownEvery);
+  const dur = Math.round(fast ? Math.min(FAST_ROLL, fitted) : fitted);
+  const stream = (motion === 'auto' || motion === 'task') && shownEvery < STREAM;
+  const chars = Array.from(s.shown);
+  const di = chars.indexOf('.') < 0 ? chars.length : chars.indexOf('.');
   return (
     <span className={'ar-roll' + (className ? ' ' + className : '')}>
-      <span className="ar-sr">{text + (unit ? ' ' + unit : '')}</span>
+      <span className="ar-sr">{s.shown + (unit ? ' ' + unit : '')}</span>
       {chars.map((c, i) => {
         const p = i - di;
-        return <Slot key={p} ch={c} dir={direction} dur={dur} grow={p > base} />;
+        return <Slot key={p} ch={c} dir={direction} dur={dur} stream={stream} grow={p > base} />;
       })}
       {unit ? (
         <span className="ar-roll__unit" aria-hidden="true" data-tight={unit === '°' || unit === '%' ? '' : undefined}>
@@ -191,15 +222,15 @@ const BARE_NUMBER = /^[-+−]?[\d.,:]+\s?[^\s\d]{0,4}$/;
  * sentence ("56.1 L · 50 of its seed") only the numbers roll and the words stay plain text,
  * so letters never sit in a digit's drum. No digits: plain text ("—", "true", a name).
  */
-export function RollingText({ text, base = 3, className }: { text: string; base?: number; className?: string }) {
+export function RollingText({ text, base = 3, motion, className }: { text: string; base?: number; motion?: ReactiveMotion; className?: string }) {
   if (!/\d/.test(text)) return <span className={className}>{text}</span>;
-  if (BARE_NUMBER.test(text.trim())) return <RollingValue text={text} base={base} className={className} />;
+  if (BARE_NUMBER.test(text.trim())) return <RollingValue text={text} base={base} motion={motion} className={className} />;
   const parts = [];
   let last = 0;
   let k = 0;
   for (const m of text.matchAll(NUMBER)) {
     if (m.index! > last) parts.push(<span key={'t' + k}>{text.slice(last, m.index)}</span>);
-    parts.push(<RollingValue key={'n' + k} text={m[0]} base={base} />);
+    parts.push(<RollingValue key={'n' + k} text={m[0]} base={base} motion={motion} />);
     last = m.index! + m[0].length;
     k++;
   }

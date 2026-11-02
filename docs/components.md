@@ -12,7 +12,7 @@ Contents:
 - Controls: Slider · RangeSlider · NumberField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
 - Layout: Panel / Section / SectionGroup / Field · Text · Stack / Inline · Tabs · PropertyRow · ItemList / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
-- Display: RollingValue · RollingText · Stat · Meter · Progress · Sparkline
+- Display: RollingValue · RollingText · Stat · Meter · Spectrum · Progress · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - Workspace: Dock · PanelBar · MetaBlock · NodeGraph · LiveGraphView · graph/gpu
 - Also: Motion · ArtinosTheme · shared types · recipes · requirements
@@ -211,8 +211,9 @@ Props:
 - `text` (required): the formatted number. Any characters other than digits stay still.
 - `unit`: a quieter unit after the number.
 - `dir`: 1 rolls up, -1 rolls down. Default: read from the numbers.
-- `fast`: a short roll. Default: on while the value changes more often than every 450ms, so a streaming readout stays legible.
+- `fast`: hold the roll short while the hand is on the control.
 - `base`: the canonical number of decimals (default 2). Digits beyond it grow in and out.
+- `motion`: how the digits answer the feed; see [Live motion](#live-motion). By default the roll is timed to how often the text changes: a lone change takes the full roll, a stream rolls shorter, and past about 10 changes a second the digit simply changes. A feed faster than about 15 a second shows its latest reading at that pace, and the last reading always lands. In a stream each column keeps its own pace.
 
 `RollingText` takes any readout string. A bare number with at most a short unit rolls as one readout; in a sentence (`56.1 L · 50 of its seed`) only the numbers roll and the words stay plain text in their own font; with no digits it is plain text (`—`, `true`, a name).
 
@@ -276,13 +277,39 @@ A choice in a form or a list. Props: `label`, `description` (a quieter line unde
 <Badge tone="live" dot>Live</Badge>
 ```
 
-## Stat · Meter · Progress · Sparkline
+## Stat · Meter · Spectrum · Progress · Sparkline
 
-Read-only instruments.
-- **Stat**: one figure that matters. Props: `label` (required), `value` (a formatted string or a number shown with `decimals`; its digits roll), `unit`, `delta` (signed change, drawn with an arrow) with `deltaText` (how it reads, e.g. `"+2.4%"`) and `better` (`'up'` default or `'down'`: the arrow takes the signal colour when the change is good, the fault colour when not), `trend` (recent samples, drawn as a Sparkline under the figure) with `threshold`, `tone`, `caption` (a quiet line under it), `framed` (default true: a quiet tile; false sets it bare in your own card), `size` (`'md' | 'lg'`).
-- **Progress**: a task under way. Props: `label`, `value` (0..1; leave it out for an indeterminate sweep), `valueText` (default the percentage; `null` hides it), `status` (`'running' | 'done' | 'error'`: done fills and settles in the signal colour; error keeps the fill where it stopped, in the fault colour), `caption` ("3 of 12 files", or what went wrong and what to do).
-- **Meter**: a level bar, drawn as a thin well with a signal fill and a tabular readout. Props: `label` (required; drawn at the left in a label column, width `--ar-meter-label-w`, 92px), `hideLabel` (screen readers only, for a row that already names it), `value`, `min` / `max`, `valueText` (default: the value; `null` hides it), `peak` (holds the peak, then lets it fall), `tone` (`'live' | 'warm' | 'neutral'`).
-- **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`.
+Read-only instruments. `tone` is `'live' | 'warm' | 'neutral' | 'hot'` on all of them.
+- **Stat**: one figure that matters. Props: `label` (required), `value` (a formatted string or a number shown with `decimals`; its digits roll), `unit`, `prefix` (a quieter mark before the figure, e.g. `"$"`), `delta` (signed change, drawn with an arrow) with `deltaText` (how it reads, e.g. `"+2.4%"`) and `better` (`'up'` default or `'down'`: the arrow takes the signal colour when the change is good, the fault colour when not), `trend` (recent samples, drawn as a Sparkline under the figure) with `threshold`, `level` (0..1, a slim bar under the figure), `zones` (ranges of the figure, which then takes the zone's tone), `motion`, `tone`, `caption` (a quiet line under it), `framed` (default true: a quiet tile; false sets it bare in your own card), `size` (`'md' | 'lg'`).
+- **Progress**: a task under way. Props: `label`, `value` (0..1; leave it out for an indeterminate sweep), `buffer` (0..1, a quieter fill ahead of the value: what is loaded or queued), `valueText` (default the percentage; `null` hides it), `status` (`'running' | 'done' | 'error'`: done fills and settles in the signal colour; error keeps the fill where it stopped, in the fault colour), `caption` ("3 of 12 files", or what went wrong and what to do), `variant` (`'bar'` or `'ring'`, the percentage inside and the label beside it), `segments` (lit cells for countable work), `sheen` (default true), `size` (`'sm' | 'md' | 'lg'`), `tone`, `motion` (default `'task'`).
+- **Meter**: a level bar, drawn as a well with a signal fill and a tabular readout. Props: `label` (required; drawn at the left in a label column, width `--ar-meter-label-w`, 92px), `hideLabel` (screen readers only, for a row that already names it), `value`, or `source` (a function read every frame, without React, in the same units), `min` / `max`, `valueText` (default: the value; `null` hides it), `format` (how the value is written; the only text a `source` meter can have), `peak` (holds the true peak, then lets it fall; `{ hold, fall }` in ms), `segments` (lit cells instead of a continuous fill), `zones` (`[{ from, tone }]`, in the meter's units) with `zonePaint` (`'bands'` paints them along the track, `'level'` turns the whole fill), `origin` (fills out from this value: a pan, a difference), `marker` (a reference tick at this value), `ticks` (this many scale divisions), `orientation` (`'horizontal' | 'vertical'`; upright length `--ar-meter-len`, 132px), `size` (`'sm' | 'md' | 'lg' | 'xl'`), `tone`, `motion` (default `'auto'`).
+- **Spectrum**: a bank of level bars for a frequency analysis. Props: `label` (required), `source` (a function read every frame, returning an array of bins: hand it your analyser) or `values`, `bars` (32), `min` / `max` (`max={255}` for `getByteFrequencyData`), `scale` (`'log'` default or `'linear'`: how more bins than bars spread over them, each bar showing its loudest bin), `peak` (a small cap on each bar), `segments` (lit cells up each bar), `mirror` (both ways from a centre line), `zones`, `height` (72), `tone`, `motion` (default `'audio'`). The gap is `--ar-spectrum-gap`.
+- **Sparkline**: a trend line with an optional fill. Props: `label` (required), `values` (oldest first), `min` / `max` (fixed range; otherwise fitted to the data), `width` / `height` (120 × 28), `fill` (default true), `threshold` (a dashed reference line), `tone`, `motion` (a slow feed scrolls smoothly, a feed at frame rate is drawn exactly; `'instant'` or `'audio'` never interpolate).
+
+### Live motion
+
+Meter, Spectrum, Progress, Stat, Sparkline and RollingValue all take `motion`, which says what the value is, so the movement suits it.
+
+| `motion` | The bar | The digits | Use it for |
+|---|---|---|---|
+| `'auto'` | Measures how often readings arrive. At about 30 a second or more it draws each exactly; slower, it lands before the next reading; a lone change glides | Timed to the feed; change without rolling when too fast to land | Anything, when you don't know the rate |
+| `'instant'` | The last reading, with no motion | Every reading, no roll | Scrubbing, sync, a trace that must be exact |
+| `'audio'` | Rises in the frame the sound does, falls on a release | 10 a second, no roll | Sound, levels, frequency bars |
+| `'task'` | A steady advance through readings that land in steps; a quick reset | Timed to the feed | Work under way (Progress's default) |
+| `'smooth'` | One long fluid glide, about half a second | Timed to the feed | Slow gauges where calm matters more than timing |
+| `{ attack, release, refresh, roll }` | Your own times in ms; 0 is exact | `refresh` and `roll` in ms | Tuning one by hand |
+
+For a signal faster than React should render, pass `source` instead of `value`. It is read every frame, drawn in that frame, and rests while the instrument is off screen.
+
+```tsx
+const bins = new Uint8Array(analyser.frequencyBinCount);
+<Spectrum label="Spectrum" max={255} bars={48} peak source={() => (analyser.getByteFrequencyData(bins), bins)} />
+<Meter label="Output" source={() => level.current} motion="audio" peak segments={28}
+       zones={[{ from: 0.7, tone: 'warm' }, { from: 0.9, tone: 'hot' }]} />
+<Meter label="Scrub" value={time} max={duration} motion="instant" />
+<Progress label="Exporting" value={done / total} segments={16} />
+<Stat label="Frame" value={ms} decimals={1} unit="ms" zones={[{ from: 16.7, tone: 'hot' }]} />
+```
 
 ## ItemList · ItemRow
 

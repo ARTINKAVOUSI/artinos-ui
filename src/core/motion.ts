@@ -139,7 +139,8 @@ export function useFrames(frame: (dt: number) => boolean) {
     if (raf.current || typeof requestAnimationFrame === 'undefined') return;
     let last = performance.now();
     const tick = (now: number) => {
-      const dt = Math.min(64, Math.max(0, now - last));
+      // real time through a slow frame, or a level falls behind its reading; only a long stall is cut
+      const dt = Math.min(250, Math.max(0, now - last));
       last = now;
       raf.current = fn.current(dt) ? requestAnimationFrame(tick) : 0;
     };
