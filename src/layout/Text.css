@@ -24,14 +24,14 @@
 .ar-dialog__body {
   /* small text on a pane is never light: it would thin out on the glass, whoever asks for it */
   --ar-weight-light: var(--ar-weight-regular);
-  --ar-read-display: 44px;
+  --ar-read-display: 34px;
   --ar-read-title: 28px;
   --ar-read-heading: 22px;
-  --ar-read-subheading: 15px;
+  --ar-read-subheading: 14px;
   --ar-read-lead: 20px;
-  --ar-read-body: 14.5px;
-  --ar-read-quote: 21px;
-  --ar-read-figure: 36px;
+  --ar-read-body: 14px;
+  --ar-read-quote: 20px;
+  --ar-read-figure: 34px;
 }
 .ar-type[data-variant='display'] {
   --_ink: var(--ar-text-hi);

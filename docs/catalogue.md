@@ -298,7 +298,7 @@ Sections that behave together. `accordion` keeps one open at a time (each Sectio
 
 ### Section
 
-A titled group: a large, light title sized to the width it has, over a firm hairline from the section before it. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
+A titled group: a light 22px title, the same size in any panel, over a firm hairline from the section before it. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
 
 | kind | props | behaviour |
 |---|---|---|

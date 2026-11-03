@@ -202,8 +202,6 @@
   min-height: 24px;
   padding: 0 0 var(--ar-space-5);
   color: var(--ar-text-mid);
-  /* the title's size follows this row's width (below) */
-  container-type: inline-size;
 }
 :where(.ar-section__trigger, .ar-section__chevron) {
   all: unset;
@@ -276,17 +274,10 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* the section's name: large and light, sized to the width it has, so a narrow panel shrinks it
-     instead of cutting it off */
+  /* the section's name: large and light, one size in any panel, open or folded */
   font: var(--ar-type-section);
-  font-size: clamp(18px, 8cqi, 34px);
-  letter-spacing: -0.03em;
-  color: var(--ar-tone-title);
-}
-/* folded, it is an entry in a list: a step smaller */
-.ar-section:not([data-open]) > .ar-section__head .ar-section__title {
-  font-size: clamp(16px, 6cqi, 26px);
   letter-spacing: -0.02em;
+  color: var(--ar-tone-title);
 }
 .ar-section__rule {
   flex: 1;
@@ -413,12 +404,11 @@ button.ar-section__trigger:focus-visible {
   text-wrap: pretty;
 }
 /* hero: the panel's one big statement, large and light under a small mono name; one <em> word in it
-   takes the serif and the accent. Sized to its width, so it fits any panel. */
+   takes the serif and the accent. */
 .ar-field[data-variant='hero'] {
   grid-template-columns: minmax(0, 1fr);
   row-gap: var(--ar-space-1);
   margin-block: var(--ar-space-1) var(--ar-space-3);
-  container-type: inline-size;
 }
 .ar-field[data-variant='hero'] > .ar-field__label {
   font: var(--ar-type-group);
@@ -428,7 +418,6 @@ button.ar-section__trigger:focus-visible {
 .ar-field[data-variant='hero'] > .ar-field__control {
   display: block;
   font: var(--ar-type-hero);
-  font-size: clamp(22px, 9.5cqi, 42px);
   letter-spacing: -0.03em;
 }
 .ar-field[data-variant='hero'] em {
@@ -441,7 +430,6 @@ button.ar-section__trigger:focus-visible {
   margin-bottom: var(--ar-space-2);
   padding-bottom: var(--ar-space-6);
   border-bottom: 1px solid var(--ar-line-strong);
-  container-type: inline-size;
 }
 .ar-field[data-variant='quote'] > .ar-field__label {
   position: absolute;
@@ -453,7 +441,6 @@ button.ar-section__trigger:focus-visible {
 .ar-field[data-variant='quote'] > .ar-field__control {
   display: block;
   font: var(--ar-type-quote);
-  font-size: clamp(17px, 5.8cqi, 26px);
   text-wrap: balance;
 }
 /* in a Section of columns each Field is a tile: its label above its value */

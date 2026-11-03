@@ -48,12 +48,12 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: 500 14.5px / 20px var(--ar-font-ui);
+  font: 500 14px / 20px var(--ar-font-ui);
   color: var(--ar-tone-title);
   text-wrap: balance;
 }
 .ar-callout__text {
-  font: 400 14px / 21px var(--ar-font-ui);
+  font: 400 14px / 20px var(--ar-font-ui);
   color: var(--ar-tone-body);
   text-wrap: pretty;
 }

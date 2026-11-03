@@ -470,8 +470,8 @@
 }
 /* a cell of a Section's columns can be narrow: the figure keeps the room */
 .ar-section__body[data-columns] .ar-number {
-  gap: 5px;
-  padding-inline: 7px;
+  gap: 3px;
+  padding-inline: 5px;
 }
 .ar-number__label {
   flex: none;

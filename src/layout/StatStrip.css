@@ -24,7 +24,7 @@
   align-items: baseline;
   margin: 0;
   overflow: hidden;
-  font: var(--ar-weight-thin) 30px / 1 var(--ar-font-ui);
+  font: 300 28px / 1 var(--ar-font-ui);
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -38,7 +38,7 @@
 }
 .ar-stat-strip__label {
   overflow: hidden;
-  font: 400 12.5px / 1.3 var(--ar-font-ui);
+  font: 400 12px / 1.3 var(--ar-font-ui);
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--ar-tone-label);
