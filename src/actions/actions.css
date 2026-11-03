@@ -124,6 +124,7 @@
   color: var(--ar-text-hi);
 }
 .ar-button[data-variant='ghost']:focus-visible {
+  background: var(--ar-focus-wash);
   box-shadow: var(--ar-focus-ring);
 }
 
@@ -166,7 +167,8 @@
   box-shadow: inset 0 0 0 1px var(--ar-line), inset 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 .ar-button:not([data-variant]):focus-visible {
-  box-shadow: inset 0 0 0 1px var(--ar-line-strong), var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
+  box-shadow: var(--ar-focus-ring);
 }
 .ar-button:not([data-variant]) .ar-button__trailing .ar-keycap {
   background: var(--ar-trough);
@@ -257,6 +259,8 @@
   transform: none;
 }
 .ar-icon-button:focus-visible {
+  color: var(--ar-text-hi);
+  background: var(--ar-focus-wash);
   box-shadow: var(--ar-focus-ring);
 }
 .ar-icon-button:disabled {

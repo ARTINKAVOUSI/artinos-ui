@@ -116,7 +116,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: -1px;
   font: var(--ar-weight-text) var(--ar-text-sm)/var(--ar-leading-none) var(--ar-font-ui);
   letter-spacing: var(--ar-track-text);
   white-space: nowrap;
@@ -153,9 +152,19 @@
   transform: none;
   opacity: 1;
 }
+/* focus on a tab is its underline, faint on a neighbour and lit on the active one; a strip that
+   scrolls would clip anything drawn around the tab */
 .ar-dock__tabs > button:focus-visible {
-  border-radius: 4px;
-  box-shadow: var(--ar-focus-ring);
+  color: var(--ar-text-hi);
+}
+.ar-dock__tabs > button:focus-visible::after {
+  background: var(--ar-focus-ink);
+  box-shadow: 0 0 6px var(--ar-focus-glow);
+  transform: none;
+  opacity: 0.6;
+}
+.ar-dock__tabs > button.is-active:focus-visible::after {
+  opacity: 1;
 }
 
 .ar-dock__slot {
@@ -244,7 +253,8 @@
   color: var(--ar-text-mid);
 }
 .ar-dock__search:focus-visible {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-edge);
+  outline-offset: -1px;
 }
 .ar-dock__toolbar {
   display: flex;

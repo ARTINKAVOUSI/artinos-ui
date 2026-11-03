@@ -155,7 +155,7 @@ button.ar-section__trigger,
 }
 button.ar-section__trigger:focus-visible {
   border-radius: var(--ar-radius-control);
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
 }
 .ar-section__chevron {
   display: grid;
@@ -405,9 +405,14 @@ button.ar-section__trigger:focus-visible {
 .ar-tabs__tab[aria-selected='true'] {
   color: var(--ar-text-hi);
 }
+/* focus on a tab is its line: a fine one under a neighbour, and the selected tab's bar lights */
 .ar-tabs__tab:focus-visible {
-  border-radius: 3px;
-  box-shadow: var(--ar-focus-ring);
+  color: var(--ar-text-hi);
+  box-shadow: inset 0 -1px 0 var(--ar-focus-edge);
+}
+.ar-tabs:has(.ar-tabs__tab[aria-selected='true']:focus-visible) .ar-tabs__bar {
+  background: var(--ar-focus-ink);
+  box-shadow: 0 0 6px var(--ar-focus-glow);
 }
 .ar-tabs__tab:disabled {
   opacity: 0.4;
@@ -422,7 +427,8 @@ button.ar-section__trigger:focus-visible {
   background: var(--ar-text-hi);
   transition:
     transform var(--ar-dur-layout) var(--ar-ease),
-    width var(--ar-dur-layout) var(--ar-ease);
+    width var(--ar-dur-layout) var(--ar-ease),
+    background var(--ar-dur-state) var(--ar-ease);
 }
 
 /* ---------- Panel: icon, fold, variants, scrolling body ---------- */
@@ -452,7 +458,7 @@ button.ar-section__trigger:focus-visible {
   border-radius: var(--ar-radius-control);
 }
 .ar-panel__toggle:focus-visible {
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
 }
 .ar-panel__chevron {
   display: grid;
@@ -631,7 +637,8 @@ button.ar-section__trigger:focus-visible {
   color: var(--ar-text-hi);
 }
 .ar-section-group__all:focus-visible {
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
+  color: var(--ar-text-hi);
 }
 
 /* a foldable heading answers the pointer with a faint rounded band, so it reads as clickable

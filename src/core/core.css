@@ -101,16 +101,28 @@
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  outline: none;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
+  transition:
+    box-shadow var(--ar-dur-state) var(--ar-ease),
+    outline-color var(--ar-dur-state) var(--ar-ease);
 }
+/* a field in focus: the well lights from within and takes a fine edge. Where the focus lands on a
+   piece inside (a segment, a chip), that piece says so instead of the whole group. */
 .ar-well:focus-visible,
-.ar-well:has(:focus-visible),
+.ar-well:not(.ar-segmented, .ar-toggles):has(:focus-visible),
 .ar-focus-host:focus-visible .ar-well {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+  outline-color: var(--ar-focus-edge);
+  background: linear-gradient(var(--ar-focus-wash), var(--ar-focus-wash)), var(--ar-trough);
+}
+[data-ar-theme] ::selection {
+  background: var(--ar-selection);
+}
+[data-ar-theme] :is(input, textarea) {
+  caret-color: var(--ar-focus-ink);
 }
 
 /* ---------- the insert: the polished material sitting in the well ---------- */
@@ -362,6 +374,8 @@
   transition-duration: var(--ar-dur-state), var(--ar-dur-state), 60ms;
 }
 .ar-tool:focus-visible {
+  background: var(--ar-focus-wash);
+  color: var(--ar-text-hi);
   box-shadow: var(--ar-focus-ring);
 }
 .ar-tool svg {

@@ -48,7 +48,8 @@
   border-color: var(--ar-signal);
 }
 .ar-filedrop:focus-visible {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-edge);
+  outline-offset: -1px;
 }
 .ar-filedrop:disabled {
   opacity: 0.45;

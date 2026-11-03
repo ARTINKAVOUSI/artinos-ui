@@ -180,7 +180,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.78);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0);
   --ar-panel-sheen: none;
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
@@ -319,7 +318,6 @@
   --ar-tick-major: #b9b2a6;
   --ar-shadow-well: inset 0 0 0 1px rgba(219, 197, 156, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(12, 13, 18, 0.78);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(16px) saturate(0.7);
@@ -361,7 +359,6 @@
   --ar-tick-major: #a1c9c3;
   --ar-shadow-well: inset 0 0 0 1px rgba(172, 236, 221, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(5, 38, 45, 0.73);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(22px) saturate(1.4);
@@ -403,7 +400,6 @@
   --ar-tick-major: #526371;
   --ar-shadow-well: inset 0 0 0 1px rgba(98, 122, 145, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(223, 233, 242, 0.76);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(12px) saturate(0.45);
@@ -445,7 +441,6 @@
   --ar-tick-major: #c9a4ab;
   --ar-shadow-well: inset 0 0 0 1px rgba(234, 192, 173, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(44, 13, 27, 0.77);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(18px) saturate(1.25);
@@ -487,7 +482,6 @@
   --ar-tick-major: #71634f;
   --ar-shadow-well: inset 0 0 0 1px rgba(164, 135, 88, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(249, 242, 226, 0.87);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(44px) saturate(0.55);
@@ -529,7 +523,6 @@
   --ar-tick-major: #507181;
   --ar-shadow-well: inset 0 0 0 1px rgba(113, 158, 175, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(221, 240, 249, 0.84);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(52px) saturate(0.65) brightness(1.06);
@@ -571,7 +564,6 @@
   --ar-tick-major: #735d7e;
   --ar-shadow-well: inset 0 0 0 1px rgba(162, 137, 179, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(238, 225, 248, 0.86);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(46px) saturate(0.6);
@@ -613,7 +605,6 @@
   --ar-tick-major: #c2b299;
   --ar-shadow-well: inset 0 0 0 1px rgba(214, 190, 148, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(50, 42, 32, 0.8);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(58px) saturate(0.35);
@@ -660,7 +651,6 @@
   --ar-tick: rgba(0, 0, 0, 0.26);
   --ar-shadow-well: inset 0 0 0 1px rgba(0, 0, 0, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: #f7f7f5;
   --ar-panel-sheen: none;
@@ -704,7 +694,6 @@
   --ar-tick: rgba(255, 255, 255, 0.3);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(20, 22, 24, 0.36);
   --ar-panel-sheen: none;
@@ -745,7 +734,6 @@
   --ar-tick: rgba(255, 255, 255, 0.26);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(8, 9, 11, 0.62);
   --ar-panel-sheen: none;
@@ -787,7 +775,6 @@
   --ar-tick: rgba(255, 255, 255, 0.4);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(236, 238, 240, 0.18);
   --ar-panel-sheen: none;
@@ -832,7 +819,6 @@
   --ar-tick: rgba(18, 24, 30, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(18, 24, 30, 0.08);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(255, 255, 255, 0.62);
   --ar-panel-sheen: none;
@@ -879,7 +865,6 @@
   --ar-tick: rgba(15, 18, 21, 0.3);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(255, 255, 255, 0.26);
   --ar-panel-sheen: none;
@@ -924,7 +909,6 @@
   --ar-tick: rgba(255, 255, 255, 0.4);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(14, 16, 18, 0.16);
   --ar-panel-sheen: none;
@@ -965,7 +949,6 @@
   --ar-tick: rgba(255, 255, 255, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(24, 26, 28, 0.46);
   --ar-panel-sheen: none;
@@ -1006,7 +989,6 @@
   --ar-tick: rgba(235, 248, 255, 0.42);
   --ar-shadow-well: inset 0 0 0 1px rgba(220, 240, 255, 0.14);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(200, 228, 248, 0.2);
   --ar-panel-sheen: none;
@@ -1047,7 +1029,6 @@
 
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   --ar-rim: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 1px 0 rgba(255, 255, 255, 0.06);
-  --ar-focus-ring: 0 0 0 1px #7fe3d4, 0 0 0 3px rgba(127, 227, 212, 0.16);
 
   --ar-panel-tint: #141414;
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09), inset 0 1.5px 0 rgba(255, 255, 255, 0.08), 0 24px 60px -20px rgba(0, 0, 0, 0.9);
@@ -1068,7 +1049,6 @@
   --ar-signal-hi: #7ff0d8;
   --ar-signal-line: rgba(26, 223, 184, 0.55);
   --ar-signal-wash: rgba(26, 223, 184, 0.14);
-  --ar-focus-ring: 0 0 0 1px #7ff0d8, 0 0 0 3px rgba(26, 223, 184, 0.18);
   --ar-panel-tint: rgba(16, 16, 16, 0.24);
   --ar-panel-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 40%);
   --ar-panel-blur: blur(30px);
@@ -1113,7 +1093,6 @@
   --ar-tick: rgba(240, 217, 164, 0.3);
   --ar-shadow-well: inset 0 0 0 1px rgba(212, 175, 106, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(8, 8, 10, 0.62);
   --ar-panel-sheen:
@@ -1158,7 +1137,6 @@
   --ar-tick: rgba(200, 220, 255, 0.3);
   --ar-shadow-well: inset 0 0 0 1px rgba(180, 205, 255, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(10, 24, 64, 0.42);
   --ar-panel-sheen:
@@ -1203,7 +1181,6 @@
   --ar-tick: rgba(255, 244, 220, 0.44);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 236, 200, 0.18);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(245, 228, 196, 0.2);
   --ar-panel-sheen:
@@ -1251,7 +1228,6 @@
   --ar-tick: rgba(40, 30, 60, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(40, 30, 60, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(255, 255, 255, 0.55);
   --ar-panel-sheen:
@@ -1302,7 +1278,6 @@
   --ar-tick: rgba(255, 255, 255, 0.34);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(24, 26, 30, 0.3);
   --ar-panel-sheen:
@@ -1349,7 +1324,6 @@
   --ar-tick: rgba(255, 255, 255, 0.4);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(40, 42, 46, 0.14);
   --ar-panel-sheen:
@@ -1395,7 +1369,6 @@
   --ar-tick: rgba(230, 204, 146, 0.34);
   --ar-shadow-well: inset 0 0 0 1px rgba(230, 204, 146, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(6, 46, 32, 0.46);
   --ar-panel-sheen:
@@ -1441,7 +1414,6 @@
   --ar-tick: rgba(250, 214, 202, 0.36);
   --ar-shadow-well: inset 0 0 0 1px rgba(236, 178, 158, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(64, 30, 36, 0.36);
   --ar-panel-sheen:
@@ -1487,7 +1459,6 @@
   --ar-tick: rgba(248, 211, 160, 0.32);
   --ar-shadow-well: inset 0 0 0 1px rgba(222, 170, 102, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(60, 30, 8, 0.5);
   --ar-panel-sheen:
@@ -1533,7 +1504,6 @@
   --ar-tick: rgba(232, 220, 255, 0.32);
   --ar-shadow-well: inset 0 0 0 1px rgba(225, 220, 240, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(40, 18, 72, 0.44);
   --ar-panel-sheen:
@@ -1583,7 +1553,6 @@
   --ar-tick: rgba(80, 56, 20, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(80, 56, 20, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(252, 247, 238, 0.62);
   --ar-panel-sheen:
@@ -1634,7 +1603,6 @@
   --ar-tick: rgba(14, 24, 50, 0.26);
   --ar-shadow-well: inset 0 0 0 1px rgba(14, 24, 50, 0.06);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(250, 252, 255, 0.64);
   --ar-panel-sheen:
@@ -1685,7 +1653,6 @@
   --ar-tick: rgba(10, 40, 26, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(10, 40, 26, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(228, 242, 234, 0.6);
   --ar-panel-sheen:
@@ -1735,7 +1702,6 @@
   --ar-tick: rgba(230, 240, 255, 0.44);
   --ar-shadow-well: inset 0 0 0 1px rgba(220, 232, 255, 0.18);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(120, 136, 164, 0.32);
   --ar-panel-sheen:
@@ -1783,7 +1749,6 @@
   --ar-tick: rgba(255, 244, 230, 0.44);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 240, 222, 0.18);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(128, 108, 92, 0.36);
   --ar-panel-sheen:
@@ -1829,7 +1794,6 @@
   --ar-tick: rgba(255, 220, 230, 0.32);
   --ar-shadow-well: inset 0 0 0 1px rgba(236, 226, 232, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(74, 16, 34, 0.54);
   --ar-panel-sheen:
@@ -1882,7 +1846,6 @@
   --ar-tick: rgba(255, 255, 255, 0.4);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1px #ffffff, 0 0 0 3px rgba(255, 255, 255, 0.26);
   --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 
   --ar-float-bg: rgba(34, 34, 34, 0.74);
@@ -1904,7 +1867,6 @@
   --ar-panel-sheen: none;
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* PANE LIGHT — the same glass under a light veil; white pills, dark ink. */
@@ -1938,7 +1900,6 @@
   --ar-tick: rgba(0, 0, 0, 0.28);
   --ar-shadow-well: inset 0 0 0 1px rgba(0, 0, 0, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 
   --ar-panel-tint: rgba(255, 255, 255, 0.32);
   --ar-panel-sheen:
@@ -1969,7 +1930,6 @@
   --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* GALLERY — gallery glass: lightly blurred under a neutral shade, hairline
@@ -1983,7 +1943,6 @@
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 24px 50px -26px rgba(0, 0, 0, 0.5);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* SATIN — continuous frost: the view melts into soft colour; glossy white pills. */
@@ -1996,7 +1955,6 @@
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 24px 50px -26px rgba(0, 0, 0, 0.5);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* MONOLITH — deep neutral frost carrying the warmth of what is behind;
@@ -2011,7 +1969,6 @@
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 24px 50px -26px rgba(0, 0, 0, 0.5);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* OPAL — a smoky column: frost under a deep neutral shade, bright rims,
@@ -2030,7 +1987,6 @@
   --ar-panel-sheen: none;
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* GRAPHITE — grey frost with the colour drained; translucent grey-glass fills. */
@@ -2045,7 +2001,6 @@
   --ar-panel-text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   --ar-shadow-well: inset 0 0 0 1px var(--ar-line-subtle);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* ---------- FLAT GLASS — blur and one flat veil, nothing else ----------
@@ -2103,7 +2058,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -2147,7 +2101,6 @@
   --ar-tick-major: rgba(0, 0, 0, 0.7);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -2230,7 +2183,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.75);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-sheen: none;
   --ar-panel-shadow: none;
   --ar-panel-text-shadow: none;
@@ -2272,7 +2224,6 @@
   --ar-panel-shadow: inset 0 0 0 1px var(--ar-line), 0 24px 50px -26px rgba(0, 0, 0, 0.5);
   --ar-shadow-well: inset 0 0 0 1px var(--ar-line-subtle);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
 }
 
 /* ---------- MATERIALS — real materials set into glass and frost ----------
@@ -2308,7 +2259,6 @@
   --ar-tick-major: rgba(29, 31, 34, 0.72);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.6);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(40px);
@@ -2349,7 +2299,6 @@
   --ar-tick-major: rgba(241, 243, 245, 0.72);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(20, 22, 26, 0.46);
   --ar-panel-sheen: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.02) 0 1px, rgba(255, 255, 255, 0) 1px 6px);
   --ar-panel-blur: blur(30px);
@@ -2390,7 +2339,6 @@
   --ar-tick-major: rgba(58, 47, 34, 0.72);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(244, 236, 222, 0.62);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(44px);
@@ -2431,7 +2379,6 @@
   --ar-tick-major: rgba(242, 240, 236, 0.72);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(8, 8, 9, 0.55);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(36px);
@@ -2472,7 +2419,6 @@
   --ar-tick-major: rgba(240, 243, 247, 0.72);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(30, 34, 40, 0.3);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(40px);
@@ -2513,7 +2459,6 @@
   --ar-tick-major: rgba(43, 42, 40, 0.72);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.75);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(250, 248, 245, 0.66);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(48px);
@@ -2554,7 +2499,6 @@
   --ar-tick-major: rgba(245, 245, 243, 0.72);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(40, 40, 40, 0.36);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(32px);
@@ -2595,7 +2539,6 @@
   --ar-tick-major: rgba(251, 239, 226, 0.72);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 220, 180, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(28, 18, 10, 0.46);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(34px);
@@ -2643,7 +2586,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.28), inset -1px -1px 2px rgba(255, 255, 255, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.06);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(40px);
@@ -2684,7 +2626,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0.08);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(8px);
@@ -2726,7 +2667,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.1);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(60px);
@@ -2767,7 +2707,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 0 rgba(255, 255, 255, 0.14);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0.12);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(24px);
@@ -2808,7 +2747,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0.18);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(20px);
@@ -2849,7 +2787,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: none;
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0.22);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(48px);
@@ -2890,7 +2827,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 0 0 2px rgba(0, 0, 0, 0.12);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.04);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(30px);
@@ -2931,7 +2867,6 @@
   --ar-tick-major: rgba(255, 255, 255, 0.74);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.28), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(0, 0, 0, 0.1);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(18px);
@@ -2972,7 +2907,6 @@
   --ar-tick-major: rgba(18, 18, 18, 0.74);
   --ar-shadow-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.12), inset -1px -1px 2px rgba(255, 255, 255, 0.8), inset 0 0 0 1px rgba(0, 0, 0, 0.04);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.52);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(40px);
@@ -3013,7 +2947,6 @@
   --ar-tick-major: rgba(18, 18, 18, 0.74);
   --ar-shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, 0.75);
   --ar-rim: 0 0 0 0 transparent;
-  --ar-focus-ring: 0 0 0 1.5px var(--ar-signal);
   --ar-panel-tint: rgba(255, 255, 255, 0.5);
   --ar-panel-sheen: none;
   --ar-panel-blur: blur(20px);

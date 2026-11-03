@@ -61,7 +61,7 @@
 }
 .ar-dock-menu__head em {
   padding: 2px 6px 1px;
-  border-radius: 999px;
+  border-radius: var(--ar-radius-control);
   background: color-mix(in srgb, var(--ar-signal) 14%, transparent);
   color: var(--ar-signal);
 }
@@ -235,7 +235,7 @@
   height: 22px;
   padding: 0 9px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--ar-radius-control);
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
   font-family: var(--ar-voice-font);

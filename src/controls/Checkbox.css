@@ -42,8 +42,12 @@
     box-shadow var(--ar-dur-state) var(--ar-ease),
     transform var(--ar-dur-surface) var(--ar-ease-spring);
 }
+/* the box's own well comes after the shared insert, so checked has to ask for the insert's face */
 .ar-checkbox__box.ar-insert {
   border-radius: 4px;
+  background: var(--ar-insert-sheen), var(--ar-insert);
+  -webkit-backdrop-filter: var(--ar-insert-backdrop);
+  backdrop-filter: var(--ar-insert-backdrop);
 }
 .ar-checkbox:hover .ar-checkbox__box:not(.ar-insert) {
   box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-line-strong);
@@ -53,10 +57,12 @@
   transition-duration: 60ms;
 }
 .ar-checkbox__input:focus-visible + .ar-checkbox__box {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-edge);
+  outline-offset: -1px;
 }
 .ar-checkbox__input:focus-visible + .ar-checkbox__box.ar-insert {
-  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-on-insert);
+  outline-offset: -1px;
 }
 .ar-checkbox__box svg {
   width: 11px;
@@ -96,12 +102,11 @@
   color: var(--ar-text-low);
 }
 
-/* checked: the insert, and a soft halo of the signal around it, the way a lit LED glows */
+/* checked: the insert */
 .ar-checkbox__box:not([data-state='off']) {
-  box-shadow:
-    var(--ar-insert-shadow),
-    0 0 0 3px color-mix(in srgb, var(--ar-signal) 14%, transparent);
+  box-shadow: var(--ar-insert-shadow);
 }
 .ar-checkbox__input:focus-visible + .ar-checkbox__box:not([data-state='off']) {
-  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-on-insert);
+  outline-offset: -1px;
 }

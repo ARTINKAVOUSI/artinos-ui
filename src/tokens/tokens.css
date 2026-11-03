@@ -87,7 +87,17 @@
   /* elevation: e0 recessed = editable, float = portalled chrome */
   --ar-shadow-well: inset 0 1px 1px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.045);
   --ar-rim: 0 1px 0 rgba(255, 255, 255, 0.035);
-  --ar-focus-ring: 0 0 0 1px var(--ar-signal-hi), 0 0 0 3px rgba(60, 188, 165, 0.18);
+  /* focus: the theme's signal eased toward its ink, so it belongs on any ground. Each control says
+     it its own way in its own sheet: a field's well lights, a tab's underline, a slider's seam, a
+     row's wash. Nothing is drawn outside the control, so a scrolling strip or a panel never clips it.
+     Outlines, not shadows: a well or an insert may have no shadow (none, x is invalid CSS). */
+  --ar-focus-ink: color-mix(in srgb, var(--ar-signal) 38%, var(--ar-text-hi));
+  --ar-focus-edge: color-mix(in srgb, var(--ar-focus-ink) 58%, transparent);
+  --ar-focus-wash: color-mix(in srgb, var(--ar-focus-ink) 10%, transparent);
+  --ar-focus-glow: color-mix(in srgb, var(--ar-focus-ink) 45%, transparent);
+  --ar-focus-on-insert: color-mix(in srgb, var(--ar-signal) 45%, var(--ar-insert-ink));
+  --ar-focus-ring: inset 0 0 0 1px var(--ar-focus-edge);
+  --ar-selection: color-mix(in srgb, var(--ar-focus-ink) 30%, transparent);
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;

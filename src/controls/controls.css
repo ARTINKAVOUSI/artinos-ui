@@ -157,7 +157,8 @@
   color: var(--ar-dim-ink);
 }
 .ar-toggles__chip:focus-visible {
-  box-shadow: var(--ar-insert-shadow), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-focus-on-insert);
+  outline-offset: -1px;
 }
 
 /* ---------- Segmented ---------- */
@@ -174,6 +175,12 @@
   transition:
     left 300ms var(--ar-ease),
     filter var(--ar-dur-surface) var(--ar-ease);
+}
+/* focus lands on the choice: the thumb takes a fine edge, not the whole group */
+.ar-segmented:has(:focus-visible) .ar-segmented__insert {
+  outline: 1px solid var(--ar-focus-on-insert);
+  outline-offset: -1px;
+  filter: brightness(1.05);
 }
 .ar-segmented__row {
   position: absolute;
@@ -293,7 +300,8 @@
   font-variant-numeric: tabular-nums;
 }
 .ar-color__alpha:focus-visible {
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
+  color: var(--ar-text-hi);
 }
 .ar-color:not([data-labelled]) .ar-color__hex {
   margin: 0 auto 0 0;
@@ -302,7 +310,8 @@
 .ar-color__swatch[data-ink='light'] { color: #ededed; }
 .ar-color__native:focus-visible ~ .ar-color__paint,
 .ar-color__swatch:has(.ar-color__native:focus-visible) {
-  box-shadow: var(--ar-swatch-rim), var(--ar-focus-ring);
+  outline: 1px solid var(--ar-text-hi);
+  outline-offset: 1px;
 }
 
 /* ---------- Select ---------- */

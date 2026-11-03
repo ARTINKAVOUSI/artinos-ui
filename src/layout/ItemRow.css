@@ -63,8 +63,10 @@ button.ar-item__main {
 button.ar-item__main:disabled {
   cursor: default;
 }
+/* a row in focus: a wash and a short mark at its leading edge */
 button.ar-item__main:focus-visible {
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-wash);
+  box-shadow: inset 2px 0 0 var(--ar-focus-edge);
 }
 
 .ar-item__lead {

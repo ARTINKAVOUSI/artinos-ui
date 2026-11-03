@@ -13,7 +13,8 @@
   --_h: calc(var(--ar-h) - 4px);
 }
 .ar-textfield:focus-within {
-  box-shadow: var(--ar-well), var(--ar-focus-ring);
+  outline-color: var(--ar-focus-edge);
+  background: linear-gradient(var(--ar-focus-wash), var(--ar-focus-wash)), var(--ar-trough);
 }
 .ar-textfield__icon {
   display: inline-flex;
@@ -22,7 +23,7 @@
   transition: color var(--ar-dur-state) var(--ar-ease);
 }
 .ar-textfield:focus-within .ar-textfield__icon {
-  color: var(--ar-signal);
+  color: var(--ar-focus-ink);
 }
 .ar-textfield__icon svg {
   width: 12px;
@@ -50,7 +51,7 @@
   opacity: 1;
 }
 .ar-textfield :is(input, textarea)::selection {
-  background: var(--ar-signal-wash);
+  background: var(--ar-selection);
 }
 .ar-textfield__clear {
   --_tool: calc(var(--_h) - 2 * var(--ar-inset) - 4px);
@@ -73,7 +74,7 @@
   transition: transform var(--ar-dur-surface) var(--ar-ease-spring);
 }
 .ar-textfield:focus-within .ar-textfield__icon svg {
-  transform: scale(1.08) rotate(-6deg);
+  transform: scale(1.04);
 }
 .ar-textfield input::placeholder {
   transition: opacity var(--ar-dur-state) var(--ar-ease);
@@ -82,12 +83,13 @@
   opacity: 0.6;
 }
 
-/* invalid: the well keeps its shape and takes a fault ring; focus keeps the ring visible */
+/* invalid: the well keeps its shape and takes a fine fault edge, which focus only strengthens */
 .ar-textfield[data-invalid] {
   box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-fault) 70%, transparent);
 }
 .ar-textfield[data-invalid]:focus-within {
-  box-shadow: var(--ar-well), 0 0 0 1px var(--ar-fault), 0 0 0 3px color-mix(in srgb, var(--ar-fault) 30%, transparent);
+  outline-color: var(--ar-fault);
+  background: linear-gradient(color-mix(in srgb, var(--ar-fault) 8%, transparent), color-mix(in srgb, var(--ar-fault) 8%, transparent)), var(--ar-trough);
 }
 .ar-textfield[data-invalid] .ar-textfield__icon {
   color: var(--ar-fault);
