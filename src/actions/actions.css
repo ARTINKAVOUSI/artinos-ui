@@ -124,8 +124,7 @@
   color: var(--ar-text-hi);
 }
 .ar-button[data-variant='ghost']:focus-visible {
-  background: var(--ar-focus-wash);
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-lift);
 }
 
 /* default: the secondary weight — a quiet raised face and a hairline, no insert, no LED, so
@@ -167,8 +166,7 @@
   box-shadow: inset 0 0 0 1px var(--ar-line), inset 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 .ar-button:not([data-variant]):focus-visible {
-  background: var(--ar-focus-wash);
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-lift);
 }
 .ar-button:not([data-variant]) .ar-button__trailing .ar-keycap {
   background: var(--ar-trough);
@@ -260,8 +258,7 @@
 }
 .ar-icon-button:focus-visible {
   color: var(--ar-text-hi);
-  background: var(--ar-focus-wash);
-  box-shadow: var(--ar-focus-ring);
+  background: var(--ar-focus-lift);
 }
 .ar-icon-button:disabled {
   opacity: 0.35;

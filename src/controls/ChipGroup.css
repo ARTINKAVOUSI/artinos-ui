@@ -19,7 +19,7 @@
   padding: 0 12px 0 10px;
   /* the same corner as a well of this height, so a chip belongs beside a field or a button */
   border-radius: var(--ar-radius, calc(var(--ar-h) * 0.31));
-  background: var(--ar-trough);
+  background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
@@ -29,7 +29,9 @@
     background var(--ar-dur-state) var(--ar-ease),
     box-shadow var(--ar-dur-state) var(--ar-ease),
     color var(--ar-dur-state) var(--ar-ease),
-    transform var(--ar-dur-surface) var(--ar-ease-spring);
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    filter var(--ar-dur-surface) var(--ar-ease),
+    --ar-lift var(--ar-dur-state) var(--ar-ease);
 }
 .ar-chip .ar-text {
   color: inherit;
@@ -43,8 +45,7 @@
   transition-duration: var(--ar-dur-state), var(--ar-dur-state), var(--ar-dur-state), 60ms;
 }
 .ar-chip:focus-visible {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  --ar-lift: var(--ar-focus-lift);
   color: var(--ar-text-hi);
 }
 /* on: the insert, its LED lit */
@@ -57,10 +58,8 @@
   filter: brightness(1.04);
 }
 .ar-chip[data-on]:focus-visible {
-  outline: 1px solid var(--ar-focus-on-insert);
-  outline-offset: -1px;
   color: var(--ar-insert-ink);
-  filter: brightness(1.05);
+  filter: var(--ar-focus-raise);
 }
 .ar-chip__led {
   height: 8px;

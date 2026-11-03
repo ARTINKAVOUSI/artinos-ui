@@ -88,6 +88,12 @@
 }
 
 /* ---------- the well: a recessed trough, the editable surface ---------- */
+/* the light in a recessed surface: registered so that focus fades in, over a trough of any kind */
+@property --ar-lift {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
 .ar-well {
   --_h: var(--ar-h);
   --_r: var(--ar-radius, calc(var(--_h) * 0.31));
@@ -97,26 +103,29 @@
   height: var(--_h);
   min-width: 0;
   border-radius: var(--_r);
-  background: var(--ar-trough);
+  background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  outline: 1px solid transparent;
-  outline-offset: -1px;
+  outline: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition:
     box-shadow var(--ar-dur-state) var(--ar-ease),
-    outline-color var(--ar-dur-state) var(--ar-ease);
+    --ar-lift var(--ar-dur-state) var(--ar-ease);
 }
-/* a field in focus: the well lights from within and takes a fine edge. Where the focus lands on a
+/* a control in focus: the well takes light and what sits in it rises. Where the focus lands on a
    piece inside (a segment, a chip), that piece says so instead of the whole group. */
 .ar-well:focus-visible,
 .ar-well:not(.ar-segmented, .ar-toggles):has(:focus-visible),
 .ar-focus-host:focus-visible .ar-well {
-  outline-color: var(--ar-focus-edge);
-  background: linear-gradient(var(--ar-focus-wash), var(--ar-focus-wash)), var(--ar-trough);
+  --ar-lift: var(--ar-focus-lift);
+}
+.ar-well:focus-visible .ar-insert:not([data-off]),
+.ar-well:not(.ar-segmented, .ar-toggles):has(:focus-visible) .ar-insert:not([data-off]),
+.ar-focus-host:focus-visible .ar-insert:not([data-off]) {
+  filter: var(--ar-focus-raise);
 }
 [data-ar-theme] ::selection {
   background: var(--ar-selection);
@@ -374,9 +383,8 @@
   transition-duration: var(--ar-dur-state), var(--ar-dur-state), 60ms;
 }
 .ar-tool:focus-visible {
-  background: var(--ar-focus-wash);
+  background: var(--ar-focus-lift);
   color: var(--ar-text-hi);
-  box-shadow: var(--ar-focus-ring);
 }
 .ar-tool svg {
   width: 10px;

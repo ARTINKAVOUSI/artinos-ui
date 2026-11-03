@@ -65,8 +65,7 @@ button.ar-item__main:disabled {
 }
 /* a row in focus: a wash and a short mark at its leading edge */
 button.ar-item__main:focus-visible {
-  background: var(--ar-focus-wash);
-  box-shadow: inset 2px 0 0 var(--ar-focus-edge);
+  background: var(--ar-focus-lift);
 }
 
 .ar-item__lead {

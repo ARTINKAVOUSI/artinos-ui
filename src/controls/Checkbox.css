@@ -32,7 +32,7 @@
   height: 16px;
   margin-top: 1px;
   border-radius: 4px;
-  background: var(--ar-trough);
+  background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
@@ -40,7 +40,9 @@
   transition:
     background var(--ar-dur-state) var(--ar-ease),
     box-shadow var(--ar-dur-state) var(--ar-ease),
-    transform var(--ar-dur-surface) var(--ar-ease-spring);
+    transform var(--ar-dur-surface) var(--ar-ease-spring),
+    filter var(--ar-dur-surface) var(--ar-ease),
+    --ar-lift var(--ar-dur-state) var(--ar-ease);
 }
 /* the box's own well comes after the shared insert, so checked has to ask for the insert's face */
 .ar-checkbox__box.ar-insert {
@@ -57,12 +59,10 @@
   transition-duration: 60ms;
 }
 .ar-checkbox__input:focus-visible + .ar-checkbox__box {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  --ar-lift: color-mix(in srgb, var(--ar-focus-ink) 28%, transparent);
 }
 .ar-checkbox__input:focus-visible + .ar-checkbox__box.ar-insert {
-  outline: 1px solid var(--ar-focus-on-insert);
-  outline-offset: -1px;
+  filter: var(--ar-focus-raise);
 }
 .ar-checkbox__box svg {
   width: 11px;
@@ -105,8 +105,4 @@
 /* checked: the insert */
 .ar-checkbox__box:not([data-state='off']) {
   box-shadow: var(--ar-insert-shadow);
-}
-.ar-checkbox__input:focus-visible + .ar-checkbox__box:not([data-state='off']) {
-  outline: 1px solid var(--ar-focus-on-insert);
-  outline-offset: -1px;
 }

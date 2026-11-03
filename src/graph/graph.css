@@ -80,8 +80,7 @@
 }
 /* the root takes the keyboard shortcuts: show when it holds focus */
 .ar-graph:focus-visible > .ar-graph__stage > .ar-graph__surface {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  box-shadow: inset 0 0 32px var(--ar-focus-lift);
 }
 
 /* ---------- toolbar: quiet caps, the active toggle is an insert ---------- */
@@ -441,8 +440,8 @@
   color: var(--ar-float-ink);
 }
 .ar-graph__palette > input:focus {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  outline: none;
+  background: var(--ar-focus-lift);
 }
 .ar-graph__palette-body {
   display: flex;
@@ -518,8 +517,8 @@
   color: var(--ar-text-hi);
 }
 .ar-graph__inspector header input:focus {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  outline: none;
+  background: var(--ar-focus-lift);
 }
 .ar-graph__inspector header button {
   display: grid;
@@ -618,8 +617,8 @@
   cursor: grabbing;
 }
 .ar-live:focus-visible {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  outline: none;
+  box-shadow: inset 0 0 32px var(--ar-focus-lift);
 }
 .ar-live__viewport {
   position: absolute;
@@ -693,7 +692,7 @@
   background: var(--ar-bg-hover);
 }
 .ar-live__head:focus-visible {
-  box-shadow: inset var(--ar-focus-ring);
+  box-shadow: var(--ar-focus-ring);
 }
 .ar-live__main {
   display: flex;

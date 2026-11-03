@@ -29,8 +29,10 @@
   transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
 .ar-knob__dial:focus-visible::before {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  background: linear-gradient(var(--ar-focus-lift), var(--ar-focus-lift)), var(--ar-trough);
+}
+.ar-knob__dial:focus-visible svg {
+  filter: var(--ar-focus-raise);
 }
 .ar-knob__dial svg {
   position: absolute;

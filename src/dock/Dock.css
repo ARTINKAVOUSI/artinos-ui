@@ -152,19 +152,14 @@
   transform: none;
   opacity: 1;
 }
-/* focus on a tab is its underline, faint on a neighbour and lit on the active one; a strip that
+/* focus on a tab: light rises from its foot, and the active tab's underline lights; a strip that
    scrolls would clip anything drawn around the tab */
 .ar-dock__tabs > button:focus-visible {
   color: var(--ar-text-hi);
-}
-.ar-dock__tabs > button:focus-visible::after {
-  background: var(--ar-focus-ink);
-  box-shadow: 0 0 6px var(--ar-focus-glow);
-  transform: none;
-  opacity: 0.6;
+  background: linear-gradient(to top, var(--ar-focus-lift), transparent 75%);
 }
 .ar-dock__tabs > button.is-active:focus-visible::after {
-  opacity: 1;
+  background: var(--ar-focus-ink);
 }
 
 .ar-dock__slot {
@@ -253,8 +248,7 @@
   color: var(--ar-text-mid);
 }
 .ar-dock__search:focus-visible {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  background: linear-gradient(var(--ar-focus-lift), var(--ar-focus-lift)), var(--ar-trough);
 }
 .ar-dock__toolbar {
   display: flex;

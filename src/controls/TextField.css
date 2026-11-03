@@ -13,8 +13,7 @@
   --_h: calc(var(--ar-h) - 4px);
 }
 .ar-textfield:focus-within {
-  outline-color: var(--ar-focus-edge);
-  background: linear-gradient(var(--ar-focus-wash), var(--ar-focus-wash)), var(--ar-trough);
+  --ar-lift: var(--ar-focus-lift);
 }
 .ar-textfield__icon {
   display: inline-flex;
@@ -83,13 +82,12 @@
   opacity: 0.6;
 }
 
-/* invalid: the well keeps its shape and takes a fine fault edge, which focus only strengthens */
+/* invalid: the well keeps its shape and takes a fine fault edge; in focus it lights with the fault */
 .ar-textfield[data-invalid] {
   box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-fault) 70%, transparent);
 }
 .ar-textfield[data-invalid]:focus-within {
-  outline-color: var(--ar-fault);
-  background: linear-gradient(color-mix(in srgb, var(--ar-fault) 8%, transparent), color-mix(in srgb, var(--ar-fault) 8%, transparent)), var(--ar-trough);
+  --ar-lift: color-mix(in srgb, var(--ar-fault) 14%, transparent);
 }
 .ar-textfield[data-invalid] .ar-textfield__icon {
   color: var(--ar-fault);

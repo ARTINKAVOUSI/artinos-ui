@@ -34,7 +34,8 @@
     --ar-lo var(--ar-dur-state) var(--ar-ease),
     --ar-hi var(--ar-dur-state) var(--ar-ease),
     --ar-p var(--ar-dur-state) var(--ar-ease),
-    --ar-p2 var(--ar-dur-state) var(--ar-ease);
+    --ar-p2 var(--ar-dur-state) var(--ar-ease),
+    --ar-lift var(--ar-dur-state) var(--ar-ease);
 }
 /* the semantic value is immediate under the hand */
 .ar-slider[data-mode] .ar-slider__track {
@@ -46,17 +47,15 @@
 .ar-slider[data-mode] .ar-slider__track:not(.ar-slider__track--gradient) {
   box-shadow: var(--ar-well), inset 0 1px 3px rgba(0, 0, 0, 0.28);
 }
-/* focus on a slider is its seam, the part you would take hold of, over a fine edge on the track */
+/* focus on a slider: the track takes light and the fill rises; the seam keeps its own colour, which
+   is the one that reads on this theme's fill */
 .ar-slider:focus-visible .ar-slider__track,
 .ar-range:has(:focus-visible) .ar-slider__track {
-  outline: 1px solid var(--ar-focus-edge);
-  outline-offset: -1px;
+  --ar-lift: var(--ar-focus-lift);
 }
-.ar-slider:focus-visible .ar-slider__seam,
-.ar-range[data-active='lo']:has(.ar-range__thumb:focus-visible) .ar-slider__seam--lo,
-.ar-range[data-active='hi']:has(.ar-range__thumb:focus-visible) .ar-slider__seam--hi {
-  --_c: var(--ar-focus-ink);
-  filter: drop-shadow(0 0 3px var(--ar-focus-glow));
+.ar-slider:focus-visible .ar-slider__fill,
+.ar-range:has(:focus-visible) .ar-slider__fill {
+  filter: var(--ar-focus-raise);
 }
 
 /* cursors say which territory is under the pointer */
@@ -294,7 +293,7 @@
 .ar-slider__track--gradient {
   box-shadow: var(--ar-rim);
 }
-.ar-slider:focus-visible .ar-slider__track--gradient { outline-color: var(--ar-text-hi); }
+.ar-slider:focus-visible .ar-slider__track--gradient { filter: brightness(1.12); }
 .ar-slider__grad,
 .ar-slider__sheen,
 .ar-slider__gradwell {

@@ -378,8 +378,8 @@
   filter: brightness(1.2);
 }
 .ar-toast__action:focus-visible {
-  outline: 1px solid var(--ar-focus-on-insert);
-  outline-offset: -1px;
+  outline: none;
+  filter: brightness(1.2);
 }
 .ar-toast__close svg {
   width: 9px;

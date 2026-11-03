@@ -148,9 +148,6 @@
   stroke: var(--ar-signal);
   opacity: 1;
 }
-.ar-dock-menu__tile:focus-visible {
-  box-shadow: var(--ar-focus-ring);
-}
 
 /* ── actions: icon · label · key ───────────────────────────────────────── */
 .ar-dock-menu__actions {
