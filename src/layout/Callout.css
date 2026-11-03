@@ -1,45 +1,30 @@
-/* ARTINOS Callout — a note set apart: an accent rule down its edge, a soft wash and an icon in its
-   tone, a title in the ink and a few lines in the note's voice. */
+/* ARTINOS Callout — a note set apart by its ground alone: a soft fill in its tone and an icon in the
+   same tone, with no frame and no rule down the edge. A title in the group's voice, a few lines in
+   the note's. */
 .ar-callout {
-  --_tone: var(--ar-text-low);
+  --_tone: var(--ar-text-hi);
+  --_fill: 7%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 2px var(--ar-space-4);
+  gap: 2px 10px;
   align-items: start;
   margin: 0;
-  padding: 10px 12px 11px;
+  padding: 11px 13px 12px 11px;
   border-radius: var(--ar-radius-card);
-  background: color-mix(in srgb, var(--_tone) 9%, transparent);
-  box-shadow:
-    inset 2px 0 0 var(--_tone),
-    inset 0 0 0 1px color-mix(in srgb, var(--_tone) 18%, transparent);
-  color: var(--ar-text-mid);
-}
-/* a note holds no state: a dashed frame and no fill, so it never competes with a warning */
-.ar-callout[data-tone='note'] {
-  background: none;
-  box-shadow: none;
-  outline: 1px dashed var(--ar-line-strong);
-  outline-offset: -1px;
-}
-.ar-callout[data-tone='note'] .ar-callout__icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
-  color: var(--ar-text-hi);
-}
-.ar-callout[data-tone='note'] .ar-callout__title {
-  line-height: 22px;
+  background: color-mix(in srgb, var(--_tone) var(--_fill), transparent);
+  color: var(--ar-tone-body);
 }
 .ar-callout[data-tone='tip'] {
   --_tone: var(--ar-signal);
+  --_fill: 13%;
 }
 .ar-callout[data-tone='warn'] {
   --_tone: var(--ar-warn);
+  --_fill: 15%;
 }
 .ar-callout[data-tone='fault'] {
   --_tone: var(--ar-fault);
+  --_fill: 16%;
 }
 .ar-callout__icon {
   display: grid;
@@ -47,6 +32,9 @@
   width: 16px;
   height: 18px;
   color: var(--_tone);
+}
+.ar-callout[data-tone='note'] .ar-callout__icon {
+  color: var(--ar-tone-label);
 }
 .ar-callout__icon svg {
   width: 15px;
@@ -60,17 +48,18 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: var(--ar-weight-bold) var(--ar-text-md) / 18px var(--ar-font-ui);
-  color: var(--ar-text-hi);
+  font: var(--ar-type-group);
+  color: var(--ar-tone-title);
+  text-wrap: balance;
 }
 .ar-callout__text {
-  font: var(--ar-weight-text) var(--ar-text-sm) / 1.45 var(--ar-font-ui);
-  color: var(--ar-text-mid);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-body);
   text-wrap: pretty;
 }
 /* a callout without a title: its text sits level with the icon */
 .ar-callout__body > .ar-callout__text:first-child {
-  padding-top: 1px;
+  padding-top: 0;
 }
 .ar-callout__text :where(p) {
   margin: 0;
@@ -80,7 +69,7 @@
 }
 .ar-callout__text :where(strong, b) {
   font-weight: var(--ar-weight-medium);
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-title);
 }
 .ar-callout__text :where(kbd) {
   padding: 1px 5px;

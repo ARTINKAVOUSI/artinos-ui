@@ -96,6 +96,14 @@
   --ar-focus-raise: brightness(1.12) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.16));
   --ar-focus-ring: inset 0 0 0 999px var(--ar-focus-lift);
   --ar-selection: color-mix(in srgb, var(--ar-focus-ink) 30%, transparent);
+  /* reading: how loud each kind of text is. One ink at fixed strengths, so the steps between the
+     roles are the same on every theme and a label never reads like the value beside it. */
+  --ar-tone-title: var(--ar-text-hi);
+  --ar-tone-value: var(--ar-text-hi);
+  --ar-tone-body: color-mix(in srgb, var(--ar-text-hi) 88%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-text-hi) 78%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-text-hi) 72%, transparent);
+  --ar-tone-hint: color-mix(in srgb, var(--ar-text-hi) 56%, transparent);
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;
@@ -207,6 +215,23 @@
   --ar-leading-code: 1.65; /* code and long-form reading */
 }
 
+/* ---------- reading: the text of a panel, in five roles ----------
+   A role is a whole font (weight, size, leading, face), so a part cannot end up with one of them
+   wrong. Neighbours differ in two ways at once: a section title is larger and bolder than a group's,
+   a value is larger and brighter than its label. Weight is the title's alone; everything else is
+   regular, because light strokes thin out on glass. Leading sits on a 2px step so rows of text keep
+   a rhythm. Declared on every scope that can change the faces. */
+:root,
+[data-ar-theme],
+[data-ar-material],
+[data-ar-type] {
+  --ar-type-section: var(--ar-weight-bold) 15px / 20px var(--ar-font-ui);
+  --ar-type-group: var(--ar-weight-bold) 13px / 18px var(--ar-font-ui);
+  --ar-type-value: var(--ar-weight-regular) 13px / 18px var(--ar-font-ui);
+  --ar-type-label: var(--ar-weight-regular) 12px / 18px var(--ar-font-ui);
+  --ar-type-note: var(--ar-weight-regular) 12.5px / 19px var(--ar-font-ui);
+}
+
 /* ---------- space: one scale; every gap and padding in the family comes from it ----------
    Raw steps for your own layouts (Stack, Inline, gap={4}), and named roles the components use:
    rows inside a group · groups inside a panel · the panel's own padding · a paragraph's width. */
@@ -234,6 +259,7 @@
   --ar-gap: 7px;
   --ar-row-gap: var(--ar-space-3);
   --ar-group-gap: var(--ar-space-6);
+  --ar-section-gap: var(--ar-space-6); /* air on each side of the hairline between sections: 2.5 rows' worth in all */
   --ar-panel-pad-x: var(--ar-space-7);
   --ar-panel-pad-y: var(--ar-space-6);
 }
@@ -245,6 +271,7 @@
   --ar-gap: 6px;
   --ar-row-gap: var(--ar-space-2);
   --ar-group-gap: var(--ar-space-5);
+  --ar-section-gap: var(--ar-space-5);
   --ar-panel-pad-x: var(--ar-space-5);
   --ar-panel-pad-y: var(--ar-space-5);
 }
@@ -256,6 +283,7 @@
   --ar-gap: 8px;
   --ar-row-gap: var(--ar-space-4);
   --ar-group-gap: var(--ar-space-7);
+  --ar-section-gap: var(--ar-space-7);
   --ar-panel-pad-x: var(--ar-space-8);
   --ar-panel-pad-y: var(--ar-space-7);
 }

@@ -3133,16 +3133,19 @@
 /* HAZE CARVE — Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. */
 [data-ar-theme='haze-carve'],
 [data-ar-theme='haze-carve-custom'] {
-  --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
-  --ar-panel-tint: rgba(255, 255, 255, 0.07);
-  --ar-panel-blur: blur(64px);
+  --ar-floor-amount: 76%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
+  /* the veil: the glass carries its own ground, so the ink holds over a bright scene without a blurry
+     halo behind every letter, and a little more saturation keeps the scene's colour alive through it */
+  --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) var(--ar-floor-amount), transparent);
+  --ar-panel-tint: rgba(255, 255, 255, 0.03);
+  --ar-panel-blur: blur(64px) saturate(1.4);
   --ar-panel-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 24px 50px -26px rgba(0, 0, 0, 0.45);
   --ar-float-bg: rgba(30, 30, 30, 0.72);
-  --ar-text-low: rgba(255, 255, 255, 0.82);
-  --ar-text-faint: rgba(255, 255, 255, 0.66);
-  --ar-text-ghost: rgba(255, 255, 255, 0.46);
-  --ar-panel-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 8px rgba(0, 0, 0, 0.2);
-  --ar-text-mid: rgba(255, 255, 255, 0.94);
+  --ar-text-low: rgba(255, 255, 255, 0.72);
+  --ar-text-faint: rgba(255, 255, 255, 0.58);
+  --ar-text-ghost: rgba(255, 255, 255, 0.42);
+  --ar-panel-text-shadow: none;
+  --ar-text-mid: rgba(255, 255, 255, 0.88);
 }
 
 /* HAZE GLOW — Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. */

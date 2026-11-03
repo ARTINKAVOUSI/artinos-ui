@@ -19,8 +19,11 @@
    page reads from across the room: the serif opens and quotes, the sans at its boldest titles, the
    mono labels and measures. Sizes come from the --ar-read-* scale. */
 .ar-panel,
+.ar-dock,
 .ar-dock__panel,
 .ar-dialog__body {
+  /* small text on a pane is never light: it would thin out on the glass, whoever asks for it */
+  --ar-weight-light: var(--ar-weight-regular);
   --ar-read-display: 40px;
   --ar-read-title: 22px;
   --ar-read-heading: 16px;
@@ -91,6 +94,7 @@
   text-wrap: pretty;
 }
 .ar-type[data-variant='body'] {
+  --_ink: var(--ar-tone-body);
   font-size: var(--ar-read-body);
   line-height: 1.6;
   text-wrap: pretty;
@@ -98,14 +102,13 @@
 }
 /* help and asides: a step quieter than the body */
 .ar-type[data-variant='note'] {
-  --_ink: var(--ar-text-low);
-  font-size: var(--ar-text-sm);
-  line-height: 1.5;
+  --_ink: var(--ar-tone-note);
+  font: var(--ar-type-note);
   text-wrap: pretty;
 }
 /* a line under a figure: the mono, faintest, reads as a measurement's tag */
 .ar-type[data-variant='caption'] {
-  --_ink: var(--ar-text-faint);
+  --_ink: var(--ar-tone-hint);
   font-family: var(--ar-font-code);
   font-size: var(--ar-text-xs);
   line-height: 1.45;
@@ -113,10 +116,8 @@
 }
 /* the name of a thing (a field, a stat): firm and quiet, so its value speaks */
 .ar-type[data-variant='label'] {
-  --_ink: var(--ar-text-low);
-  font-size: var(--ar-text-sm);
-  font-weight: var(--ar-weight-medium);
-  line-height: var(--ar-leading-snug);
+  --_ink: var(--ar-tone-label);
+  font: var(--ar-type-label);
 }
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);

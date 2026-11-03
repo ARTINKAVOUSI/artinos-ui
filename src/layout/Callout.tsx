@@ -1,9 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { cx } from '../core/utils';
 
-/* ARTINOS Callout — a note set apart from the text around it: an icon, an accent rule down its
-   edge and a soft wash in its tone, a title and a few lines. note is neutral, tip in the signal,
-   warn and fault in theirs. Use it for what a reader must not miss, sparingly. */
+/* ARTINOS Callout — a note set apart from the text around it: an icon and a soft fill in its tone,
+   a title and a few lines. note is neutral, tip in the signal, warn and fault in theirs. Use it for
+   what a reader must not miss, sparingly. */
 
 export type CalloutTone = 'note' | 'tip' | 'warn' | 'fault';
 

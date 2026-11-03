@@ -116,20 +116,20 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font: var(--ar-weight-text) var(--ar-text-sm)/var(--ar-leading-none) var(--ar-font-ui);
+  font: var(--ar-weight-regular) 13px/var(--ar-leading-none) var(--ar-font-ui);
   letter-spacing: var(--ar-track-text);
   white-space: nowrap;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-label);
   cursor: pointer;
   transition:
     color 130ms var(--ar-ease),
     border-color 130ms var(--ar-ease);
 }
 .ar-dock__tabs > button:hover {
-  color: var(--ar-text-mid);
+  color: var(--ar-tone-body);
 }
 .ar-dock__tabs > button.is-active {
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-title);
 }
 /* the active tab's signal underline draws out from its centre */
 .ar-dock__tabs > button::after {
