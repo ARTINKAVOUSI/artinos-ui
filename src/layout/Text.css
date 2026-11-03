@@ -118,6 +118,8 @@
 .ar-type[data-variant='label'] {
   --_ink: var(--ar-tone-label);
   font: var(--ar-type-label);
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
 }
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);

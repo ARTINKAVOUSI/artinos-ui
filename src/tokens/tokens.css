@@ -101,9 +101,14 @@
   --ar-tone-title: var(--ar-text-hi);
   --ar-tone-value: var(--ar-text-hi);
   --ar-tone-body: color-mix(in srgb, var(--ar-text-hi) 88%, transparent);
-  --ar-tone-note: color-mix(in srgb, var(--ar-text-hi) 78%, transparent);
-  --ar-tone-label: color-mix(in srgb, var(--ar-text-hi) 72%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-text-hi) 86%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-text-hi) 84%, transparent); /* its capitals set it apart: it need not be dim as well */
   --ar-tone-hint: color-mix(in srgb, var(--ar-text-hi) 56%, transparent);
+  /* the accent as text: mixed toward the ink, so it lifts on dark themes and deepens on light ones */
+  --ar-tone-accent: color-mix(in srgb, var(--ar-signal) 58%, var(--ar-text-hi));
+  /* the band behind a section's title: the ink itself, faintly, so it is a lighter strip on a dark
+     theme and a darker one on a light theme, and never a colour of its own */
+  --ar-band: color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;
@@ -217,19 +222,21 @@
 
 /* ---------- reading: the text of a panel, in five roles ----------
    A role is a whole font (weight, size, leading, face), so a part cannot end up with one of them
-   wrong. Neighbours differ in two ways at once: a section title is larger and bolder than a group's,
-   a value is larger and brighter than its label. Weight is the title's alone; everything else is
-   regular, because light strokes thin out on glass. Leading sits on a 2px step so rows of text keep
-   a rhythm. Declared on every scope that can change the faces. */
+   wrong. Each role takes its own voice, so you can tell what a line is before you read it: a section
+   title is large and bold; a group and a label are small mono capitals, the group in the accent; a
+   value is the sans, large and bright; a note is the sans at reading size. They use the collection's
+   faces and the theme's ink, so they hold on any theme with any type. Declared on every scope that
+   can change the faces. */
 :root,
 [data-ar-theme],
 [data-ar-material],
 [data-ar-type] {
-  --ar-type-section: var(--ar-weight-bold) 15px / 20px var(--ar-font-ui);
-  --ar-type-group: var(--ar-weight-bold) 13px / 18px var(--ar-font-ui);
-  --ar-type-value: var(--ar-weight-regular) 13px / 18px var(--ar-font-ui);
-  --ar-type-label: var(--ar-weight-regular) 12px / 18px var(--ar-font-ui);
-  --ar-type-note: var(--ar-weight-regular) 12.5px / 19px var(--ar-font-ui);
+  --ar-type-section: var(--ar-weight-bold) 19px / 24px var(--ar-font-ui);
+  --ar-type-group: var(--ar-weight-bold) 11px / 14px var(--ar-font-code);
+  --ar-type-value: var(--ar-weight-medium) 14.5px / 20px var(--ar-font-ui);
+  --ar-type-label: var(--ar-weight-medium) 10.5px / 16px var(--ar-font-code);
+  --ar-type-note: var(--ar-weight-regular) 13.5px / 20px var(--ar-font-ui);
+  --ar-track-role: 0.08em; /* the capitals of a group and a label */
 }
 
 /* ---------- space: one scale; every gap and padding in the family comes from it ----------

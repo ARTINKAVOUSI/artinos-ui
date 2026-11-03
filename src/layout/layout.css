@@ -71,34 +71,45 @@
   padding: calc(var(--ar-space-5) + 2px) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
   min-height: 0;
 }
-/* Proximity does the grouping: the air around a section is well over twice the gap between its rows,
-   and its title sits closer to what it heads than to what came before. A section that follows
-   another stands apart over a hairline, wherever the two sit. */
+/* A section is found by its band: its title sits on a strip of the theme's own ink, reaching a little
+   past the rows into the gutter, so a long panel scans as a stack of named blocks wherever it sits.
+   The band only needs the ink and a gutter of 8px, so it works on any theme and in any container. */
 .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']),
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel) {
   margin-top: var(--ar-section-gap);
-  padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line-subtle);
 }
-/* a section inside a section is a group of its rows: the air alone sets it off, at a step down */
+.ar-section:not([data-variant='card']) > .ar-section__head {
+  margin: 0 calc(var(--ar-space-4) * -1) var(--ar-space-5);
+  width: calc(100% + var(--ar-space-4) * 2);
+  padding: 7px var(--ar-space-4);
+  border-radius: var(--ar-radius-control);
+  background: var(--ar-band);
+}
+/* folded, there is nothing under the band to sit close to */
+.ar-section:not([data-open]) > .ar-section__head {
+  margin-bottom: 0;
+}
+/* a section inside a section is a group of its rows: no band, its name in the accent's mono capitals */
 .ar-section__body > .ar-section:not([data-variant='card']),
 .ar-section__body > .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']) {
   margin-top: var(--ar-space-5);
-  padding-top: 0;
-  border-top: 0;
-}
-/* folded, a title has nothing under it to sit close to: the hairlines above and below it are even */
-.ar-section:not([data-open]) > .ar-section__head {
-  padding-bottom: 0;
 }
 .ar-section__body > .ar-section:not([data-variant='card']) + :not(.ar-section) {
   margin-top: var(--ar-space-5);
 }
-.ar-section__body > .ar-section > .ar-section__head {
-  padding-bottom: var(--ar-space-3);
+.ar-section__body > .ar-section:not([data-variant='card']) > .ar-section__head {
+  width: 100%;
+  min-height: 0;
+  margin: 0 0 var(--ar-space-3);
+  padding: 0;
+  border-radius: 0;
+  background: none;
 }
 .ar-section__body > .ar-section > .ar-section__head .ar-section__title {
   font: var(--ar-type-group);
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
+  color: var(--ar-tone-accent);
 }
 /* cards carry their own edges: no line and no air, only a gap, and the panel's gutter tightens so
    the cards hold the width; the head keeps a little more, level with the cards' own content */
@@ -232,15 +243,14 @@ button.ar-section__trigger:focus-visible {
   /* the group's heading: the strongest text in the panel body, two steps above the rows' labels and
      values (a collection may set it in tracked capitals) */
   font: var(--ar-type-section);
-  font-family: var(--ar-voice-font);
-  font-size: calc(15px + var(--ar-head-bump));
-  letter-spacing: calc(var(--ar-head-tracking) - 0.01em);
+  font-size: calc(19px + var(--ar-head-bump));
+  letter-spacing: calc(var(--ar-head-tracking) - 0.015em);
   text-transform: var(--ar-head-case);
   color: var(--ar-tone-title);
 }
 .ar-section[data-heading='text'] .ar-section__title {
   font: var(--ar-type-section);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   text-transform: none;
   color: var(--ar-tone-title);
 }
@@ -323,7 +333,7 @@ button.ar-section__trigger:focus-visible {
 /* ---------- Field: label column + control(s) ---------- */
 .ar-field {
   display: grid;
-  grid-template-columns: var(--ar-field-label-w, 72px) minmax(0, 1fr);
+  grid-template-columns: var(--ar-field-label-w, 92px) minmax(0, 1fr);
   /* top-aligned, with the label as tall as one control row: it sits level with the control's
      first line, even beside a multiline field or a tall pad */
   align-items: start;
@@ -341,6 +351,8 @@ button.ar-section__trigger:focus-visible {
   white-space: nowrap;
   font: var(--ar-type-label);
   line-height: var(--ar-h);
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
   color: var(--ar-tone-label);
 }
 .ar-field__control {
@@ -360,12 +372,21 @@ button.ar-section__trigger:focus-visible {
   align-items: baseline;
 }
 .ar-field:not(:has(.ar-well, .ar-button, .ar-icon-button, .ar-chip, .ar-checkbox, .ar-tool, input, select, textarea, button)) > .ar-field__label {
-  line-height: 18px;
+  line-height: 20px;
 }
 .ar-field:not(:has(.ar-well, .ar-button, .ar-icon-button, .ar-chip, .ar-checkbox, .ar-tool, input, select, textarea, button)) > .ar-field__control {
   display: block;
-  min-height: 18px;
+  min-height: 20px;
+  letter-spacing: -0.008em;
   text-wrap: pretty;
+}
+/* in a Section of columns each Field is a tile: its label above its value */
+.ar-section__body[data-columns] > .ar-field {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--ar-space-1);
+}
+.ar-section__body[data-columns] > .ar-field > .ar-field__label {
+  line-height: 16px;
 }
 .ar-field__control > * {
   flex: 1 1 0;
@@ -600,6 +621,10 @@ button.ar-section__trigger:focus-visible {
   font: var(--ar-type-note);
   color: var(--ar-tone-note);
   text-wrap: pretty;
+}
+/* the first line carries the point, so a paragraph can be skimmed or skipped */
+.ar-section__description::first-line {
+  color: var(--ar-tone-title);
 }
 /* columns: the rows become cells of a grid */
 .ar-section__body[data-columns] {
