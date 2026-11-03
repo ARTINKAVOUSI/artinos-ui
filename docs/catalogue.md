@@ -438,7 +438,7 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 
 | role | token | standard · dense · comfort | between |
 |---|---|---|---|
-| row | `--ar-row-gap` | 6 · 4 · 8 px | rows inside a group |
+| row | `--ar-row-gap` | 10 · 6 · 12 px | rows inside a group |
 | group | `--ar-group-gap` | 16 · 12 · 20 px | groups inside a panel |
 | panel | `--ar-panel-pad-x` / `-y` | 20/16 · 12/12 · 24/20 px | the panel's edge and its content |
 

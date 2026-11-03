@@ -27,9 +27,9 @@
   --ar-control-font: 'Roboto Mono', var(--ar-font-num);
 }
 
-/* the default: Geist for words, Geist Mono for figures; sentence-case headings */
+/* the default: Figtree for words, Geist Mono for figures; sentence-case headings */
 [data-ar-type='instrument'] {
-  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Figtree, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-serif);

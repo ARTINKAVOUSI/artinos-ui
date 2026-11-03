@@ -24,12 +24,12 @@
 .ar-dialog__body {
   /* small text on a pane is never light: it would thin out on the glass, whoever asks for it */
   --ar-weight-light: var(--ar-weight-regular);
-  --ar-read-display: 40px;
-  --ar-read-title: 22px;
-  --ar-read-heading: 16px;
-  --ar-read-subheading: 13px;
-  --ar-read-lead: 18px;
-  --ar-read-body: 13px;
+  --ar-read-display: 44px;
+  --ar-read-title: 28px;
+  --ar-read-heading: 22px;
+  --ar-read-subheading: 15px;
+  --ar-read-lead: 20px;
+  --ar-read-body: 14.5px;
   --ar-read-quote: 21px;
   --ar-read-figure: 36px;
 }
@@ -118,8 +118,6 @@
 .ar-type[data-variant='label'] {
   --_ink: var(--ar-tone-label);
   font: var(--ar-type-label);
-  letter-spacing: var(--ar-track-role);
-  text-transform: uppercase;
 }
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);

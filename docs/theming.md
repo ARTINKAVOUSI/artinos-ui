@@ -186,7 +186,7 @@ By default type is two voices of one family: a sans sets words and its mono sibl
 
 | collection | sans · mono (· display) | character |
 |---|---|---|
-| `instrument` (default) | Geist · Geist Mono | a sans for words, its mono sibling for every figure; sentence-case headings |
+| `instrument` (default) | Figtree · Geist Mono | an open, even sans for words, a mono for every figure; sentence-case headings |
 | `geist` | Geist · Geist Mono | the default faces with small headings and marks in tracked capitals: the exact, technical look |
 | `grotesk` | Chivo · Chivo Mono | a grotesk with an engineering edge: crisp caps, a mono with character |
 | `editorial` | IBM Plex Sans · IBM Plex Mono | drawn, editorial; open counters, a mono with character |
@@ -272,7 +272,7 @@ Roles (theme level):
 - ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint`, `--ar-text-ghost` — a theme sets `--ar-text-hi`; the quieter steps are derived from it at fixed strengths (90 · 74 · 60 · 40%), so titles, values, labels and notes keep the same distance in every theme and in its own hue. Override a step with an inline token (`tokens={{ 'text-low': … }}`) when you need to.
 - lines: `--ar-line-subtle`, `--ar-line`, `--ar-line-strong`, `--ar-tick`, `--ar-tick-major`
 - accents: `--ar-signal`, `--ar-signal-hi`, `--ar-signal-line`, `--ar-signal-wash`, `--ar-signal-ink`, `--ar-bind`, `--ar-warn`, `--ar-fault`, `--ar-focus-ring`
-- reading: `--ar-type-section`, `--ar-type-group`, `--ar-type-value`, `--ar-type-label`, `--ar-type-note` (each a whole `font`), and `--ar-tone-title`, `--ar-tone-value`, `--ar-tone-body`, `--ar-tone-note`, `--ar-tone-label`, `--ar-tone-hint` (the theme's brightest ink at fixed strengths, so the steps between roles are the same on every theme), `--ar-tone-accent` (the accent as text, mixed toward the ink), `--ar-band` (the strip behind a section's title, the ink itself, faintly) and `--ar-track-role` (the tracking of a role's capitals). A theme needs no values of its own for any of them.
+- reading: `--ar-type-section`, `--ar-type-group`, `--ar-type-value`, `--ar-type-label`, `--ar-type-note` (each a whole `font`), and `--ar-tone-title`, `--ar-tone-value`, `--ar-tone-body`, `--ar-tone-note`, `--ar-tone-label`, `--ar-tone-hint` (the theme's brightest ink at fixed strengths, so the steps between roles are the same on every theme), and `--ar-tone-accent` (the accent as text, mixed toward the ink). A theme needs no values of its own for any of them.
 - focus: `--ar-focus-ink` (the signal eased toward the ink), `--ar-focus-lift` (the light a recessed surface takes), `--ar-focus-raise` (the filter that lifts a polished part), `--ar-focus-ring` (the same light as a one-line box-shadow, for your own parts) and `--ar-selection` (selected text). They are worked out from the signal, so a theme or an accent needs no focus colour of its own.
 - panel glass: `--ar-edge-light` (the lit top edge of a Panel or dock pane, brightest in the middle; `transparent` turns it off), `--ar-panel-tint`, `--ar-panel-floor` (set by `scene`), `--ar-floor-amount`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`
 - floating ink and the typed-entry field: `--ar-float-bg`, `--ar-float-ring`, `--ar-float-shadow`, `--ar-float-ink`, `--ar-float-ink-low`
