@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font: var(--ar-weight-medium) 14.5px/var(--ar-leading-none) var(--ar-font-ui);
+  font: 400 14px/var(--ar-leading-none) var(--ar-font-ui);
   letter-spacing: var(--ar-track-text);
   white-space: nowrap;
   color: var(--ar-tone-label);

@@ -1,11 +1,9 @@
-/* ARTINOS StatStrip — key figures on one soft surface, in the same family as a Section card. */
+/* ARTINOS StatStrip — key figures between two hairlines, large and light. */
 .ar-stat-strip {
   display: grid;
   grid-template-columns: repeat(var(--_n, 3), minmax(0, 1fr));
   margin: 0;
-  border-radius: var(--ar-radius-card);
-  background: color-mix(in srgb, var(--ar-text-hi) 6%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
+  border-block: 1px solid var(--ar-line-strong);
 }
 .ar-stat-strip__item {
   display: flex;
@@ -13,7 +11,10 @@
   justify-content: flex-end;
   gap: 3px;
   min-width: 0;
-  padding: 10px 6px 10px 12px;
+  padding: 12px 6px 12px 12px;
+}
+.ar-stat-strip__item:first-child {
+  padding-left: 0;
 }
 .ar-stat-strip__item + .ar-stat-strip__item {
   border-left: 1px solid var(--ar-line);
@@ -27,7 +28,7 @@
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-title);
 }
 .ar-stat-strip__value small {
   margin-left: 2px;
@@ -37,8 +38,8 @@
 }
 .ar-stat-strip__label {
   overflow: hidden;
-  font: var(--ar-weight-text) var(--ar-text-xs) / 1.3 var(--ar-font-ui);
+  font: 400 12.5px / 1.3 var(--ar-font-ui);
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-label);
 }

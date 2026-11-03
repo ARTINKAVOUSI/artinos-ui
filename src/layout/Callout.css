@@ -30,7 +30,7 @@
   display: grid;
   place-items: center;
   width: 16px;
-  height: 22px;
+  height: 20px;
   color: var(--_tone);
 }
 .ar-callout[data-tone='note'] .ar-callout__icon {
@@ -48,12 +48,12 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: var(--ar-weight-bold) 14.5px / 22px var(--ar-font-ui);
+  font: 500 14.5px / 20px var(--ar-font-ui);
   color: var(--ar-tone-title);
   text-wrap: balance;
 }
 .ar-callout__text {
-  font: var(--ar-type-note);
+  font: 400 14px / 21px var(--ar-font-ui);
   color: var(--ar-tone-body);
   text-wrap: pretty;
 }

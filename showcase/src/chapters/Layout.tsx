@@ -142,10 +142,10 @@ function CharacterPanel() {
         ]}
       />
       <Section icon={character('M6 7.2a2.4 2.4 0 100-4.8 2.4 2.4 0 000 4.8zM1.8 13.5c.3-2.6 2-4 4.2-4s3.9 1.4 4.2 4M10.8 2.6a2.4 2.4 0 010 4.5M12 9.8c1.3.5 2 1.8 2.2 3.7')} title="Cast" count="Custom" description="Who is on stage, and how each part answers sound.">
-        <Field label="Feels">
-          <Tag>exuberant</Tag>
-          <Tag>calm</Tag>
+        <Field label="Feels" variant="hero">
+          exuberant, <em>calm</em>
         </Field>
+        <Field label="Thinks" variant="quote">“Quiet again. I'll keep one eye open and see what the room does.”</Field>
         <Field label="Intends">Nothing, at ease</Field>
         <Field label="Knows you">
           Friend <Tag>visit 8</Tag>
@@ -259,7 +259,6 @@ function Groups() {
       <Panel title="Render" subtitle="Orb · frame 1 of 240" icon={RENDER_ICON} collapsible maxHeight={340} footer={<>• Live <span>GPU 4.1 ms</span></>}>
         <SectionGroup toolbar label="Render settings">
           <Section
-            variant="card"
             title="Exposure"
             description="How bright the frame is before the tonemap."
             count={changed ? '1 changed' : undefined}
@@ -269,12 +268,12 @@ function Groups() {
             <Slider label="Exposure" min={-4} max={4} unit="ev" decimals={2} bipolar value={exp.ev} onChange={(ev) => setExp({ ...exp, ev })} />
             <Slider label="Gamma" min={1} max={3} decimals={2} value={exp.gamma} onChange={(gamma) => setExp({ ...exp, gamma })} />
           </Section>
-          <Section variant="card" title="Transform" count={3} columns={3}>
+          <Section title="Transform" count={3} columns={3}>
             <NumberField label="X" defaultValue={1.25} decimals={2} unit="m" />
             <NumberField label="Y" defaultValue={0} decimals={2} unit="m" />
             <NumberField label="Z" defaultValue={-0.5} decimals={2} unit="m" />
           </Section>
-          <Section variant="card" title="Post" defaultEnabled storageKey="showcase-render-post" description="Double-click the heading to switch the whole group; its fold is remembered.">
+          <Section title="Post" defaultEnabled storageKey="showcase-render-post" description="Double-click the heading to switch the whole group; its fold is remembered.">
             <Slider label="Bloom" defaultValue={0.24} />
             <Slider label="Grain" defaultValue={0.08} />
             <Slider label="Vignette" defaultValue={0.4} />
@@ -361,7 +360,7 @@ export function LayoutChapter() {
     <Chapter id="layout">
       <Spec
         id="inspector"
-        text="One inspector, built from the layout parts. Panel is a glass card with a header, a tabs slot and a foot line; Tabs underline the active one; Field puts a label column beside one or more controls. Section groups controls under a quiet capitals heading with its count beside it and a chevron at the end, no line across: click the heading to fold it, and a switchable group carries an LED before its title; and on a switchable group double-click (or Shift+Enter) to switch it off, which folds it closed and disables it. PropertyRow wraps any control: a changed value shows a signal dot in the left gutter that turns into its reset on hover, binding names the driver of a bound value, compact puts the label in its own column. Below, the same groups as a dense control strip: toggleable sliders in three cards, density set once on the strip's scope."
+        text="One inspector, built from the layout parts. Panel is a glass card with a header, a tabs slot and a foot line; Tabs underline the active one; Field puts a label column beside one or more controls. Section groups controls under a large, light title with its count and a chevron at the end, over a hairline: click the heading to fold it, and a switchable group carries an LED before its title; and on a switchable group double-click (or Shift+Enter) to switch it off, which folds it closed and disables it. PropertyRow wraps any control: a changed value shows a signal dot in the left gutter that turns into its reset on hover, binding names the driver of a bound value, compact puts the label in its own column. Below, the same groups as a dense control strip: toggleable sliders in three cards, density set once on the strip's scope."
         code={`
 <Panel title="Metablock" subtitle="Typography / Layout" actions={<ResetButton />}
        tabs={<Tabs items={['Scene', 'Studio', 'Detail']} value={tab} onChange={setTab} />}
@@ -396,13 +395,13 @@ export function LayoutChapter() {
 
       <Spec
         id="groups"
-        text="Groups that do more. A Section can carry a description, an icon, a reset that appears once something changed, and remember whether it was open; variant='card' sets it in its own soft inset card and columns lays its rows out side by side. SectionGroup makes sections behave together: an accordion keeps one open at a time, toolbar adds Expand all and Collapse all. A Panel takes an icon, folds to its header when collapsible, scrolls past maxHeight under soft fades, and comes as glass, solid (opaque, for busy scenes) or inset (a quiet frame inside another panel)."
+        text="Groups that do more. A Section can carry a description, an icon, a reset that appears once something changed, and remember whether it was open; variant='card' sets it on a soft tonal surface and columns lays its rows out side by side. SectionGroup makes sections behave together: an accordion keeps one open at a time, toolbar adds Expand all and Collapse all. A Panel takes an icon, folds to its header when collapsible, scrolls past maxHeight under soft fades, and comes as glass, solid (opaque, for busy scenes) or inset (a quiet frame inside another panel)."
         code={`<Panel title="Render" icon={<Cube />} collapsible maxHeight={340}>
   <SectionGroup toolbar>
-    <Section variant="card" title="Exposure" description="How bright the frame is."
+    <Section title="Exposure" description="How bright the frame is."
              modified={changed} onReset={reset}> … </Section>
-    <Section variant="card" title="Transform" columns={3}> <NumberField label="X" /> … </Section>
-    <Section variant="card" title="Post" defaultEnabled storageKey="post"> … </Section>
+    <Section title="Transform" columns={3}> <NumberField label="X" /> … </Section>
+    <Section title="Post" defaultEnabled storageKey="post"> … </Section>
   </SectionGroup>
 </Panel>
 <SectionGroup accordion defaultOpen="camera">
@@ -415,7 +414,7 @@ export function LayoutChapter() {
 
       <Spec
         id="item-rows"
-        text="One thing in a list: a layer, a body, a preset, a file. A swatch or icon, a name in the sans, a quiet line of detail under it, and tools at the end (a badge, a switch, a menu) that never select the row. Hover gives a wash; the selected row takes the active wash and the signal edge on its left. No dividers: the rows stand in an ItemList, 2px apart. Drag a row to reorder it (Alt + ↑ / ↓ from the keyboard); lists that share a group trade rows."
+        text="One thing in a list: a layer, a body, a preset, a file. A swatch or icon, a name in the sans, a quiet line of detail under it, and tools at the end (a badge, a switch, a menu) that never select the row. Hover gives a wash; the selected row takes the active wash. No dividers: the rows stand in an ItemList, 2px apart. Drag a row to reorder it (Alt + ↑ / ↓ from the keyboard); lists that share a group trade rows."
         code={`
 <ItemList label="Layers">
   <ItemRow title="Orb" meta="Glass shell · 12,480 tris" swatch="#4fd1ba"

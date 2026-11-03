@@ -98,15 +98,15 @@
   --ar-selection: color-mix(in srgb, var(--ar-focus-ink) 30%, transparent);
   /* reading: how loud each kind of text is. One ink at fixed strengths, so the steps between the
      roles are the same on every theme and a label never reads like the value beside it. */
-  --ar-tone-title: var(--ar-text-hi);
-  --ar-tone-value: var(--ar-text-hi);
-  --ar-tone-body: color-mix(in srgb, var(--ar-text-hi) 88%, transparent);
-  --ar-tone-note: color-mix(in srgb, var(--ar-text-hi) 90%, transparent);
-  /* a label takes a little of the theme's accent, so names and values differ in hue as well as strength */
-  --ar-tone-label: color-mix(in srgb, color-mix(in srgb, var(--ar-signal) 14%, var(--ar-text-hi)) 90%, transparent);
-  --ar-tone-hint: color-mix(in srgb, var(--ar-text-hi) 56%, transparent);
-  /* the accent as text: mixed toward the ink, so it lifts on dark themes and deepens on light ones */
-  --ar-tone-accent: color-mix(in srgb, var(--ar-signal) 45%, var(--ar-text-hi));
+  /* the ink warmed a little, paper rather than a screen's white: it softens either way, on a dark theme or a light one */
+  --ar-paper: color-mix(in srgb, var(--ar-text-hi) 84%, #b0aa9c);
+  --ar-tone-title: var(--ar-paper);
+  --ar-tone-value: var(--ar-paper);
+  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 86%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 78%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 74%, transparent);
+  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 56%, transparent);
+  --ar-tone-accent: var(--ar-signal);
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;
@@ -151,8 +151,8 @@
    :root only, not at every theme boundary, so a type collection (tokens/type.css, data-ar-type)
    set on a scope carries through the themes nested inside it. */
 :root {
-  /* Figtree for words: open and even at reading sizes, and it holds up on glass. Geist Mono for figures. */
-  --ar-font-ui: Figtree, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Geist and Geist Mono: one skeleton drawn twice for screens */
+  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* figures and small marks: readouts, counts, badges, ticks */
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* code */
@@ -220,19 +220,23 @@
 
 /* ---------- reading: the text of a panel, in five roles ----------
    A role is a whole font (weight, size, leading), so a part cannot end up with one of them wrong.
-   The sizes are set to be read without leaning in, and the jumps are wide: a section title is half
-   again the size of a value and a group's name is the value's size in the accent. All in one family,
-   the collection's, on the theme's ink, so they hold on any theme with any type. Declared on every
-   scope that can change the faces. */
+   Large and light against small and exact: a section title is more than twice the size of a value and
+   lighter; a group's name is mono capitals in the accent, on a hairline; the serif speaks only for a
+   thought, or one word in a title. Titles scale with their container (layout.css), so a narrow panel
+   never cuts one off. They use the collection's faces and the theme's ink, so they hold on any theme
+   with any type. Declared on every scope that can change the faces. */
 :root,
 [data-ar-theme],
 [data-ar-material],
 [data-ar-type] {
-  --ar-type-section: 700 22px / 28px var(--ar-font-ui);
-  --ar-type-group: 700 15px / 20px var(--ar-font-ui);
-  --ar-type-value: var(--ar-weight-medium) 15px / 22px var(--ar-font-ui);
-  --ar-type-label: var(--ar-weight-medium) 13.5px / 22px var(--ar-font-ui);
-  --ar-type-note: var(--ar-weight-regular) 14.5px / 23px var(--ar-font-ui);
+  --ar-type-section: 300 34px / 1.14 var(--ar-font-ui);
+  --ar-type-group: 500 12px / 16px var(--ar-font-code);
+  --ar-type-value: 400 15px / 20px var(--ar-font-ui);
+  --ar-type-label: 400 13.5px / 20px var(--ar-font-ui);
+  --ar-type-note: 400 15px / 24px var(--ar-font-ui);
+  --ar-type-hero: 300 42px / 1.1 var(--ar-font-ui);
+  --ar-type-quote: italic 400 26px / 1.2 var(--ar-font-serif);
+  --ar-track-role: 0.08em; /* the capitals of a group's name */
 }
 
 /* ---------- space: one scale; every gap and padding in the family comes from it ----------
@@ -255,12 +259,12 @@
 /* ---------- density ---------- */
 :root,
 [data-ar-density='standard'] {
-  --ar-h: 30px;
-  --ar-label-size: 12.5px;
-  --ar-value-size: 13.5px;
+  --ar-h: 28px;
+  --ar-label-size: 12px;
+  --ar-value-size: 12.5px;
   --ar-pad-x: 10px;
   --ar-gap: 7px;
-  --ar-row-gap: 10px;
+  --ar-row-gap: var(--ar-space-4);
   --ar-group-gap: var(--ar-space-6);
   --ar-section-gap: 22px; /* air on each side of the hairline between sections */
   --ar-panel-pad-x: var(--ar-space-7);
@@ -268,8 +272,8 @@
 }
 [data-ar-density='dense'] {
   --ar-h: 26px;
-  --ar-label-size: 11.5px;
-  --ar-value-size: 12.5px;
+  --ar-label-size: 11px;
+  --ar-value-size: 12px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
   --ar-row-gap: var(--ar-space-3);
@@ -279,12 +283,12 @@
   --ar-panel-pad-y: var(--ar-space-5);
 }
 [data-ar-density='comfort'] {
-  --ar-h: 34px;
-  --ar-label-size: 13.5px;
-  --ar-value-size: 14.5px;
+  --ar-h: 32px;
+  --ar-label-size: 13px;
+  --ar-value-size: 14px;
   --ar-pad-x: 12px;
   --ar-gap: 8px;
-  --ar-row-gap: var(--ar-space-5);
+  --ar-row-gap: 10px;
   --ar-group-gap: var(--ar-space-7);
   --ar-section-gap: var(--ar-space-8);
   --ar-panel-pad-x: var(--ar-space-8);

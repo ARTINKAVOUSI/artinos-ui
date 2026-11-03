@@ -1,5 +1,5 @@
 /* ARTINOS ItemRow — one thing in a list. Rows stack with no dividers: hover gives a wash,
-   the selected row the active wash and a signal edge on its left. */
+   the selected row the active wash. */
 
 .ar-item {
   position: relative;
@@ -17,27 +17,6 @@
 }
 .ar-item[data-selected] {
   background: var(--ar-bg-active);
-}
-/* the signal edge: the family's seam, laid on the row's left */
-.ar-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 7px;
-  bottom: 7px;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--ar-signal);
-  box-shadow: 0 0 6px var(--ar-signal-line);
-  opacity: 0;
-  transform: scaleY(0.4);
-  transition:
-    opacity var(--ar-dur-state) var(--ar-ease),
-    transform var(--ar-dur-surface) var(--ar-ease-spring);
-}
-.ar-item[data-selected]::before {
-  opacity: 1;
-  transform: none;
 }
 /* off: the name goes quiet; the tools at the end stay live, so it can be switched back on */
 .ar-item[data-disabled] .ar-item__main {
@@ -63,7 +42,7 @@ button.ar-item__main {
 button.ar-item__main:disabled {
   cursor: default;
 }
-/* a row in focus: a wash and a short mark at its leading edge */
+/* a row in focus: a wash */
 button.ar-item__main:focus-visible {
   background: var(--ar-focus-lift);
 }
@@ -98,13 +77,14 @@ button.ar-item__main:focus-visible {
   text-overflow: ellipsis;
 }
 .ar-item__title {
-  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
-  color: var(--ar-text-hi);
+  font: 400 14px / 19px var(--ar-font-ui);
+  letter-spacing: -0.005em;
+  color: var(--ar-tone-title);
 }
 .ar-item__meta {
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
+  font: 400 12.5px / 17px var(--ar-font-ui);
   font-variant-numeric: tabular-nums;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-label);
 }
 
 .ar-item__trail {

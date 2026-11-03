@@ -46,10 +46,6 @@ export interface PanelProps {
   id?: string;
 }
 
-/** Sections that are not told otherwise sit on their own card here: directly in a Panel or a dock
- *  pane. Not inside another Section, and not in an inset Panel, which is already a quiet frame. */
-export const SectionCards = createContext(false);
-
 /** The shared Field label column a Panel or Section hands down. */
 const labelColumn = (w: number | string | undefined): CSSProperties | undefined =>
   w === undefined ? undefined : ({ '--ar-field-label-w': typeof w === 'number' ? w + 'px' : w } as CSSProperties);
@@ -101,7 +97,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 
             data-scroll={maxHeight !== undefined ? '' : undefined}
             style={maxHeight !== undefined ? { maxHeight: typeof maxHeight === 'number' ? maxHeight + 'px' : maxHeight } : undefined}
           >
-            <SectionCards.Provider value={variant !== 'inset'}>{children}</SectionCards.Provider>
+            {children}
           </div>
           {footer ? <footer className="ar-panel__foot">{footer}</footer> : null}
         </div>
@@ -216,8 +212,7 @@ export interface SectionProps {
   storageKey?: string;
   /** caps: a small capitals heading (default) · text: a larger sans title (inspector) */
   heading?: 'caps' | 'text';
-  /** card: the group sits on its own soft surface (the default directly in a Panel or dock pane) ·
-   *  plain: a heading over its rows (the default anywhere else). */
+  /** plain: a heading over its rows, on a hairline (the default) · card: the group sits on a soft tonal surface. */
   variant?: 'plain' | 'card';
   /** Lay the rows out in 2 or 3 columns (each child is a cell). */
   columns?: 1 | 2 | 3;
@@ -247,7 +242,7 @@ export function Section({
   onOpenChange,
   storageKey,
   heading = 'caps',
-  variant,
+  variant = 'plain',
   columns = 1,
   labelWidth,
   id,
@@ -256,8 +251,6 @@ export function Section({
   style,
 }: SectionProps) {
   const group = useContext(SectionGroupContext);
-  const cards = useContext(SectionCards);
-  const look = variant ?? (cards ? 'card' : 'plain');
   const autoId = useId();
   const key = id ?? autoId;
   const inAccordion = !!group?.accordion && open === undefined;
@@ -347,7 +340,7 @@ export function Section({
       id={id}
       className={cx('ar-section', className)}
       data-heading={heading}
-      data-variant={look === 'card' ? 'card' : undefined}
+      data-variant={variant === 'card' ? 'card' : undefined}
       data-open={shown ? '' : undefined}
       data-off={off ? '' : undefined}
       data-switchable={toggleable ? '' : undefined}
@@ -395,7 +388,7 @@ export function Section({
       <div className="ar-section__fold" id={bodyId} inert={!shown || undefined}>
         <div className="ar-section__body" data-columns={columns > 1 ? columns : undefined}>
           {description != null ? <p className="ar-section__description">{description}</p> : null}
-          <SectionCards.Provider value={false}>{children}</SectionCards.Provider>
+          {children}
         </div>
       </div>
     </div>
@@ -415,11 +408,13 @@ export interface FieldProps {
   error?: ReactNode;
   /** Marks the label and tells the control. */
   required?: boolean;
+  /** row: a label beside its value (default) · hero: the panel's one big statement, large and light, where an <em> word takes the serif and the accent · quote: someone's words, in the serif's italic. Use each sparingly: a panel has one focal point. */
+  variant?: 'row' | 'hero' | 'quote';
   className?: string;
   style?: CSSProperties;
 }
 
-export function Field({ label, children, labelWidth, layout = 'inline', hint, error, required, className, style }: FieldProps) {
+export function Field({ label, children, labelWidth, layout = 'inline', hint, error, required, variant = 'row', className, style }: FieldProps) {
   const lw = labelWidth === undefined ? undefined : typeof labelWidth === 'number' ? labelWidth + 'px' : labelWidth;
   const id = useId().replace(/:/g, '');
   const message = error ?? hint;
@@ -428,6 +423,7 @@ export function Field({ label, children, labelWidth, layout = 'inline', hint, er
     <div
       className={cx('ar-field', className)}
       data-layout={layout === 'stacked' ? 'stacked' : undefined}
+      data-variant={variant === 'row' ? undefined : variant}
       data-invalid={invalid ? '' : undefined}
       style={{ ...(lw ? ({ '--ar-field-label-w': lw } as CSSProperties) : null), ...style }}
     >

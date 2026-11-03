@@ -45,23 +45,23 @@
 .ar-type[data-variant='title'] {
   --_ink: var(--ar-text-hi);
   font-size: var(--ar-read-title);
-  font-weight: var(--ar-weight-bold);
-  line-height: 1.12;
-  letter-spacing: -0.025em;
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 .ar-type[data-variant='heading'] {
   --_ink: var(--ar-text-hi);
   font-size: var(--ar-read-heading);
-  font-weight: var(--ar-weight-bold);
-  line-height: 1.2;
-  letter-spacing: -0.012em;
+  font-weight: var(--ar-weight-regular);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .ar-type[data-variant='subheading'] {
   --_ink: var(--ar-text-mid);
   font-size: var(--ar-read-subheading);
-  font-weight: var(--ar-weight-bold);
+  font-weight: var(--ar-weight-medium);
   line-height: var(--ar-leading-snug);
   text-wrap: balance;
 }

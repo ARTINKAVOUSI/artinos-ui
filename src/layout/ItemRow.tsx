@@ -7,7 +7,7 @@ import { cx, revealClipped } from '../core/utils';
 /* ARTINOS ItemRow — one thing in a list: a layer, a body, a preset, a file. A leading mark
    (a colour swatch or an icon), a name, a quiet line of detail under it, and trailing tools
    (a badge, a switch, a menu) that stay outside the row's own button. Selected, it takes the
-   active wash and the signal edge on its left. */
+   active wash. */
 
 export interface ItemRowProps {
   /** The name, in the sans. */

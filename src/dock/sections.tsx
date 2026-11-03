@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useSyncExternalStore, type ReactElement, type ReactNode } from 'react';
 import { moveBetween } from '../core/sortable';
 import type { SortPlace } from '../core/sortable';
-import { SectionCards, SectionGroup } from '../layout/Panel';
+import { SectionGroup } from '../layout/Panel';
 import type { MetaBlockWorkspace } from './metablock/workspace';
 import { TEAR_PREFIX, useDock } from './Dock';
 import type { DockApi } from './Dock';
@@ -104,13 +104,11 @@ export function createDockSections(options: DockSectionsOptions): DockSections {
     const now = useSyncExternalStore(subscribe, get, get);
     useEffect(() => watch(dock), [dock]);
     return (
-      <SectionCards.Provider value={true}>
       <SectionGroup id={id} group={group} label={label} onMove={(from, to) => move(from, to, dock)} onTearOff={(from, at) => tearOff(from, at, dock)}>
         {(now[id] ?? []).map((sid) => (
           <Fragment key={sid}>{options.render(sid)}</Fragment>
         ))}
       </SectionGroup>
-      </SectionCards.Provider>
     );
   }
 

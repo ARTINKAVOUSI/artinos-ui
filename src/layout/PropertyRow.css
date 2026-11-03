@@ -1,7 +1,7 @@
 /* PropertyRow — the inspector row: a label column (the Field's), the control, and a reset
    and actions that appear on hover. The row never owns the value; it only arranges. */
 .ar-prop {
-  --_label-w: var(--ar-field-label-w, 116px);
+  --_label-w: var(--ar-field-label-w, 108px);
   display: flex;
   flex-direction: column;
   gap: 3px;

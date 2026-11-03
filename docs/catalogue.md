@@ -298,7 +298,7 @@ Sections that behave together. `accordion` keeps one open at a time (each Sectio
 
 ### Section
 
-A titled group under a quiet heading, no line across. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group in its own soft inset card; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
+A titled group: a large, light title sized to the width it has, over a firm hairline from the section before it. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
 
 | kind | props | behaviour |
 |---|---|---|
@@ -323,7 +323,7 @@ A tab strip with a travelling underline. `items`, `value` / `defaultValue` / `on
 One thing in a list: a layer, a body, a preset, a file. Use it wherever a panel lists things, instead of a column of full-width buttons.
 - A `swatch` colour or a `leading` icon, the `title` in the sans, a `meta` line of detail (kind, size, state).
 - `trailing` tools at the end — a `Badge`, a compact `Switch`, an `IconButton` or `Menu` — that never select the row.
-- `selected`: the active wash and the signal edge on the left; `onSelect` makes the row a button.
+- `selected`: the active wash; `onSelect` makes the row a button.
 - `disabled`: the name side goes quiet and the trailing tools stay live, so a hidden layer can be shown again.
 - Rows stand in an `ItemList`, 2px apart, no dividers.
 
@@ -438,7 +438,7 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 
 | role | token | standard · dense · comfort | between |
 |---|---|---|---|
-| row | `--ar-row-gap` | 10 · 6 · 12 px | rows inside a group |
+| row | `--ar-row-gap` | 8 · 6 · 10 px | rows inside a group |
 | group | `--ar-group-gap` | 16 · 12 · 20 px | groups inside a panel |
 | panel | `--ar-panel-pad-x` / `-y` | 20/16 · 12/12 · 24/20 px | the panel's edge and its content |
 

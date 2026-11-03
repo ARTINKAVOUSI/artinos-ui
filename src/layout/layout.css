@@ -38,13 +38,19 @@
   gap: 4px;
   min-width: 0;
 }
-/* the panel's name: the strongest text it holds, with what it is in the mono under it */
+/* the panel's name: large and light, with what it is in the mono under it */
 .ar-panel__title {
-  font-size: var(--ar-text-2xl);
-  font-weight: var(--ar-weight-bold);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  color: var(--ar-text-hi);
+  font: 300 28px / 1.1 var(--ar-font-ui);
+  letter-spacing: -0.03em;
+  color: var(--ar-tone-title);
+}
+/* the one word that speaks: the serif's italic, in a title or a large value */
+:is(.ar-panel__title, .ar-section__title, .ar-field__control) em {
+  font-family: var(--ar-font-serif);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 .ar-panel__subtitle {
   font-family: var(--ar-font-code);
@@ -60,9 +66,22 @@
   gap: 8px;
   color: var(--ar-text-low);
 }
+/* more tabs than the width scroll within their strip, so they never widen the panel */
 .ar-panel__tabs {
+  min-width: 0;
   padding: 0 var(--ar-panel-pad-x);
+  overflow-x: auto;
+  scrollbar-width: none;
   border-bottom: 1px solid var(--ar-line-subtle);
+}
+.ar-panel__tabs::-webkit-scrollbar {
+  display: none;
+}
+.ar-panel__tabs .ar-tabs__tab {
+  flex: none;
+}
+.ar-panel__inner {
+  min-width: 0;
 }
 .ar-panel__body {
   display: flex;
@@ -71,36 +90,60 @@
   padding: calc(var(--ar-space-5) + 2px) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
   min-height: 0;
 }
-/* Air does the grouping: a section stands well apart from the last over a hairline, its large title
-   close to what it heads, wherever the two sit. */
+/* Hairlines and air do the structure, not boxes: a section stands well apart from the last over a
+   firm hairline, its large title close to what it heads, wherever the two sit. */
 .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']),
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel) {
   margin-top: var(--ar-section-gap);
   padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line);
+  border-top: 1px solid var(--ar-line-strong);
 }
 .ar-section:not([data-open]) > .ar-section__head {
   padding-bottom: 0;
 }
-/* a section inside a section is a group of its rows: no line, its name in the accent, more air above
-   than below */
+/* the same after loose controls in a panel; a stat strip brings its own line */
+.ar-panel__body > :not(.ar-section, .ar-section-group, .ar-panel, .ar-stat-strip) + .ar-section:not([data-variant='card']) {
+  margin-top: var(--ar-section-gap);
+  padding-top: var(--ar-section-gap);
+  border-top: 1px solid var(--ar-line-strong);
+}
+.ar-panel__body > .ar-stat-strip + .ar-section {
+  margin-top: var(--ar-space-5);
+}
+/* a section inside a section is a group of its rows: its name in the accent's mono capitals, standing
+   on a hairline of its own */
 .ar-section__body > .ar-section:not([data-variant='card']),
 .ar-section__body > .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']) {
-  margin-top: var(--ar-space-6);
+  margin-top: var(--ar-space-7);
   padding-top: 0;
   border-top: 0;
 }
 .ar-section__body > .ar-section:not([data-variant='card']) + :not(.ar-section) {
   margin-top: var(--ar-space-6);
 }
-.ar-section__body > .ar-section > .ar-section__head {
+.ar-section__body > .ar-section > .ar-section__head,
+.ar-section__body > .ar-section:not([data-open]) > .ar-section__head {
   min-height: 0;
   padding-bottom: var(--ar-space-4);
+  border-bottom: 1px solid var(--ar-line-strong);
+  border-radius: 0;
 }
-.ar-section__body > .ar-section > .ar-section__head .ar-section__title {
+.ar-section__body > .ar-section > .ar-section__fold > .ar-section__body {
+  padding-top: var(--ar-row-gap);
+}
+.ar-section__body > .ar-section > .ar-section__head .ar-section__title,
+.ar-section__body > .ar-section:not([data-open]) > .ar-section__head .ar-section__title {
   font: var(--ar-type-group);
-  letter-spacing: -0.005em;
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
   color: var(--ar-tone-accent);
+}
+/* rows of a list sit on hairlines, so the eye runs along them and the columns stay aligned */
+.ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
+.ar-panel__body > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
+.ar-prop:not([data-density='default']) + .ar-prop:not([data-density='default']) {
+  padding-top: var(--ar-row-gap);
+  border-top: 1px solid var(--ar-line);
 }
 /* cards carry their own edges: no line and no air, only a gap, and the panel's gutter tightens so
    the cards hold the width; the head keeps a little more, level with the cards' own content */
@@ -110,13 +153,13 @@
   padding-top: 0;
   border-top: 0;
 }
-.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) {
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'])) {
   --_gutter: calc(var(--ar-panel-pad-x) * 0.6);
 }
-.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) > .ar-panel__head {
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'])) > .ar-panel__head {
   padding-inline: calc(var(--_gutter) + 4px);
 }
-.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'], .ar-stat-strip)) > .ar-panel__fold > .ar-panel__inner > .ar-panel__body {
+.ar-panel:has(> .ar-panel__fold > .ar-panel__inner > .ar-panel__body > :is(.ar-section[data-variant='card'], .ar-section-group > .ar-section[data-variant='card'])) > .ar-panel__fold > .ar-panel__inner > .ar-panel__body {
   padding-inline: var(--_gutter);
 }
 .ar-panel__body > .ar-stat-strip + *,
@@ -157,8 +200,10 @@
   gap: 8px;
   width: 100%;
   min-height: 24px;
-  padding: 0 0 var(--ar-space-4);
+  padding: 0 0 var(--ar-space-5);
   color: var(--ar-text-mid);
+  /* the title's size follows this row's width (below) */
+  container-type: inline-size;
 }
 :where(.ar-section__trigger, .ar-section__chevron) {
   all: unset;
@@ -231,19 +276,17 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* the group's heading: the strongest text in the panel body, two steps above the rows' labels and
-     values (a collection may set it in tracked capitals) */
+  /* the section's name: large and light, sized to the width it has, so a narrow panel shrinks it
+     instead of cutting it off */
   font: var(--ar-type-section);
-  font-size: calc(22px + var(--ar-head-bump));
-  letter-spacing: calc(var(--ar-head-tracking) - 0.02em);
-  text-transform: var(--ar-head-case);
+  font-size: clamp(18px, 8cqi, 34px);
+  letter-spacing: -0.03em;
   color: var(--ar-tone-title);
 }
-.ar-section[data-heading='text'] .ar-section__title {
-  font: var(--ar-type-section);
+/* folded, it is an entry in a list: a step smaller */
+.ar-section:not([data-open]) > .ar-section__head .ar-section__title {
+  font-size: clamp(16px, 6cqi, 26px);
   letter-spacing: -0.02em;
-  text-transform: none;
-  color: var(--ar-tone-title);
 }
 .ar-section__rule {
   flex: 1;
@@ -324,7 +367,7 @@ button.ar-section__trigger:focus-visible {
 /* ---------- Field: label column + control(s) ---------- */
 .ar-field {
   display: grid;
-  grid-template-columns: var(--ar-field-label-w, 116px) minmax(0, 1fr);
+  grid-template-columns: var(--ar-field-label-w, 108px) minmax(0, 1fr);
   /* top-aligned, with the label as tall as one control row: it sits level with the control's
      first line, even beside a multiline field or a tall pad */
   align-items: start;
@@ -361,13 +404,57 @@ button.ar-section__trigger:focus-visible {
   align-items: baseline;
 }
 .ar-field:not(:has(.ar-well, .ar-button, .ar-icon-button, .ar-chip, .ar-checkbox, .ar-tool, input, select, textarea, button)) > .ar-field__label {
-  line-height: 22px;
+  line-height: 20px;
 }
 .ar-field:not(:has(.ar-well, .ar-button, .ar-icon-button, .ar-chip, .ar-checkbox, .ar-tool, input, select, textarea, button)) > .ar-field__control {
   display: block;
-  min-height: 22px;
-  letter-spacing: -0.006em;
+  min-height: 20px;
+  letter-spacing: -0.005em;
   text-wrap: pretty;
+}
+/* hero: the panel's one big statement, large and light under a small mono name; one <em> word in it
+   takes the serif and the accent. Sized to its width, so it fits any panel. */
+.ar-field[data-variant='hero'] {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--ar-space-1);
+  margin-block: var(--ar-space-1) var(--ar-space-3);
+  container-type: inline-size;
+}
+.ar-field[data-variant='hero'] > .ar-field__label {
+  font: var(--ar-type-group);
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
+}
+.ar-field[data-variant='hero'] > .ar-field__control {
+  display: block;
+  font: var(--ar-type-hero);
+  font-size: clamp(22px, 9.5cqi, 42px);
+  letter-spacing: -0.03em;
+}
+.ar-field[data-variant='hero'] em {
+  color: var(--ar-tone-accent);
+}
+/* quote: someone's words, in the serif's italic with a hairline under them; the label stays for a screen reader */
+.ar-field[data-variant='quote'] {
+  display: block;
+  position: relative;
+  margin-bottom: var(--ar-space-2);
+  padding-bottom: var(--ar-space-6);
+  border-bottom: 1px solid var(--ar-line-strong);
+  container-type: inline-size;
+}
+.ar-field[data-variant='quote'] > .ar-field__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.ar-field[data-variant='quote'] > .ar-field__control {
+  display: block;
+  font: var(--ar-type-quote);
+  font-size: clamp(17px, 5.8cqi, 26px);
+  text-wrap: balance;
 }
 /* in a Section of columns each Field is a tile: its label above its value */
 .ar-section__body[data-columns] > .ar-field {
@@ -375,7 +462,7 @@ button.ar-section__trigger:focus-visible {
   row-gap: var(--ar-space-1);
 }
 .ar-section__body[data-columns] > .ar-field > .ar-field__label {
-  line-height: 20px;
+  line-height: 18px;
 }
 .ar-field__control > * {
   flex: 1 1 0;
@@ -433,7 +520,7 @@ button.ar-section__trigger:focus-visible {
   align-items: center;
   gap: 6px;
   padding: 10px 0 11px;
-  font: var(--ar-weight-medium) 14.5px / 20px var(--ar-font-ui);
+  font: 400 14px / 20px var(--ar-font-ui);
   color: var(--ar-tone-label);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -605,7 +692,7 @@ button.ar-section__trigger:focus-visible {
 /* what the group is for: a quiet paragraph under its heading, set apart from the rows below */
 .ar-section__description {
   grid-column: 1 / -1;
-  margin: -2px 0 var(--ar-space-3);
+  margin: 0 0 var(--ar-space-5);
   max-width: var(--ar-measure);
   font: var(--ar-type-note);
   color: var(--ar-tone-note);
@@ -621,13 +708,12 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body[data-columns='3'] {
   --_cols: 3;
 }
-/* card: the group sits on its own soft surface, so each part of a panel reads as a part */
+/* card, when asked for: the group sits on a soft tonal surface, with no frame */
 .ar-section[data-variant='card'] {
-  --_card-pad: max(8px, calc(var(--ar-panel-pad-x) * 0.6));
-  padding: calc(var(--_card-pad) - 2px) var(--_card-pad) var(--_card-pad);
+  --_card-pad: max(10px, calc(var(--ar-panel-pad-x) * 0.7));
+  padding: var(--_card-pad);
   border-radius: var(--ar-radius-card);
-  background: color-mix(in srgb, var(--ar-text-hi) 6%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
+  background: color-mix(in srgb, var(--ar-text-hi) 5%, transparent);
   transition: background var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-section[data-variant='card']:not([data-open]) {
@@ -645,7 +731,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group {
   display: flex;
   flex-direction: column;
-  gap: var(--ar-group-gap);
+  gap: var(--ar-section-gap);
   min-width: 0;
 }
 /* cards carry their own edges, so they sit closer */
