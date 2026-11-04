@@ -26,21 +26,22 @@
   background: linear-gradient(90deg, transparent, var(--ar-edge-light), transparent);
   pointer-events: none;
 }
+/* the head: the mark, the chevron and the actions all sit on the title's own line */
 .ar-panel__head {
   display: flex;
-  align-items: center;
-  gap: var(--ar-space-5);
+  align-items: flex-start;
+  gap: var(--ar-space-4);
   padding: calc(var(--ar-panel-pad-y) + 2px) var(--ar-panel-pad-x) var(--ar-space-5);
 }
 .ar-panel__titles {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--ar-space-1);
   min-width: 0;
 }
 /* the panel's name: large and light, with what it is in the mono under it */
 .ar-panel__title {
-  font: 300 28px / 1.1 var(--ar-font-ui);
+  font: 300 28px / 32px var(--ar-font-ui);
   letter-spacing: -0.03em;
   color: var(--ar-tone-title);
 }
@@ -53,14 +54,12 @@
   letter-spacing: 0;
 }
 .ar-panel__subtitle {
-  font-family: var(--ar-font-code);
-  font-size: var(--ar-text-xs);
-  font-weight: var(--ar-weight-text);
-  line-height: 1.3;
-  color: var(--ar-text-low);
+  font: 400 12px / 16px var(--ar-font-code);
+  color: var(--ar-tone-label);
 }
 .ar-panel__actions {
   margin-left: auto;
+  min-height: 32px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -87,8 +86,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--ar-row-gap);
-  padding: calc(var(--ar-space-5) + 2px) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
+  padding: var(--ar-space-2) var(--ar-panel-pad-x) var(--ar-panel-pad-y);
   min-height: 0;
+}
+.ar-panel__tabs + .ar-panel__body {
+  padding-top: calc(var(--ar-space-5) + 2px);
+}
+.ar-panel > .ar-panel__fold:first-child > .ar-panel__inner > .ar-panel__body {
+  padding-top: var(--ar-panel-pad-y);
 }
 /* Hairlines and air do the structure, not boxes: a section stands well apart from the last over a
    firm hairline, its large title close to what it heads, wherever the two sit. */
@@ -198,7 +203,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
   min-height: 24px;
   padding: 0 0 var(--ar-space-5);
   color: var(--ar-text-mid);
@@ -224,7 +228,7 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-section__chevron {
   display: grid;
-  place-items: center;
+  place-items: center end;
   flex: none;
   width: 14px;
   height: 14px;
@@ -545,20 +549,18 @@ button.ar-section__trigger:focus-visible {
 }
 
 /* ---------- Panel: icon, fold, variants, scrolling body ---------- */
-/* the panel's mark: a solid tile in the ink, the one heavy shape in the panel */
+/* the panel's mark: the glyph alone, on the title's line and in its ink */
 .ar-panel__icon {
   display: grid;
   flex: none;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--ar-text-hi);
-  color: light-dark(#fff, #111);
+  width: 22px;
+  height: 32px;
+  color: var(--ar-tone-title);
 }
 .ar-panel__icon svg {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
 }
 :where(.ar-panel__toggle, .ar-panel__chevron) {
   all: unset;
@@ -576,9 +578,9 @@ button.ar-section__trigger:focus-visible {
 .ar-panel__chevron {
   display: grid;
   flex: none;
-  place-items: center;
-  width: 18px;
-  height: 22px;
+  place-items: center end;
+  width: 14px;
+  height: 32px;
   color: var(--ar-text-faint);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -606,9 +608,12 @@ button.ar-section__trigger:focus-visible {
 .ar-panel:not([data-open]) .ar-panel__head {
   padding-bottom: 16px;
 }
-/* a long body scrolls under soft fades instead of being cut */
+/* a long body scrolls under soft fades instead of being cut; its scrollbar sits in the gutter, so the
+   rows keep the same right edge as the head above them */
 .ar-panel__body[data-scroll] {
+  padding-right: calc(var(--ar-panel-pad-x) - 10px);
   overflow-y: auto;
+  scrollbar-gutter: stable;
   overscroll-behavior: contain;
   -webkit-mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 14px), transparent);
   mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 14px), transparent);
@@ -633,16 +638,23 @@ button.ar-section__trigger:focus-visible {
   padding: 12px 14px 8px;
 }
 .ar-panel[data-variant='inset'] .ar-panel__title {
-  font-size: var(--ar-text-lg);
-  font-weight: var(--ar-weight-medium);
+  font: var(--ar-weight-medium) 14px / 20px var(--ar-font-ui);
   letter-spacing: 0;
 }
 .ar-panel[data-variant='inset'] .ar-panel__icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: none;
-  color: var(--ar-text-low);
+  width: 16px;
+  height: 20px;
+  color: var(--ar-tone-label);
+}
+.ar-panel[data-variant='inset'] .ar-panel__icon svg {
+  width: 16px;
+  height: 16px;
+}
+.ar-panel[data-variant='inset'] .ar-panel__chevron {
+  height: 20px;
+}
+.ar-panel[data-variant='inset'] .ar-panel__actions {
+  min-height: 20px;
 }
 .ar-panel[data-variant='inset'] .ar-panel__body {
   padding: 8px 14px 12px;
@@ -653,15 +665,13 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
-  color: var(--ar-text-hi);
+  width: 18px;
+  height: 18px;
+  color: var(--ar-tone-title);
 }
 .ar-section__icon svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 .ar-section__reset {
   --_tool: 18px;
@@ -728,8 +738,8 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group__bar {
   display: flex;
   justify-content: flex-end;
-  gap: 2px;
-  margin-bottom: -2px;
+  gap: var(--ar-space-1);
+  margin: 0 -7px calc(var(--ar-space-2) * -1) 0;
 }
 :where(.ar-section-group__all) {
   all: unset;
@@ -737,8 +747,8 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group__all {
   padding: 2px 7px;
   border-radius: var(--ar-radius-control);
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: 400 12px / 16px var(--ar-font-ui);
+  color: var(--ar-tone-label);
   cursor: pointer;
   transition:
     background var(--ar-dur-state) var(--ar-ease),
