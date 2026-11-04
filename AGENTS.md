@@ -31,7 +31,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - `export` instead of `setup` for the kit alone;
    - `--force` to update;
    - `--dry-run` to preview;
-   - `--type luxe,editorial` for type collections (font pairings; `instrument` is always included), used with `<ArtinosTheme type="…">`;
+   - `--type luxe,editorial` for type collections (font pairings; `manrope`, labelled Sleek, is always included), used with `<ArtinosTheme type="…">`;
    - `--no-fonts`, `--no-materials` and `--no-docs`;
    - `--custom theme.css` for Theme Studio themes.
 

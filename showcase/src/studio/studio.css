@@ -265,7 +265,7 @@
 .ed-probe { display: none; }
 .ed-sheet { margin: 0 auto; max-width: 1180px; }
 .ed-sheet__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding: 4px 0 10px; }
-.ed-sheet__head h2 { margin: 0; font: var(--ar-weight-thin) var(--ar-text-3xl) var(--ar-font-display); letter-spacing: var(--ar-track-display); color: var(--ar-text-hi); }
+.ed-sheet__head h2 { margin: 0; font: var(--ar-weight-title) var(--ar-text-3xl) var(--ar-font-display); letter-spacing: var(--ar-track-display); color: var(--ar-text-hi); }
 .ed-sheet__head span { font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num); letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on)); text-transform: var(--ar-caps-case); color: var(--ar-text-mid); }
 
 /* compact specs in the preview */
@@ -313,7 +313,7 @@
   box-shadow: inset 0 0 0 1px var(--ar-line), 0 30px 80px -20px rgba(0, 0, 0, 0.8);
 }
 .ed-modal__head { display: flex; align-items: center; gap: 16px; }
-.ed-modal__head b { font: var(--ar-weight-light) var(--ar-text-xl) var(--ar-font-ui); letter-spacing: var(--ar-track-title); color: var(--ar-text-hi); margin-right: auto; }
+.ed-modal__head b { font: var(--ar-weight-title) var(--ar-text-xl) var(--ar-font-display); letter-spacing: var(--ar-track-title); color: var(--ar-text-hi); margin-right: auto; }
 .ed-modal__head .ar-segmented { width: 300px; }
 .ed-modal__foot { display: flex; gap: 8px; justify-content: flex-end; }
 .ed-code {

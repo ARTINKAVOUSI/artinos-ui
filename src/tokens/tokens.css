@@ -97,16 +97,18 @@
   --ar-focus-ring: inset 0 0 0 999px var(--ar-focus-lift);
   --ar-selection: color-mix(in srgb, var(--ar-focus-ink) 30%, transparent);
   /* reading: how loud each kind of text is. One ink at fixed strengths, so the steps between the
-     roles are the same on every theme and a label never reads like the value beside it. */
-  /* the ink warmed a little, paper rather than a screen's white: it softens either way, on a dark theme or a light one */
-  --ar-paper: color-mix(in srgb, var(--ar-text-hi) 84%, #b0aa9c);
+     roles are the same on every theme and a label never reads like the value beside it. Titles and
+     values take the full ink; prose steps down a little; labels and notes a clear step more; hints
+     stay readable at the floor. */
+  --ar-paper: var(--ar-text-hi);
   --ar-tone-title: var(--ar-paper);
   --ar-tone-value: var(--ar-paper);
-  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 86%, transparent);
-  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 78%, transparent);
-  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 74%, transparent);
-  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 56%, transparent);
-  --ar-tone-accent: var(--ar-signal);
+  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 84%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 70%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 66%, transparent);
+  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 54%, transparent);
+  /* the accent as text: blended toward the ink, so small words stay readable on glass in any accent */
+  --ar-tone-accent: color-mix(in oklab, var(--ar-signal) 68%, var(--ar-text-hi));
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;
@@ -145,97 +147,132 @@
 }
 
 /* ---------- type ----------
-   Two voices of one family: a sans for words (titles, prose, labels, menus) and its mono sibling
-   for figures (readouts, counts, badges, ticks), so numbers line up and read as measurements.
-   Headings stay in sentence case. Declared on
-   :root only, not at every theme boundary, so a type collection (tokens/type.css, data-ar-type)
-   set on a scope carries through the themes nested inside it. */
+   Two voices of one system: a sans for words (titles, prose, labels, menus) and a mono for
+   figures (readouts, counts, badges, ticks), so numbers line up and read as measurements. The
+   serif is a third, rare voice: a quotation, or a collection that asks for it in titles.
+   Declared on :root only, not at every theme boundary, so a type collection (tokens/type.css,
+   data-ar-type) set on a scope carries through the themes nested inside it. */
 :root {
-  /* Geist and Geist Mono: one skeleton drawn twice for screens */
-  --ar-font-ui: Geist, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* the default set, Sleek: Manrope throughout, light and open */
+  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* figures and small marks: readouts, counts, badges, ticks */
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* code */
-  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* a serif for the editorial voice: quotes, and titles set as editorial */
   --ar-font-serif: 'Instrument Serif', Newsreader, Georgia, 'Times New Roman', serif;
-  /* titles at 2xl and up; a type collection may give it a serif or a display face */
-  --ar-font-display: var(--ar-font-serif);
+  /* the serif for sentences: sturdy at reading sizes, where a display serif goes thin on glass */
+  --ar-font-lead: var(--ar-font-ui);
+  /* serifs differ a lot in apparent size: a collection with a larger serif evens it out with this */
+  --ar-serif-adjust: none;
+  /* what a type collection can change beyond its faces (tokens/type.css) */
+  --ar-font-prose: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-mark: var(--ar-font-num);
+  --ar-title-scale: 1.12;
+  --ar-title-case: none;
+  --ar-title-stretch: 100%;
+  --ar-weight-display: 300;
+  --ar-track-heading: -0.045em;
+  --ar-track-heading-sm: -0.024em;
+  --ar-leading-heading: 1.02;
+  --ar-prose-scale: 1;
+  --ar-leading-prose: 1.7;
+  --ar-lead-style: normal;
+  --ar-weight-lead: 400;
+  --ar-lead-scale: 1;
+  --ar-accent-style: normal;
+  --ar-weight-accent: 200;
+  --ar-numeral-style: normal;
+  --ar-mark-case: none;
+  --ar-mark-track: 0;
+  --ar-weight-mark: 500;
+  /* titles: narrower and more drawn than the reading face, so a title is told by its shape */
+  --ar-font-display: var(--ar-font-ui);
 
-  /* weights — the families are loaded at exactly these; anything between is faked by the browser */
-  --ar-weight-thin: 200; /* display: hero figures, big readouts */
-  --ar-weight-light: 300; /* the default: prose, titles, values */
-  --ar-weight-regular: 400; /* emphasis inside prose; a theme's firmer values */
-  --ar-weight-medium: 500; /* caps: labels, kickers, marks */
-  --ar-weight-bold: 600; /* reading titles and strong text (Geist; a face without it shows its 500) */
-  /* small sans text (xs–md, inputs, rows, menus): light strokes thin out on glass at these sizes */
+  /* weights — four, each with one job. Nothing under 28px is ever lighter than regular: thin
+     strokes vanish on glass. Thin exists for the one big figure. */
+  --ar-weight-thin: 300; /* a hero figure at 40px and up */
+  --ar-weight-light: 400; /* kept for themes that ask for it: resolves to regular */
+  --ar-weight-regular: 400; /* prose, values, menu rows */
+  --ar-weight-medium: 500; /* labels, tabs, small marks */
+  --ar-weight-title: 500; /* section and panel titles in the default set */
+  --ar-weight-bold: 600; /* section names, strong text */
+  --ar-weight-black: 700; /* the one word that must win: a figure's number, a primary button */
   --ar-weight-text: var(--ar-weight-regular);
 
-  /* the sans voice: --ar-weight-text up to md, weight 300 (light) from lg up. Control text (labels, rows, buttons) uses the
-     --ar-label-* and --ar-value-* tokens instead, which density and themes tune. */
-  /* the reading scale, for pages and prose (the Text roles): wide jumps, so a role shows at a
-     glance. Inside a Panel, Dock pane or Dialog, layout/Text.css sets it a size down. */
-  --ar-read-display: clamp(44px, 5.4vw, 68px);
-  --ar-read-title: 30px;
-  --ar-read-heading: 20px;
-  --ar-read-subheading: 14px;
-  --ar-read-lead: 22px;
-  --ar-read-body: 14px;
-  --ar-read-quote: 28px;
-  --ar-read-figure: 48px;
+  /* every size on the page comes from one fine ladder: 11 12 13 14 16 18 20 24 28 48. A type
+     collection's multipliers snap back to it with round(), so nothing lands between steps.
+     the reading scale: a real jump at every step, so a role is told at a glance.
+     Pages and prose (the Text roles) read from it; inside a Panel, Dock pane or Dialog,
+     layout/Text.css sets it one step down. */
+  --ar-read-hero: 44px; /* 48 with the default set's title scale */
+  --ar-read-statement: 20px;
+  --ar-read-numeral: 28px;
+  --ar-read-display: 24px; /* 28 with the default set */
+  --ar-read-title: 16px; /* 18 with the default set */
+  --ar-read-heading: 14px; /* 16 with the default set */
+  --ar-read-subheading: 13px;
+  --ar-read-lead: 14px;
+  --ar-read-body: 13px;
+  --ar-read-note: 12px;
+  --ar-read-quote: 16px;
+  --ar-read-figure: 28px;
+  /* the control scale: the sizes a control system needs. 12 is the floor; nothing is set smaller. */
   --ar-text-xs: 11px; /* hints, captions, port names */
   --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
   --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
-  --ar-text-xl: 17px; /* panel titles */
-  --ar-text-2xl: 22px; /* page section titles */
-  --ar-text-3xl: 34px; /* display: chapter titles, big readouts (weight 200) */
+  --ar-text-xl: 16px; /* panel titles */
+  --ar-text-2xl: 20px; /* page section titles */
+  --ar-text-3xl: 28px; /* display: chapter titles, big readouts */
 
-  /* small marks outside a control (keycaps, port tags, counts, badges, foot lines): weight 500.
-     Set in sentence case by default; a collection that wants tracked capitals turns the caps
-     switch on (--ar-caps-case: uppercase, --ar-caps-on: 1) and steps these down to 10 / 9.5px. */
-  --ar-caps-xs: 10.5px; /* the smallest mark: keycaps, port tags, drop hints */
+  /* small marks outside a control (keycaps, port tags, counts, badges, foot lines): weight 500,
+     never under 11px. Sentence case by default; a collection that wants tracked capitals turns
+     the caps switch on (--ar-caps-case: uppercase, --ar-caps-on: 1). */
+  --ar-caps-xs: 11px; /* the smallest mark: keycaps, port tags, drop hints */
   --ar-caps-sm: 11px; /* kickers, foot lines, counts, badges, section numbers */
   --ar-caps-case: none;
   --ar-caps-on: 0; /* 1: marks and control labels take their tracking */
 
-  /* small headings (a section's title, a kicker): sentence case at the voice's size, medium
+  /* small headings (a kicker, a group's name): sentence case at the voice's size, medium
      weight. A collection that wants tracked capitals sets case, tracking and a smaller bump. */
   --ar-head-case: none;
   --ar-head-tracking: 0;
   --ar-head-bump: 0px;
 
-  /* tracking: caps open up, large sans closes in, everything else is set as drawn */
-  --ar-track-caps: 0.12em;
+  /* tracking: caps open up, large sans closes in, text is set as drawn */
+  --ar-track-caps: 0.1em;
   --ar-track-text: 0;
-  --ar-track-title: -0.01em; /* 17px and up */
-  --ar-track-display: -0.025em; /* 30px and up */
+  --ar-track-title: -0.012em; /* 18px and up */
+  --ar-track-display: -0.022em; /* 28px and up */
 
-  /* leading */
+  /* leading: tighter as type grows */
   --ar-leading-none: 1; /* single-line marks and readouts */
   --ar-leading-snug: 1.3; /* titles, menu rows */
-  --ar-leading-text: 1.5; /* prose */
+  --ar-leading-text: 1.55; /* prose */
   --ar-leading-code: 1.65; /* code and long-form reading */
 }
 
 /* ---------- reading: the text of a panel, in five roles ----------
    A role is a whole font (weight, size, leading), so a part cannot end up with one of them wrong.
-   One fixed scale, the same everywhere: a role is one size in any panel, at any width, open or folded.
-   12 for small names and meta, 14 for all text, 22 for a section, 28 for a panel, 34 for the one big
-   statement. Large and light against small and exact; the serif speaks only for a thought, or one word
-   in a title. They use the collection's faces and the theme's ink, so they hold on any theme with any
-   type. Declared on every scope that can change the faces. */
+   One fixed scale, the same everywhere: a role is one size in any panel, at any width, open or
+   folded. 11 for a group's capitals, 12.5 for labels and notes, 13.5 for values, 14 for a section's
+   name, 17 for a panel's, 32 for the one big statement. Firm and bright against small and quiet.
+   They use the collection's faces and the theme's ink, so they hold on any theme with any type.
+   Declared on every scope that can change the faces. */
 :root,
 [data-ar-theme],
 [data-ar-material],
 [data-ar-type] {
-  --ar-type-section: 300 22px / 28px var(--ar-font-ui);
-  --ar-type-group: 500 11.5px / 16px var(--ar-font-code);
-  --ar-type-value: 400 14px / 20px var(--ar-font-ui);
-  --ar-type-label: 400 14px / 20px var(--ar-font-ui);
-  --ar-type-note: 400 14px / 22px var(--ar-font-ui);
-  --ar-type-hero: 300 34px / 38px var(--ar-font-ui);
-  --ar-type-quote: italic 400 20px / 26px var(--ar-font-serif);
+  --ar-type-section: var(--ar-weight-title) 13px / 18px var(--ar-font-display);
+  --ar-type-group: 600 11px / 16px var(--ar-font-ui);
+  --ar-type-value: 500 12px / 18px var(--ar-font-ui);
+  --ar-type-label: 500 12px / 18px var(--ar-font-ui);
+  --ar-type-note: 400 12px / 18px var(--ar-font-ui);
+  --ar-type-hero: 400 28px / 32px var(--ar-font-ui);
+  --ar-type-quote: italic 400 16px / 22px var(--ar-font-serif);
   --ar-track-role: 0.08em; /* the capitals of a group's name */
 }
 
@@ -253,15 +290,15 @@
   --ar-space-8: 24px;
   --ar-space-9: 32px;
   /* the longest comfortable line for a paragraph */
-  --ar-measure: 62ch;
+  --ar-measure: 64ch;
 }
 
 /* ---------- density ---------- */
 :root,
 [data-ar-density='standard'] {
   --ar-h: 28px;
-  --ar-label-size: 13px;
-  --ar-value-size: 13px;
+  --ar-label-size: 12px;
+  --ar-value-size: 12px;
   --ar-pad-x: 10px;
   --ar-gap: 7px;
   --ar-row-gap: var(--ar-space-4);
@@ -272,8 +309,8 @@
 }
 [data-ar-density='dense'] {
   --ar-h: 26px;
-  --ar-label-size: 12px;
-  --ar-value-size: 12px;
+  --ar-label-size: 11px;
+  --ar-value-size: 11px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
   --ar-row-gap: var(--ar-space-3);
@@ -284,8 +321,8 @@
 }
 [data-ar-density='comfort'] {
   --ar-h: 32px;
-  --ar-label-size: 14px;
-  --ar-value-size: 14px;
+  --ar-label-size: 13px;
+  --ar-value-size: 13px;
   --ar-pad-x: 12px;
   --ar-gap: 8px;
   --ar-row-gap: 10px;

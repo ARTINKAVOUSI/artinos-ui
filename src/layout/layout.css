@@ -39,27 +39,27 @@
   gap: var(--ar-space-1);
   min-width: 0;
 }
-/* the panel's name: large and light, with what it is in the mono under it */
+/* the panel's name: bold and close-set, with what it is in a quiet line under it */
 .ar-panel__title {
-  font: 300 28px / 32px var(--ar-font-ui);
-  letter-spacing: -0.03em;
+  font: var(--ar-weight-title) 14px / 20px var(--ar-font-display);
+  letter-spacing: -0.012em;
   color: var(--ar-tone-title);
 }
 /* the one word that speaks: the serif's italic, in a title or a large value */
 :is(.ar-panel__title, .ar-section__title, .ar-field__control) em {
   font-family: var(--ar-font-serif);
-  font-size: 1.1em;
+  font-size: 1em;
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0;
 }
 .ar-panel__subtitle {
-  font: 400 12px / 16px var(--ar-font-code);
-  color: var(--ar-tone-label);
+  font: 400 12px / 16px var(--ar-font-ui);
+  color: var(--ar-tone-note);
 }
 .ar-panel__actions {
   margin-left: auto;
-  min-height: 32px;
+  min-height: 22px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -183,7 +183,7 @@
   padding: 9px var(--ar-panel-pad-x) 11px;
   border-top: 1px solid var(--ar-line-subtle);
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1px);
+  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -204,7 +204,7 @@
   align-items: center;
   gap: 8px;
   min-height: 24px;
-  padding: 0 0 var(--ar-space-5);
+  padding: 0 0 var(--ar-space-4);
   color: var(--ar-text-mid);
 }
 :where(.ar-section__trigger, .ar-section__chevron) {
@@ -278,9 +278,9 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* the section's name: large and light, one size in any panel, open or folded */
+  /* the section's name: bold at a reading size, one size in any panel, open or folded */
   font: var(--ar-type-section);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.006em;
   color: var(--ar-tone-title);
 }
 .ar-section__rule {
@@ -511,7 +511,7 @@ button.ar-section__trigger:focus-visible {
   align-items: center;
   gap: 6px;
   padding: 10px 0 11px;
-  font: 400 14px / 20px var(--ar-font-ui);
+  font: 500 12px / 18px var(--ar-font-ui);
   color: var(--ar-tone-label);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -554,13 +554,13 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 22px;
-  height: 32px;
+  width: 18px;
+  height: 22px;
   color: var(--ar-tone-title);
 }
 .ar-panel__icon svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 :where(.ar-panel__toggle, .ar-panel__chevron) {
   all: unset;
@@ -580,7 +580,7 @@ button.ar-section__trigger:focus-visible {
   flex: none;
   place-items: center end;
   width: 14px;
-  height: 32px;
+  height: 22px;
   color: var(--ar-text-faint);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -638,8 +638,8 @@ button.ar-section__trigger:focus-visible {
   padding: 12px 14px 8px;
 }
 .ar-panel[data-variant='inset'] .ar-panel__title {
-  font: var(--ar-weight-medium) 14px / 20px var(--ar-font-ui);
-  letter-spacing: 0;
+  font: var(--ar-weight-bold) 13px / 18px var(--ar-font-ui);
+  letter-spacing: -0.006em;
 }
 .ar-panel[data-variant='inset'] .ar-panel__icon {
   width: 16px;
@@ -747,7 +747,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group__all {
   padding: 2px 7px;
   border-radius: var(--ar-radius-control);
-  font: 400 12px / 16px var(--ar-font-ui);
+  font: 500 11px / 16px var(--ar-font-ui);
   color: var(--ar-tone-label);
   cursor: pointer;
   transition:

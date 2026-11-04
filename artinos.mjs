@@ -28,7 +28,7 @@
  *   --custom <file.css>     add a theme exported from the Theme Studio (repeatable)
  *   --no-fonts              leave out the Google Fonts import (system fonts)
  *   --no-materials          leave out the optional `material` prop finish overrides
- *   --type <ids|all>        type collections (font pairings) to include; instrument is always in
+ *   --type <ids|all>        type collections (font pairings) to include; manrope (Sleek) is always in
  *   --no-docs               leave out docs/ (component API, catalogue and theming guides)
  *   --force                 update an existing kit in place (files it no longer needs are removed)
  *   --dry-run               print the files and sizes, write nothing

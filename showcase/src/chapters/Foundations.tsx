@@ -67,19 +67,19 @@ function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: 
 type Role = [TextVariant, string, string, TextFace?];
 /** Every text role with its rule beside it: the ladder a page is set by. */
 const ROLES: Role[] = [
-  ['display', 'display · serif 68', 'Light, held'],
-  ['title', 'title · sans 30 bold', 'Material and light'],
+  ['display', 'display · titles face · 28', 'Light, held'],
+  ['title', 'title · titles face · 18', 'Material and light'],
   ['title', 'title · face="serif"', 'An editorial title', 'serif'],
-  ['heading', 'heading · sans 20 bold', 'Surface response'],
-  ['subheading', 'subheading · 14 bold · mid', 'Roughness and gloss'],
-  ['overline', 'overline · mono caps · quiet', 'Material · glass'],
-  ['lead', 'lead · serif 22 · bright', 'A lead says what the view is for, in a different voice.'],
-  ['body', 'body · sans 14 · 1.6', 'Body text carries the explanation at a comfortable line length.'],
+  ['heading', 'heading · titles face · 16', 'Surface response'],
+  ['subheading', 'subheading · titles face · 13', 'Roughness and gloss'],
+  ['overline', 'overline · 11 caps · accent', 'Material · glass'],
+  ['lead', 'lead · opening sentence · 14', 'A lead says what the view is for, a size up from the body.'],
+  ['body', 'body · 13 · 1.7', 'Body text carries the explanation at a comfortable line length.'],
   ['note', 'note · 12 · quiet', 'A note is help or an aside, a step quieter than the body.'],
-  ['caption', 'caption · mono 11 · faintest', 'Fig. 3, the rim at grazing angles'],
+  ['caption', 'caption · 11 medium · quietest', 'Fig. 3, the rim at grazing angles'],
   ['label', 'label · 12 medium · quiet', 'Exposure'],
-  ['value', 'value · mono · aligned', '0.71 · 1,284 · −4.5 dB'],
-  ['figure', 'figure · sans 48 thin', '1,284'],
+  ['value', 'value · mono 13 · aligned', '0.71 · 1,284 · −4.5 dB'],
+  ['figure', 'figure · 28 medium · tight', '1,284'],
 ];
 
 function Typography() {
@@ -149,6 +149,158 @@ function Typography() {
   );
 }
 
+/* ---------- type styles ---------- */
+
+const RAMP = [11, 12, 13, 14, 16, 18, 20, 24, 28, 48];
+const METHODS = ['ink', 'underline', 'marker', 'rule', 'bar', 'gradient', 'outline'] as const;
+
+function TypeStyles() {
+  return (
+    <div className="sc-styles">
+      <div>
+        <span className="sc-styles__label">One size ladder: every text size on the page is one of these</span>
+        <div className="sc-ramp" aria-hidden="true">
+          {RAMP.map((size) => (
+            <div key={size} className="sc-ramp__step">
+              <b style={{ fontSize: size }}>Aa</b>
+              <small>{size}</small>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <span className="sc-styles__label">hero · one word in the accent with em</span>
+        <Text variant="hero" as="p">
+          Light, <em>held</em> in glass
+        </Text>
+      </div>
+
+      <div className="sc-styles__grid">
+        <div className="sc-styles__cell sc-styles__cell--8">
+          <span className="sc-styles__label">statement</span>
+          <Text variant="statement" as="p">
+            Every surface is <em>one material</em>, tuned until the edge is brighter than the face.
+          </Text>
+        </div>
+        <div className="sc-styles__cell">
+          <span className="sc-styles__label">numeral · figure · caption</span>
+          <Inline gap={7} align="end">
+            <Text variant="numeral" as="span">
+              07
+            </Text>
+            <div>
+              <Text variant="figure">
+                1.52<small>IOR</small>
+              </Text>
+              <Text variant="caption">Index of refraction</Text>
+            </div>
+          </Inline>
+        </div>
+        <div className="sc-styles__cell">
+          <span className="sc-styles__label">eyebrow · meta</span>
+          <Stack gap={3}>
+            <Text variant="eyebrow">Live preview</Text>
+            <Text variant="heading" as="p">
+              Surface response
+            </Text>
+            <Text variant="meta">materials/thick-glass · updated 4 Nov</Text>
+          </Stack>
+        </div>
+        <div className="sc-styles__cell">
+          <span className="sc-styles__label">tag</span>
+          <div className="sc-styles__tags">
+            <Text variant="tag">Glass</Text>
+            <Text variant="tag">3 changed</Text>
+            <Text variant="tag">GPU · 2 ms</Text>
+          </div>
+        </div>
+        <div className="sc-styles__cell">
+          <span className="sc-styles__label">dropcap</span>
+          <Text dropcap measure={false}>
+            Raise transmission to let more of the scene through, then lower the roughness for a sharper image. The rim follows the angle of the light, and it brightens as the surface turns away.
+          </Text>
+        </div>
+      </div>
+
+      <div>
+        <span className="sc-styles__label">accent · seven methods on any role</span>
+        <div className="sc-styles__methods">
+          {METHODS.map((accent) => (
+            <div key={accent}>
+              <Text variant={accent === 'outline' ? 'hero' : 'title'} as="p" accent={accent}>
+                Surface response
+              </Text>
+              <Text variant="meta" style={{ marginTop: 8 }}>
+                accent="{accent}"
+              </Text>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <span className="sc-styles__label">put together</span>
+        <div className="sc-styles__recipes">
+          <div>
+            <Text variant="eyebrow">Release 2.4</Text>
+            <Text variant="display" as="p">
+              A sharper <em>edge</em>
+            </Text>
+            <Text variant="lead">The rim now follows the light, so glass reads as glass from any angle.</Text>
+          </div>
+          <div>
+            <div className="sc-step">
+              <Text variant="numeral" as="span">
+                1
+              </Text>
+              <Text variant="subheading" as="p">
+                Pick a preset
+              </Text>
+              <Text variant="note">Start from thick glass in Templates.</Text>
+            </div>
+            <div className="sc-step">
+              <Text variant="numeral" as="span">
+                2
+              </Text>
+              <Text variant="subheading" as="p">
+                Tune the roughness
+              </Text>
+              <Text variant="note">Lower it for a sharper image.</Text>
+            </div>
+            <div className="sc-step">
+              <Text variant="numeral" as="span">
+                3
+              </Text>
+              <Text variant="subheading" as="p">
+                Check the rim
+              </Text>
+              <Text variant="note">A value past 0.8 starts to glow.</Text>
+            </div>
+          </div>
+          <Panel>
+            <Stack gap={3}>
+              <Inline justify="between">
+                <Text variant="eyebrow">Inside a panel</Text>
+                <Text variant="tag">Live</Text>
+              </Inline>
+              <Text variant="statement" as="p">
+                The same styles, <em>a size down</em>.
+              </Text>
+              <Inline gap={5} align="baseline">
+                <Text variant="numeral" as="span">
+                  42
+                </Text>
+                <Text variant="meta">frames in the last second</Text>
+              </Inline>
+            </Stack>
+          </Panel>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- layout & text ---------- */
 
 const STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
@@ -167,7 +319,7 @@ function LayoutAndText() {
           <Text variant="figure">60.0</Text>
           <Text as="h4" variant="heading">Heading inside prose</Text>
           <Text>
-            Body text is the sans at 14 px, 13 in a panel, with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
+            Body text is 13 px on a page and 12 px in a panel, with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
           </Text>
           <Inline align="baseline" gap={3}>
             <Text variant="value">16.4 ms</Text>
@@ -309,7 +461,7 @@ function TypeScale() {
   return (
     <div className="sc-voices">
       <div className="sc-voice">
-        <span className="sc-subhead">Body text · UI 300</span>
+        <span className="sc-subhead">Words · the reading face</span>
         {steps.map(([k, use]) => (
           <div key={k} className="sc-voice__row">
             <span style={{ font: `var(--ar-weight-light) var(--ar-text-${k}) var(--ar-font-ui)`, color: 'var(--ar-text-hi)' }}>{use}</span>
@@ -318,10 +470,10 @@ function TypeScale() {
         ))}
       </div>
       <div className="sc-voice">
-        <span className="sc-subhead">Control text · mono</span>
+        <span className="sc-subhead">Controls · the control face</span>
         <div className="sc-voice__row">
           <span className="ar-text" style={{ color: 'var(--ar-text-hi)' }}>
-            Label caps
+            Control label
           </span>
           <code>--ar-label-*</code>
         </div>
@@ -332,8 +484,8 @@ function TypeScale() {
           <code>--ar-value-*</code>
         </div>
         <div className="sc-voice__row">
-          <span style={{ font: 'var(--ar-weight-thin) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-ui)', letterSpacing: 'var(--ar-track-display)', color: 'var(--ar-text-hi)' }}>Display</span>
-          <code>200 · page titles</code>
+          <span style={{ font: 'var(--ar-weight-title) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-display)', letterSpacing: 'var(--ar-track-display)', color: 'var(--ar-text-hi)' }}>Display</span>
+          <code>550 · page titles</code>
         </div>
       </div>
     </div>
@@ -443,6 +595,7 @@ import { ArtinosTheme } from './artinos-ui';
       </Spec>
 
       <Spec
+        wide
         id="materials"
         text="Every part of every component is made of five materials, and each one has a single job. Learn these and the whole package reads at a glance: what holds, what floats, where you edit, what you press, and what is live."
       >
@@ -451,7 +604,7 @@ import { ArtinosTheme } from './artinos-ui';
 
       <Spec
         id="tokens"
-        text="Components read tokens, never literal colours. These are the live values of the current theme. Text comes in two voices: light body text on a five-step scale, and mono control text for labels, rows, buttons and values."
+        text="Components read tokens, never literal colours. These are the live values of the current theme. Words use the reading face on a five-step scale; labels, rows, buttons and values use the control face."
         code={`
 /* three layers */
 --ar-ink-*, --ar-teal-*            primitives   tokens.css
@@ -467,7 +620,7 @@ import { ArtinosTheme } from './artinos-ui';
 
       <Spec
         id="type"
-        text={`Type is one superfamily in two voices, a sans that speaks and a mono that measures, tuned so a title, a label and a readout sit on one line without a seam. A collection swaps the faces and re-tunes the tracking; the sizes, weights and leading stay, so every component keeps its proportions. Some add a display face for the biggest titles. There are ${TYPE_COLLECTIONS.length}; Instrument is the default. Click one to set it for the page. Each card is its own data-ar-type scope, so collections nest like themes and carry through portalled overlays.`}
+        text={`Type sets change the whole voice of a page, not just the font. Each has its own title size, weight, case and width, its own paragraph face and line spacing, and its own way of setting accent words and small labels. Control sizes stay the same, so every component keeps its proportions. There are ${TYPE_COLLECTIONS.length}; Sleek is the default. Click one to set it for the page. Each card is its own data-ar-type scope, so collections nest like themes and carry through portalled overlays.`}
         code={`
 <ArtinosTheme theme="frost-deep" type="editorial"> … </ArtinosTheme>
 
@@ -526,7 +679,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
           <>
             <p>Every kind of text has its own role, and neighbouring roles differ in at least two ways at once.</p>
             <ul>
-              <li>Three faces, three jobs: the sans speaks, the mono measures, the serif quotes.</li>
+              <li>Each face has one job: one titles, one reads, the serif opens and quotes, the mono measures.</li>
               <li>Titles balance their lines; paragraphs keep a comfortable measure and no lone last word.</li>
               <li>Inside a paragraph, strong, mark, code, key and link each have their own look.</li>
               <li>A Callout sets apart what must not be missed, after the text it qualifies.</li>
@@ -536,6 +689,21 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
         code={"<Text variant=\"overline\">Material · 3 changed</Text>\n<Text variant=\"title\">How the shell catches light</Text>\n<Text variant=\"lead\">The shell is thick glass…</Text>\n<Text>Raise <strong>Transmission</strong>… <mark>past 0.8 it glows</mark>… <kbd>Alt</kbd>…</Text>\n<Text variant=\"subheading\">What changes it</Text>\n<Text as=\"ul\"><li>Transmission…</li></Text>\n<Text variant=\"quote\">Glass reads as glass when its edge is brighter than its face.</Text>\n<Callout tone=\"tip\" title=\"Start from a preset\">Pick <strong>Thick glass</strong>…</Callout>\n<Text variant=\"note\">Values are in the scene's units.</Text>"}
       >
         <Typography />
+      </Spec>
+
+      <Spec
+        id="type-styles"
+        wide
+        text="Beyond the roles: one fine ladder of sizes from 11 to 48, six more styles, and seven ways to bring the accent into any of them. The accent is blended toward the ink, so small words stay readable on glass whichever accent you pick; change it in the bar and all of this follows."
+        code={`<Text variant="eyebrow">Live preview</Text>
+<Text variant="hero">Light, <em>held</em> in glass</Text>
+<Text variant="statement">Every surface is <em>one material</em>.</Text>
+<Text variant="numeral">07</Text>
+<Text variant="tag">3 changed</Text>
+<Text variant="title" accent="marker">Surface response</Text>
+<Text dropcap>Raise transmission…</Text>`}
+      >
+        <TypeStyles />
       </Spec>
 
       <Spec

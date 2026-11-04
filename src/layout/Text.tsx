@@ -3,17 +3,27 @@ import { cx } from '../core/utils';
 
 /* ARTINOS Text and layout — the type roles and the two spacing primitives everything else is
    composed with, so a panel never needs a hand-set font size, margin or gap.
- *   Text    display · title · heading · subheading · overline · lead · body · note · caption ·
- *           label · value · figure · quote · code, in a tone and a face
+ *   Text    hero · display · title · heading · subheading · statement · overline · eyebrow · lead ·
+ *           body · note · caption · label · value · figure · numeral · meta · tag · quote · code,
+ *           in a tone and a face, with an optional accent treatment or drop cap
  *   Stack   a column whose gaps come from the space scale
  *   Inline  a row whose gaps come from the space scale */
 
-export type TextVariant = 'display' | 'title' | 'heading' | 'subheading' | 'overline' | 'kicker' | 'lead' | 'body' | 'note' | 'caption' | 'label' | 'value' | 'figure' | 'quote' | 'code';
+export type TextVariant = 'display' | 'title' | 'heading' | 'subheading' | 'overline' | 'kicker' | 'lead' | 'body' | 'note' | 'caption' | 'label' | 'value' | 'figure' | 'hero' | 'statement' | 'eyebrow' | 'numeral' | 'meta' | 'tag' | 'quote' | 'code';
 export type TextFace = 'sans' | 'serif' | 'mono';
+/** How a role brings in the accent: the ink itself, an underline, a marker stroke behind the words,
+ *  a rule at the start, a short bar above, a fade from the ink, or an outline (a heading and up). */
+export type TextAccent = 'ink' | 'underline' | 'marker' | 'rule' | 'bar' | 'gradient' | 'outline';
 export type TextTone = 'hi' | 'mid' | 'low' | 'faint' | 'signal' | 'warn' | 'fault';
 
 /** Each role's element when `as` is not given. */
 const TAGS: Record<TextVariant, ElementType> = {
+  hero: 'h1',
+  statement: 'p',
+  eyebrow: 'span',
+  numeral: 'span',
+  meta: 'span',
+  tag: 'span',
   display: 'h1',
   title: 'h2',
   heading: 'h3',
@@ -40,10 +50,18 @@ export interface TextProps {
    *  of a thing) · value (a figure in the mono) · figure (the one big number; a <small> inside is its unit) · quote (a pull quote in the serif; a <cite> inside is its source) · code (inline
    *  code). Default body. Inside any of them, strong, em, mark, code, kbd and a are styled. */
   variant?: TextVariant;
+  /** Beyond those: hero (the page's one big line) · statement (a large serif sentence) · eyebrow (a
+   *  small label with a lit dot) · numeral (a big serif number in the accent) · meta (a small fact in
+   *  the mono) · tag (a status washed in the accent). An em in a title turns to the serif's italic in
+   *  the accent. */
   /** The face: sans (default for most roles), serif (an editorial title or quote), mono. */
   face?: TextFace;
   /** Ink. Default: the role's own (titles hi, body mid, captions low…). */
   tone?: TextTone;
+  /** Brings the accent into any role, seven ways. */
+  accent?: TextAccent;
+  /** A paragraph's first letter three lines tall, in the serif and the accent. */
+  dropcap?: boolean;
   align?: 'start' | 'center' | 'end';
   /** One line, cut with an ellipsis. */
   truncate?: boolean;
@@ -61,7 +79,7 @@ export interface TextProps {
 
 const MEASURED: ReadonlySet<TextVariant> = new Set(['lead', 'body', 'note', 'caption', 'quote']);
 
-export function Text({ variant = 'body', face, tone, align, truncate, lines, measure, as, children, className, style, id }: TextProps) {
+export function Text({ variant = 'body', face, tone, accent, dropcap, align, truncate, lines, measure, as, children, className, style, id }: TextProps) {
   const Tag = (as ?? TAGS[variant]) as 'p';
   const measured = measure ?? MEASURED.has(variant);
   return (
@@ -71,6 +89,8 @@ export function Text({ variant = 'body', face, tone, align, truncate, lines, mea
       data-variant={variant}
       data-face={face}
       data-tone={tone}
+      data-accent={accent}
+      data-dropcap={dropcap ? '' : undefined}
       data-align={align && align !== 'start' ? align : undefined}
       data-truncate={truncate ? '' : undefined}
       data-measure={measured ? '' : undefined}

@@ -424,7 +424,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
-- **type**: the type collection, a font pairing with its own tuning (`instrument` default, `editorial`, `geist`, `modern`, `atelier`, `red-hat`, `luxe`). It inherits through nested themes and follows portalled overlays.
+- **type**: the type collection, a font pairing with its own tuning (`manrope`, labelled Sleek, default; `sleek-air`, `sleek-serif`, `sleek-sharp`, `sleek-compact`, `instrument`, `editorial`, `geist`, `modern`, `atelier`, `red-hat`, `luxe`). It inherits through nested themes and follows portalled overlays.
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
@@ -452,25 +452,45 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 
 | variant | for | looks |
 |---|---|---|
-| `display` | one headline per page | the serif, up to 68 px (40 in a panel) |
-| `title` | a page title (a Panel's `title` is its own, 22 px bold) | 30 px bold, bright (22 in a panel) |
-| `heading` | a group's name inside prose | 20 px bold, bright (16 in a panel) |
-| `subheading` | a step under a heading | 14 px bold, mid ink (13 in a panel) |
-| `overline` | a category above a title, or the name of a set of controls | mono capitals, tracked, low ink |
-| `kicker` | a small label above a title | small capitals |
-| `lead` | the opening paragraph that says what a view is for | the serif, 22 px, bright (18 in a panel) |
-| `body` | a paragraph | 14 px (13 in a panel), 1.6 leading, at most `--ar-measure` (62ch) wide |
-| `note` | help or an aside | 12 px, low ink |
-| `caption` | a line under the thing it describes | the mono, 11 px, the faintest ink |
-| `label` | a name beside a value outside a Field | 12 px medium, low ink |
+| `hero` | the page's one big line | the title face, 48 px (24 in a panel), very tight |
+| `display` | one headline per page | the title face, 28 px (20 in a panel), tight |
+| `title` | a page title (a Panel's `title` is its own, 17 px) | the title face, 16 px, bright (14 in a panel) |
+| `heading` | a group's name inside prose | the title face, 18 px, bright (16 in a panel) |
+| `subheading` | a step under a heading | the title face, 13 px, bright |
+| `statement` | a sentence that carries a page | the opening-sentence face, 20 px (16 in a panel), bright |
+| `overline` | a category above a title, or the name of a set of controls | small tracked capitals in the accent |
+| `kicker` | a small label above a title | small and quiet; capitals only where a collection asks |
+| `eyebrow` | a live or current label above a title | the mono, 11 px, in the accent, after a lit dot |
+| `lead` | the sentence that says what a view is for | the opening-sentence face, 14 px, bright |
+| `body` | a paragraph | the reading face, 13 px (12 in a panel), 1.55 leading, at most `--ar-measure` (64ch) wide |
+| `note` | help or an aside | 12 px, a step quieter than the body |
+| `caption` | a line under the thing it describes | 11 px medium, the quietest ink |
+| `label` | a name beside a value outside a Field | 12 px medium, quiet |
 | `value` | a figure in a row | the mono, tabular |
-| `figure` | the one number that matters | 48 px thin (36 in a panel); a `<small>` inside is its unit |
-| `quote` | a principle or a quoted line | the serif, italic, 28 px, between two hairlines; a `<cite>` inside is its source |
+| `figure` | the one number that matters | 28 px medium (24 in a panel); a `<small>` inside is its unit |
+| `numeral` | a big number that marks a step or a chapter | large, in the accent, 28 px (20 in a panel) |
+| `meta` | a small fact: a date, a path, a count | the mono, 11 px, quiet |
+| `tag` | a status or a kind | the mono, 11 px, in a pill washed in the accent |
+| `quote` | a principle or a quoted line | the opening-sentence face, italic, 16 px (14 in a panel), between two hairlines; a `<cite>` inside is its source |
 | `code` | a token, key or file name | the mono, in a chip |
+
+Any role takes an `accent`, one at a time and on the one thing that should be noticed:
+
+| accent | what it does | use it for |
+|---|---|---|
+| `ink` | sets the words in the accent | a current or active title |
+| `underline` | a firm accent line under the words | a term being defined |
+| `marker` | a highlighter stroke behind the words | the one phrase that matters |
+| `rule` | an accent line at the start | a pulled-out note or section |
+| `bar` | a short accent bar above | opening a block or a stat |
+| `gradient` | a fade from the ink into the accent | one large headline |
+| `outline` | hollow letters drawn in the accent | a large word or number, a heading's size and up |
+
+`dropcap` sets a paragraph's first letter three lines tall. An `<em>` in a `hero`, `display`, `title`, `heading` or `statement` turns to the serif's italic in the accent.
 
 Neighbouring roles differ in at least two ways at once — size and weight, or size and ink, or face — so the step reads at a glance.
 
-- **Three faces, three jobs.** The sans speaks (titles, prose, labels); the mono measures (figures, code); the serif quotes and can set an editorial title (`face="serif"`). Don't mix in a fourth.
+- **One job per face.** The title face names things (titles, panel and section names); the reading face explains (prose, labels, menus); the reading serif opens and quotes (`lead`, `statement`, `quote`); the display serif sets large accent words and `numeral`; the mono measures (figures, code). Don't give a face a second job.
 - **Inline emphasis inside a body:** `strong` is bold in the bright ink, `em` turns to the serif's italic, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
 - **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
 - **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.

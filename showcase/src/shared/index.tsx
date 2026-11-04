@@ -82,8 +82,43 @@ export function Code({ children }: { children: string }) {
   );
 }
 
-/** One section: the registry gives its number and title; the left column explains, the right one shows. */
-/** `wide`: the demo takes the full width under its description (a workspace needs the room). */
+/** A description's opening sentence, and the rest: the deck is set a size up and bright, so a
+ *  section says what it is in one line before the explanation. */
+function splitDeck(text: string): [string, string] {
+  const m = /^(.*?[.!?])(?=\s+[A-Z`(])\s+([\s\S]+)$/.exec(text.trim());
+  return m ? [m[1], m[2]] : [text.trim(), ''];
+}
+
+/** The names a paragraph can open on, set in bold as a run-in head so a block can be scanned. */
+const PART_NAMES = new Set(CHAPTERS.flatMap((c) => c.components ?? []));
+
+/** Long explanations read better in short pieces: a new paragraph every couple of sentences, and at
+ *  a semicolon that moves on to another named part. */
+function readablePieces(text: string): string[] {
+  const sentences = text.trim().split(/(?<=[.!?])\s+(?=[A-Z`(])/).flatMap((s) => (s.length > 170 ? s.split(/;\s+(?=[A-Z])/).map((part, i, all) => (i < all.length - 1 ? part + '.' : part)) : [s]));
+  const pieces: string[] = [];
+  for (const s of sentences) {
+    const last = pieces[pieces.length - 1];
+    if (last && last.length + s.length < 170 && !PART_NAMES.has(s.split(/\s/)[0])) pieces[pieces.length - 1] = last + ' ' + s;
+    else pieces.push(s);
+  }
+  return pieces;
+}
+
+function Piece({ text }: { text: string }) {
+  const [first, ...rest] = text.split(' ');
+  return PART_NAMES.has(first) ? (
+    <p>
+      <b>{first}</b> {rest.join(' ')}
+    </p>
+  ) : (
+    <p>{text}</p>
+  );
+}
+
+/** One section: a header band (number and title) across the width, then the explanation beside
+ *  the demo on its stage. `wide`: the demo takes the full width under its description (a
+ *  workspace needs the room). */
 export function Spec({ id, text, keys, code, wide, children }: { id: string; text: ReactNode; keys?: Array<[string, string]>; code?: string; wide?: boolean; children: ReactNode }) {
   const mode = useContext(GalleryMode);
   const def = SECTIONS.get(id);
@@ -98,25 +133,41 @@ export function Spec({ id, text, keys, code, wide, children }: { id: string; tex
         <div className="sc-demo">{children}</div>
       </section>
     );
+  const [deck, rest] = typeof text === 'string' ? splitDeck(text) : ['', ''];
   return (
     <section className={wide ? 'sc-spec sc-spec--wide' : 'sc-spec'} id={sectionAnchor(id)} data-section={id}>
       <div className="sc-about">
-        <span className="sc-num">{def.n}</span>
-        <b className="sc-title">{def.title}</b>
-        {typeof text === 'string' ? <p className="sc-text">{text}</p> : <div className="sc-text">{text}</div>}
+        <header className="sc-spec__head">
+          <span className="sc-num">{def.n}</span>
+          <h3 className="sc-title">{def.title}</h3>
+        </header>
+        {typeof text === 'string' ? (
+          <>
+            <p className="sc-deck">{deck}</p>
+            {rest ? (
+              <div className="sc-text">
+                {readablePieces(rest).map((piece, i) => (
+                  <Piece key={i} text={piece} />
+                ))}
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <div className="sc-text">{text}</div>
+        )}
         {keys ? (
-          <div className="sc-keys">
+          <dl className="sc-keys">
             {keys.map(([k, v]) => (
-              <span key={k} style={{ display: 'contents' }}>
-                <b>{k}</b>
-                <span>{v}</span>
-              </span>
+              <div key={k} className="sc-keys__row">
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </div>
             ))}
-          </div>
+          </dl>
         ) : null}
       </div>
       <div className="sc-demo">
-        {children}
+        <div className="sc-show">{children}</div>
         {code && mode.code ? <Code>{code.trim()}</Code> : null}
       </div>
     </section>

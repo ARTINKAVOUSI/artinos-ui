@@ -40,7 +40,7 @@
   border-bottom: 1px solid var(--ar-line-subtle);
 }
 .xk__head > div { display: flex; flex-direction: column; gap: 4px; margin-right: auto; }
-.xk__head b { font: var(--ar-weight-light) var(--ar-text-2xl) var(--ar-font-ui); color: var(--ar-text-hi); letter-spacing: var(--ar-track-title); }
+.xk__head b { font: var(--ar-weight-title) var(--ar-text-2xl) var(--ar-font-display); color: var(--ar-text-hi); letter-spacing: var(--ar-track-title); }
 .xk__head span { font: var(--ar-weight-light) var(--ar-text-md) var(--ar-font-ui); color: var(--ar-text-low); }
 .xk__x {
   all: unset;

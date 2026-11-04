@@ -416,7 +416,7 @@
 }
 .ar-stat__prefix {
   margin-right: 0.08em;
-  font-size: 0.62em;
+  font-size: round(0.62em, 2px);
   color: var(--ar-text-low);
 }
 .ar-stat__level {
@@ -447,7 +447,7 @@
   color: var(--ar-text-low);
 }
 .ar-stat__value {
-  font-size: calc(var(--ar-value-size) * 2.1);
+  font-size: round(calc(var(--ar-value-size) * 2.1), 4px);
   font-weight: var(--ar-weight-light);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
@@ -456,11 +456,11 @@
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-stat[data-size='lg'] .ar-stat__value {
-  font-size: calc(var(--ar-value-size) * 3);
+  font-size: round(calc(var(--ar-value-size) * 2.4), 4px);
   font-weight: var(--ar-weight-thin);
 }
 .ar-stat__value .ar-roll__unit {
-  font-size: 0.5em;
+  font-size: round(0.5em, 1px);
   color: var(--ar-text-low);
 }
 .ar-stat__delta {
@@ -474,7 +474,7 @@
   border-radius: var(--ar-radius-control);
   background: color-mix(in srgb, var(--_d) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_d) 24%, transparent);
-  font: var(--ar-weight-text) calc(var(--ar-value-size) - 1px) / 1 var(--ar-control-font);
+  font: var(--ar-weight-text) max(11px, calc(var(--ar-value-size) - 1px)) / 1 var(--ar-control-font);
   font-variant-numeric: tabular-nums;
   color: var(--_d);
 }
@@ -706,11 +706,11 @@
   color: var(--ar-value-ink);
 }
 .ar-progress[data-size='lg'] .ar-progress__ring-value {
-  font-size: calc(var(--ar-value-size) * 1.6);
+  font-size: round(calc(var(--ar-value-size) * 1.6), 4px);
   font-weight: var(--ar-weight-light);
 }
 .ar-progress[data-size='sm'] .ar-progress__ring-value {
-  font-size: calc(var(--ar-value-size) - 2px);
+  font-size: 11px;
 }
 .ar-progress[data-size='sm'] .ar-progress__ring-value .ar-roll__unit {
   display: none;

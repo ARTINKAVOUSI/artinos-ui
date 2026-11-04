@@ -22,7 +22,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
   {
     id: 'foundations',
     title: 'Foundations',
-    note: 'One theme, five materials, two voices of text and one set of motions.',
+    note: 'One theme, five materials, one type system and one set of motions.',
     meta: true,
     sections: [
       { id: 'themes', title: 'Themes' },
@@ -32,6 +32,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
       { id: 'density', title: 'Density' },
       { id: 'layout', title: 'Layout & text' },
       { id: 'typography', title: 'Typography' },
+      { id: 'type-styles', title: 'Type styles' },
       { id: 'motion', title: 'Motion' },
     ],
   },

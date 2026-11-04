@@ -34,7 +34,7 @@
 .ar-palette__meta,
 .ar-toast__action {
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1px);
+  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -206,7 +206,7 @@
 }
 .ar-dialog__head h2 {
   margin: 0;
-  font: var(--ar-weight-light) var(--ar-text-lg) / var(--ar-leading-snug) var(--ar-font-ui);
+  font: var(--ar-weight-title) var(--ar-text-lg) / var(--ar-leading-snug) var(--ar-font-display);
   letter-spacing: var(--ar-track-text);
   color: var(--ar-float-ink);
 }
@@ -366,7 +366,7 @@
   background: var(--ar-list-insert);
   box-shadow: var(--ar-list-insert-shadow);
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1px);
+  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -575,7 +575,7 @@
 /* group headings are small headings: the one place a sheet keeps capitals */
 .ar-menu__label,
 .ar-palette__group {
-  font-size: calc(var(--ar-voice-size) - 2.5px);
+  font-size: 11px;
   font-weight: var(--ar-weight-medium);
   letter-spacing: 0.08em;
   text-transform: var(--ar-caps-case);
@@ -673,7 +673,7 @@
   padding: 20px 22px 0;
 }
 .ar-dialog__head h2 {
-  font-size: calc(var(--ar-text-lg) + 1px);
+  font-size: var(--ar-text-lg);
   font-weight: var(--ar-weight-medium);
   letter-spacing: -0.005em;
 }
@@ -696,7 +696,7 @@
 /* shortcuts in menus read as keys are written: "Ctrl D", "⌘ D" */
 .ar-menu__shortcut {
   font-family: var(--ar-font-num);
-  font-size: calc(var(--ar-caps-sm) + 0.5px);
+  font-size: var(--ar-caps-sm);
   font-weight: var(--ar-weight-text);
   letter-spacing: 0.02em;
   text-transform: none;

@@ -19,7 +19,7 @@
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
-  font: var(--ar-weight-text) calc(var(--ar-value-size) + 2px) / var(--ar-leading-snug) var(--ar-font-ui);
+  font: var(--ar-weight-text) calc(var(--ar-value-size) + 1px) / var(--ar-leading-snug) var(--ar-font-ui);
   text-align: center;
   color: var(--ar-text-hi);
   text-shadow: var(--ar-base-text-shadow);
@@ -72,7 +72,7 @@
 }
 .ar-filedrop__hint {
   font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-size: max(11px, calc(var(--ar-label-size) + var(--ar-label-bump) - 1px));
   font-weight: var(--ar-label-weight);
   letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
   text-transform: var(--ar-label-case);

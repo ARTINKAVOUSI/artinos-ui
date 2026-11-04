@@ -24,93 +24,120 @@
 .ar-dialog__body {
   /* small text on a pane is never light: it would thin out on the glass, whoever asks for it */
   --ar-weight-light: var(--ar-weight-regular);
-  --ar-read-display: 34px;
-  --ar-read-title: 28px;
-  --ar-read-heading: 22px;
-  --ar-read-subheading: 14px;
-  --ar-read-lead: 20px;
-  --ar-read-body: 14px;
-  --ar-read-quote: 20px;
-  --ar-read-figure: 34px;
+  /* a panel keeps one compact scale, whichever type set is around it: only the faces and the
+     character change, so big page titles never inflate a control panel */
+  --ar-title-scale: 1;
+  --ar-lead-scale: 1;
+  --ar-prose-scale: 1;
+  --ar-leading-prose: 1.5;
+  --ar-leading-heading: 1.15;
+  --ar-track-heading: -0.02em;
+  --ar-track-heading-sm: -0.01em;
+  --ar-read-hero: 24px;
+  --ar-read-statement: 16px;
+  --ar-read-numeral: 20px;
+  --ar-read-display: 20px;
+  --ar-read-title: 16px;
+  --ar-read-heading: 14px;
+  --ar-read-subheading: 13px;
+  --ar-read-lead: 14px;
+  --ar-read-body: 12px;
+  --ar-read-note: 12px;
+  --ar-read-quote: 14px;
+  --ar-read-figure: 24px;
 }
+/* the biggest statement: bold, tight and balanced; a serif only where a collection asks */
 .ar-type[data-variant='display'] {
   --_ink: var(--ar-text-hi);
   font-family: var(--ar-font-display);
   font-size: var(--ar-read-display);
-  font-weight: var(--ar-weight-regular);
-  line-height: 1;
-  letter-spacing: -0.015em;
+  font-weight: var(--ar-weight-title);
+  line-height: 1.04;
+  letter-spacing: var(--ar-track-display);
   text-wrap: balance;
 }
+.ar-type[data-variant='display'][data-face='serif'],
+.ar-type[data-variant='title'][data-face='serif'] {
+  font-weight: var(--ar-weight-regular);
+  letter-spacing: 0;
+}
+/* a page's or panel's title: bold and close-set, so it reads first */
 .ar-type[data-variant='title'] {
   --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-display);
   font-size: var(--ar-read-title);
-  font-weight: 300;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  font-weight: var(--ar-weight-title);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
   text-wrap: balance;
 }
 .ar-type[data-variant='heading'] {
   --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-display);
   font-size: var(--ar-read-heading);
-  font-weight: var(--ar-weight-regular);
-  line-height: 1.16;
-  letter-spacing: -0.02em;
+  font-weight: var(--ar-weight-title);
+  line-height: 1.25;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 .ar-type[data-variant='subheading'] {
-  --_ink: var(--ar-text-mid);
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-display);
   font-size: var(--ar-read-subheading);
-  font-weight: var(--ar-weight-medium);
+  font-weight: var(--ar-weight-title);
   line-height: var(--ar-leading-snug);
+  letter-spacing: -0.006em;
   text-wrap: balance;
 }
-/* the kind of thing, before its name: tracked mono capitals */
+/* the kind of thing, before its name: small tracked capitals in the accent, the one place
+   capitals belong */
 .ar-type[data-variant='overline'] {
-  --_ink: var(--ar-text-low);
-  font-family: var(--ar-font-code);
+  --_ink: var(--ar-tone-accent);
   font-size: var(--ar-caps-xs);
-  font-weight: var(--ar-weight-medium);
+  font-weight: var(--ar-weight-bold);
   line-height: var(--ar-leading-snug);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 /* the same small label in the ink, set like a section's heading */
 .ar-type[data-variant='kicker'] {
   --_ink: var(--ar-text-low);
+  --_ink: var(--ar-tone-label);
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) + var(--ar-head-bump));
-  font-weight: var(--ar-weight-medium);
+  font-size: calc(var(--ar-caps-sm) + var(--ar-head-bump));
+  font-weight: var(--ar-weight-bold);
   line-height: var(--ar-leading-snug);
   letter-spacing: var(--ar-head-tracking);
   text-transform: var(--ar-head-case);
 }
-/* the opening paragraph: the serif, large and bright, so it reads as the point of what follows */
+/* the opening sentence: the serif, bright, so it reads as the point of what follows */
 .ar-type[data-variant='lead'] {
   --_ink: var(--ar-text-hi);
-  font-family: var(--ar-font-serif);
+  font-family: var(--ar-font-lead);
   font-size: var(--ar-read-lead);
-  line-height: 1.28;
+  font-weight: var(--ar-weight-regular);
+  line-height: 1.4;
+  letter-spacing: 0;
   text-wrap: pretty;
 }
 .ar-type[data-variant='body'] {
   --_ink: var(--ar-tone-body);
   font-size: var(--ar-read-body);
-  line-height: 1.6;
+  line-height: var(--ar-leading-text);
   text-wrap: pretty;
-  hyphens: auto;
 }
-/* help and asides: a step quieter than the body */
+/* help and asides: a size smaller and a step quieter than the body */
 .ar-type[data-variant='note'] {
   --_ink: var(--ar-tone-note);
-  font: var(--ar-type-note);
+  font-size: var(--ar-read-note);
+  line-height: 1.5;
   text-wrap: pretty;
 }
-/* a line under a figure: the mono, faintest, reads as a measurement's tag */
+/* a line under a figure: small and quiet, still at the floor size */
 .ar-type[data-variant='caption'] {
   --_ink: var(--ar-tone-hint);
-  font-family: var(--ar-font-code);
   font-size: var(--ar-text-xs);
+  font-weight: var(--ar-weight-medium);
   line-height: 1.45;
   text-wrap: pretty;
 }
@@ -135,9 +162,9 @@
 .ar-type[data-variant='figure'] {
   --_ink: var(--ar-text-hi);
   font-size: var(--ar-read-figure);
-  font-weight: var(--ar-weight-thin);
+  font-weight: var(--ar-weight-medium);
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   flex-shrink: 0;
@@ -146,17 +173,17 @@
   margin-left: 0.28em;
   font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-code);
   letter-spacing: 0;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-accent);
 }
 /* a pull quote: the serif in italic, large, held between two hairlines */
 .ar-type[data-variant='quote'] {
   --_ink: var(--ar-text-hi);
   padding-block: 0.6em;
   border-block: 1px solid var(--ar-line);
-  font-family: var(--ar-font-serif);
+  font-family: var(--ar-font-lead);
   font-size: var(--ar-read-quote);
   font-style: italic;
-  line-height: 1.16;
+  line-height: 1.25;
   text-wrap: balance;
 }
 .ar-type[data-variant='quote'] :where(cite) {
@@ -172,8 +199,153 @@
   background: color-mix(in srgb, var(--ar-text-hi) 8%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
   font-family: var(--ar-font-code);
-  font-size: 0.9em;
+  font-size: round(0.9em, 1px);
   color: var(--ar-text-hi);
+}
+
+/* ---------- the wider range: statements, marks and big numerals ---------- */
+/* the page's one big line: the title face, tight, a whole step above display */
+.ar-type[data-variant='hero'] {
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-display);
+  font-size: var(--ar-read-hero);
+  font-weight: var(--ar-weight-medium);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+/* a sentence that carries a page: the serif, large */
+.ar-type[data-variant='statement'] {
+  --_ink: var(--ar-text-hi);
+  font-family: var(--ar-font-lead);
+  font-size: var(--ar-read-statement);
+  line-height: 1.14;
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+}
+/* a small label with a lit dot, in the mono and the accent */
+.ar-type[data-variant='eyebrow'] {
+  --_ink: var(--ar-tone-accent);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--ar-font-num);
+  font-size: var(--ar-text-xs);
+  font-weight: var(--ar-weight-medium);
+  line-height: 16px;
+}
+.ar-type[data-variant='eyebrow']::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+}
+/* a big number that marks a step or a chapter: the serif's italic in the accent */
+.ar-type[data-variant='numeral'] {
+  --_ink: var(--ar-tone-accent);
+  font-family: var(--ar-font-serif);
+  font-size: var(--ar-read-numeral);
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums;
+  white-space: nowrap;
+}
+/* a small fact: a date, a path, a count */
+.ar-type[data-variant='meta'] {
+  --_ink: var(--ar-tone-note);
+  font-family: var(--ar-font-num);
+  font-size: var(--ar-text-xs);
+  line-height: 16px;
+}
+/* a status or kind, washed in the accent */
+.ar-type[data-variant='tag'] {
+  --_ink: var(--ar-tone-accent);
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  flex: none;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--ar-signal-wash);
+  box-shadow: inset 0 0 0 1px var(--ar-signal-line);
+  font-family: var(--ar-font-num);
+  font-size: var(--ar-text-xs);
+  font-weight: var(--ar-weight-medium);
+  line-height: 16px;
+  white-space: nowrap;
+}
+/* one word in a title: <em> turns to the serif's italic in the accent */
+.ar-type:is([data-variant='hero'], [data-variant='display'], [data-variant='title'], [data-variant='heading'], [data-variant='statement']) :where(em) {
+  font-family: var(--ar-font-serif);
+  font-style: italic;
+  font-weight: var(--ar-weight-regular);
+  font-size-adjust: var(--ar-serif-adjust);
+  letter-spacing: -0.01em;
+  color: var(--ar-tone-accent);
+}
+.ar-type:is([data-variant='hero'], [data-variant='display'], [data-variant='title'], [data-variant='heading']) :where(em) {
+  font-size: 1em;
+}
+.ar-type[data-variant='statement'] :where(em) {
+  font-family: inherit;
+}
+
+/* accent: seven ways to bring the accent into any role */
+.ar-type[data-accent='ink'] {
+  --_ink: var(--ar-tone-accent);
+}
+.ar-type[data-accent='underline'] {
+  text-decoration: underline;
+  text-decoration-color: var(--ar-signal);
+  text-decoration-thickness: max(2px, 0.08em);
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: auto;
+}
+.ar-type[data-accent='marker'] {
+  width: fit-content;
+  background: linear-gradient(transparent 60%, var(--ar-signal-line) 60% 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.ar-type[data-accent='rule'] {
+  padding-inline-start: 0.7em;
+  border-inline-start: 2px solid var(--ar-signal);
+}
+.ar-type[data-accent='bar']::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin-bottom: 0.6em;
+  border-radius: 1px;
+  background: var(--ar-signal);
+}
+.ar-type[data-accent='gradient'] {
+  background: linear-gradient(100deg, var(--ar-text-hi) 15%, var(--ar-tone-accent) 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+/* an outline needs size: for a heading and up */
+.ar-type[data-accent='outline'] {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ar-tone-accent);
+  text-shadow: none;
+}
+/* a paragraph's first letter, three lines tall, in the serif and the accent */
+.ar-type[data-dropcap]::first-letter {
+  float: left;
+  margin: 0.05em 0.1em 0 0;
+  font-family: var(--ar-font-serif);
+  font-size: 3.5em;
+  font-weight: var(--ar-weight-regular);
+  line-height: 0.82;
+  color: var(--ar-tone-accent);
 }
 
 /* faces */
@@ -190,22 +362,20 @@
   letter-spacing: 0;
 }
 
-/* inside prose: strong is the sans at its boldest in the bright ink; em is the serif's italic (the
-   sans has none, and a change of voice says more); a mark is washed in the accent; links carry an
-   accent underline */
+/* every serif at one apparent size, whichever a collection picks */
+.ar-type:is([data-variant='lead'], [data-variant='statement'], [data-variant='quote'], [data-variant='numeral'], [data-face='serif']) {
+  font-size-adjust: var(--ar-serif-adjust);
+}
+
+/* inside prose: strong is bold in the bright ink; em is the italic in the bright ink; a mark is
+   washed in the accent; links carry an accent underline */
 .ar-type :where(strong, b) {
   font-weight: var(--ar-weight-bold);
   color: var(--ar-text-hi);
 }
 .ar-type :where(em, i) {
-  font-family: var(--ar-font-serif);
-  font-size: 1.14em;
   font-style: italic;
-  line-height: 1;
   color: var(--ar-text-hi);
-}
-.ar-type:is([data-variant='lead'], [data-variant='quote'], [data-face='serif']) :where(em, i) {
-  font-size: 1em;
 }
 .ar-type :where(mark) {
   padding: 0 0.15em;
@@ -251,28 +421,31 @@
   left: 0;
   top: 0.32em;
   font: var(--ar-weight-medium) var(--ar-caps-xs) / 1 var(--ar-font-code);
-  color: var(--ar-signal);
+  color: var(--ar-tone-accent);
 }
 .ar-type :where(li) + :where(li) {
   margin-top: 0.45em;
 }
 .ar-type :where(li)::marker {
-  color: var(--ar-signal);
+  color: var(--ar-tone-accent);
 }
 
 /* rhythm: paragraphs a short step apart; a heading sits closer to what it heads than to what
    came before it */
 .ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) + .ar-type:is([data-variant='body'], [data-variant='note']) {
-  margin-top: 0.9em;
+  margin-top: 0.75em;
 }
-.ar-type:not([data-variant='overline'], [data-variant='kicker']) + .ar-type:is([data-variant='heading'], [data-variant='subheading']) {
-  margin-top: 1.5em;
+.ar-type:not([data-variant='overline'], [data-variant='kicker'], [data-variant='eyebrow'], [data-variant='numeral'], [data-variant='tag'], [data-variant='meta']) + .ar-type:is([data-variant='heading'], [data-variant='subheading']) {
+  margin-top: 1.75em;
 }
 .ar-type:is([data-variant='heading'], [data-variant='subheading']) + :where(ul, ol).ar-type {
-  margin-top: 0.6em;
+  margin-top: 0.5em;
 }
 .ar-type:is([data-variant='heading'], [data-variant='subheading'], [data-variant='title'], [data-variant='display']) + .ar-type:is([data-variant='lead'], [data-variant='body'], [data-variant='note']) {
-  margin-top: 0.5em;
+  margin-top: 0.45em;
+}
+.ar-type:is([data-variant='display'], [data-variant='title']) + .ar-type[data-variant='lead'] {
+  margin-top: 0.7em;
 }
 .ar-type + .ar-type[data-variant='quote'],
 .ar-type[data-variant='quote'] + .ar-type {
@@ -323,8 +496,8 @@
   overflow: hidden;
 }
 /* an overline, kicker or caption hugs the title it belongs to */
-.ar-type:is([data-variant='kicker'], [data-variant='overline']) + .ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) {
-  margin-top: var(--ar-space-4);
+.ar-type:is([data-variant='kicker'], [data-variant='overline'], [data-variant='eyebrow'], [data-variant='tag']) + .ar-type:is([data-variant='hero'], [data-variant='statement'], [data-variant='title'], [data-variant='display'], [data-variant='heading']) {
+  margin-top: var(--ar-space-3);
 }
 .ar-type:is([data-variant='title'], [data-variant='display'], [data-variant='heading']) + .ar-type[data-variant='caption'] {
   margin-top: calc(var(--ar-space-1) * -1);
@@ -375,4 +548,74 @@
 }
 .ar-inline[data-wrap] {
   flex-wrap: wrap;
+}
+
+/* large thin titles belong on pages: at panel sizes a title is never lighter than regular */
+:is(.ar-panel, .ar-dock, .ar-dock__panel, .ar-dialog__body) .ar-type:is([data-variant='hero'], [data-variant='display']) {
+  font-weight: max(var(--ar-weight-display), 400);
+}
+
+/* ---------- what a collection can change beyond its faces: scale, weight, case, width, reading ---------- */
+.ar-type[data-variant='hero'],
+.ar-type[data-variant='display'] {
+  font-weight: var(--ar-weight-display);
+  font-stretch: var(--ar-title-stretch);
+  letter-spacing: var(--ar-track-heading);
+  text-transform: var(--ar-title-case);
+}
+.ar-type[data-variant='hero'] {
+  font-size: round(calc(var(--ar-read-hero) * var(--ar-title-scale)), 4px);
+}
+.ar-type[data-variant='display'] {
+  font-size: round(calc(var(--ar-read-display) * var(--ar-title-scale)), 4px);
+  line-height: var(--ar-leading-heading);
+}
+.ar-type:is([data-variant='title'], [data-variant='heading'], [data-variant='subheading']) {
+  font-stretch: var(--ar-title-stretch);
+  letter-spacing: var(--ar-track-heading-sm);
+  text-transform: var(--ar-title-case);
+}
+.ar-type[data-variant='title'] {
+  font-size: round(calc(var(--ar-read-title) * var(--ar-title-scale)), 2px);
+}
+.ar-type[data-variant='heading'] {
+  font-size: round(calc(var(--ar-read-heading) * var(--ar-title-scale)), 2px);
+}
+.ar-type[data-variant='lead'],
+.ar-type[data-variant='statement'],
+.ar-type[data-variant='quote'] {
+  font-style: var(--ar-lead-style);
+  font-weight: var(--ar-weight-lead);
+}
+.ar-type[data-variant='lead'] {
+  font-size: round(calc(var(--ar-read-lead) * var(--ar-lead-scale)), 2px);
+}
+.ar-type[data-variant='statement'] {
+  font-size: round(calc(var(--ar-read-statement) * var(--ar-lead-scale)), 4px);
+}
+.ar-type:is([data-variant='body'], [data-variant='note']) {
+  font-family: var(--ar-font-prose);
+  line-height: round(calc(1em * var(--ar-leading-prose)), 1px);
+}
+.ar-type[data-variant='body'] {
+  font-size: round(calc(var(--ar-read-body) * var(--ar-prose-scale)), 1px);
+}
+.ar-type[data-variant='note'] {
+  font-size: round(calc(var(--ar-read-note) * var(--ar-prose-scale)), 1px);
+}
+.ar-type:is([data-variant='eyebrow'], [data-variant='meta']) {
+  font-family: var(--ar-font-mark);
+  font-weight: var(--ar-weight-mark);
+  letter-spacing: var(--ar-mark-track);
+  text-transform: var(--ar-mark-case);
+}
+.ar-type[data-variant='numeral'] {
+  font-family: var(--ar-font-numeral);
+  font-style: var(--ar-numeral-style);
+}
+.ar-type:is([data-variant='hero'], [data-variant='display'], [data-variant='title'], [data-variant='heading']) :where(em) {
+  font-family: var(--ar-font-accent);
+  font-style: var(--ar-accent-style);
+  font-weight: var(--ar-weight-accent);
+  font-stretch: 100%;
 }

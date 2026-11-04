@@ -48,12 +48,12 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: 500 14px / 20px var(--ar-font-ui);
+  font: var(--ar-weight-title) 12px / 18px var(--ar-font-display);
   color: var(--ar-tone-title);
   text-wrap: balance;
 }
 .ar-callout__text {
-  font: 400 14px / 20px var(--ar-font-ui);
+  font: 400 12px / 18px var(--ar-font-ui);
   color: var(--ar-tone-body);
   text-wrap: pretty;
 }
@@ -68,7 +68,7 @@
   margin-top: 0.5em;
 }
 .ar-callout__text :where(strong, b) {
-  font-weight: var(--ar-weight-medium);
+  font-weight: var(--ar-weight-bold);
   color: var(--ar-tone-title);
 }
 .ar-callout__text :where(kbd) {

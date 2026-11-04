@@ -729,7 +729,7 @@
   --ar-label-weight: 700;
   --ar-value-weight: 700;
   --ar-label-tracking: 0;
-  --ar-label-bump: 2.5px;
+  --ar-label-bump: 3px;
   --ar-value-bump: 1px;
 
   /* the Figma well is 1% black; 14% keeps its ink legible over bright canvases */

@@ -20,7 +20,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   material?: MaterialName;
   density?: Density;
   /** A type collection (see TYPE_COLLECTIONS): the faces and their tuning. Inherits when omitted;
-   *  the default is `instrument` (Geist and Geist Mono). */
+   *  the default is `manrope`, labelled Sleek. */
   type?: TypeCollection | (string & {});
   /** An accent (see ACCENTS) in place of the theme's own signal: live edges, LEDs, focus and
    *  selection take it, nothing else changes. Each accent has a dark and a light value. */

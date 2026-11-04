@@ -105,7 +105,7 @@
 }
 .sc-stage__intro h1 {
   margin: 0;
-  font: var(--ar-weight-light) 44px / 1.02 var(--ar-font-display);
+  font: var(--ar-weight-title) 28px / 1.1 var(--ar-font-display);
   letter-spacing: -0.02em;
   color: var(--ar-text-hi);
 }
@@ -169,7 +169,7 @@
 }
 .sc-themes__family-head h2 {
   margin: 0;
-  font: var(--ar-weight-light) 26px / 1.1 var(--ar-font-display);
+  font: var(--ar-weight-title) 18px / 1.2 var(--ar-font-display);
   letter-spacing: -0.01em;
 }
 .sc-themes__family-head span {
@@ -253,6 +253,6 @@
 .sc-themes-inline__about {
   margin: 0 0 14px;
   font: var(--ar-text-md) / 1.5 var(--ar-font-ui);
-  color: #ffffff;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  color: var(--sc-bare-ink);
+  text-shadow: 0 1px 3px var(--sc-bare-edge);
 }

@@ -57,7 +57,7 @@ export const FAMILIES: Array<[string, string[]]> = [
  *  control, each card its own data-ar-type scope inside the page's theme. */
 export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boolean; onPick: () => void }) {
   const m = TYPE_META[t];
-  const faces = [m.ui, m.mono, m.display].filter(Boolean).join(' · ');
+  const faces = [...new Set([m.display, m.ui, m.serif, m.mono].filter(Boolean))].join(' · ');
   return (
     <figure
       data-ar-type={t}
@@ -69,13 +69,14 @@ export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boo
       onClick={onPick}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPick())}
     >
-      <div className="sc-type__display">
-        Aa<span>Rr 0123 kHz</span>
-      </div>
+      <b className="sc-type__hero">
+        Light, <em>held</em>
+      </b>
       <div className="sc-card__head">
         <span className="sc-card__name">{m.label}</span>
         <span className="sc-card__meta sc-type__faces">{faces}</span>
       </div>
+      <p className="sc-type__lead">Glass reads as glass when its edge is bright.</p>
       <p className="sc-card__text">{m.description}</p>
       <div className="sc-type__specimen" onClick={(e) => e.stopPropagation()}>
         <b className="sc-type__title">Material · Optical body</b>

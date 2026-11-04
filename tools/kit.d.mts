@@ -27,7 +27,7 @@ export interface KitOptions {
   customs: CustomThemeCss[];
   googleFonts: boolean;
   materials: boolean;
-  /** type collections to include; `instrument` always comes along */
+  /** type collections to include; `manrope` always comes along */
   types?: string[];
   /** guide name → markdown, written to docs/ in the kit */
   docs?: Record<string, string> | null;

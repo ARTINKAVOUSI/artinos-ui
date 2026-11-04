@@ -39,7 +39,7 @@
   min-width: 0;
   height: 100%;
   font-family: var(--ar-font-ui);
-  font-size: calc(var(--ar-value-size) + 2px);
+  font-size: calc(var(--ar-value-size) + 1px);
   font-weight: var(--ar-weight-text);
   color: var(--ar-value-ink-hi);
   text-shadow: var(--ar-base-text-shadow);

@@ -57,7 +57,7 @@
 .ar-prop__binding {
   flex: none;
   font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-size: max(11px, calc(var(--ar-label-size) + var(--ar-label-bump) - 1px));
   font-style: normal;
   font-weight: var(--ar-label-weight);
   letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));

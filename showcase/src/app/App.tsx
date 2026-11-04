@@ -62,7 +62,7 @@ export function App() {
   }, [view]);
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
-  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'instrument'));
+  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'manrope'));
   const [accent, setAccent] = useState<string>(pick('accent', ['theme', ...ACCENTS] as const, 'theme'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera', 'studio'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');
@@ -124,7 +124,7 @@ export function App() {
           <span>Type</span>
           <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
         </label>
-        <label className="sc-pick">
+        <label className="sc-pick sc-pick--accent">
           <span>Accent</span>
           <Select options={[{ value: 'theme', label: 'Theme' }, ...ACCENTS.map((a) => ({ value: a, label: ACCENT_META[a].label }))]} value={accent} onChange={setAccent} appearance="well" label="Accent" />
         </label>
@@ -132,7 +132,7 @@ export function App() {
           <span>Density</span>
           <Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" />
         </label>
-        <label className="sc-pick">
+        <label className="sc-pick sc-pick--backdrop">
           <span>Backdrop</span>
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
         </label>
@@ -185,7 +185,9 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
     <section className="sc-hero">
       <div className="sc-hero__lede">
         <span className="sc-hero__kicker">A precision-instrument control system for React</span>
-        <h1>ARTINOS UI</h1>
+        <h1>
+          ARTINOS <em>UI</em>
+        </h1>
         <p>
           One compact surface per parameter: the capsule is the control, the seam is the handle, the readout is the precision zone. Every component is made of the same five materials and
           follows any of {THEMES.length} themes. Everything on this page is live — switch the theme in the bar, or build your own.

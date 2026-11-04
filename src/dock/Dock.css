@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font: 400 14px/var(--ar-leading-none) var(--ar-font-ui);
+  font: 400 13px/var(--ar-leading-none) var(--ar-font-ui);
   letter-spacing: var(--ar-track-text);
   white-space: nowrap;
   color: var(--ar-tone-label);
@@ -314,7 +314,7 @@
   padding: 6px 14px 8px;
   border-top: 1px solid var(--ar-line-subtle);
   font-family: var(--ar-voice-font);
-  font-size: calc(var(--ar-voice-size) - 1px);
+  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -434,7 +434,7 @@
 .ar-dock .mb-context-head span,
 .ar-dock .mb-context-label {
   font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-label-size) + var(--ar-label-bump) - 1px);
+  font-size: max(11px, calc(var(--ar-label-size) + var(--ar-label-bump) - 1px));
   font-weight: var(--ar-label-weight);
   line-height: var(--ar-leading-none);
   letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));

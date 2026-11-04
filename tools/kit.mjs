@@ -78,8 +78,8 @@ export function readRegistry(sources) {
 
 /* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
 
-export const BASE_TYPE = 'instrument';
-const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
+export const BASE_TYPE = 'manrope';
+const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', (?:serif: '([^']*)', )?description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
 
 /** TYPE_COLLECTIONS in registry order and TYPE_META, parsed from the package source. */
 export function readTypes(sources) {
@@ -88,13 +88,13 @@ export function readTypes(sources) {
   const meta = {};
   for (const line of utils.split('\n')) {
     const m = line.match(TYPE_RE);
-    if (m) meta[m[1] ?? m[2]] = { label: m[3], ui: m[4], mono: m[5], display: m[6], description: m[7].replace(/\\'/g, "'"), fonts: m[8] };
+    if (m) meta[m[1] ?? m[2]] = { label: m[3], ui: m[4], mono: m[5], display: m[6], serif: m[7] ?? '', description: m[8].replace(/\\'/g, "'"), fonts: m[9] };
   }
   return { types, meta };
 }
 
 /** The faces a set of collections uses, in order, each once. */
-export const facesOf = (types, tmeta) => [...new Set(types.flatMap((t) => [tmeta[t].ui, tmeta[t].mono, tmeta[t].display].filter(Boolean)))];
+export const facesOf = (types, tmeta) => [...new Set(types.flatMap((t) => [tmeta[t].display, tmeta[t].ui, tmeta[t].serif, tmeta[t].mono].filter(Boolean)))];
 
 /** tokens/fonts.css for a kit: one Google Fonts request naming each family once. */
 function buildFontsCss(types, tmeta) {
@@ -348,7 +348,7 @@ ${o.googleFonts ? `- \`tokens/fonts.css\` loads ${faces.join(', ')} and Roboto M
 ${o.materials ? '' : '- Finish overrides (`material` prop) were left out; each theme keeps its own finish.\n'}
 ${guides}## Type collections
 
-One superfamily in two voices, a sans that speaks and a mono that measures, tuned for the family's sizes. \`${BASE_TYPE}\` is what the tokens give; another is set with \`<ArtinosTheme type="…">\` or \`data-ar-type\` on any element, and carries through nested themes and portalled overlays.
+A set of faces with one job each and its own system: title scale, weight, case and width, the paragraph face and line spacing. \`${BASE_TYPE}\` is what the tokens give; another is set with \`<ArtinosTheme type="…">\` or \`data-ar-type\` on any element, and carries through nested themes and portalled overlays.
 
 | collection | faces |
 |---|---|
@@ -416,7 +416,7 @@ export function buildKit(sources, o) {
   files['tokens/type.css'] = trimCss(
     sources['tokens/type.css'],
     (s) => typesIn(s).every((t) => keepTypes.has(t)),
-    `/* ARTINOS UI — type collections in this kit. Pick one with <ArtinosTheme type="…"> or data-ar-type:\n *   ${typeList}\n * A collection sets the faces and re-tunes tracking; sizes, weights and leading stay (tokens.css).\n * ${BASE_TYPE} is what tokens.css already gives. The faces load in fonts.css.\n */`,
+    `/* ARTINOS UI — type collections in this kit. Pick one with <ArtinosTheme type="…"> or data-ar-type:\n *   ${typeList}\n * A collection sets its faces and its own title and reading system; control sizes stay (tokens.css).\n * ${BASE_TYPE} is what tokens.css already gives. The faces load in fonts.css.\n */`,
   );
   if (o.customs.length) files['tokens/custom-themes.css'] = o.customs.map((c) => c.css.trim()).join('\n\n') + '\n';
   for (const f of tsFiles) files[f] = f === 'core/utils.ts' ? trimUtils(sources[f], all.filter((t) => keep.has(t)), o.materials) : sources[f];

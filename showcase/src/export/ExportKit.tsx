@@ -63,7 +63,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const [themes, setThemes] = useState<string[]>(() => (current.startsWith('c:') ? [] : [current]));
   const [customIds, setCustomIds] = useState<string[]>(() => (current.startsWith('c:') ? [current.slice(2)] : []));
   const [comps, setComps] = useState<string[]>(() => ALL_COMPONENTS);
-  const [types, setTypes] = useState<string[]>(['instrument']);
+  const [types, setTypes] = useState<string[]>(['manrope']);
   const [folder, setFolder] = useState('artinos-ui');
   const [googleFonts, setGoogleFonts] = useState(true);
   const [materials, setMaterials] = useState(true);
@@ -230,18 +230,18 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
             <p className="xk__note">Shared helpers (hooks, formatting, the theme scope) come along automatically when a component needs them.</p>
 
             <div className="xk__sub">
-              Type collections <em><RollingValue text={String(new Set(['instrument', ...types]).size)} base={0} /></em>
+              Type collections <em><RollingValue text={String(new Set(['manrope', ...types]).size)} base={0} /></em>
             </div>
             <div className="xk__comps">
               {TYPE_COLLECTIONS.map((t) => (
-                <button key={t} type="button" className="xk__comp" aria-pressed={t === 'instrument' || types.includes(t)} disabled={t === 'instrument'} onClick={() => flip(setTypes, t)}>
+                <button key={t} type="button" className="xk__comp" aria-pressed={t === 'manrope' || types.includes(t)} disabled={t === 'manrope'} onClick={() => flip(setTypes, t)}>
                   <i className="xk__tick" />
                   <b>{TYPE_META[t].label}</b>
-                  <span>{[TYPE_META[t].ui, TYPE_META[t].mono, TYPE_META[t].display].filter(Boolean).join(' · ')}</span>
+                  <span>{[TYPE_META[t].display, TYPE_META[t].ui, TYPE_META[t].serif, TYPE_META[t].mono].filter(Boolean).join(' · ')}</span>
                 </button>
               ))}
             </div>
-            <p className="xk__note">A collection is a font pairing with its own tuning, set with <code>type="…"</code> on the theme scope. Instrument is what the tokens give and always comes along; the faces of every picked collection load from Google Fonts.</p>
+            <p className="xk__note">A collection is a font pairing with its own tuning, set with <code>type="…"</code> on the theme scope. Sleek is what the tokens give and always comes along; the faces of every picked collection load from Google Fonts.</p>
 
             <div className="xk__sub">Options</div>
             <label className="xk__field">
