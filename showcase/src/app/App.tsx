@@ -28,7 +28,10 @@ export function App() {
   const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : 'showcase');
   const [view, setView] = useState<View>(viewOf);
   useEffect(() => {
-    const h = () => setView(viewOf());
+    const h = () => {
+      setView(viewOf());
+      if (location.hash === '#export') setExporting(true);
+    };
     window.addEventListener('hashchange', h);
     window.addEventListener('popstate', h);
     return () => {
@@ -50,7 +53,7 @@ export function App() {
   const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...HERO_OPTIONS];
   // the bar picks a hero, then one of its variations; a custom theme has neither
   const hero = custom ? undefined : (THEME_META[baseTheme].parent ?? baseTheme);
-  const variationOptions = hero ? [hero, ...variationsOf(hero)].map((t) => ({ value: t, label: THEME_META[t].label, icon: <Swatch t={t} /> })) : [];
+  const variationOptions = hero ? [hero, ...variationsOf(hero)].map((t) => ({ value: t, label: t === hero ? 'Base' : THEME_META[t].label, icon: <Swatch t={t} /> })) : [];
 
   // A link straight to a chapter or section (#c-sliders, #s-meters): the browser tries to scroll
   // before the page has rendered, so scroll once the anchor exists.
@@ -62,7 +65,7 @@ export function App() {
   }, [view]);
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
-  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'manrope'));
+  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'sleek'));
   const [accent, setAccent] = useState<string>(pick('accent', ['theme', ...ACCENTS] as const, 'theme'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera', 'studio'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');

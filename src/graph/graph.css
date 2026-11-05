@@ -885,7 +885,7 @@
   gap: 6px;
   height: 14px;
   font-family: var(--ar-voice-font);
-  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
+  font-size: max(var(--ar-text-xs), calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);

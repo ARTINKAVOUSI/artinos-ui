@@ -96,7 +96,7 @@
 }
 
 /* Book: Source Serif 4 · Source Sans 3 · Source Code Pro */
-[data-ar-type='source'] {
+[data-ar-type='book'] {
   --ar-font-ui: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Source Code Pro', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Source Code Pro', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -123,7 +123,7 @@
 }
 
 /* Couture: Cormorant Garamond · Jost · JetBrains Mono */
-[data-ar-type='luxe'] {
+[data-ar-type='couture'] {
   --ar-font-ui: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -150,7 +150,7 @@
 }
 
 /* Contrast: DM Serif Display · DM Sans · DM Mono */
-[data-ar-type='atelier'] {
+[data-ar-type='contrast'] {
   --ar-font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -170,7 +170,7 @@
 }
 
 /* Newsroom: Schibsted Grotesk · Crimson Pro · Fira Code */
-[data-ar-type='schibsted'] {
+[data-ar-type='newsroom'] {
   --ar-font-ui: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -197,7 +197,7 @@
 }
 
 /* Soft: Fraunces · Figtree · Spline Sans Mono */
-[data-ar-type='figtree'] {
+[data-ar-type='soft'] {
   --ar-font-ui: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Spline Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Spline Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -219,7 +219,7 @@
 }
 
 /* Sleek: Manrope · JetBrains Mono */
-[data-ar-type='manrope'] {
+[data-ar-type='sleek'] {
   --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -234,7 +234,7 @@
   --ar-track-heading-sm: -0.024em;
   --ar-leading-heading: 1.02;
   --ar-leading-prose: 1.7;
-  --ar-weight-lead: 400;
+  --ar-weight-lead: 500;
   --ar-lead-scale: 1;
   --ar-font-accent: var(--ar-font-ui);
   --ar-accent-style: normal;
@@ -244,7 +244,7 @@
 }
 
 /* Round: Red Hat Display · Red Hat Text · Red Hat Mono */
-[data-ar-type='red-hat'] {
+[data-ar-type='round'] {
   --ar-font-ui: 'Red Hat Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -266,7 +266,7 @@
 }
 
 /* Wide: Mona Sans · Geist Mono */
-[data-ar-type='mona'] {
+[data-ar-type='wide'] {
   --ar-font-ui: 'Mona Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -319,7 +319,7 @@
 }
 
 /* Bold: Plus Jakarta Sans · Lora · JetBrains Mono */
-[data-ar-type='jakarta'] {
+[data-ar-type='bold'] {
   --ar-font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -340,7 +340,7 @@
 }
 
 /* Character: Bricolage Grotesque · Instrument Sans · Newsreader · DM Mono */
-[data-ar-type='bricolage'] {
+[data-ar-type='character'] {
   --ar-font-ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -361,7 +361,7 @@
 }
 
 /* Industrial: Chivo · Chivo Mono */
-[data-ar-type='grotesk'] {
+[data-ar-type='industrial'] {
   --ar-font-ui: 'Chivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Chivo Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -389,7 +389,7 @@
 }
 
 /* Terminal: JetBrains Mono · Inter */
-[data-ar-type='modern'] {
+[data-ar-type='terminal'] {
   --ar-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -412,7 +412,7 @@
 }
 
 /* Quiet: Geist · Geist Mono */
-[data-ar-type='geist'] {
+[data-ar-type='quiet'] {
   --ar-font-ui: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -440,7 +440,7 @@
 }
 
 /* Clean: Onest · Literata · Fira Code */
-[data-ar-type='onest'] {
+[data-ar-type='clean'] {
   --ar-font-ui: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -461,7 +461,7 @@
 }
 
 /* Legible: Atkinson Hyperlegible Next · Atkinson Hyperlegible Mono */
-[data-ar-type='hyperlegible'] {
+[data-ar-type='legible'] {
   --ar-font-ui: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Consolas, monospace;

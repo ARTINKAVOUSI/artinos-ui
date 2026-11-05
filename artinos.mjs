@@ -28,7 +28,7 @@
  *   --custom <file.css>     add a theme exported from the Theme Studio (repeatable)
  *   --no-fonts              leave out the Google Fonts import (system fonts)
  *   --no-materials          leave out the optional `material` prop finish overrides
- *   --type <ids|all>        type collections (font pairings) to include; manrope (Sleek) is always in
+ *   --type <ids|all>        type collections (font pairings) to include; sleek is always in
  *   --no-docs               leave out docs/ (component API, catalogue and theming guides)
  *   --force                 update an existing kit in place (files it no longer needs are removed)
  *   --dry-run               print the files and sizes, write nothing
@@ -37,7 +37,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BASE_THEME, BASE_TYPE, buildKit, COMPONENTS, facesOf, readRegistry, readTypes } from './tools/kit.mjs';
+import { BASE_THEME, BASE_TYPE, TYPE_ALIASES, buildKit, COMPONENTS, facesOf, readRegistry, readTypes } from './tools/kit.mjs';
 import { zip } from './tools/zip.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -137,7 +137,7 @@ function exportKit(project) {
   const themes = pick(opt('themes'), all, 'themes');
   const components = pick(opt('components'), COMPONENTS.map((c) => c.id), 'components');
   const { types: allTypes } = readTypes(sources);
-  const types = opt('type') ? pick(opt('type'), allTypes, 'type') : [BASE_TYPE];
+  const types = opt('type') ? pick(opt('type').split(',').map((t) => TYPE_ALIASES[t.trim()] ?? t.trim()).join(','), allTypes, 'type') : [BASE_TYPE];
   // "all" leaves out the TSL compiler: it needs three. Name GraphGPU to include it.
   if (opt('components') === 'all') components.splice(components.indexOf('GraphGPU'), 1);
   const customs = opts('custom').map((f) => {

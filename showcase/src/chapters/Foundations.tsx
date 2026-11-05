@@ -1,8 +1,8 @@
 /* 01 · Foundations — the themes, the five materials every part is made of, the tokens and the
-   two voices of text, density, and the motion tokens. */
+   type system, density, and the motion tokens. */
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
-import type { TextFace, TextVariant } from '../../../src';
+import type { TextFace, TextVariant, TypeCollection } from '../../../src';
 import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS } from '../../../src';
 import { TokenTable, TypeCard } from '../app/foundations';
 import { ThemeTile, themeFamilies } from '../themes/ThemesPage';
@@ -87,7 +87,7 @@ function Typography() {
     <div className="sc-typo">
       <article className="sc-typo__page">
         <Text variant="overline">Material · thick glass</Text>
-        <Text variant="display">How the shell catches light</Text>
+        <Text variant="display" as="p">How the shell catches light</Text>
         <Text variant="lead">It bends what is behind it and keeps a bright rim where light grazes its edge.</Text>
         <Text>
           Raise <strong>Transmission</strong> to let more of the scene through; lower <em>roughness</em> for a sharper image. The rim follows <code>rimPower</code>, and{' '}
@@ -139,7 +139,7 @@ function Typography() {
         {ROLES.map(([variant, rule, sample, face], i) => (
           <div key={i} className="sc-typo__row">
             <span className="sc-typo__rule">{rule}</span>
-            <Text variant={variant} face={face} measure={false}>
+            <Text variant={variant} face={face} measure={false} as="div">
               {sample}
             </Text>
           </div>
@@ -148,6 +148,16 @@ function Typography() {
     </div>
   );
 }
+
+/* ---------- type collections, by feel ---------- */
+
+const TYPE_GROUPS: [string, TypeCollection[]][] = [
+  ['Sleek, the default and its variants', ['sleek', 'sleek-air', 'sleek-serif', 'sleek-sharp', 'sleek-compact']],
+  ['Elegant, with serif titles', ['editorial', 'book', 'couture', 'contrast', 'newsroom', 'soft']],
+  ['Modern sans', ['instrument', 'round', 'wide', 'swiss', 'bold', 'character']],
+  ['Technical and quiet', ['industrial', 'terminal', 'quiet', 'clean']],
+  ['Reading first', ['legible']],
+];
 
 /* ---------- type styles ---------- */
 
@@ -619,22 +629,28 @@ import { ArtinosTheme } from './artinos-ui';
       </Spec>
 
       <Spec
+        wide
         id="type"
         text={`Type sets change the whole voice of a page, not just the font. Each has its own title size, weight, case and width, its own paragraph face and line spacing, and its own way of setting accent words and small labels. Control sizes stay the same, so every component keeps its proportions. There are ${TYPE_COLLECTIONS.length}; Sleek is the default. Click one to set it for the page. Each card is its own data-ar-type scope, so collections nest like themes and carry through portalled overlays.`}
         code={`
 <ArtinosTheme theme="frost-deep" type="editorial"> … </ArtinosTheme>
 
 // or on any element, inside any theme:
-<div data-ar-type="luxe"> … </div>
+<div data-ar-type="couture"> … </div>
 
 // a kit carries the collections it was exported with:
 node artinos.mjs export --project . --themes onyx --components all --type luxe,editorial`}
       >
-        <div className="sc-grid sc-grid--cards sc-grid--type">
-          {TYPE_COLLECTIONS.map((t) => (
-            <TypeCard key={t} t={t} active={t === type} onPick={() => onPickType(t)} />
-          ))}
-        </div>
+        {TYPE_GROUPS.map(([name, sets]) => (
+          <div key={name} className="sc-family">
+            <span className="sc-subhead">{name}</span>
+            <div className="sc-grid sc-grid--cards sc-grid--type">
+              {sets.map((t) => (
+                <TypeCard key={t} t={t} active={t === type} onPick={() => onPickType(t)} />
+              ))}
+            </div>
+          </div>
+        ))}
       </Spec>
 
       <Spec id="density" text="Three control heights: dense 24 · standard 26 · comfort 30. Type size, padding and radius follow. Set it per control or on any scope." code={`<Slider density="dense" />   <div data-ar-density="comfort"> … </div>`}>

@@ -52,6 +52,8 @@ Read-only values go to [Display](#display): a figure that matters (with its chan
 
 ## Sliders
 
+Text inside the capsule never splits: if the insert would end inside a label or readout, that text stays in one ink, the insert steps back behind it, and a small index above and below the text marks the value. This is automatic, on Slider and RangeSlider alike. A stepped slider's cells likewise step back behind its text.
+
 One capsule, six faces. The capsule is the control, the seam is the handle, the readout is the precision zone. Every face keeps the same gestures (press, grab, scrub, type, double-click off), so a panel can mix faces without teaching a second interaction.
 
 ### The six faces (`variant`)
@@ -424,7 +426,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
-- **type**: the type collection, a font pairing with its own tuning (`manrope`, labelled Sleek, default; `sleek-air`, `sleek-serif`, `sleek-sharp`, `sleek-compact`, `instrument`, `editorial`, `geist`, `modern`, `atelier`, `red-hat`, `luxe`). It inherits through nested themes and follows portalled overlays.
+- **type**: the type collection, a font pairing with its own tuning (`sleek` by default, `sleek-air`, `sleek-serif`, `sleek-sharp`, `sleek-compact`, `instrument`, `editorial`, `book`, `couture`, `contrast`, `newsroom`, `soft`, `round`, `wide`, `swiss`, `bold`, `character`, `industrial`, `terminal`, `quiet`, `clean`, `legible`). It inherits through nested themes and follows portalled overlays.
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 

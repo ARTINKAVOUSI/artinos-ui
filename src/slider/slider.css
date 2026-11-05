@@ -247,6 +247,19 @@
 }
 .ar-slider[data-off] .ar-slider__content--base { clip-path: none; }
 .ar-slider[data-off] .ar-slider__content--over { opacity: 0; }
+/* a fill edge inside a label or readout would split a word into two inks: the text stays whole in
+   one ink and the fill steps back behind it, its edge still marking the value */
+.ar-slider[data-crossing]:not([data-off]) .ar-slider__fill { opacity: 0.26; }
+.ar-slider[data-crossing] .ar-slider__content--over { opacity: 0; }
+.ar-slider[data-crossing] .ar-slider__content--base { clip-path: none; }
+/* stepped: the cells' gaps would cut through the text, so the cells step back behind it and the text
+   stays in one ink; lit and unlit cells still read through */
+.ar-slider[data-inked]:not([data-off]) .ar-slider__cells {
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.26) var(--_ink-l, 0px), #000 calc(var(--_ink-l, 0px) + 8px), #000 calc(100% - var(--_ink-r, 0px) - 8px), rgba(0, 0, 0, 0.26) calc(100% - var(--_ink-r, 0px)));
+  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.26) var(--_ink-l, 0px), #000 calc(var(--_ink-l, 0px) + 8px), #000 calc(100% - var(--_ink-r, 0px) - 8px), rgba(0, 0, 0, 0.26) calc(100% - var(--_ink-r, 0px)));
+}
+.ar-slider[data-inked] .ar-slider__content--over { opacity: 0; }
+.ar-slider[data-inked] .ar-slider__content--base { clip-path: none; }
 
 .ar-slider__label {
   flex: 0 1 auto;
@@ -466,6 +479,17 @@
 .ar-range[data-part-lo]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--lo,
 .ar-range[data-part-hi]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--hi {
   opacity: 0;
+}
+/* with the fill stepped back the edge no longer marks the value on its own, so the parted seam
+   stays lit at rest: a small index above and below the text */
+.ar-slider[data-crossing][data-parted]:not(:hover, [data-hot], :focus-within) .ar-slider__seam,
+.ar-range[data-crossing][data-part-lo]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--lo,
+.ar-range[data-crossing][data-part-hi]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--hi {
+  opacity: 0.85;
+}
+/* in the text's own ink, so the index reads on a light theme too, where the stepped-back fill all but vanishes */
+.ar-slider[data-crossing]:not([data-zone], [data-hot], [data-status]) .ar-slider__seam {
+  --_c: var(--ar-text-mid);
 }
 .ar-range__thumb {
   position: absolute;

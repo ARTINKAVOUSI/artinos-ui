@@ -34,7 +34,7 @@
 .ar-palette__meta,
 .ar-toast__action {
   font-family: var(--ar-voice-font);
-  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
+  font-size: max(var(--ar-text-xs), calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -366,7 +366,7 @@
   background: var(--ar-list-insert);
   box-shadow: var(--ar-list-insert-shadow);
   font-family: var(--ar-voice-font);
-  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
+  font-size: max(var(--ar-text-xs), calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
@@ -575,7 +575,7 @@
 /* group headings are small headings: the one place a sheet keeps capitals */
 .ar-menu__label,
 .ar-palette__group {
-  font-size: 11px;
+  font-size: var(--ar-text-xs);
   font-weight: var(--ar-weight-medium);
   letter-spacing: 0.08em;
   text-transform: var(--ar-caps-case);

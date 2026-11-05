@@ -7,7 +7,7 @@ import { clamp, cx, joinFormatted, pxToken, runFormat, scopeAttrs, snapshotToken
 import type { Format, Formatter, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, extraDigits, makeScale, modifierRatio, nextDetent, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
 import type { PrecisionLevels } from './engine';
-import { Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
+import { edgeCrossesInk, Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
 import type { HudState } from './parts';
 
 /* ARTINOS RangeSlider — the same capsule holding an interval.
@@ -354,6 +354,7 @@ export function RangeSlider(props: RangeSliderProps) {
     const [a, b] = integrated && enabled ? seamsOverInk(trackRef.current, [[lo, 1, hi - lo], [hi, -1, hi - lo]], ink) : [false, false];
     rootRef.current?.toggleAttribute('data-part-lo', a);
     rootRef.current?.toggleAttribute('data-part-hi', b);
+    rootRef.current?.toggleAttribute('data-crossing', integrated && enabled && edgeCrossesInk(trackRef.current, [lo, hi], ink));
   };
   useLayoutEffect(() => partRef.current());
   useEffect(() => {

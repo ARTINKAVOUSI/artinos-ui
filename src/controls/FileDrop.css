@@ -72,7 +72,7 @@
 }
 .ar-filedrop__hint {
   font-family: var(--ar-control-font);
-  font-size: max(11px, calc(var(--ar-label-size) + var(--ar-label-bump) - 1px));
+  font-size: max(var(--ar-text-xs), calc(var(--ar-label-size) + var(--ar-label-bump) - 1px));
   font-weight: var(--ar-label-weight);
   letter-spacing: calc(var(--ar-label-tracking) * var(--ar-caps-on));
   text-transform: var(--ar-label-case);

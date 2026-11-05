@@ -82,7 +82,7 @@ export function SlidersChapter() {
     <Chapter id="sliders">
       <Spec
         id="slider-material"
-        text="A body press places the value and keeps dragging. A press within 13 px of the seam grabs it without a jump. The seam sits 8 px inside the end of the insert; text switches ink where the insert covers it."
+        text="A body press places the value and keeps dragging. A press within 13 px of the seam grabs it without a jump. The seam sits 8 px inside the end of the insert; text switches ink where the insert covers it. If the insert would end inside a word, the word stays whole in one ink and the insert steps back behind it, with a small index above and below the text marking the value."
         code={`
 import { Slider } from './artinos-ui';
 

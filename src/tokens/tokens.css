@@ -92,7 +92,7 @@
      or a panel never clips it. The ring is the same light as a box-shadow, for parts that have only
      that to hand: an inset that fills the part, whatever its corners. */
   --ar-focus-ink: color-mix(in srgb, var(--ar-signal) 38%, var(--ar-text-hi));
-  --ar-focus-lift: color-mix(in srgb, var(--ar-focus-ink) 15%, transparent);
+  --ar-focus-lift: color-mix(in srgb, var(--ar-focus-ink) 24%, transparent);
   --ar-focus-raise: brightness(1.12) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.16));
   --ar-focus-ring: inset 0 0 0 999px var(--ar-focus-lift);
   --ar-selection: color-mix(in srgb, var(--ar-focus-ink) 30%, transparent);
@@ -103,12 +103,12 @@
   --ar-paper: var(--ar-text-hi);
   --ar-tone-title: var(--ar-paper);
   --ar-tone-value: var(--ar-paper);
-  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 84%, transparent);
-  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 70%, transparent);
-  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 66%, transparent);
-  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 54%, transparent);
+  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 90%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 82%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 80%, transparent);
+  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 68%, transparent);
   /* the accent as text: blended toward the ink, so small words stay readable on glass in any accent */
-  --ar-tone-accent: color-mix(in oklab, var(--ar-signal) 68%, var(--ar-text-hi));
+  --ar-tone-accent: color-mix(in oklab, var(--ar-signal) 50%, var(--ar-text-hi));
 
   /* panel — the card that hosts controls (solid in studio themes, glass in the others) */
   --ar-panel-tint: #16171a;
@@ -180,7 +180,7 @@
   --ar-prose-scale: 1;
   --ar-leading-prose: 1.7;
   --ar-lead-style: normal;
-  --ar-weight-lead: 400;
+  --ar-weight-lead: 500;
   --ar-lead-scale: 1;
   --ar-accent-style: normal;
   --ar-weight-accent: 200;

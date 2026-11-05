@@ -62,7 +62,7 @@ export function Code({ children }: { children: string }) {
   return (
     <details className="sc-code">
       <summary>
-        CODE
+        Code
         <button
           type="button"
           className="sc-copy"
@@ -74,7 +74,7 @@ export function Code({ children }: { children: string }) {
             });
           }}
         >
-          {copied ? 'COPIED' : 'COPY'}
+          {copied ? 'Copied' : 'Copy'}
         </button>
       </summary>
       <pre>{children}</pre>

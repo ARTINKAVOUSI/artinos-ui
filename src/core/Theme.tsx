@@ -1,6 +1,7 @@
 import type { CSSProperties, ElementType, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './utils';
 import type { Accent, Density, MaterialName, ThemeName, TypeCollection } from './utils';
+import { TYPE_ALIASES } from './utils';
 
 /** Token overrides: `{ signal: '#ff4fa3', 'radius-control': '6px' }` or full `--ar-*` names. */
 export type TokenOverrides = Record<string, string | number>;
@@ -20,7 +21,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   material?: MaterialName;
   density?: Density;
   /** A type collection (see TYPE_COLLECTIONS): the faces and their tuning. Inherits when omitted;
-   *  the default is `manrope`, labelled Sleek. */
+   *  the default is `sleek`. Earlier ids still work (TYPE_ALIASES). */
   type?: TypeCollection | (string & {});
   /** An accent (see ACCENTS) in place of the theme's own signal: live edges, LEDs, focus and
    *  selection take it, nothing else changes. Each accent has a dark and a light value. */
@@ -52,7 +53,7 @@ export function ArtinosTheme({ theme = 'studio', material, density, type, accent
       data-ar-theme={theme}
       data-ar-material={material}
       data-ar-density={density}
-      data-ar-type={type}
+      data-ar-type={type ? (TYPE_ALIASES[type] ?? type) : undefined}
       data-ar-accent={accent}
       data-ar-scene={scene}
       className={cx('ar-theme', ground && 'ar-theme--ground', className)}

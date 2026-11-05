@@ -48,12 +48,12 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: var(--ar-weight-title) 12px / 18px var(--ar-font-display);
+  font: var(--ar-weight-title) var(--ar-text-sm) / 18px var(--ar-font-display);
   color: var(--ar-tone-title);
   text-wrap: balance;
 }
 .ar-callout__text {
-  font: 400 12px / 18px var(--ar-font-ui);
+  font: var(--ar-weight-regular) var(--ar-text-sm) / 18px var(--ar-font-ui);
   color: var(--ar-tone-body);
   text-wrap: pretty;
 }

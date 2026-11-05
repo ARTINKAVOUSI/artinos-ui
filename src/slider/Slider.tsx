@@ -7,7 +7,7 @@ import { clamp, cx, GRADIENTS, gradientCss, joinFormatted, luminance, pxToken, r
 import type { Format, Formatter, Gradient, GradientName, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, CURVES, extraDigits, majorEvery, makeScale, modifierRatio, nextDetent, niceUnit, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
 import type { CurveName, PrecisionLevels } from './engine';
-import { Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
+import { edgeCrossesInk, Hud, HUD_TOKENS, seamsOverInk, ValueEditor } from './parts';
 import type { HudState } from './parts';
 
 /* ARTINOS Slider — one compact precision surface.
@@ -534,6 +534,19 @@ export function Slider(props: SliderProps) {
     const seamed = integrated && enabled && (variant === 'material' || variant === 'gradient');
     const [over] = seamed ? seamsOverInk(trackRef.current, [[seamP, sd, hi - lo]], [labelRef.current, valRef.current]) : [false];
     rootRef.current?.toggleAttribute('data-parted', over);
+    /* a fill edge inside a word: the text keeps one ink and the fill steps back behind it */
+    const crossing = integrated && enabled && variant === 'material' && edgeCrossesInk(trackRef.current, [lo, hi], [labelRef.current, valRef.current]);
+    rootRef.current?.toggleAttribute('data-crossing', crossing);
+    /* stepped cells run behind the text with gaps that would cut through it, so they step back there */
+    const inked = integrated && variant === 'stepped';
+    rootRef.current?.toggleAttribute('data-inked', inked);
+    const track = trackRef.current;
+    if (inked && track) {
+      const l = labelRef.current;
+      const v = valRef.current;
+      track.style.setProperty('--_ink-l', l && l.offsetWidth ? l.offsetLeft + l.offsetWidth + 'px' : '0px');
+      track.style.setProperty('--_ink-r', v && v.offsetWidth ? track.clientWidth - v.offsetLeft + 'px' : '0px');
+    }
   };
   useLayoutEffect(() => partRef.current());
   useEffect(() => {

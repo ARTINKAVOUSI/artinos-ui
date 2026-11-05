@@ -27,7 +27,7 @@ export interface KitOptions {
   customs: CustomThemeCss[];
   googleFonts: boolean;
   materials: boolean;
-  /** type collections to include; `manrope` always comes along */
+  /** type collections to include; `sleek` always comes along */
   types?: string[];
   /** guide name → markdown, written to docs/ in the kit */
   docs?: Record<string, string> | null;
@@ -44,6 +44,7 @@ export interface TypeInfo {
 }
 export const BASE_THEME: string;
 export const BASE_TYPE: string;
+export const TYPE_ALIASES: Record<string, string>;
 export const COMPONENTS: KitComponent[];
 export function readRegistry(sources: Record<string, string>): { themes: string[]; meta: Record<string, ThemeInfo> };
 export function readTypes(sources: Record<string, string>): { types: string[]; meta: Record<string, TypeInfo> };

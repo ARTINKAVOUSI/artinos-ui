@@ -77,12 +77,12 @@ button.ar-item__main:focus-visible {
   text-overflow: ellipsis;
 }
 .ar-item__title {
-  font: 500 12px / 16px var(--ar-font-ui);
+  font: var(--ar-weight-medium) var(--ar-text-sm) / 16px var(--ar-font-ui);
   letter-spacing: -0.005em;
   color: var(--ar-tone-title);
 }
 .ar-item__meta {
-  font: 400 11px / 16px var(--ar-font-ui);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 16px var(--ar-font-ui);
   font-variant-numeric: tabular-nums;
   color: var(--ar-tone-label);
 }

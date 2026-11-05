@@ -378,7 +378,7 @@
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
   font-family: var(--ar-voice-font);
-  font-size: max(11px, calc(var(--ar-voice-size) - 1px));
+  font-size: max(var(--ar-text-xs), calc(var(--ar-voice-size) - 1px));
   font-weight: var(--ar-voice-weight);
   line-height: var(--ar-leading-none);
   letter-spacing: var(--ar-voice-tracking);

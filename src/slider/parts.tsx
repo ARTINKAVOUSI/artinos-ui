@@ -28,6 +28,12 @@ export function seamsOverInk(track: HTMLElement | null, seams: [number, number, 
   });
 }
 
+/** Whether a fill edge at these 0..1 positions ends inside label or readout ink, which would split
+ *  a word into two inks. The caller then keeps the text in one ink and lets the fill step back. */
+export function edgeCrossesInk(track: HTMLElement | null, edges: number[], ink: (HTMLElement | null)[]) {
+  return seamsOverInk(track, edges.map((p) => [p, 0, 0]), ink).some(Boolean);
+}
+
 /** Tokens the portalled HUD carries out of its theme scope. */
 export const HUD_TOKENS = ['--ar-signal-hi', '--ar-sheet-bg', '--ar-sheet-blur', '--ar-sheet-shadow', '--ar-float-ink', '--ar-float-ink-low', '--ar-font-num', '--ar-ease', '--ar-ease-exit'] as const;
 

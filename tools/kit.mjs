@@ -78,7 +78,9 @@ export function readRegistry(sources) {
 
 /* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
 
-export const BASE_TYPE = 'manrope';
+export const BASE_TYPE = 'sleek';
+/** Earlier type ids, still accepted on the command line. */
+export const TYPE_ALIASES = { manrope: 'sleek', source: 'book', luxe: 'couture', atelier: 'contrast', schibsted: 'newsroom', figtree: 'soft', 'red-hat': 'round', mona: 'wide', jakarta: 'bold', bricolage: 'character', grotesk: 'industrial', modern: 'terminal', geist: 'quiet', onest: 'clean', hyperlegible: 'legible' };
 const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', (?:serif: '([^']*)', )?description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
 
 /** TYPE_COLLECTIONS in registry order and TYPE_META, parsed from the package source. */

@@ -567,7 +567,8 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-spec--wide .sc-about {
   display: grid;
   grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-  grid-template-rows: auto auto;
+  /* the first row hugs the title; a tall explanation beside it pushes only the empty space down */
+  grid-template-rows: auto 1fr;
   column-gap: 48px;
   row-gap: 10px;
   align-items: start;
@@ -582,7 +583,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-spec--wide .sc-about > .sc-text {
   grid-row: 1 / span 2;
-  align-self: end;
+  align-self: start;
 }
 .sc-spec--wide .sc-about > .sc-text,
 .sc-spec--wide .sc-about > .sc-keys {
@@ -769,11 +770,11 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-copy {
   all: unset;
   margin-left: auto;
-  padding: 2px 8px;
+  padding: 4px 9px;
   border-radius: 4px;
   cursor: pointer;
-  font: var(--ar-weight-medium) var(--ar-text-xs) var(--ar-font-ui);
-  color: var(--ar-text-mid);
+  font: var(--ar-weight-medium) var(--ar-text-xs) / 16px var(--ar-font-ui);
+  color: var(--ar-tone-label);
   box-shadow: inset 0 0 0 1px var(--ar-line);
 }
 .sc-copy:hover {
@@ -1751,7 +1752,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 /* the type cards: each is set in its own system, so the differences show at a glance */
 .sc-grid--type {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 .sc-type {
   gap: 12px;
@@ -1795,4 +1796,83 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-type__faces {
   color: var(--ar-tone-note);
+}
+
+/* ---------- phones ----------
+   The explanation stacks in one column, the bar stops following (it would cover a third of the
+   screen), and a demo too wide for a phone scrolls inside its stage rather than being cut off. */
+@media (max-width: 860px) {
+  .sc-bar {
+    position: static;
+  }
+  .sc-chapter,
+  .sc-spec,
+  .sc-sheet {
+    scroll-margin-top: 12px;
+  }
+  .sc-spec--wide .sc-about {
+    display: flex;
+    flex-direction: column;
+  }
+  .sc-show:has(.sc-workspace, .ar-graph) {
+    overflow-x: auto;
+  }
+  .sc-workspace,
+  .sc-show .ar-graph {
+    min-width: 760px;
+  }
+  .sc-ramp {
+    flex-wrap: wrap;
+    gap: 12px 16px;
+  }
+  .sc-styles__label {
+    margin-bottom: 10px;
+  }
+  .sc-styles__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-styles__cell,
+  .sc-styles__cell--8,
+  .sc-styles__cell--6 {
+    grid-column: auto;
+  }
+}
+
+/* ---------- the polish pass: ink instead of tint ----------
+   Quiet page text sits on bare glass, so it stays near full strength and carries the same crisp edge;
+   small accent marks use the readable blend, and key names drop to the plain ink so the accent stays
+   rare enough to mean something. */
+.sc-pick > span,
+.sc-note,
+.sc-code summary,
+.sc-show .ar-field__label {
+  text-shadow: 0 1px 0 var(--sc-edge);
+}
+.sc-code summary {
+  color: var(--ar-tone-label);
+}
+.sc-keys dt {
+  font-weight: var(--ar-weight-regular);
+  color: var(--ar-text-hi);
+}
+.sc-keys dd {
+  color: var(--sc-ink-prose);
+}
+.sc-index__sections a:not([data-active-section], :hover),
+.sc-index__head {
+  color: var(--sc-ink-prose);
+}
+.sc-pick > span {
+  color: var(--ar-text-hi);
+}
+/* the stage reads as a surface by its edge, not by more tint */
+.sc-show:not(:has(> .sc-window)) {
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+}
+.sc-hero__link {
+  padding-block: 3px;
+}
+/* type sets, grouped by feel */
+.sc-family + .sc-family {
+  margin-top: 28px;
 }
