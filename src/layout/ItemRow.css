@@ -84,7 +84,7 @@ button.ar-item__main:focus-visible {
 .ar-item__meta {
   font: var(--ar-weight-regular) var(--ar-text-xs) / 16px var(--ar-font-ui);
   font-variant-numeric: tabular-nums;
-  color: var(--ar-tone-label);
+  color: var(--ar-tone-hint);
 }
 
 .ar-item__trail {
@@ -102,4 +102,15 @@ button.ar-item__main:focus-visible {
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+}
+
+/* the selected row is told at a glance: an accent edge, the bright ink, its meta in the accent */
+.ar-item[data-selected] {
+  box-shadow: inset 2px 0 0 var(--ar-signal);
+}
+.ar-item[data-selected] .ar-item__title {
+  color: var(--ar-text-hi);
+}
+.ar-item[data-selected] .ar-item__meta {
+  color: var(--ar-tone-accent);
 }

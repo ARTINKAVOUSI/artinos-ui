@@ -218,13 +218,13 @@
   --ar-font-numeral: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
 
-/* Sleek: Manrope · JetBrains Mono */
+/* Sleek: Manrope titles · Inter · JetBrains Mono */
 [data-ar-type='sleek'] {
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
-  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-display);
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
   --ar-title-scale: 1.12;
@@ -236,10 +236,10 @@
   --ar-leading-prose: 1.7;
   --ar-weight-lead: 500;
   --ar-lead-scale: 1;
-  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
   --ar-weight-accent: 200;
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
 }
 
@@ -486,17 +486,17 @@
 
 /* Sleek Air: Sleek at its lightest and largest */
 [data-ar-type='sleek-air'] {
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
-  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
-  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-lead: var(--ar-font-display);
   --ar-title-scale: 1.24;
   --ar-weight-display: 200;
   --ar-weight-title: 400;
@@ -511,15 +511,15 @@
 
 /* Sleek Serif: Sleek titles with an italic serif for opening lines and accent words */
 [data-ar-type='sleek-serif'] {
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
-  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
   --ar-font-lead: Newsreader, Georgia, 'Times New Roman', serif;
   --ar-title-scale: 1.12;
@@ -538,17 +538,17 @@
 
 /* Sleek Sharp: firmer titles and small spaced capitals for labels */
 [data-ar-type='sleek-sharp'] {
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
-  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
-  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-lead: var(--ar-font-display);
   --ar-title-scale: 0.96;
   --ar-weight-display: 500;
   --ar-weight-title: 600;
@@ -564,17 +564,17 @@
 
 /* Sleek Compact: Sleek at smaller sizes, for dense pages */
 [data-ar-type='sleek-compact'] {
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
   --ar-label-tracking: 0.08em;
-  --ar-font-accent: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
-  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-lead: var(--ar-font-display);
   --ar-title-scale: 0.76;
   --ar-weight-display: 400;
   --ar-weight-title: 500;

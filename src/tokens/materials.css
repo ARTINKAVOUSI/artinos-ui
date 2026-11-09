@@ -37,7 +37,7 @@
   --ar-voice-font: var(--ar-font-ui);
   --ar-voice-case: none;
   --ar-voice-tracking: 0;
-  --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump) + 1px);
+  --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump)); /* a label is never larger than its value */
   --ar-voice-weight: var(--ar-weight-regular);
   --ar-label-bump: 0px;
   --ar-value-bump: 0px;

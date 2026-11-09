@@ -41,7 +41,7 @@
 }
 /* the panel's name: bold and close-set, with what it is in a quiet line under it */
 .ar-panel__title {
-  font: var(--ar-weight-title) var(--ar-text-lg) / 20px var(--ar-font-display);
+  font: var(--ar-weight-bold) var(--ar-text-lg) / 20px var(--ar-font-display);
   letter-spacing: -0.012em;
   color: var(--ar-tone-title);
 }
@@ -54,7 +54,7 @@
   letter-spacing: 0;
 }
 .ar-panel__subtitle {
-  font: var(--ar-weight-regular) var(--ar-text-sm) / 16px var(--ar-font-ui);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 16px var(--ar-font-ui);
   color: var(--ar-tone-note);
 }
 .ar-panel__actions {
@@ -101,7 +101,7 @@
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel) {
   margin-top: var(--ar-section-gap);
   padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line-strong);
+  border-top: 1px solid var(--ar-line);
 }
 .ar-section:not([data-open]) > .ar-section__head {
   padding-bottom: 0;
@@ -110,7 +110,7 @@
 .ar-panel__body > :not(.ar-section, .ar-section-group, .ar-panel, .ar-stat-strip) + .ar-section:not([data-variant='card']) {
   margin-top: var(--ar-section-gap);
   padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line-strong);
+  border-top: 1px solid var(--ar-line);
 }
 .ar-panel__body > .ar-stat-strip + .ar-section {
   margin-top: var(--ar-space-5);
@@ -288,8 +288,9 @@ button.ar-section__trigger:focus-visible {
   text-overflow: ellipsis;
   /* the section's name: bold at a reading size, one size in any panel, open or folded */
   font: var(--ar-type-section);
-  letter-spacing: -0.006em;
-  color: var(--ar-tone-title);
+  letter-spacing: var(--ar-track-role);
+  text-transform: uppercase;
+  color: var(--ar-tone-label);
 }
 .ar-section__rule {
   flex: 1;

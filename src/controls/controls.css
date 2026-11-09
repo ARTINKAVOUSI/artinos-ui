@@ -35,6 +35,7 @@
 }
 .ar-toggles__chip,
 .ar-segmented__opt {
+  font-family: var(--ar-voice-font); /* options are words: they read in the voice, not the figures' mono */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -74,6 +75,20 @@
   flex: 1;
   min-width: 0;
   text-align: center;
+}
+
+/* off is not disabled: the shutter keeps its full ink and simply sits matte and unlit in the well,
+   so a switch that is off still reads as a live control */
+.ar-switch__shutter[data-off] {
+  filter: none;
+  background: color-mix(in srgb, var(--ar-bg-app) 38%, transparent);
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.ar-switch__shutter[data-off] .ar-switch__text {
+  color: var(--ar-tone-body);
+  text-shadow: none;
 }
 
 /* ---------- Switch: compact knob ---------- */

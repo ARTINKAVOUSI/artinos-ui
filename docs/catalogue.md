@@ -448,6 +448,15 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 - Sections placed one after another in a Panel are already a group gap apart; rows inside them a row gap. Don't add spacers.
 - Set density once, on the theme scope or the panel (`density="dense"`), never per control.
 
+### A studio or inspector
+Use the whole family, not bare panels:
+- a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
+- inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with an `icon`, a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
+- live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
+- lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;
+- an editor around a canvas as a `Dock` (built on MetaBlock) rather than absolutely positioned panels;
+- over a light room, backdrop or render, `scene="light"` on `ArtinosTheme` or a light theme: a glass theme's white ink fails on a light scene.
+
 ### Text: one role per kind of text
 
 Use `Text` with a `variant`; never set a font size, weight or colour by hand.

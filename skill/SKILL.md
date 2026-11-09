@@ -65,7 +65,7 @@ Options:
 - `--dry-run` previews the files.
 - `--force` updates an existing kit; files it no longer needs are removed.
 - `--custom my-theme.css` adds a Theme Studio export (repeatable).
-- `--type couture,editorial` adds type collections (font pairings with their own tuning; `sleek`, the light default in Manrope with JetBrains Mono for figures, always comes along; `geist` is Geist and Geist Mono with tracked capitals). Use them with `<ArtinosTheme type="luxe">`. Each changes the whole voice of the page, not just the font. Pick one that suits the brand: `sleek-air`, `sleek-serif`, `sleek-sharp` and `sleek-compact` (variants of the default), `instrument` (balanced, with a serif opening line), `editorial` (serif paragraphs, for long text), `book` (a well-set book), `couture` (very large light serif titles), `contrast` (dramatic high-contrast serif), `newsroom` (heavy headlines over a book serif), `soft` (warm serif titles), `round` (light and round), `wide` (expanded titles), `swiss` (bold and tight), `bold` (extra-bold product voice), `character` (titles with personality), `industrial` (heavy capitals), `terminal` (a mono console), `quiet` (small and restrained), `clean` (tidy), `legible` (reading comes first). Earlier ids still work. See `references/theming.md` → Type collections.
+- `--type couture,editorial` adds type collections (font pairings with their own tuning; `sleek`, the default: Manrope titles over crisp Inter labels and text, with JetBrains Mono for figures, always comes along; `geist` is Geist and Geist Mono with tracked capitals). Use them with `<ArtinosTheme type="luxe">`. Each changes the whole voice of the page, not just the font. Pick one that suits the brand: `sleek-air`, `sleek-serif`, `sleek-sharp` and `sleek-compact` (variants of the default), `instrument` (balanced, with a serif opening line), `editorial` (serif paragraphs, for long text), `book` (a well-set book), `couture` (very large light serif titles), `contrast` (dramatic high-contrast serif), `newsroom` (heavy headlines over a book serif), `soft` (warm serif titles), `round` (light and round), `wide` (expanded titles), `swiss` (bold and tight), `bold` (extra-bold product voice), `character` (titles with personality), `industrial` (heavy capitals), `terminal` (a mono console), `quiet` (small and restrained), `clean` (tidy), `legible` (reading comes first). Earlier ids still work. See `references/theming.md` → Type collections.
 - `--no-fonts` drops the Google Fonts import, for offline apps or a strict CSP; system fonts are the fallback.
 - `--no-materials` drops the optional `material` overrides.
 - `--no-docs` leaves out the guides. Keep them unless asked: they let later sessions work without the package.
@@ -134,6 +134,14 @@ Conveniences that are easy to miss:
 - every piece of text a `Text` role (`title` · `body` · `caption` · `kicker` · `value`…); at most three sizes in a panel; sentence case, capitals only for small headings;
 - one label column per group: `labelWidth` on the Panel or Section;
 - a Section holds one idea and about seven rows; related numbers side by side (`columns`); a list of things is `ItemList` / `ItemRow`; one `primary` action per view.
+
+**Compose a studio or inspector with the whole family**, not bare panels:
+- a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
+- inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with an `icon`, a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
+- live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
+- lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;
+- an editor around a canvas as a `Dock` (built on MetaBlock) rather than absolutely positioned panels;
+- over a light room, backdrop or render, `scene="light"` on `ArtinosTheme` or a light theme: a glass theme's white ink fails on a light scene.
 
 `references/theming.md` covers themes, `tokens={{ signal: '#…' }}` overrides, density, custom themes and every token.
 

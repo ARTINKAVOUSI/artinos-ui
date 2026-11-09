@@ -153,8 +153,8 @@
    Declared on :root only, not at every theme boundary, so a type collection (tokens/type.css,
    data-ar-type) set on a scope carries through the themes nested inside it. */
 :root {
-  /* the default set, Sleek: Manrope throughout, light and open */
-  --ar-font-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* the default set, Sleek: Inter for every small word, crisp at control sizes; Manrope for titles */
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* figures and small marks: readouts, counts, badges, ticks */
   --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* code */
@@ -162,13 +162,13 @@
   /* a serif for the editorial voice: quotes, and titles set as editorial */
   --ar-font-serif: 'Instrument Serif', Newsreader, Georgia, 'Times New Roman', serif;
   /* the serif for sentences: sturdy at reading sizes, where a display serif goes thin on glass */
-  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-lead: var(--ar-font-display);
   /* serifs differ a lot in apparent size: a collection with a larger serif evens it out with this */
   --ar-serif-adjust: none;
   /* what a type collection can change beyond its faces (tokens/type.css) */
   --ar-font-prose: var(--ar-font-ui);
-  --ar-font-accent: var(--ar-font-ui);
-  --ar-font-numeral: var(--ar-font-ui);
+  --ar-font-accent: var(--ar-font-display);
+  --ar-font-numeral: var(--ar-font-display);
   --ar-font-mark: var(--ar-font-num);
   --ar-title-scale: 1.12;
   --ar-title-case: none;
@@ -189,7 +189,7 @@
   --ar-mark-track: 0;
   --ar-weight-mark: 500;
   /* titles: narrower and more drawn than the reading face, so a title is told by its shape */
-  --ar-font-display: var(--ar-font-ui);
+  --ar-font-display: 'Manrope', var(--ar-font-ui);
 
   /* weights — four, each with one job. Nothing under 28px is ever lighter than regular: thin
      strokes vanish on glass. Thin exists for the one big figure. */
@@ -266,7 +266,7 @@
 [data-ar-theme],
 [data-ar-material],
 [data-ar-type] {
-  --ar-type-section: var(--ar-weight-title) 13px / 18px var(--ar-font-display);
+  --ar-type-section: var(--ar-weight-bold) 11px / 16px var(--ar-font-ui); /* a category: small spaced capitals */
   --ar-type-group: 600 11px / 16px var(--ar-font-ui);
   --ar-type-value: 500 12px / 18px var(--ar-font-ui);
   --ar-type-label: 500 12px / 18px var(--ar-font-ui);
@@ -303,7 +303,7 @@
   --ar-gap: 7px;
   --ar-row-gap: var(--ar-space-4);
   --ar-group-gap: var(--ar-space-6);
-  --ar-section-gap: 22px; /* air on each side of the hairline between sections */
+  --ar-section-gap: 16px; /* air on each side of the hairline between sections */
   --ar-panel-pad-x: var(--ar-space-7);
   --ar-panel-pad-y: var(--ar-space-6);
 }
