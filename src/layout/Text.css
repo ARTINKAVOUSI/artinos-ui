@@ -41,7 +41,7 @@
   --ar-read-heading: 14px;
   --ar-read-subheading: 13px;
   --ar-read-lead: 14px;
-  --ar-read-body: 12px;
+  --ar-read-body: 13px;
   --ar-read-note: 12px;
   --ar-read-quote: 14px;
   --ar-read-figure: 24px;
@@ -89,15 +89,14 @@
   letter-spacing: -0.006em;
   text-wrap: balance;
 }
-/* the kind of thing, before its name: small tracked capitals in the accent, the one place
-   capitals belong */
+/* the kind of thing, before its name: a small semibold line in the accent, sentence case */
 .ar-type[data-variant='overline'] {
   --_ink: var(--ar-tone-accent);
-  font-size: var(--ar-caps-xs);
+  font-size: var(--ar-text-sm);
   font-weight: var(--ar-weight-bold);
   line-height: var(--ar-leading-snug);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 /* the same small label in the ink, set like a section's heading */
 .ar-type[data-variant='kicker'] {
@@ -149,7 +148,7 @@
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);
   font-family: var(--ar-control-font);
-  font-size: calc(var(--ar-value-size) + 1px);
+  font-size: var(--ar-value-size);
   font-weight: var(--ar-value-weight);
   line-height: var(--ar-leading-snug);
   font-variant-numeric: tabular-nums;
@@ -171,7 +170,7 @@
 }
 .ar-type[data-variant='figure'] :where(small) {
   margin-left: 0.28em;
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-code);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-num);
   letter-spacing: 0;
   color: var(--ar-tone-accent);
 }
@@ -189,7 +188,7 @@
 .ar-type[data-variant='quote'] :where(cite) {
   display: block;
   margin-top: 0.7em;
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 1.3 var(--ar-font-code);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 1.3 var(--ar-font-ui);
   color: var(--ar-text-low);
 }
 .ar-type[data-variant='code'],
@@ -420,7 +419,7 @@
   position: absolute;
   left: 0;
   top: 0.32em;
-  font: var(--ar-weight-medium) var(--ar-caps-xs) / 1 var(--ar-font-code);
+  font: var(--ar-weight-medium) var(--ar-caps-sm) / 1 var(--ar-font-num);
   color: var(--ar-tone-accent);
 }
 .ar-type :where(li) + :where(li) {
@@ -503,6 +502,15 @@
   margin-top: calc(var(--ar-space-1) * -1);
 }
 
+/* words read in proportional figures; only values, figures and marks line their digits up */
+.ar-type:is([data-variant='hero'], [data-variant='display'], [data-variant='title'], [data-variant='heading'], [data-variant='subheading'], [data-variant='statement'], [data-variant='lead'], [data-variant='body'], [data-variant='note'], [data-variant='quote']) {
+  font-variant-numeric: proportional-nums;
+}
+/* a paragraph never runs wider than a comfortable line, wherever it is placed */
+.ar-type:is([data-variant='lead'], [data-variant='body']) {
+  max-width: var(--ar-measure);
+}
+
 /* ---------- Stack · Inline ---------- */
 .ar-stack {
   display: flex;
@@ -575,20 +583,24 @@
   letter-spacing: var(--ar-track-heading-sm);
   text-transform: var(--ar-title-case);
 }
+/* a set's title scale is tuned for its big type. Small titles snap to the ladder and never fall
+   under the text they head: a title is 16, 20 or 24, a heading 14 at the least */
 .ar-type[data-variant='title'] {
-  font-size: round(calc(var(--ar-read-title) * var(--ar-title-scale)), 2px);
+  font-size: max(16px, round(calc(var(--ar-read-title) * var(--ar-title-scale)), 4px));
 }
 .ar-type[data-variant='heading'] {
-  font-size: round(calc(var(--ar-read-heading) * var(--ar-title-scale)), 2px);
+  font-size: max(14px, round(calc(var(--ar-read-heading) * var(--ar-title-scale)), 2px));
 }
 .ar-type[data-variant='lead'],
 .ar-type[data-variant='statement'],
 .ar-type[data-variant='quote'] {
   font-style: var(--ar-lead-style);
-  font-weight: var(--ar-weight-lead);
+  /* under 28px nothing is lighter than regular, whatever a set asks: thin strokes vanish on glass */
+  font-weight: max(var(--ar-weight-lead), 400);
 }
+/* the opening sentence is never smaller than the paragraph it opens */
 .ar-type[data-variant='lead'] {
-  font-size: round(calc(var(--ar-read-lead) * var(--ar-lead-scale)), 2px);
+  font-size: max(14px, round(calc(var(--ar-read-lead) * var(--ar-lead-scale)), 2px));
 }
 .ar-type[data-variant='statement'] {
   font-size: round(calc(var(--ar-read-statement) * var(--ar-lead-scale)), 4px);
@@ -600,8 +612,9 @@
 .ar-type[data-variant='body'] {
   font-size: round(calc(var(--ar-read-body) * var(--ar-prose-scale)), 1px);
 }
+/* a note keeps its own small size in every set: scaled, it lands between the ladder's steps */
 .ar-type[data-variant='note'] {
-  font-size: round(calc(var(--ar-read-note) * var(--ar-prose-scale)), 1px);
+  font-size: var(--ar-read-note);
 }
 .ar-type:is([data-variant='eyebrow'], [data-variant='meta']) {
   font-family: var(--ar-font-mark);

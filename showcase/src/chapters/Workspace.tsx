@@ -4,6 +4,7 @@ import { Dock } from '../../../src';
 import type { DockPanel } from '../../../src';
 import { BACKDROPS, Chapter, Spec } from '../shared';
 import { ConsolePanel, EffectsPanel, GraphPanel, InspectorPanel, LayersPanel } from './demos';
+import { PARAMS_CODE, ParamsDemo } from './params-demo';
 
 function WorkspaceDemo() {
   const panels = useMemo<DockPanel[]>(
@@ -53,6 +54,15 @@ export function WorkspaceChapter() {
 />`}
       >
         <WorkspaceDemo />
+      </Spec>
+
+      <Spec
+        id="params"
+        wide
+        text="Settings from a schema: describe each value once (what it is, its range, its group) and the kit sets it the family's way. A rate gets a log slider, a count a stepped one, a share percent, a signed value a bipolar slider, a few choices a Segmented, many a Select. Each group gets its icon, count and reset; a toggle that owns a group becomes its on/off; Advanced and Reset sit in the pane's bar. The groups are dockable: drag one to the other pane, or out to float it."
+        code={PARAMS_CODE}
+      >
+        <ParamsDemo />
       </Spec>
 
       <Spec

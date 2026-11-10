@@ -53,6 +53,18 @@ export type { KnobProps } from './controls/Knob';
 export { XYPad } from './controls/XYPad';
 export type { XYPadProps } from './controls/XYPad';
 
+// rig: controls for things in 3D space
+export { ViewGizmo } from './rig/ViewGizmo';
+export type { ViewGizmoProps } from './rig/ViewGizmo';
+export { Trackball } from './rig/Trackball';
+export type { TrackballProps } from './rig/Trackball';
+export { Vector3Field } from './rig/Vector3Field';
+export type { Vector3FieldProps } from './rig/Vector3Field';
+export { QUAT_IDENTITY, VIEWS, qFromEuler, eulerFromQuat, qFromOrbit, orbitPosition, orbitBy, qMul, qSlerp, qRotate, qAxisAngle, qConjugate, qNormalize } from './rig/math';
+export type { Vec3, Quat, Axis } from './rig/math';
+// rig/TransformGizmo (move · rotate · scale handles inside a three.js scene) needs `three`:
+// import it from the kit's rig/TransformGizmo file directly.
+
 // actions
 export { Button } from './actions/Button';
 export type { ButtonProps } from './actions/Button';
@@ -116,6 +128,8 @@ export { createDockSections } from './dock/sections';
 export type { DockSections, DockSectionsOptions } from './dock/sections';
 export type { DockProps, DockPanel, DockApi, DockEdge } from './dock/Dock';
 export { PanelBar } from './dock/PanelBar';
+export { createParamPanes, ParamControl, ParamSection, paramShown } from './dock/params';
+export type { ChoiceParam, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamSectionProps, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';
 export { DockMenu } from './dock/DockMenu';
 export { MetaBlockWorkspace, defaultCapabilities } from './dock/metablock/workspace';
 export { MetaBlockWorkspaceView } from './dock/metablock/WorkspaceView';

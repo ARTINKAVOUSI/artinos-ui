@@ -67,18 +67,18 @@ function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: 
 type Role = [TextVariant, string, string, TextFace?];
 /** Every text role with its rule beside it: the ladder a page is set by. */
 const ROLES: Role[] = [
-  ['display', 'display · titles face · 28', 'Light, held'],
-  ['title', 'title · titles face · 18', 'Material and light'],
+  ['display', 'display · title face · 28 light', 'Light, held'],
+  ['title', 'title · title face · 20 semibold', 'Material and light'],
   ['title', 'title · face="serif"', 'An editorial title', 'serif'],
-  ['heading', 'heading · titles face · 16', 'Surface response'],
-  ['subheading', 'subheading · titles face · 13', 'Roughness and gloss'],
-  ['overline', 'overline · 11 caps · accent', 'Material · glass'],
-  ['lead', 'lead · opening sentence · 14', 'A lead says what the view is for, a size up from the body.'],
-  ['body', 'body · 13 · 1.7', 'Body text carries the explanation at a comfortable line length.'],
-  ['note', 'note · 12 · quiet', 'A note is help or an aside, a step quieter than the body.'],
-  ['caption', 'caption · 11 medium · quietest', 'Fig. 3, the rim at grazing angles'],
-  ['label', 'label · 12 medium · quiet', 'Exposure'],
-  ['value', 'value · mono 13 · aligned', '0.71 · 1,284 · −4.5 dB'],
+  ['heading', 'heading · title face · 16 semibold', 'Surface response'],
+  ['subheading', 'subheading · title face · 14 semibold', 'Roughness and gloss'],
+  ['overline', 'overline · 12 semibold · accent', 'Material · glass'],
+  ['lead', 'lead · 16 regular · full ink', 'A lead says what the view is for, a size up from the body.'],
+  ['body', 'body · 14 on 22 · 88% ink', 'Body text carries the explanation at a comfortable line length.'],
+  ['note', 'note · 13 · 68% ink', 'A note is help or an aside, two steps quieter than the body.'],
+  ['caption', 'caption · 12 medium · 58% ink', 'Fig. 3, the rim at grazing angles'],
+  ['label', 'label · 12 regular · 70% ink', 'Exposure'],
+  ['value', 'value · 13 firm · full ink · tabular', '0.71 · 1,284 · −4.5 dB'],
   ['figure', 'figure · 28 medium · tight', '1,284'],
 ];
 
@@ -323,13 +323,13 @@ function LayoutAndText() {
         <Stack gap={2}>
           <Text variant="kicker">Type roles</Text>
           <Text as="h3" variant="title">One role per kind of text</Text>
-          <Text variant="caption">One role per kind of text, three sizes in any one panel.</Text>
+          <Text variant="caption">One role per kind of text; a name is quiet, its answer is loud.</Text>
         </Stack>
         <Stack gap={3}>
           <Text variant="figure">60.0</Text>
           <Text as="h4" variant="heading">Heading inside prose</Text>
           <Text>
-            Body text is 13 px on a page and 12 px in a panel, with an open leading. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
+            Body text is 14 px on a page and 13 px in a panel, on an open line. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
           </Text>
           <Inline align="baseline" gap={3}>
             <Text variant="value">16.4 ms</Text>
@@ -621,8 +621,12 @@ import { ArtinosTheme } from './artinos-ui';
 --ar-bg-well, --ar-text-hi, …      roles        tokens.css + themes.css
 --ar-insert, --ar-seam, …          control      materials.css (each theme's finish)
 
-/* body text scale */
---ar-text-xs · sm · md · lg · xl   10.5 · 11.5 · 12 · 14 · 17px`}
+/* a panel's roles: a whole font and an ink each */
+--ar-type-panel     16 / 600  title face     --ar-tone-title  100%
+--ar-type-section   14 / 600  title face     --ar-tone-title  100%
+--ar-type-value     13 / 550  tabular        --ar-tone-value  100%
+--ar-type-label     12 / 400                 --ar-tone-label   70%
+--ar-type-note      12 / 400                 --ar-tone-note    68%`}
       >
         <TokenTable deps={[theme]} />
         <TypeScale />
@@ -668,7 +672,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 
       <Spec
         id="layout"
-        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one role per kind, at most three sizes in a panel, paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The catalogue's Layout and text chapter has every rule."
+        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one role per kind on a fixed ladder (16 panel name, 14 section, 13 value, 12 label), paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The design guide (docs/design.md) has every rule on one page."
         code={`<Panel title="Export" labelWidth={84}>
   <Text>Every gap comes from the scale…</Text>
   <Section title="Output">
@@ -682,7 +686,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
 <Stack gap={2}>
   <Text variant="kicker">Type roles</Text>
   <Text variant="title">One role per kind of text</Text>
-  <Text variant="caption">One role per kind of text, three sizes in any one panel.</Text>
+  <Text variant="caption">One role per kind of text; a name is quiet, its answer is loud.</Text>
 </Stack>`}
       >
         <LayoutAndText />
@@ -695,7 +699,9 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
           <>
             <p>Every kind of text has its own role, and neighbouring roles differ in at least two ways at once.</p>
             <ul>
-              <li>Each face has one job: one titles, one reads, the serif opens and quotes, the mono measures.</li>
+              <li><b>A name is quiet, its answer is loud:</b> a label is 12 regular in a soft ink, its value 13 and firm in the full ink.</li>
+              <li><b>Weight runs against size:</b> display sizes are light, titles of 20 and under are semibold.</li>
+              <li>Each face has one job: one titles, one reads, the serif opens and quotes; figures are the sans with tabular digits, and the mono is for code.</li>
               <li>Titles balance their lines; paragraphs keep a comfortable measure and no lone last word.</li>
               <li>Inside a paragraph, strong, mark, code, key and link each have their own look.</li>
               <li>A Callout sets apart what must not be missed, after the text it qualifies.</li>

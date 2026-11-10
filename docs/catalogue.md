@@ -183,7 +183,7 @@ Independent flags sharing one well; each chip is a small insert with its own LED
 A wrapping set of pills for choices that outgrow one well: moods, tags, categories, filters.
 - Off: an outlined pill in the line ink. On: the polished insert, the same part as a pressed Segmented option.
 - `multiple` (default true); `multiple={false}` picks one at a time and can be emptied, for a filter with an "any" state.
-- `count` on an option draws a number in the mono after its label.
+- `count` on an option draws a number after its label, quieter, with tabular digits.
 
 ### Segmented
 
@@ -266,7 +266,7 @@ A status tag drawn as a wash and a hairline in its colour, never a solid fill. `
 Read-only instruments. All of them take `motion`, which says what the value is so the movement suits it: `'auto'` (default: measures the feed, exact at frame rate), `'instant'` (scrubbing, sync), `'audio'` (sound: instant rise, released fall), `'task'` (work under way), `'smooth'` (slow gauges), or `{ attack, release, refresh, roll }`.
 
 - **RollingValue**: the odometer readout every number in the family uses. Only the digits that change roll, in the direction of the change, all starting together and landing together on one baseline; the roll is timed to the feed, and a stream too fast to land changes its digits without rolling. `text` (formatted), `unit`, `dir`, `fast`, `base` (canonical decimals; extra digits grow in and out), `motion`. **RollingText** takes any readout string: only its numbers roll, the words stay still.
-- **Stat**: one figure that matters, for dashboards and status heads: label, the number large in the mono with its unit and `prefix`, `delta` with an arrow (`better` says which way is good, so it takes the signal or fault colour), a `trend` sparkline with an optional `threshold`, a `level` bar, `zones` that turn the figure as it crosses them, a `caption`. `framed` (default) is a quiet tile; `size="lg"` for the one hero number.
+- **Stat**: one figure that matters, for dashboards and status heads: label, the number large in the sans (tabular digits) with its unit and `prefix`, `delta` with an arrow (`better` says which way is good, so it takes the signal or fault colour), a `trend` sparkline with an optional `threshold`, a `level` bar, `zones` that turn the figure as it crosses them, a `caption`. `framed` (default) is a quiet tile; `size="lg"` for the one hero number.
 - **Progress**: a task under way — label, percentage, a well whose fill paces itself to how often the work reports, with a soft sheen (`sheen`) travelling along it while it runs. `variant="ring"` for a compact ring with the percentage inside; `segments` for countable work; `buffer` for what is ready ahead of it; `size`, `tone`. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
 - **Meter**: a level in a well with a signal fill and a rolling readout. `value`, or `source` read every frame for fast signals; `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it) or `format`; `peak` holds the true peak for a moment and lets it fall; `segments` lights cells; `zones` paint ranges along the track, or with `zonePaint="level"` turn the whole fill; `origin` fills out from a centre (pan, difference); `marker` and `ticks` give it a scale; `orientation="vertical"`; `size` `'sm' | 'md' | 'lg' | 'xl'`; `tone` `'live' | 'warm' | 'neutral' | 'hot'` cross-fades the fill.
 - **Spectrum**: a bank of level bars for a frequency analysis or any many-channel signal. Hand `source` your analyser; it reads every frame without React, and gathers more bins than bars on a log `scale`, each bar showing its loudest bin. `bars`, `max` (255 for byte data), `peak` caps, `segments` for LED cells, `mirror` from a centre line, `zones`, `height`, `tone`. `motion` defaults to `'audio'`.
@@ -451,6 +451,7 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 ### A studio or inspector
 Use the whole family, not bare panels:
 - a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
+- settings described as data and set by `createParamPanes` (the right control per value, groups with icon, count, reset and on/off, dockable panes); by hand only when there is no schema, as:
 - inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with an `icon`, a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
 - live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
 - lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;
@@ -463,25 +464,25 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 
 | variant | for | looks |
 |---|---|---|
-| `hero` | the page's one big line | the title face, 48 px (24 in a panel), very tight |
-| `display` | one headline per page | the title face, 28 px (20 in a panel), tight |
-| `title` | a page title (a Panel's `title` is its own, 17 px) | the title face, 16 px, bright (14 in a panel) |
-| `heading` | a group's name inside prose | the title face, 18 px, bright (16 in a panel) |
-| `subheading` | a step under a heading | the title face, 13 px, bright |
+| `hero` | the page's one big line | the title face, 48 px light (24 in a panel), very tight |
+| `display` | one headline per page | the title face, 28 px light (20 in a panel), tight |
+| `title` | a page title (a Panel's `title` is its own, 16 px) | the title face, 20 px semibold, bright (16 in a panel) |
+| `heading` | a group's name inside prose | the title face, 16 px semibold, bright (14 in a panel) |
+| `subheading` | a step under a heading | the title face, 14 px semibold, bright (13 in a panel) |
 | `statement` | a sentence that carries a page | the opening-sentence face, 20 px (16 in a panel), bright |
-| `overline` | a category above a title, or the name of a set of controls | small tracked capitals in the accent |
+| `overline` | a category above a title, or the name of a set of controls | 12 px semibold in the accent, sentence case |
 | `kicker` | a small label above a title | small and quiet; capitals only where a collection asks |
-| `eyebrow` | a live or current label above a title | the mono, 11 px, in the accent, after a lit dot |
-| `lead` | the sentence that says what a view is for | the opening-sentence face, 14 px, bright |
-| `body` | a paragraph | the reading face, 13 px (12 in a panel), 1.55 leading, at most `--ar-measure` (64ch) wide |
-| `note` | help or an aside | 12 px, a step quieter than the body |
-| `caption` | a line under the thing it describes | 11 px medium, the quietest ink |
-| `label` | a name beside a value outside a Field | 12 px medium, quiet |
-| `value` | a figure in a row | the mono, tabular |
+| `eyebrow` | a live or current label above a title | 12 px in the accent, after a lit dot |
+| `lead` | the sentence that says what a view is for | the opening-sentence face, 16 px regular, bright (14 in a panel) |
+| `body` | a paragraph | the reading face, 14 px on a 22 px line at 88% ink (13 in a panel), at most `--ar-measure` (64ch) wide |
+| `note` | help or an aside | 13 px at 68% ink (12 in a panel): two steps quieter than the body |
+| `caption` | a line under the thing it describes | 12 px medium, the quietest ink (58%) |
+| `label` | a name beside a value outside a Field | 12 px regular at 70% ink |
+| `value` | a figure in a row | 13 px firm (550) in the full ink, tabular digits |
 | `figure` | the one number that matters | 28 px medium (24 in a panel); a `<small>` inside is its unit |
 | `numeral` | a big number that marks a step or a chapter | large, in the accent, 28 px (20 in a panel) |
-| `meta` | a small fact: a date, a path, a count | the mono, 11 px, quiet |
-| `tag` | a status or a kind | the mono, 11 px, in a pill washed in the accent |
+| `meta` | a small fact: a date, a path, a count | 12 px, tabular digits, quiet |
+| `tag` | a status or a kind | 12 px, in a pill washed in the accent |
 | `quote` | a principle or a quoted line | the opening-sentence face, italic, 16 px (14 in a panel), between two hairlines; a `<cite>` inside is its source |
 | `code` | a token, key or file name | the mono, in a chip |
 
@@ -501,11 +502,11 @@ Any role takes an `accent`, one at a time and on the one thing that should be no
 
 Neighbouring roles differ in at least two ways at once — size and weight, or size and ink, or face — so the step reads at a glance.
 
-- **One job per face.** The title face names things (titles, panel and section names); the reading face explains (prose, labels, menus); the reading serif opens and quotes (`lead`, `statement`, `quote`); the display serif sets large accent words and `numeral`; the mono measures (figures, code). Don't give a face a second job.
+- **One job per face.** The title face names things (titles, panel and section names); the reading face explains (prose, labels, menus); the reading serif opens and quotes (`lead`, `statement`, `quote`); the display serif sets large accent words and `numeral`; figures are the reading face with tabular digits; the mono is for code only. Don't give a face a second job.
 - **Inline emphasis inside a body:** `strong` is bold in the bright ink, `em` turns to the serif's italic, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
 - **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
 - **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.
-- At most three sizes in one panel: its title, its labels and rows, its captions. Figures are the mono at the control size.
+- A panel has four sizes, each with its own weight and ink: its name (16 semibold, title face), a section's name (14 semibold, title face), values (13 firm, full ink) and names, notes and captions (12 regular, 70% ink and quieter). A name is quiet and its answer is loud, so the eye lands on the number first. Figures are the sans with tabular digits. Nothing in a panel is under 12px (ruler ticks and key caps excepted), nothing is in tracked capitals, and nothing but code is in a mono. `design.md` has the whole ladder.
 - `tone` changes ink only for meaning: `low` / `faint` for quieter, `signal` / `warn` / `fault` for state. Never colour text for decoration.
 - Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.
 - A caption goes under what it describes, never above. A kicker goes above a title, never alone.
@@ -550,7 +551,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Rows that can change show `modified` + `onReset`; driven values show `binding` / `status`.
 - The panel is a `Panel` (or a Dock panel) so the gutter marks and the glass are there.
 - Every gap comes from the space scale (`Stack` / `Inline`, the roles); no hand-set margins.
-- Every piece of text is a `Text` role or a component's own; at most three sizes in the panel's rows.
+- Every piece of text is a `Text` role or a component's own; from arm's length the panel name, a section name, a value and a label are told apart without reading them.
 - Each section has an icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
 - Sentence case; capitals only for small headings; no full stops on labels.

@@ -77,6 +77,18 @@ export const CHAPTERS: readonly ChapterDef[] = [
     ],
   },
   {
+    id: 'rig',
+    title: 'Rig',
+    note: 'Controls for things in space: a camera you orbit, a rotation you turn by hand, a vector in its axis colours.',
+    components: ['TransformGizmo', 'ViewGizmo', 'Trackball', 'Vector3Field'],
+    sections: [
+      { id: 'rig-transform', title: 'Transform rig' },
+      { id: 'view-gizmo', title: 'View gizmo' },
+      { id: 'trackball', title: 'Trackball' },
+      { id: 'vector3', title: 'Vector field' },
+    ],
+  },
+  {
     id: 'actions',
     title: 'Actions',
     note: 'Inserts you press, bare ink that becomes an insert, and quiet marks of state.',
@@ -130,9 +142,10 @@ export const CHAPTERS: readonly ChapterDef[] = [
     id: 'workspace',
     title: 'Workspace',
     note: 'A dockable studio around a canvas, and a node editor built from the same controls.',
-    components: ['Dock', 'PanelBar', 'MetaBlock', 'NodeGraph', 'LiveGraphView'],
+    components: ['Dock', 'PanelBar', 'Params', 'MetaBlock', 'NodeGraph', 'LiveGraphView'],
     sections: [
       { id: 'dock', title: 'Dock' },
+      { id: 'params', title: 'Settings from a schema' },
       { id: 'node-graph', title: 'Node graph' },
     ],
   },

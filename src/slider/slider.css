@@ -283,6 +283,15 @@
   text-shadow: var(--ar-insert-text-shadow);
 }
 .ar-slider__readout--over .ar-roll__unit { color: var(--ar-insert-unit-ink); }
+/* a narrow capsule (set by the slider when its name would be cut): the readout steps down to the
+   name's size and the padding tightens, so the whole word shows; weight and ink still tell the two apart */
+.ar-slider[data-tight] .ar-slider__content {
+  gap: 4px;
+  padding-inline: min(var(--ar-pad-x), 6px);
+}
+.ar-slider[data-tight] .ar-slider__readout {
+  font-size: var(--ar-voice-size);
+}
 .ar-slider[data-off] .ar-slider__label:not(.ar-text--over),
 .ar-slider[data-off] .ar-slider__side,
 .ar-slider[data-off] .ar-slider__readout {

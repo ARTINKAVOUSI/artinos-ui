@@ -22,6 +22,10 @@ export const COMPONENTS = [
   { group: 'Controls', id: 'Select', label: 'Select', file: 'controls/Select.tsx', note: 'dropdown list' },
   { group: 'Controls', id: 'ColorField', label: 'ColorField', file: 'controls/ColorField.tsx', note: 'hex + alpha' },
   { group: 'Controls', id: 'FileDrop', label: 'FileDrop', file: 'controls/FileDrop.tsx', note: 'drop or pick files' },
+  { group: 'Rig', id: 'ViewGizmo', label: 'ViewGizmo', file: 'rig/ViewGizmo.tsx', note: 'camera orientation ball: orbit and snap to an axis' },
+  { group: 'Rig', id: 'Trackball', label: 'Trackball', file: 'rig/Trackball.tsx', note: 'object rotation: tumble, axis rings, roll' },
+  { group: 'Rig', id: 'Vector3Field', label: 'Vector3Field', file: 'rig/Vector3Field.tsx', note: 'X · Y · Z in a row, linkable' },
+  { group: 'Rig', id: 'TransformGizmo', label: 'TransformGizmo', file: 'rig/TransformGizmo.ts', note: 'move · rotate · scale handles inside a three.js scene (needs three)' },
   { group: 'Actions', id: 'Button', label: 'Button', file: 'actions/Button.tsx', note: 'default · primary · ghost · danger' },
   { group: 'Actions', id: 'IconButton', label: 'IconButton', file: 'actions/IconButton.tsx', note: 'square icon action' },
   { group: 'Actions', id: 'Toolbar', label: 'Toolbar', file: 'actions/Toolbar.tsx', note: 'a row of actions' },
@@ -48,6 +52,7 @@ export const COMPONENTS = [
   { group: 'Overlays', id: 'CommandPalette', label: 'CommandPalette', file: 'overlays/CommandPalette.tsx', note: 'Ctrl/⌘ K search' },
   { group: 'Dock', id: 'Dock', label: 'Dock', file: 'dock/Dock.tsx', note: 'studio workspace: docks, tabs, floating panels' },
   { group: 'Dock', id: 'DockSections', label: 'createDockSections', file: 'dock/sections.tsx', note: 'sections that move between panes and tear off into panels' },
+  { group: 'Dock', id: 'Params', label: 'createParamPanes · ParamSection · ParamControl', file: 'dock/params.tsx', note: 'settings from a schema: the right control per value, groups, dockable panes' },
   { group: 'Dock', id: 'MetaBlock', label: 'MetaBlock engine', file: 'dock/metablock/WorkspaceView.tsx', note: 'the docking engine alone' },
   { group: 'Graph', id: 'NodeGraph', label: 'NodeGraph', file: 'graph/NodeGraph.tsx', note: 'node editor' },
   { group: 'Graph', id: 'LiveGraphView', label: 'LiveGraphView', file: 'graph/LiveGraphView.tsx', note: 'read-only live graph' },
@@ -308,6 +313,7 @@ function buildReadme(o, meta, themes, comps, files, types, tmeta) {
   const guides = o.docs
     ? `## Guides
 
+- \`docs/design.md\` — the ARTINOS look: the levels of a panel, the reading scale, layout, colour and what never to do. Read it first; a screen built against it needs no type, colour or spacing of its own.
 - \`docs/components.md\` — every component: props, defaults, examples, interaction, recipes.
 - \`docs/catalogue.md\` — every kind of every component (the six slider faces, the control shapes, row states, overlays, the dock and graph), and which to pick for a given parameter. Read it before building a panel.
 - \`docs/theming.md\` — choosing themes, glass vs solid, density, token overrides, custom themes, the theme list, key tokens.

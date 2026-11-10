@@ -44,7 +44,7 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(ROOT, 'src');
 const DOCS = path.join(ROOT, 'docs');
 const SKILL = path.join(ROOT, 'skill', 'SKILL.md');
-const GUIDES = ['components.md', 'catalogue.md', 'theming.md'];
+const GUIDES = ['design.md', 'components.md', 'catalogue.md', 'theming.md'];
 const slash = (p) => p.split(path.sep).join('/');
 
 /* ---------- args ---------- */
@@ -99,7 +99,7 @@ function list() {
     for (const c of COMPONENTS.filter((x) => x.group === g)) console.log(`    ${c.id.padEnd(16)} ${c.note}`);
   }
   console.log('\nArtinosTheme (the theme scope) and the studio base theme are always included.');
-  console.log('"--components all" leaves out GraphGPU (it needs three); name it to include it.');
+  console.log('"--components all" leaves out GraphGPU and TransformGizmo (they need three); name them to include them.');
 }
 
 /* ---------- export ---------- */
@@ -139,7 +139,7 @@ function exportKit(project) {
   const { types: allTypes } = readTypes(sources);
   const types = opt('type') ? pick(opt('type').split(',').map((t) => TYPE_ALIASES[t.trim()] ?? t.trim()).join(','), allTypes, 'type') : [BASE_TYPE];
   // "all" leaves out the TSL compiler: it needs three. Name GraphGPU to include it.
-  if (opt('components') === 'all') components.splice(components.indexOf('GraphGPU'), 1);
+  if (opt('components') === 'all') for (const id of ['GraphGPU', 'TransformGizmo']) components.splice(components.indexOf(id), 1);
   const customs = opts('custom').map((f) => {
     const css = fs.readFileSync(path.resolve(f), 'utf8');
     const slug = css.match(/\[data-ar-theme='([^']+)'\]/)?.[1];
@@ -164,7 +164,7 @@ function exportKit(project) {
     if (!flag('force')) die(`${out} already exists and is not empty. Pass --force to update the kit in it.`);
     // remove only what a kit owns and this export no longer has
     const owned = new Set(Object.keys(files));
-    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|actions|display|layout|overlays|dock|graph)\/([^/]+\/)*[^/]+\.(ts|tsx|css)|docs\/(components|catalogue|theming)\.md)$/;
+    const kitFile = /^(README\.md|artinos\.css|index\.ts|(tokens|core|slider|controls|actions|display|layout|overlays|dock|graph)\/([^/]+\/)*[^/]+\.(ts|tsx|css)|docs\/(design|components|catalogue|theming)\.md)$/;
     (function prune(dir, rel) {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const r = rel ? rel + '/' + e.name : e.name;
@@ -213,7 +213,7 @@ Next steps
        import { ArtinosTheme, Slider } from '${spec}';
   3. Wrap the UI:
        <ArtinosTheme theme="…">…</ArtinosTheme>
-  Guide: ${rel}/README.md${flag('no-docs') ? '' : ` · ${rel}/docs/components.md · ${rel}/docs/catalogue.md · ${rel}/docs/theming.md`}`);
+  Guide: ${rel}/README.md${flag('no-docs') ? '' : ` · ${rel}/docs/design.md (the rules: read first) · ${rel}/docs/components.md · ${rel}/docs/catalogue.md · ${rel}/docs/theming.md`}`);
 }
 
 /* ---------- skill ---------- */

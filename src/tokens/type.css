@@ -19,12 +19,13 @@
   --ar-font-accent: var(--ar-font-serif);
   --ar-font-numeral: var(--ar-font-serif);
   --ar-font-mark: var(--ar-font-num);
+  --ar-font-heading: var(--ar-font-display);
   --ar-serif-adjust: none;
   --ar-title-scale: 1;
   --ar-title-case: none;
   --ar-title-stretch: 100%;
   --ar-weight-display: 500;
-  --ar-weight-title: 550;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.03em;
   --ar-track-heading-sm: -0.018em;
   --ar-leading-heading: 1.06;
@@ -48,7 +49,7 @@
   --ar-head-bump: 0px;
 }
 [data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
-  --ar-control-font: var(--ar-font-num);
+  --ar-control-font: var(--ar-font-ui);
   --ar-voice-font: var(--ar-font-ui);
 }
 /* themes whose control text is the sans keep that inside a nested type scope, in the collection's sans */
@@ -65,7 +66,7 @@
 /* Instrument: Instrument Sans · Inter · Newsreader · Geist Mono */
 [data-ar-type='instrument'] {
   --ar-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Instrument Sans', var(--ar-font-ui);
   --ar-font-lead: Newsreader, Georgia, 'Times New Roman', serif;
@@ -76,7 +77,7 @@
 /* Editorial: IBM Plex Serif · IBM Plex Sans · IBM Plex Mono */
 [data-ar-type='editorial'] {
   --ar-font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
   --ar-font-lead: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
@@ -93,12 +94,13 @@
   --ar-weight-lead: 300;
   --ar-font-accent: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
   --ar-font-numeral: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --ar-font-heading: var(--ar-font-ui); /* serif titles: section names stay in the sans */
 }
 
 /* Book: Source Serif 4 · Source Sans 3 · Source Code Pro */
 [data-ar-type='book'] {
   --ar-font-ui: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Source Code Pro', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Source Code Pro', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --ar-font-lead: 'Source Serif 4', Georgia, 'Times New Roman', serif;
@@ -110,7 +112,7 @@
   --ar-track-heading: -0.024em;
   --ar-track-heading-sm: -0.012em;
   --ar-font-prose: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-  --ar-prose-scale: 1.1;
+  --ar-prose-scale: 1.14;
   --ar-leading-prose: 1.68;
   --ar-lead-style: italic;
   --ar-lead-scale: 1.06;
@@ -120,12 +122,13 @@
   --ar-mark-case: uppercase;
   --ar-mark-track: 0.13em;
   --ar-weight-mark: 600;
+  --ar-font-heading: var(--ar-font-ui); /* serif titles: section names stay in the sans */
 }
 
 /* Couture: Cormorant Garamond · Jost · JetBrains Mono */
 [data-ar-type='couture'] {
   --ar-font-ui: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --ar-font-lead: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
@@ -147,12 +150,13 @@
   --ar-mark-case: uppercase;
   --ar-mark-track: 0.24em;
   --ar-weight-mark: 400;
+  --ar-font-heading: var(--ar-font-ui); /* serif titles: section names stay in the sans */
 }
 
 /* Contrast: DM Serif Display · DM Sans · DM Mono */
 [data-ar-type='contrast'] {
   --ar-font-ui: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
   --ar-font-lead: 'DM Serif Display', Georgia, 'Times New Roman', serif;
@@ -167,12 +171,13 @@
   --ar-lead-style: italic;
   --ar-font-accent: 'DM Serif Display', Georgia, 'Times New Roman', serif;
   --ar-font-numeral: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --ar-font-heading: var(--ar-font-ui); /* serif titles: section names stay in the sans */
 }
 
 /* Newsroom: Schibsted Grotesk · Crimson Pro · Fira Code */
 [data-ar-type='newsroom'] {
   --ar-font-ui: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: 'Crimson Pro', Georgia, 'Times New Roman', serif;
@@ -199,7 +204,7 @@
 /* Soft: Fraunces · Figtree · Spline Sans Mono */
 [data-ar-type='soft'] {
   --ar-font-ui: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Spline Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Spline Sans Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --ar-font-lead: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -216,12 +221,13 @@
   --ar-font-accent: 'Fraunces', Georgia, 'Times New Roman', serif;
   --ar-weight-accent: 300;
   --ar-font-numeral: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --ar-font-heading: var(--ar-font-ui); /* serif titles: section names stay in the sans */
 }
 
 /* Sleek: Manrope titles · Inter · JetBrains Mono */
 [data-ar-type='sleek'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-lead: var(--ar-font-display);
@@ -229,12 +235,12 @@
   --ar-label-tracking: 0.08em;
   --ar-title-scale: 1.12;
   --ar-weight-display: 300;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.045em;
   --ar-track-heading-sm: -0.024em;
   --ar-leading-heading: 1.02;
-  --ar-leading-prose: 1.7;
-  --ar-weight-lead: 500;
+  --ar-leading-prose: 1.6;
+  --ar-weight-lead: 400;
   --ar-lead-scale: 1;
   --ar-font-accent: var(--ar-font-display);
   --ar-accent-style: normal;
@@ -246,7 +252,7 @@
 /* Round: Red Hat Display · Red Hat Text · Red Hat Mono */
 [data-ar-type='round'] {
   --ar-font-ui: 'Red Hat Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Red Hat Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-lead: 'Red Hat Display', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -254,7 +260,7 @@
   --ar-label-tracking: 0.08em;
   --ar-title-scale: 1.08;
   --ar-weight-display: 300;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.034em;
   --ar-track-heading-sm: -0.016em;
   --ar-leading-prose: 1.66;
@@ -268,7 +274,7 @@
 /* Wide: Mona Sans · Geist Mono */
 [data-ar-type='wide'] {
   --ar-font-ui: 'Mona Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: var(--ar-font-ui);
@@ -293,7 +299,7 @@
 /* Swiss: Inter Tight · Inter · Geist Mono */
 [data-ar-type='swiss'] {
   --ar-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-lead: var(--ar-font-ui);
@@ -321,7 +327,7 @@
 /* Bold: Plus Jakarta Sans · Lora · JetBrains Mono */
 [data-ar-type='bold'] {
   --ar-font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: 'Lora', Georgia, 'Times New Roman', serif;
@@ -342,7 +348,7 @@
 /* Character: Bricolage Grotesque · Instrument Sans · Newsreader · DM Mono */
 [data-ar-type='character'] {
   --ar-font-ui: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-font-lead: 'Newsreader', Georgia, 'Times New Roman', serif;
@@ -399,7 +405,7 @@
   --ar-label-tracking: 0.08em;
   --ar-title-scale: 0.76;
   --ar-weight-display: 500;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.05em;
   --ar-track-heading-sm: -0.035em;
   --ar-weight-lead: 300;
@@ -414,7 +420,7 @@
 /* Quiet: Geist · Geist Mono */
 [data-ar-type='quiet'] {
   --ar-font-ui: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: var(--ar-font-ui);
@@ -427,7 +433,7 @@
   --ar-caps-on: 1;
   --ar-title-scale: 0.7;
   --ar-weight-display: 500;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.028em;
   --ar-track-heading-sm: -0.012em;
   --ar-leading-prose: 1.66;
@@ -442,7 +448,7 @@
 /* Clean: Onest · Literata · Fira Code */
 [data-ar-type='clean'] {
   --ar-font-ui: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Fira Code', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: 'Literata', Georgia, 'Times New Roman', serif;
@@ -463,7 +469,7 @@
 /* Legible: Atkinson Hyperlegible Next · Atkinson Hyperlegible Mono */
 [data-ar-type='legible'] {
   --ar-font-ui: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: var(--ar-font-ui);
@@ -487,7 +493,7 @@
 /* Sleek Air: Sleek at its lightest and largest */
 [data-ar-type='sleek-air'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
@@ -499,11 +505,11 @@
   --ar-font-lead: var(--ar-font-display);
   --ar-title-scale: 1.24;
   --ar-weight-display: 200;
-  --ar-weight-title: 400;
+  --ar-weight-title: 500;
   --ar-track-heading: -0.05em;
   --ar-track-heading-sm: -0.026em;
   --ar-leading-heading: 1;
-  --ar-leading-prose: 1.8;
+  --ar-leading-prose: 1.7;
   --ar-weight-lead: 400;
   --ar-lead-scale: 1.1;
   --ar-weight-accent: 200;
@@ -512,7 +518,7 @@
 /* Sleek Serif: Sleek titles with an italic serif for opening lines and accent words */
 [data-ar-type='sleek-serif'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
@@ -524,11 +530,11 @@
   --ar-font-lead: Newsreader, Georgia, 'Times New Roman', serif;
   --ar-title-scale: 1.12;
   --ar-weight-display: 300;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.045em;
   --ar-track-heading-sm: -0.024em;
   --ar-leading-heading: 1.02;
-  --ar-leading-prose: 1.78;
+  --ar-leading-prose: 1.66;
   --ar-lead-style: italic;
   --ar-lead-scale: 1;
   --ar-font-accent: Newsreader, Georgia, 'Times New Roman', serif;
@@ -539,7 +545,7 @@
 /* Sleek Sharp: firmer titles and small spaced capitals for labels */
 [data-ar-type='sleek-sharp'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
@@ -565,7 +571,7 @@
 /* Sleek Compact: Sleek at smaller sizes, for dense pages */
 [data-ar-type='sleek-compact'] {
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-num: var(--ar-font-ui); /* figures in the set's own sans, tabular */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --ar-font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ar-track-caps: 0.1em;
@@ -577,11 +583,11 @@
   --ar-font-lead: var(--ar-font-display);
   --ar-title-scale: 0.76;
   --ar-weight-display: 400;
-  --ar-weight-title: 500;
+  --ar-weight-title: 600;
   --ar-track-heading: -0.035em;
   --ar-track-heading-sm: -0.02em;
   --ar-leading-prose: 1.62;
-  --ar-prose-scale: 0.97;
+  --ar-prose-scale: 0.93;
   --ar-lead-scale: 0.86;
   --ar-weight-accent: 300;
 }

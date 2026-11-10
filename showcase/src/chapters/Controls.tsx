@@ -177,7 +177,7 @@ export function ControlsChapter() {
 
       <Spec
         id="chips"
-        text="A wrapping set of choices: moods, tags, categories, filters. Off, a chip is a pill recessed in the well with its LED dark; on, it is the family's polished insert with its LED lit, the same language as a ToggleGroup's chips. Many can be on at once, or one with multiple={false}, which can also be emptied. A count after the label stays in the mono, like every number."
+        text="A wrapping set of choices: moods, tags, categories, filters. Off, a chip is a pill recessed in the well with its LED dark; on, it is the family's polished insert with its LED lit, the same language as a ToggleGroup's chips. Many can be on at once, or one with multiple={false}, which can also be emptied. A count after the label is quieter, with tabular digits, like every number."
         code={`
 <ChipGroup label="Mood" options={['Joy', 'Curious', 'Startled', 'Shy', 'Sad', 'Groove']} defaultValue={['Curious']} />
 <ChipGroup label="Category" multiple={false} defaultValue={['image']}

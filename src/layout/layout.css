@@ -41,8 +41,8 @@
 }
 /* the panel's name: bold and close-set, with what it is in a quiet line under it */
 .ar-panel__title {
-  font: var(--ar-weight-bold) var(--ar-text-lg) / 20px var(--ar-font-display);
-  letter-spacing: -0.012em;
+  font: var(--ar-type-panel);
+  letter-spacing: -0.016em;
   color: var(--ar-tone-title);
 }
 /* the one word that speaks: the serif's italic, in a title or a large value */
@@ -139,8 +139,8 @@
 .ar-section__body > .ar-section > .ar-section__head .ar-section__title,
 .ar-section__body > .ar-section:not([data-open]) > .ar-section__head .ar-section__title {
   font: var(--ar-type-group);
-  letter-spacing: var(--ar-track-role);
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--ar-tone-accent);
 }
 /* rows of a list sit on hairlines, so the eye runs along them and the columns stay aligned */
@@ -268,8 +268,15 @@ button.ar-section__trigger:focus-visible {
 .ar-section__title {
   transition: color var(--ar-dur-surface) var(--ar-ease);
 }
+/* heading="text": a real title in the title face, for a group that leads (the thing on stage, a featured card) */
+.ar-section[data-heading='text'] > .ar-section__head .ar-section__title {
+  font: var(--ar-weight-title) var(--ar-text-lg) / 20px var(--ar-font-display);
+  letter-spacing: -0.008em;
+  text-transform: none;
+  color: var(--ar-tone-title);
+}
 .ar-section[data-off] .ar-section__title {
-  color: var(--ar-text-ghost);
+  color: var(--ar-tone-label); /* off is told by the dark LED and the fold; the name stays readable */
 }
 .ar-section__head:hover .ar-section__title {
   color: var(--ar-text-hi);
@@ -286,11 +293,13 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* the section's name: bold at a reading size, one size in any panel, open or folded */
+  /* the section's name: a small title in sentence case, the brightest line of its group, one size
+     in any panel, open or folded. The rows under it are 12 in the label tone, so it leads by size,
+     weight and ink at once, without capitals */
   font: var(--ar-type-section);
-  letter-spacing: var(--ar-track-role);
-  text-transform: uppercase;
-  color: var(--ar-tone-label);
+  letter-spacing: -0.012em;
+  text-transform: none;
+  color: var(--ar-tone-title);
 }
 .ar-section__rule {
   flex: 1;
@@ -306,19 +315,13 @@ button.ar-section__trigger:focus-visible {
   order: 2;
   flex: 0 100 auto;
   min-width: 0;
-  padding: 2px 6px;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-family: var(--ar-font-code);
-  font-size: var(--ar-caps-xs);
-  font-weight: var(--ar-weight-text);
-  line-height: 1.2;
+  font: var(--ar-weight-text) 12px / 18px var(--ar-font-ui);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  color: var(--ar-text-mid);
+  color: var(--ar-text-faint);
   transition:
     color var(--ar-dur-state) var(--ar-ease),
     opacity var(--ar-dur-surface) var(--ar-ease);
@@ -424,9 +427,9 @@ button.ar-section__trigger:focus-visible {
   margin-block: var(--ar-space-1) var(--ar-space-3);
 }
 .ar-field[data-variant='hero'] > .ar-field__label {
-  font: var(--ar-type-group);
-  letter-spacing: var(--ar-track-role);
-  text-transform: uppercase;
+  font: var(--ar-type-label);
+  letter-spacing: 0;
+  text-transform: none;
 }
 .ar-field[data-variant='hero'] > .ar-field__control {
   display: block;
@@ -481,8 +484,12 @@ button.ar-section__trigger:focus-visible {
   align-items: stretch;
   gap: var(--ar-space-3);
 }
+/* above its control the label is the question, not a quiet name beside an answer: firmer and
+   brighter than the hint under the control, so the two never read as the same line */
 .ar-field[data-layout='stacked'] .ar-field__label {
   line-height: var(--ar-leading-snug);
+  font-weight: var(--ar-weight-medium);
+  color: var(--ar-tone-body);
 }
 .ar-field__required {
   margin-left: 3px;

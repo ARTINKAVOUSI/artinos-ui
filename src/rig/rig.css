@@ -1,0 +1,222 @@
+/* Rig — controls for things in 3D space: a view, a rotation, a vector. They share the three
+   axis colours (--ar-axis-x / y / z) and are drawn in pixels, so their type stays on the ladder. */
+
+/* ---------- ViewGizmo: the camera as a ball of six axis ends ---------- */
+.ar-viewgizmo {
+  position: relative;
+  flex: none;
+  border-radius: 50%;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* the ball appears under the hand: a quiet well behind the axes */
+.ar-viewgizmo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+  opacity: 0;
+  transition: opacity var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-viewgizmo:hover::before,
+.ar-viewgizmo:focus-visible::before,
+.ar-viewgizmo[data-dragging]::before {
+  opacity: 1;
+}
+.ar-viewgizmo[data-dragging] {
+  cursor: grabbing;
+}
+.ar-viewgizmo svg,
+.ar-trackball__ball svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ar-viewgizmo [data-axis='x'],
+.ar-trackball [data-axis='x'],
+.ar-vec3__cell--x {
+  --_axis: var(--ar-axis-x);
+}
+.ar-viewgizmo [data-axis='y'],
+.ar-trackball [data-axis='y'],
+.ar-vec3__cell--y {
+  --_axis: var(--ar-axis-y);
+}
+.ar-viewgizmo [data-axis='z'],
+.ar-trackball [data-axis='z'],
+.ar-vec3__cell--z {
+  --_axis: var(--ar-axis-z);
+}
+.ar-viewgizmo__arm {
+  stroke: var(--_axis);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.ar-viewgizmo__end {
+  cursor: pointer;
+}
+.ar-viewgizmo__end circle {
+  fill: color-mix(in srgb, var(--_axis) 26%, var(--ar-bg-surface));
+  stroke: var(--_axis);
+  stroke-width: 1.25;
+  transition:
+    fill var(--ar-dur-state) var(--ar-ease),
+    r var(--ar-dur-surface) var(--ar-ease-spring);
+}
+.ar-viewgizmo__end[data-positive] circle {
+  fill: var(--_axis);
+  stroke: none;
+}
+.ar-viewgizmo__end:hover circle {
+  fill: color-mix(in srgb, var(--_axis) 70%, var(--ar-text-hi));
+}
+.ar-viewgizmo__end[data-positive]:hover circle {
+  fill: color-mix(in srgb, var(--_axis) 78%, #fff);
+  r: 10px;
+}
+.ar-viewgizmo__end text {
+  font: 700 11px / 1 var(--ar-font-ui);
+  fill: #0b0c0e;
+  pointer-events: none;
+}
+
+/* ---------- Trackball: a rotation as a ball with three axis rings ---------- */
+.ar-trackball {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ar-space-3, 6px);
+  flex: none;
+}
+.ar-trackball__ball {
+  position: relative;
+  border-radius: 50%;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ar-trackball__ball[data-held] {
+  cursor: grabbing;
+}
+/* the ball itself: a round well, lit from above like every insert */
+.ar-trackball__ball::before {
+  content: '';
+  position: absolute;
+  inset: calc(50% - var(--_r));
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 30%, color-mix(in srgb, var(--ar-text-hi) 9%, transparent), transparent 62%),
+    var(--ar-trough);
+  -webkit-backdrop-filter: var(--ar-trough-backdrop);
+  backdrop-filter: var(--ar-trough-backdrop);
+  box-shadow: var(--ar-well);
+}
+.ar-trackball__ball:focus-visible::before {
+  background:
+    radial-gradient(circle at 38% 30%, color-mix(in srgb, var(--ar-text-hi) 9%, transparent), transparent 62%),
+    linear-gradient(var(--ar-focus-lift), var(--ar-focus-lift)),
+    var(--ar-trough);
+}
+.ar-trackball__roll {
+  fill: none;
+  stroke: var(--ar-tick);
+  stroke-width: 1;
+  stroke-dasharray: 1 5;
+  stroke-linecap: round;
+  transition: stroke var(--ar-dur-state) var(--ar-ease);
+}
+.ar-trackball__ball[data-grip='roll'] .ar-trackball__roll {
+  stroke: var(--ar-signal);
+  stroke-width: 1.5;
+}
+.ar-trackball__ring {
+  fill: none;
+  stroke: var(--_axis);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transition:
+    stroke-width var(--ar-dur-state) var(--ar-ease),
+    opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-trackball__ring[data-back] {
+  opacity: 0.28;
+  stroke-width: 1;
+}
+/* the ring under the hand thickens and glows; the other two step back */
+.ar-trackball__ball:is([data-grip='x'], [data-grip='y'], [data-grip='z']) .ar-trackball__ring:not([data-back]) {
+  opacity: 0.45;
+}
+.ar-trackball__ball[data-grip='x'] .ar-trackball__ring[data-axis='x'],
+.ar-trackball__ball[data-grip='y'] .ar-trackball__ring[data-axis='y'],
+.ar-trackball__ball[data-grip='z'] .ar-trackball__ring[data-axis='z'] {
+  opacity: 1;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 3px var(--_axis));
+}
+.ar-trackball__tip {
+  fill: var(--_axis);
+  pointer-events: none;
+}
+.ar-trackball__tip[data-back] {
+  opacity: 0.3;
+}
+.ar-trackball__readout {
+  display: flex;
+  gap: var(--ar-space-4, 8px);
+  justify-content: center;
+}
+.ar-trackball__readout > span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.ar-trackball__readout i {
+  font-style: normal;
+  color: var(--_axis);
+}
+.ar-trackball__readout .ar-value {
+  min-width: 5ch;
+  text-align: right;
+  color: var(--ar-value-ink-hi);
+}
+
+/* ---------- Vector3Field: X · Y · Z in a row ---------- */
+.ar-vec3 {
+  display: flex;
+  align-items: center;
+  gap: var(--ar-space-2, 4px);
+  min-width: 0;
+}
+.ar-vec3__cell {
+  flex: 1 1 0;
+  gap: 4px;
+  padding-inline: 7px;
+}
+.ar-vec3__cell .ar-number__label {
+  color: var(--_axis);
+  font-weight: var(--ar-weight-bold, 700);
+}
+.ar-vec3__link[aria-pressed='true'] {
+  color: var(--ar-signal);
+}
+.ar-vec3__link svg {
+  width: 13px;
+  height: 13px;
+}

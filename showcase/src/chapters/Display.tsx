@@ -246,7 +246,7 @@ export function DisplayChapter() {
 
       <Spec
         id="stats"
-        text="One figure that matters: its label in the sans, the number large in the mono with its unit, how it moved since before (an arrow in the signal colour when that is good, the fault colour when not; better says which way is good), and its recent trend with an optional budget line. Framed, it is a quiet tile; framed={false} sets it bare inside your own card."
+        text="One figure that matters: its label in the sans, the number large, with tabular digits, and its unit, how it moved since before (an arrow in the signal colour when that is good, the fault colour when not; better says which way is good), and its recent trend with an optional budget line. Framed, it is a quiet tile; framed={false} sets it bare inside your own card."
         code={`<Stat label="Frame time" value={ms.toFixed(1)} decimals={1} unit="ms"
       delta={-1.8} deltaText="−1.8 ms" better="down"
       trend={frameTimes} threshold={16.7} caption="Budget 16.7 ms" />`}

@@ -7,6 +7,7 @@
   font-kerning: normal;
   font-optical-sizing: auto;
   font-variant-ligatures: common-ligatures contextual;
+  font-variant-numeric: tabular-nums; /* figures line up in the sans: no second, coding face for numbers */
   font-synthesis: none; /* never fake a weight or an italic the families don't have */
   text-rendering: optimizeLegibility;
   color: var(--ar-text-mid);
@@ -198,6 +199,15 @@
 .ar-text--over {
   color: var(--ar-insert-ink);
   text-shadow: var(--ar-insert-text-shadow);
+}
+/* a control's own name (not a choice, not an action): regular and quieter than the readout beside
+   it, on the well and on the insert alike, so the eye lands on the number first */
+.ar-text:where(.ar-slider__label, .ar-number__label, .ar-color__label, .ar-xypad__label, .ar-meter__label) {
+  font-weight: var(--ar-weight-regular);
+  color: color-mix(in srgb, var(--ar-label-ink) var(--ar-name-strength), transparent);
+}
+.ar-text--over:where(.ar-slider__label, .ar-number__label, .ar-color__label, .ar-xypad__label, .ar-meter__label) {
+  color: color-mix(in srgb, var(--ar-insert-ink) calc(var(--ar-name-strength) + 8%), transparent);
 }
 .ar-value {
   font-family: var(--ar-control-font);
@@ -470,6 +480,7 @@ html[data-ar-sorting] * {
 [data-ar-scene] :is([data-ar-theme], [data-ar-material]) {
   --ar-text-low: var(--ar-text-mid);
   --ar-text-faint: var(--ar-text-mid);
+  --ar-name-strength: 90%;
 }
 
 /* more contrast: one ink for words, and the glass held by its own ground */
@@ -479,6 +490,7 @@ html[data-ar-sorting] * {
     --ar-text-mid: var(--ar-text-hi);
     --ar-text-low: var(--ar-text-hi);
     --ar-text-faint: var(--ar-text-hi);
+    --ar-name-strength: 100%;
     --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) 92%, transparent);
   }
 }

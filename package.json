@@ -10,6 +10,7 @@
     ".": "./src/index.ts",
     "./artinos.css": "./src/artinos.css",
     "./graph/gpu": "./src/graph/gpu.ts",
+    "./rig/TransformGizmo": "./src/rig/TransformGizmo.ts",
     "./graph/LiveGraphView": "./src/graph/LiveGraphView.tsx",
     "./graph/NodePreview": "./src/graph/NodePreview.tsx",
     "./src/*": "./src/*",

@@ -16,6 +16,7 @@
 @import './controls/Knob.css';
 @import './controls/XYPad.css';
 @import './controls/ChipGroup.css';
+@import './rig/rig.css';
 @import './actions/actions.css';
 @import './display/display.css';
 @import './layout/layout.css';

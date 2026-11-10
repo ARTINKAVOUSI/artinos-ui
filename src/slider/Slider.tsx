@@ -547,6 +547,19 @@ export function Slider(props: SliderProps) {
       track.style.setProperty('--_ink-l', l && l.offsetWidth ? l.offsetLeft + l.offsetWidth + 'px' : '0px');
       track.style.setProperty('--_ink-r', v && v.offsetWidth ? track.clientWidth - v.offsetLeft + 'px' : '0px');
     }
+    /* a narrow capsule: when the name would be cut, the readout steps down to the name's size and
+       the padding tightens (data-tight), so a whole word wins over a larger figure. It loosens again
+       only once there is room for the larger figure and the padding, so it never flickers */
+    const root = rootRef.current;
+    const l = labelRef.current;
+    const v = valRef.current;
+    if (root && integrated && l && v && l.offsetWidth && v.offsetWidth) {
+      const tight = root.hasAttribute('data-tight');
+      const clipped = l.scrollWidth > l.clientWidth;
+      const spare = v.offsetLeft - (l.offsetLeft + l.scrollWidth);
+      const next = tight ? clipped || spare < v.offsetWidth * 0.14 + 14 : clipped;
+      if (next !== tight) root.toggleAttribute('data-tight', next);
+    } else root?.removeAttribute('data-tight');
   };
   useLayoutEffect(() => partRef.current());
   useEffect(() => {

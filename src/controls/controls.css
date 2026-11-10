@@ -360,8 +360,8 @@
   text-transform: none;
   letter-spacing: var(--ar-track-text);
   font-family: var(--ar-font-ui);
-  font-weight: var(--ar-weight-text);
-  font-size: calc(var(--ar-value-size) + 1px);
+  font-weight: var(--ar-weight-medium); /* the chosen option is the row's answer */
+  font-size: var(--ar-value-size);
   color: var(--ar-value-ink);
 }
 
@@ -498,7 +498,7 @@
   min-width: 0;
   text-align: center;
   font-family: var(--ar-font-ui);
-  font-size: calc(var(--ar-value-size) + 1px);
+  font-size: var(--ar-value-size);
   font-weight: var(--ar-weight-text);
 }
 .ar-number[data-align='end'] :is(.ar-number__value, .ar-number__input) {
@@ -518,6 +518,7 @@
   min-width: 0;
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
+  font-weight: var(--ar-value-weight); /* the figure keeps its weight while it is typed */
   color: var(--ar-value-ink-hi);
   text-align: center;
 }

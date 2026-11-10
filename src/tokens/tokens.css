@@ -80,6 +80,10 @@
   --ar-bind: var(--ar-azure-500);
   --ar-warn: var(--ar-amber-500);
   --ar-fault: var(--ar-rose-500);
+  /* the three axes of a rig: X · Y · Z, the same in every 3D tool */
+  --ar-axis-x: #ef6372;
+  --ar-axis-y: #7cc98a;
+  --ar-axis-z: #6ea6f2;
 
   --ar-tick: rgba(255, 255, 255, 0.2);
   --ar-tick-major: var(--ar-text-low);
@@ -103,10 +107,13 @@
   --ar-paper: var(--ar-text-hi);
   --ar-tone-title: var(--ar-paper);
   --ar-tone-value: var(--ar-paper);
-  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 90%, transparent);
-  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 82%, transparent);
-  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 80%, transparent);
-  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 68%, transparent);
+  --ar-tone-body: color-mix(in srgb, var(--ar-paper) 88%, transparent);
+  --ar-tone-label: color-mix(in srgb, var(--ar-paper) 70%, transparent);
+  --ar-tone-note: color-mix(in srgb, var(--ar-paper) 68%, transparent);
+  --ar-tone-hint: color-mix(in srgb, var(--ar-paper) 58%, transparent);
+  /* a name is quiet, its answer is loud: how much of its ink a control's own label keeps beside
+     the readout (slider, number field, colour, meter). The readout keeps all of it. */
+  --ar-name-strength: 78%;
   /* the accent as text: blended toward the ink, so small words stay readable on glass in any accent */
   --ar-tone-accent: color-mix(in oklab, var(--ar-signal) 50%, var(--ar-text-hi));
 
@@ -155,8 +162,9 @@
 :root {
   /* the default set, Sleek: Inter for every small word, crisp at control sizes; Manrope for titles */
   --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  /* figures and small marks: readouts, counts, badges, ticks */
-  --ar-font-num: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  /* figures and small marks: readouts, counts, badges, ticks. The sans itself, set with tabular
+     digits (.ar-theme), so numbers line up without a second, coding voice in the panel */
+  --ar-font-num: var(--ar-font-ui);
   /* code */
   --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* a serif for the editorial voice: quotes, and titles set as editorial */
@@ -178,9 +186,9 @@
   --ar-track-heading-sm: -0.024em;
   --ar-leading-heading: 1.02;
   --ar-prose-scale: 1;
-  --ar-leading-prose: 1.7;
+  --ar-leading-prose: 1.6;
   --ar-lead-style: normal;
-  --ar-weight-lead: 500;
+  --ar-weight-lead: 400;
   --ar-lead-scale: 1;
   --ar-accent-style: normal;
   --ar-weight-accent: 200;
@@ -190,6 +198,9 @@
   --ar-weight-mark: 500;
   /* titles: narrower and more drawn than the reading face, so a title is told by its shape */
   --ar-font-display: 'Manrope', var(--ar-font-ui);
+  /* small titles on a pane (a section's name): the title face where it is a sans. A collection whose
+     title face is a serif keeps the sans here, so a 14px name stays crisp beside its controls */
+  --ar-font-heading: var(--ar-font-display);
 
   /* weights — four, each with one job. Nothing under 28px is ever lighter than regular: thin
      strokes vanish on glass. Thin exists for the one big figure. */
@@ -197,7 +208,7 @@
   --ar-weight-light: 400; /* kept for themes that ask for it: resolves to regular */
   --ar-weight-regular: 400; /* prose, values, menu rows */
   --ar-weight-medium: 500; /* labels, tabs, small marks */
-  --ar-weight-title: 500; /* section and panel titles in the default set */
+  --ar-weight-title: 600; /* titles up to 20px: firm, so a small title still leads. Only display sizes go light */
   --ar-weight-bold: 600; /* section names, strong text */
   --ar-weight-black: 700; /* the one word that must win: a figure's number, a primary button */
   --ar-weight-text: var(--ar-weight-regular);
@@ -211,16 +222,16 @@
   --ar-read-statement: 20px;
   --ar-read-numeral: 28px;
   --ar-read-display: 24px; /* 28 with the default set */
-  --ar-read-title: 16px; /* 18 with the default set */
+  --ar-read-title: 18px; /* 20 with the default set */
   --ar-read-heading: 14px; /* 16 with the default set */
-  --ar-read-subheading: 13px;
-  --ar-read-lead: 14px;
-  --ar-read-body: 13px;
-  --ar-read-note: 12px;
+  --ar-read-subheading: 14px;
+  --ar-read-lead: 16px;
+  --ar-read-body: 14px;
+  --ar-read-note: 13px;
   --ar-read-quote: 16px;
   --ar-read-figure: 28px;
   /* the control scale: the sizes a control system needs. 12 is the floor; nothing is set smaller. */
-  --ar-text-xs: 11px; /* hints, captions, port names */
+  --ar-text-xs: 12px; /* hints, captions, meta lines: the label size, told apart by tone, not by shrinking */
   --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
   --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
   --ar-text-lg: 14px; /* sheet titles, the palette's query */
@@ -232,7 +243,7 @@
      never under 11px. Sentence case by default; a collection that wants tracked capitals turns
      the caps switch on (--ar-caps-case: uppercase, --ar-caps-on: 1). */
   --ar-caps-xs: 11px; /* the smallest mark: keycaps, port tags, drop hints */
-  --ar-caps-sm: 11px; /* kickers, foot lines, counts, badges, section numbers */
+  --ar-caps-sm: 12px; /* kickers, foot lines, counts, badges, section numbers: the label size */
   --ar-caps-case: none;
   --ar-caps-on: 0; /* 1: marks and control labels take their tracking */
 
@@ -266,14 +277,15 @@
 [data-ar-theme],
 [data-ar-material],
 [data-ar-type] {
-  --ar-type-section: var(--ar-weight-bold) 11px / 16px var(--ar-font-ui); /* a category: small spaced capitals */
-  --ar-type-group: 600 11px / 16px var(--ar-font-ui);
-  --ar-type-value: 500 12px / 18px var(--ar-font-ui);
-  --ar-type-label: 500 12px / 18px var(--ar-font-ui);
+  --ar-type-panel: 600 16px / 22px var(--ar-font-display); /* the panel's name: the title face, the largest line on the pane */
+  --ar-type-section: 600 14px / 20px var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
+  --ar-type-group: 600 12px / 18px var(--ar-font-ui); /* a group inside a section: sentence case, in the accent */
+  --ar-type-value: 550 13px / 18px var(--ar-font-ui); /* the answer: a size up, firm, in the full ink */
+  --ar-type-label: 400 12px / 18px var(--ar-font-ui); /* the name: regular and quiet, so the answer beside it speaks */
   --ar-type-note: 400 12px / 18px var(--ar-font-ui);
   --ar-type-hero: 400 28px / 32px var(--ar-font-ui);
   --ar-type-quote: italic 400 16px / 22px var(--ar-font-serif);
-  --ar-track-role: 0.08em; /* the capitals of a group's name */
+  --ar-track-role: 0; /* no tracked capitals in a panel: names are set in sentence case */
 }
 
 /* ---------- space: one scale; every gap and padding in the family comes from it ----------
@@ -298,19 +310,19 @@
 [data-ar-density='standard'] {
   --ar-h: 28px;
   --ar-label-size: 12px;
-  --ar-value-size: 12px;
+  --ar-value-size: 13px; /* a readout is a size above its name */
   --ar-pad-x: 10px;
   --ar-gap: 7px;
   --ar-row-gap: var(--ar-space-4);
   --ar-group-gap: var(--ar-space-6);
-  --ar-section-gap: 16px; /* air on each side of the hairline between sections */
+  --ar-section-gap: 18px; /* air on each side of the hairline between sections: over twice a row gap, so groups part at a glance */
   --ar-panel-pad-x: var(--ar-space-7);
   --ar-panel-pad-y: var(--ar-space-6);
 }
 [data-ar-density='dense'] {
   --ar-h: 26px;
-  --ar-label-size: 11px;
-  --ar-value-size: 11px;
+  --ar-label-size: 12px; /* dense is tighter rows, not smaller words */
+  --ar-value-size: 13px;
   --ar-pad-x: 8px;
   --ar-gap: 6px;
   --ar-row-gap: var(--ar-space-3);
@@ -322,7 +334,7 @@
 [data-ar-density='comfort'] {
   --ar-h: 32px;
   --ar-label-size: 13px;
-  --ar-value-size: 13px;
+  --ar-value-size: 14px;
   --ar-pad-x: 12px;
   --ar-gap: 8px;
   --ar-row-gap: 10px;

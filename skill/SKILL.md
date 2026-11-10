@@ -57,7 +57,7 @@ This writes the kit to `src/artinos-ui/`, or to `artinos-ui/` when there is no `
 - the chosen themes;
 - `index.ts` and `artinos.css`;
 - `README.md`;
-- `docs/components.md`, `docs/catalogue.md` and `docs/theming.md`.
+- `docs/design.md` (the rules of the look), `docs/components.md`, `docs/catalogue.md` and `docs/theming.md`.
 
 `setup` also installs this skill into the project's `.claude/skills/`, and prints the import lines for the detected entry file. `export` does the kit alone.
 
@@ -65,7 +65,7 @@ Options:
 - `--dry-run` previews the files.
 - `--force` updates an existing kit; files it no longer needs are removed.
 - `--custom my-theme.css` adds a Theme Studio export (repeatable).
-- `--type couture,editorial` adds type collections (font pairings with their own tuning; `sleek`, the default: Manrope titles over crisp Inter labels and text, with JetBrains Mono for figures, always comes along; `geist` is Geist and Geist Mono with tracked capitals). Use them with `<ArtinosTheme type="luxe">`. Each changes the whole voice of the page, not just the font. Pick one that suits the brand: `sleek-air`, `sleek-serif`, `sleek-sharp` and `sleek-compact` (variants of the default), `instrument` (balanced, with a serif opening line), `editorial` (serif paragraphs, for long text), `book` (a well-set book), `couture` (very large light serif titles), `contrast` (dramatic high-contrast serif), `newsroom` (heavy headlines over a book serif), `soft` (warm serif titles), `round` (light and round), `wide` (expanded titles), `swiss` (bold and tight), `bold` (extra-bold product voice), `character` (titles with personality), `industrial` (heavy capitals), `terminal` (a mono console), `quiet` (small and restrained), `clean` (tidy), `legible` (reading comes first). Earlier ids still work. See `references/theming.md` → Type collections.
+- `--type couture,editorial` adds type collections (font pairings with their own tuning; `sleek`, the default: Manrope titles over crisp Inter labels and text, figures in the same Inter with tabular digits, always comes along; `geist` is Geist and Geist Mono with tracked capitals). Use them with `<ArtinosTheme type="luxe">`. Each changes the whole voice of the page, not just the font. Pick one that suits the brand: `sleek-air`, `sleek-serif`, `sleek-sharp` and `sleek-compact` (variants of the default), `instrument` (balanced, with a serif opening line), `editorial` (serif paragraphs, for long text), `book` (a well-set book), `couture` (very large light serif titles), `contrast` (dramatic high-contrast serif), `newsroom` (heavy headlines over a book serif), `soft` (warm serif titles), `round` (light and round), `wide` (expanded titles), `swiss` (bold and tight), `bold` (extra-bold product voice), `character` (titles with personality), `industrial` (heavy capitals), `terminal` (a mono console), `quiet` (small and restrained), `clean` (tidy), `legible` (reading comes first). Earlier ids still work. See `references/theming.md` → Type collections.
 - `--no-fonts` drops the Google Fonts import, for offline apps or a strict CSP; system fonts are the fallback.
 - `--no-materials` drops the optional `material` overrides.
 - `--no-docs` leaves out the guides. Keep them unless asked: they let later sessions work without the package.
@@ -99,7 +99,18 @@ Next.js App Router: every stateful component file starts with `'use client'`, an
 
 ### 5. Build the UI
 
-Read `references/catalogue.md` first: it lists every *kind* of every component and which to use for a given parameter. Then `references/components.md` for every prop, default and example. The family is wide, and a panel that shows every number as a plain slider wastes most of it.
+Read three references, in this order, before writing a panel:
+1. `references/design.md`: the rules of the look. The levels of a panel, the reading scale of a page, layout, colour, what never to do, one panel built to the rules and the check to run on a screenshot. It is short; read all of it.
+2. `references/catalogue.md`: every *kind* of every component and which to use for a given parameter.
+3. `references/components.md`: every prop, default and example.
+
+The family is wide, and a panel that shows every number as a plain slider wastes most of it.
+
+**What a finished ARTINOS screen looks like**, in four lines (the rest is in `design.md`):
+- **A name is quiet, its answer is loud.** Labels are 12 regular in a soft ink; values are 13, firm, in the full ink. You get this by passing `label` and a value, and by never styling either.
+- **Five levels, each drawn by a component:** `Panel title` (16) · `Section title` (14) · value (13) · label (12) · `description` / `hint` / `subtitle` (12, quieter). On a page: `Text` `title` 20 · `heading` 16 · `lead` 16 · `body` 14 · `note` 13.
+- **Neighbours differ in two ways** (size, weight, ink or face). If two lines next to each other look the same, one is in the wrong role: change the role, not the CSS.
+- **Air and hairlines group, not boxes:** rows 8 apart, sections 18 either side of a line, one label column per group.
 
 **Pick the face from the parameter**, not from habit:
 
@@ -131,9 +142,18 @@ Conveniences that are easy to miss:
 
 **Compose the panel by the rules** (`references/catalogue.md`, *Layout and text*):
 - every gap from the space scale: `Stack` / `Inline` with `gap="row"`, `"group"` or a step; never hand-set margins, pixel gaps or font sizes;
-- every piece of text a `Text` role (`title` · `body` · `caption` · `kicker` · `value`…); at most three sizes in a panel; sentence case, capitals only for small headings;
+- every piece of text a `Text` role (`title` · `body` · `caption` · `kicker` · `value`…) or a component's own (`title`, `subtitle`, `label`, `description`, `hint`); sentence case, no capitals;
 - one label column per group: `labelWidth` on the Panel or Section;
 - a Section holds one idea and about seven rows; related numbers side by side (`columns`); a list of things is `ItemList` / `ItemRow`; one `primary` action per view.
+
+**The ARTINOS look: build this way by default.** These are the package's own rules, not suggestions:
+- **A tool around a canvas is a `Dock`.** The canvas goes in `viewport`; browsers and lists dock left, settings right, readouts and consoles bottom. Never hand-position floating `Panel`s with CSS. Each pane's actions go in a `PanelBar`, which rises into the tab strip.
+- **Settings come from data.** Describe each value once (key, label, group, kind, range, `face`: percent, log, count, bipolar, degrees) and let `createParamPanes` set it: the right control per value, groups with icon, count and reset, a toggle that owns a group as its on/off, Advanced and Reset in the pane bar, dockable groups. Never hand-write a slider per setting.
+- **Every group says what it is at a glance:** an `icon`, a `count`, a reset while it differs from its defaults, and `enabled` when the whole group can be off.
+- **A list leads with what is current.** The current item first, on a `Section variant="card" heading="text"` with its description and a live `Badge`; then the rest in a `SectionGroup accordion` of categories, each row an `ItemRow` with a `swatch` or icon and `meta`, the current one `selected`.
+- **Readouts live in a pane** (`StatStrip`, `Meter`, `Sparkline`), never loose over the canvas.
+- **Type is the package's, never yours.** No font sizes, weights or colours in the app: a section title is a small sentence-case title, a label is never larger than its value, figures are the sans with tabular digits (no coding mono in a panel). Sleek is the default type set. The package already sets all of this; an app that adds its own `font-family`, `font-size`, `text-transform: uppercase`, `letter-spacing` or a monospace font on panel text breaks it. The rules it holds: one voice (words and figures in one sans, mono only for code), no tracked capitals, 12px floor for every word in a panel at any density (quieter text is told by ink and weight), panel titles 16 and section names 14 in the title face at semibold, values 13 firm in the full ink, labels 12 regular at 70% ink. For a part of your own, take a whole role: `font: var(--ar-type-label); color: var(--ar-tone-label)` (also `-value`, `-section`, `-group`, `-panel`, `-note`). If text looks wrong, fix the token in the package, never the app.
+- **Glass stays as the theme draws it.** Pick a glass or frost theme for a canvas, and do not add washes or tints over panels.
 
 **Compose a studio or inspector with the whole family**, not bare panels:
 - a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
@@ -147,7 +167,7 @@ Conveniences that are easy to miss:
 
 ### 6. Verify
 
-Run the project's type-check and build, then look at it in the browser. Take a screenshot and check it against the catalogue's *Layout and text* rules and checklist — gaps from the scale, one label column, three text sizes at most, nothing cut by hand — before calling it done. Then the usual failures:
+Run the project's type-check and build, then look at it in the browser. Take a screenshot and run the check at the end of `references/design.md` on it: from arm's length the panel name, a section name, a value and a label must be told apart without reading them; one accent, one primary action, one label column per group; no text set by hand, in capitals, in a mono or under 12px. Then the catalogue's checklist for the controls themselves. Then the usual failures:
 - **Controls unstyled:** `artinos.css` isn't imported at the root, or it's imported in a lazily loaded module.
 - **Glass themes look flat:** they need something behind them. Over a flat background they look like a plain tinted card.
 - **Theme looks like studio:** the id you used isn't in the kit's `tokens/themes.css`, and unknown ids fall back silently. Re-export with it.

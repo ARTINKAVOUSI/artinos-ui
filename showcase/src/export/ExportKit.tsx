@@ -55,7 +55,7 @@ function customCss(c: CustomTheme, names: string[]): CustomThemeCss {
 
 const COMPONENT_GROUPS = [...new Set(KIT_COMPONENTS.map((c) => c.group))];
 /** Everything but the TSL compiler, which needs three: that one is picked by hand. */
-const ALL_COMPONENTS = KIT_COMPONENTS.filter((c) => c.id !== 'GraphGPU').map((c) => c.id);
+const ALL_COMPONENTS = KIT_COMPONENTS.filter((c) => c.id !== 'GraphGPU' && c.id !== 'TransformGizmo').map((c) => c.id);
 
 const kb = (n: number) => (n < 1024 ? n + ' B' : (n / 1024).toFixed(n < 10240 ? 1 : 0) + ' KB');
 

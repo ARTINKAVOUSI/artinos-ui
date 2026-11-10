@@ -33,7 +33,7 @@
 }
 .ar-stat-strip__value small {
   margin-left: 2px;
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-code);
+  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-num);
   letter-spacing: 0;
   color: var(--ar-text-low);
 }

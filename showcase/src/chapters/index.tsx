@@ -6,6 +6,7 @@ import { ControlsChapter } from './Controls';
 import { DisplayChapter } from './Display';
 import { LayoutChapter } from './Layout';
 import { OverlaysChapter } from './Overlays';
+import { RigChapter } from './Rig';
 import { SlidersChapter } from './Sliders';
 import { WorkspaceChapter } from './Workspace';
 
@@ -14,6 +15,7 @@ export function ComponentChapters() {
     <ToastProvider>
       <SlidersChapter />
       <ControlsChapter />
+      <RigChapter />
       <ActionsChapter />
       <DisplayChapter />
       <LayoutChapter />

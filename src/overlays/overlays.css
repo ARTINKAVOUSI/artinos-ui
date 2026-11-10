@@ -572,12 +572,13 @@
 .ar-menu__separator {
   margin: 5px 10px;
 }
-/* group headings are small headings: the one place a sheet keeps capitals */
+/* group headings: a small semibold line in the label tone, sentence case (a type set with capitals
+   switched on tracks them) */
 .ar-menu__label,
 .ar-palette__group {
-  font-size: var(--ar-text-xs);
-  font-weight: var(--ar-weight-medium);
-  letter-spacing: 0.08em;
+  font-size: var(--ar-text-sm);
+  font-weight: var(--ar-weight-bold);
+  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   text-transform: var(--ar-caps-case);
 }
 .ar-menu__label {
