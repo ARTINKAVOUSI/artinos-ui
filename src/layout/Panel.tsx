@@ -208,7 +208,7 @@ export interface SectionProps {
   onOpenChange?: (open: boolean) => void;
   /** Remember open or closed across visits (localStorage), under this key. Makes it collapsible. */
   storageKey?: string;
-  /** caps: a small capitals heading (default) · text: a larger sans title (inspector) */
+  /** caps: a small sentence-case name (default) · text: a larger title (inspector) */
   heading?: 'caps' | 'text';
   /** plain: a heading over its rows, on a hairline (the default) · card: the group sits on a soft tonal surface. */
   variant?: 'plain' | 'card';
@@ -394,7 +394,7 @@ export function Section({
 export interface FieldProps {
   label: ReactNode;
   children?: ReactNode;
-  /** Label column width (inline layout). Default 72px (token --ar-field-label-w). */
+  /** Label column width (inline layout). Default 108px (token --ar-field-label-w). */
   labelWidth?: number | string;
   /** inline: the label in a column beside the control (inspectors) · stacked: the label above it (forms). */
   layout?: 'inline' | 'stacked';

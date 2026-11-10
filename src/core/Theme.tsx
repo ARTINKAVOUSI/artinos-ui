@@ -15,7 +15,7 @@ export function themeStyle(tokens: TokenOverrides | undefined): CSSProperties {
 
 export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   /** A built-in theme (see THEMES), or the name of your own `[data-ar-theme='…']` CSS block
-   *  — e.g. one exported from the showcase theme editor. Default studio. */
+   *  — e.g. one exported from the showcase theme editor. Default nimbus (DEFAULT_THEME). */
   theme?: ThemeName | (string & {});
   /** Advanced: override the theme's control finish for every control inside. */
   material?: MaterialName;

@@ -304,7 +304,7 @@ export const THEME_META: Record<ThemeName, ThemeMeta> = {
   glacier: { label: 'Glacier', family: 'atelier-frost', kind: 'glass', description: 'Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals.', swatch: ['#dceaf0', '#f6fcff', '#17617e'], parent: 'frost-light' },
   wisteria: { label: 'Wisteria', family: 'atelier-frost', kind: 'glass', description: 'Lilac silk frost. Opaline controls, plum lettering and muted violet accents.', swatch: ['#e7dfef', '#fbf4ff', '#715084'], parent: 'frost-light' },
   dune: { label: 'Dune', family: 'atelier-frost', kind: 'glass', description: 'Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering.', swatch: ['#342e29', '#c7b89e', '#e1c395'], parent: 'satin' },
-  studio: { label: 'Studio', family: 'studio', kind: 'solid', description: 'Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The default.', swatch: ['#101112', '#d2d2ce', '#3cbca5'] },
+  studio: { label: 'Studio', family: 'studio', kind: 'solid', description: 'Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The base every kit carries.', swatch: ['#101112', '#d2d2ce', '#3cbca5'] },
   'studio-light': { label: 'Studio Light', family: 'studio', kind: 'solid', description: 'The same instrument on a light neutral desk. White satin controls.', swatch: ['#e9e9e7', '#ffffff', '#0a7c6b'] },
   optical: { label: 'Optical', family: 'signature', kind: 'solid', description: 'The original ARTINOS prototype: polished translucent insert on graphite.', swatch: ['#090909', '#dcd9d3', '#2fb39c'], parent: 'studio' },
   reference: { label: 'Reference', family: 'signature', kind: 'glass', description: 'The ARTINOS Figma source: polished bar, double-line handle, mono 700.', swatch: ['#2a2720', '#e3e3e3', '#1adfb8'], parent: 'studio' },
@@ -419,7 +419,7 @@ export const TYPE_META: Record<TypeCollection, TypeMeta> = {
 export interface ScopeProps {
   /** Advanced: override the theme's control finish for this control. */
   material?: MaterialName;
-  /** Control height: dense 24 · standard 26 · comfort 30. Inherits when omitted. */
+  /** Control height: dense 26 · standard 28 · comfort 32. Inherits when omitted. */
   density?: Density;
 }
 

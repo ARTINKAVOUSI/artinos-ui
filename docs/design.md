@@ -10,8 +10,21 @@ ARTINOS is a precision instrument on glass: control panels, inspectors, studio t
 
 1. **A name is quiet, its answer is loud.** In every row the label is small, medium-weight and grey; the value beside it is a size larger, semibold and in the full ink. The eye lands on the number, then finds its name.
 2. **Every level is told two ways at once.** Two neighbouring lines always differ in at least two of size, weight, ink and face. If two neighbours look alike, one of them is in the wrong role.
-3. **Space and hairlines group things, not boxes.** Rows sit close, sections stand well apart over a line, and a heading sits nearer to what it heads than to what came before.
+3. **Space and hairlines group things, not boxes.** Rows sit close, sections stand well apart by air alone, each section carries a hairline through its own title row, and a heading sits nearer to what it heads than to what came before.
 4. **One scale, one method, twelve systems.** Sizes never change. A type system changes the faces, weights and tracking, so a screen keeps its proportions whichever system it uses.
+
+## The feel
+
+ARTINOS should feel like a well-made instrument: calm, exact, quiet until touched, and never decorated. When a choice is open, take the more restrained one.
+
+- **Calm over the scene.** Glass lets the work show through. The controls hold still and stay out of the way until a hand is on them; nothing glows or moves for decoration.
+- **Exact.** Every value is a figure with its unit, in tabular digits, in the kind of control its parameter is: a frequency is logarithmic, a focal length a ruler, white balance a gradient. Precision is shown, not claimed.
+- **Restrained.** Reference-class faces, one accent, hairlines instead of boxes, air instead of dividers. Fewer, finer marks. A screen should look designed at arm's length and calm up close.
+- **Direct.** The control is the thing you touch: the capsule is the slider, the seam is its handle, the readout is where you type. Focus lifts the control instead of drawing a ring around it; a changed value shows a dot that becomes its reset.
+- **Alive where it matters.** Numbers roll to their new value, levels move in place, a folding section rolls up like a list. Motion explains a change and settles; it never loops for attention.
+- **Control panels first.** Inspectors, parameter docks and studio tools are the main use. The pages around them follow the same rules, a size up.
+
+What it is not: a dashboard of coloured cards, a themed or playful look, bold borders, drop shadows on every box, capitals and tracking, icons on every heading, or a tint over the glass to rescue text.
 
 ## The type systems
 
@@ -39,7 +52,7 @@ How the pairings are built, so a screen keeps them right:
 
 ### Each system's look
 
-A system is more than its fonts: it sets how weight, colour, rules and marks separate the levels, and every Panel, Section and StatStrip draws it. The result is nine looks, not nine fonts.
+A system is more than its fonts: it sets how weight, colour, rules and marks separate the levels, and every Panel, Section and StatStrip draws it. The result is twelve looks, not twelve fonts.
 
 | system | headlines | panel name | section name | groups | figures (StatStrip) |
 |---|---|---|---|---|---|
@@ -120,7 +133,7 @@ The pattern every section of a page follows, in this order:
 5. **Facts** as a key table (`dl`, key in the mark face, meaning in `note`) or a list (`Text as="ul"`), never as a sentence of commas.
 6. **Help** that must not be missed in a `Callout`, after the text it qualifies.
 
-Spacing does the grouping: about 48px and a hairline between sections, 16px between the parts of a section's head, 12px between paragraphs. `Text` roles placed one after another already do this; do not add margins.
+Spacing does the grouping: about 48px and a hairline between the sections of a page (a panel's sections part by air alone, see Layout), 16px between the parts of a section's head, 12px between paragraphs. `Text` roles placed one after another already do this; do not add margins.
 
 - Lines stay short: `body` and `lead` stop at 64 characters on their own; never stretch a paragraph across a wide card.
 - Emphasis is rare: one `strong` per paragraph, one `mark` or `accent` per view.
@@ -158,7 +171,7 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 - **Rows** name a value: `Field` puts a label beside one or more controls (with none, its value is the answer); `PropertyRow` adds the changed dot that becomes its reset, and a binding.
 - **Controls** set one value each, in the kind the parameter takes (see `catalogue.md`).
 - **Readouts** show what is: `StatStrip` first, then `Meter`, `Sparkline`, `Stat`.
-- **Lists** are `ItemList` / `ItemRow`, never a column of buttons.
+- **Lists** are `ItemList` / `ItemRow`, never a column of buttons. Pick the look from what is listed: `plain` + `size="sm"` for a tree or outliner, `divided` + `size="lg"` for media with `thumbnail`s, `grid` for picking by look (materials, images), `cards` for a few rich choices. A row's answer is its `value`, its state a `status` light, work under way its `progress`; `empty` says what to do when there is nothing yet.
 - **Text** explains: `Text variant="overline"` names a sub-group, `note` helps, a `Callout` must not be missed.
 - Related numbers sit side by side (`Section columns={3}`, `RangeSlider`, `XYPad`). One `primary` action per view, last in its row, after a `ghost` Cancel.
 
@@ -183,6 +196,8 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 - A label typed with its unit ("Gain (dB)"). Use `format` / `unit`.
 - A title made from a bold `body`, or a hint made from a faded `label`. Use the role that exists.
 - Every number as a plain slider. Pick the kind from `catalogue.md`.
+- An icon before a section's title, or a line or box drawn between sections. A section's hairline is in its own title row.
+- A control placed straight in a panel with no section around it, or a panel positioned by hand over a canvas.
 - Edits inside the kit folder. Change tokens (`tokens={{ … }}` or `--ar-*` in your CSS); a re-export overwrites kit files.
 
 ## A page section built to the rules
@@ -238,5 +253,6 @@ Take a screenshot and look at it from arm's length.
 - Can you tell a section's eyebrow, title, lead and body apart without reading them? A panel name, a section name, a value and a label?
 - Does every value stand out from its label, and every section from the one above?
 - Is there one type system, one accent, one primary action, one label column per group?
+- Is every control in a section, every section in a panel? Does each section carry its hairline in its title row, with no icon and no line between sections?
 - Is any text set by hand, in capitals, in a mono outside marks and code, or under 12px? Remove it.
 - Is any paragraph wider than a comfortable line, or any number missing its unit?

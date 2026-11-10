@@ -10,7 +10,8 @@ Contents:
 - [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
-- [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
+- [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · NodeGraph · LiveGraphView · GraphGPU
+- [Rig](#rig): ViewGizmo · Trackball · Vector3Field · TransformGizmo
 - [Scopes](#scopes): theme · density · material
 - [Layout and text](#layout-and-text): spacing · type roles · alignment · grouping
 - [Checklist](#checklist-for-a-finished-panel)
@@ -259,7 +260,7 @@ Key caps as raised keys: `keys={['mod', 'K']}`. `mod` is ⌘ on Apple platforms 
 
 ### Badge
 
-A status tag drawn as a wash and a hairline in its colour, never a solid fill. `tone` `'neutral' | 'live' | 'warm' | 'danger'`; `dot` adds a leading dot, and a `live` dot breathes.
+A small status plate: a recessed well with an LED in the state's colour and calm text. `tone` `'neutral' | 'live' | 'warm' | 'danger'`; every toned badge carries its LED, a neutral one only with `dot`, and a `live` LED breathes.
 
 ## Display
 
@@ -300,7 +301,7 @@ Sections that behave together. `accordion` keeps one open at a time (each Sectio
 
 ### Section
 
-A titled group: its title alone, with no icon, and a hairline running through the title row from the name to its count; sections stand apart by air, with no line between them. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · title · hairline · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
+A titled group: its title alone, with no icon, and a hairline running through the title row from the name to its count; sections stand apart by air, with no line between them. A section inside a section is a group, its name 12px semibold in the accent, sentence case, on a hairline of its own. Everything about the group lives in its one title row: LED · title · hairline · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
 
 | kind | props | behaviour |
 |---|---|---|
@@ -308,13 +309,13 @@ A titled group: its title alone, with no icon, and a hairline running through th
 | collapsible | `collapsible`, `open` / `defaultOpen` / `onOpenChange` | click the title row or chevron to fold |
 | switchable | `enabled` / `defaultEnabled` / `onEnabledChange` | an LED before the title carries the on/off; one click folds, double-click or Shift+Enter switches; off folds closed and makes the body inert, values kept |
 
-- `heading`: `'caps'` (a small sans heading in capitals, default) or `'text'` (a larger sans title; inspectors).
+- `heading`: `'caps'` (default: a small sentence-case name, the brightest line of its group) or `'text'` (a larger title; inspectors).
 - `count`: quiet info right after the title: a number (it rolls) or a note such as `"1 changed · 3"` (wrap a word in `<b>` to lift it).
 - `actions`: slim things that belong to the group, a `Badge` or an `IconButton`.
 
 ### Field
 
-A label column beside one or more controls: `Width [268] [Fixed ˅]`. `label` required; `labelWidth` (default 72px, the `--ar-field-label-w` token). Put a `NumberField`, `Select appearance="well"`, `Switch variant="compact"`, `Segmented`, `ToggleGroup` or `ColorField` in it.
+A label column beside one or more controls: `Width [268] [Fixed ˅]`. `label` required; `labelWidth` (default 108px, the `--ar-field-label-w` token). Put a `NumberField`, `Select appearance="well"`, `Switch variant="compact"`, `Segmented`, `ToggleGroup` or `ColorField` in it.
 
 ### Tabs
 
@@ -384,13 +385,27 @@ Everything that floats sits on one frosted sheet and portals to `<body>` with th
 | the name or shortcut of a control | `Tooltip` |
 | any command by name, from the keyboard | `CommandPalette` |
 
-## Workspace
+## Rig
+
+Controls for things in space. Pick by what is being set:
+
+| the value is… | use | notes |
+|---|---|---|
+| where the camera looks from | `ViewGizmo` | a ball with axis caps: orbit by drag, snap to a view by a click; put it in a corner of the viewport or at the top of a camera panel |
+| an object's rotation | `Trackball` | tumble, turn about one axis by its ring, roll by dragging outside the ball; pass the camera as `view` so a drag turns it the way it turns on screen |
+| a position, scale or any three related numbers | `Vector3Field` | one row in the axis colours; `linked` for a uniform scale; never three loose NumberFields |
+| moving, turning or scaling the object itself, in the scene | `TransformGizmo` | handles drawn in three.js (needs `three`); the panel's Trackball and Vector3Field show the same values |
+
+- Orientations are quaternions `[x, y, z, w]`, straight from and to three.js; show Euler degrees only as a readout.
+- In a panel the rig parts sit in a Section like any part: a "Transform" section with a `Vector3Field` for position and scale and a `Trackball` for rotation.
+
+## Dock and graph
 
 ### Dock
 
 A studio workspace in one component. Panels sit as tabs in docks on the left, right and bottom, or float; an optional `viewport` (a canvas, a video, an image) fills the space behind them.
 
-Each panel: `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer? }`. `id` must be stable: the saved layout is keyed by it.
+Each panel: `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer?, capabilities? }`. `id` must be stable: the saved layout is keyed by it. A panel is a MetaBlock: `capabilities` (`closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, all on by default) says what it may do, and drags, menus and window buttons follow it; `{ closable: false, floatable: false }` keeps a panel docked and open.
 
 What a user can do without any wiring:
 - drag a tab out to float it, onto an edge to dock it, onto another dock to merge, into a pane to split;
@@ -400,7 +415,7 @@ What a user can do without any wiring:
 
 Dock props: `storageKey` (saves the arrangement; restored only while every saved id still exists), `sizes` (fractions per edge; default left .22, right .24, bottom .36), `floatBounds`, `commands` (extra palette entries), `toolbar` (the right end of every strip), `brand` (a corner chip), `viewProps` (padding, gap, snapping), `onReady(api)`.
 
-Inside a panel: `useDock()` gives `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible }`; `<PanelBar>` holds the panel's toolbar and rises into the tab strip when there is room; the body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content. A panel that throws shows a Retry card instead of taking the dock down. The Dock fills its parent, so give the parent a height.
+Inside a panel: `useDock()` gives `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible, addPanel(panel, place?), removePanel(id) }`; `workspace` is the MetaBlock engine (`floatBlock`, `dockBlock`, `maximizeBlock`, `returnBlock`, `undo`, `redo`, `serialize`); `<PanelBar>` holds the panel's toolbar and rises into the tab strip when there is room; the body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content. A panel that throws shows a Retry card instead of taking the dock down. The Dock fills its parent, so give the parent a height.
 
 ### MetaBlock
 
@@ -436,8 +451,8 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
-- **type**: the type system, one of twelve complete designs: one family (`sleek` by default for control panels and tools, `product`, `native`, `legible`) a pairing of a display face with a text face (`instrument`, `salon`, `wide`, `grotesk`, `editorial`), or hairline control text under heavy titles (`fine`, `mass`, `round`); see design.md.
-- **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
+- **type**: the type system, one of twelve complete designs: one family (`sleek`, `product`, `native`, `legible`), a pairing of a display face with a text face (`instrument`, `salon`, `wide`, `grotesk`, `editorial`), or hairline control text under heavy titles (`fine`, the default, `mass`, `round`); see design.md.
+- **density**: `dense` (26px controls; docks and strips), `standard` (28px; default), `comfort` (32px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
 ## Layout and text
@@ -455,13 +470,13 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 | panel | `--ar-panel-pad-x` / `-y` | 20/16 · 12/12 · 24/20 px | the panel's edge and its content |
 
 - Compose with `Stack` (a column) and `Inline` (a row): `gap="row"`, `gap="group"` or a step `gap={4}`. Never hand-set margins or pixel gaps.
-- Sections placed one after another in a Panel are already a group gap apart; rows inside them a row gap. Don't add spacers.
+- Sections placed one after another in a Panel are already `--ar-section-apart` apart (26px at standard); rows inside them a row gap. Don't add spacers.
 - Set density once, on the theme scope or the panel (`density="dense"`), never per control.
 
 ### A studio or inspector
 Use the whole family, not bare panels:
 - a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
-- settings described as data and set by `createParamPanes` (the right control per value, groups with icon, count, reset and on/off, dockable panes); by hand only when there is no schema, as:
+- settings described as data and set by `createParamPanes` (the right control per value, groups with count, reset and on/off, dockable panes); by hand only when there is no schema, as:
 - inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
 - live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
 - lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;
@@ -516,12 +531,12 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - **Inline emphasis inside a body:** `strong` is bold in the bright ink, `em` turns to the serif's italic, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
 - **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
 - **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.
-- A panel has four sizes, each with its own weight and ink: its name (16 semibold, title face), a section's name (14 semibold, title face), values (13 semibold, full ink) and names, notes and captions (12 regular, 70% ink and quieter). A name is quiet and its answer is loud, so the eye lands on the number first. Figures are the sans with tabular digits. Nothing in a panel is under 12px (ruler ticks and key caps excepted), nothing is in tracked capitals, and nothing but code is in a mono. `design.md` has the whole ladder.
+- A panel has four sizes, each with its own weight and ink: its name (16 semibold, title face), a section's name (14 semibold, title face), values (13 semibold, full ink) and names, notes and captions (names 12 medium at 76% ink, notes and captions 12 at 66% and 54%; in the hairline systems, Fine included, names 300 at 90%). A name is quiet and its answer is loud, so the eye lands on the number first. Figures are the sans with tabular digits. Nothing in a panel is under 12px (ruler ticks and key caps excepted), nothing is in tracked capitals, and nothing but code is in a mono. `design.md` has the whole ladder.
 - `tone` changes ink only for meaning: `low` / `faint` for quieter, `signal` / `warn` / `fault` for state. Never colour text for decoration.
 - Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.
 - A caption goes under what it describes, never above. A kicker goes above a title, never alone.
 - Long text is cut by the kit, never by hand: `truncate` for one line, `lines={2}` to clamp, and controls show the full text as a tooltip when cut. Give full names.
-- Sentence case everywhere ("Env intensity", "Export kit"); capitals only for small headings (section headings, kickers). No full stop after a label or a button.
+- Sentence case everywhere ("Env intensity", "Export kit"), section names included; no capitals. No full stop after a label or a button.
 - Numbers carry their unit through `format` / `unit`, never typed into the label ("Gain −4.5 dB", not "Gain (dB)").
 
 ### Alignment
@@ -537,7 +552,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 
 - A Section holds one idea and about seven rows at most; split a longer one.
 - Related numbers sit side by side: `Section columns={3}` for X · Y · Z, a `RangeSlider` for an interval, an `XYPad` for a pair.
-- Every part of a panel reads as a part. Sections directly in a Panel or dock pane sit on their own cards, so let `count` carry a small fact. `variant="plain"` is for a section that flows on from the one above.
+- Every part of a panel reads as a part. Sections sit on the panel by air and their title-row hairline; `variant="card"` sets the one group that matters most on a soft surface. Let `count` carry one small fact.
 - Open with what matters: `icon`, a bold `title` and a live `Badge` in `actions` say what this is; a `StatStrip` gives the two to four figures someone looks for first.
 - In a row, the label is quiet and the value firm. A small fact beside a value is a `Tag`, not more words: `Friend` `visit 8`, not "friend, visit 8".
 - Name a set of controls inside a section with `Text variant="overline"`. Help that must be remembered goes in a `Callout`, with `<kbd>` for gestures and keys, not in a caption.
@@ -564,5 +579,5 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Every piece of text is a `Text` role or a component's own; from arm's length the panel name, a section name, a value and a label are told apart without reading them.
 - Section titles carry no icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
-- Sentence case; capitals only for small headings; no full stops on labels.
+- Sentence case everywhere, section names included; no capitals; no full stops on labels.
 - Look at it: take a screenshot and check the rules above before calling it done.

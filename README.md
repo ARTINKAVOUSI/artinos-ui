@@ -1,36 +1,32 @@
 # ARTINOS UI
 
-A precision-instrument control system for React. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is the precision zone. There are 44 components, on a token-based design system with **108 themes** (glass, frost, studio, atelier and luxe):
-- sliders, ranges, knobs and XY pads;
-- number, text and colour fields, file drops, switches, toggles, segmented controls and selects;
-- buttons, toolbars, badges, meters, frequency bars and sparklines;
-- panels, tabs and inspector rows;
-- menus, dialogs, toasts, tooltips and a command palette;
-- a dockable studio workspace (Dock, on the MetaBlock engine);
-- a node graph editor.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 49 kit components on a token-based design system with **108 themes** (glass, frost, studio, atelier and luxe) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
-## Design language
+**copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 
-Every component is built from five materials. **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text comes in two voices from one superfamily: the sans for labels, buttons, chips and prose, in sentence case, and the mono for every number; eighteen **type collections**, each with its own title scale, weight, case, paragraph face and line spacing (Sleek by default, with Sleek Air, Serif, Sharp and Compact variants, then Instrument, Editorial, Book, Couture, Contrast, Newsroom, Soft, Sleek, Round, Wide, Swiss, Bold, Character, Industrial, Terminal, Quiet, Clean and Legible) swap the faces with their own tuning. Every number rolls when it changes, and every motion uses the same duration and curve tokens.
+> **AI agents:** read [`AGENTS.md`](AGENTS.md). One command sets a project up or updates it.
+
+## The feel
+
+A well-made instrument: calm over the scene, exact, restrained, direct, and alive only where something changes. Glass lets the work show through; values are figures with their units in the kind of control their parameter is; hairlines and air group things instead of boxes; one accent, reference-class faces, no capitals. Every number rolls when it changes, and every motion uses the same duration and curve tokens. [`docs/design.md`](docs/design.md) holds the whole of it.
+
+**Three levels build every screen:** parts in a **section**, sections in a **panel**. A panel is one thing wherever it sits: a `Panel` on a page, or a panel in a `Dock` around a canvas, where it is a MetaBlock with capabilities (float, dock, tab, split, maximize, close). A section is the one way to group, with a hairline through its own title row. Everything else (rows, controls, readouts, lists, text) is a part inside a section.
+
+**Five materials make every part.** **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text is one voice: the sans for labels, buttons, prose and every number (tabular digits), a mono only for code.
 
 ## Components
 
 | group | components |
 |---|---|
 | Sliders | Slider · RangeSlider · Knob · XYPad |
-| Controls | NumberField · TextField · Switch · ToggleGroup · Segmented · Select · ColorField · FileDrop |
-| Actions | Button · IconButton · Toolbar · Kbd · Badge |
-| Display | Meter · Sparkline · RollingValue |
-| Layout | Panel / Section / Field · Tabs · PropertyRow |
+| Controls | NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop |
+| Rig | ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`) |
+| Actions | Button · IconButton · Toolbar · Kbd · Badge · Tag |
+| Display | Stat · Meter · Spectrum · Progress · Sparkline · RollingValue |
+| Layout | Panel / Section / SectionGroup / Field · Text / Stack / Inline · StatStrip · Callout · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow |
 | Overlays | Menu / ContextMenu · Dialog · Toast · Tooltip · CommandPalette |
-| Dock | Dock / PanelBar / useDock · MetaBlock (the docking engine) |
+| Dock | Dock / PanelBar / useDock · createDockSections · createParamPanes · MetaBlock (the docking engine) |
 | Graph | NodeGraph · LiveGraphView · GraphGPU (needs `three`) |
-
-The full API is in [`docs/components.md`](docs/components.md). Every kind of every component (the six slider faces, the control shapes, the row states) and which to pick for a parameter is in [`docs/catalogue.md`](docs/catalogue.md).
-
-**copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `graph/gpu` compiler.
-
-> **AI agents:** read [`AGENTS.md`](AGENTS.md). One command sets a project up.
 
 ## Use it in a project
 
@@ -41,41 +37,47 @@ From the project's root:
 node "<path-to>/artinos-ui/artinos.mjs" list
 
 # add a kit with the themes and components you want, its guides, and the Claude Code skill
-node "<path-to>/artinos-ui/artinos.mjs" setup --project . --themes frost-deep,onyx --components Slider,Select,Switch,Panel
+node "<path-to>/artinos-ui/artinos.mjs" setup --project . --themes nimbus,frost-deep --components Slider,Select,Switch,Panel
 ```
 
-This writes `src/artinos-ui/`, a trimmed kit with only what you picked, and prints the two import lines for your entry file:
+This writes `src/artinos-ui/`, a trimmed kit with only what you picked, and prints the import lines for your entry file:
 
 ```tsx
 import './artinos-ui/artinos.css';                        // once, at the app root
-import { ArtinosTheme, Panel, Slider } from './artinos-ui';
+import { ArtinosTheme, Panel, Section, Slider } from './artinos-ui';
 
-<ArtinosTheme theme="frost-deep">
-  <Panel title="Material">
-    <Slider label="Roughness" value={rough} onChange={setRough} />
+<ArtinosTheme>                                             {/* nimbus · fine */}
+  <Panel title="Material" subtitle="Optical body">
+    <Section title="Surface" count={1}>
+      <Slider label="Roughness" value={rough} onChange={setRough} />
+    </Section>
   </Panel>
 </ArtinosTheme>
 ```
 
-To change themes or components later, run `export` with `--force`. Other ways to get a kit:
+**Updating a kit:** run `setup` again with everything the kit should hold (its `README.md` lists its themes, type systems and components), first with `--dry-run`, then with `--force`. Then run the type-check: an update can rename or remove a prop, and the app is fixed to the guides, never the kit. Restyle only with tokens, because `--force` rewrites the kit.
+
+Other ways to get a kit:
 - the showcase **Export kit**, which can also include themes you saved in the Theme Studio;
 - copying `src/` whole, which brings all themes and components.
 
 With Claude Code, you can also just ask in any project:
 
-> *"Add an ARTINOS UI inspector panel using `<path-to>/artinos-ui` with the frost-deep theme."*
+> *"Add an ARTINOS UI inspector panel using `<path-to>/artinos-ui`."*
 
 ## Documentation
 
-- [`docs/components.md`](docs/components.md): every component (props, defaults, examples, interaction), requirements and performance.
-- [`docs/theming.md`](docs/theming.md): the 108 themes, solid vs glass, density, token overrides, custom themes and key tokens.
+Read them in this order. Every kit carries all four in its own `docs/`, so a project never needs this folder to keep working.
 
-Every kit carries both guides in its own `docs/`.
+1. [`docs/design.md`](docs/design.md): the look and the feel, the three layout levels, the type systems and scale, what never to do, and the check to run on a screenshot. Read it first.
+2. [`docs/catalogue.md`](docs/catalogue.md): every kind of every component (the slider faces, the control shapes, list looks, row states) and which to pick for a parameter.
+3. [`docs/components.md`](docs/components.md): every prop, default and example, requirements and performance.
+4. [`docs/theming.md`](docs/theming.md): the 108 themes, solid vs glass, scenes, density, token overrides, custom themes and every key token.
 
 ## Showcase
 
 `showcase/artinos-ui-showcase.html` is a self-contained page: double-click it. It has three parts:
-- **Gallery:** nine chapters: Foundations (themes, the five materials, tokens and type, density, motion), then Sliders, Controls, Actions, Display, Layout, Overlays, Workspace, and Make it yours. A sticky index follows your place. Every component is live, in every theme, over a photo backdrop. Link straight to a look with `?theme=ice&density=dense&backdrop=monstera`, or to a section with `#s-meters` / a chapter with `#c-overlays`.
+- **Gallery:** ten chapters: Foundations, Sliders, Controls, Rig, Actions, Display, Overlays, Layout system, Node graph, and Make it yours. A sticky index follows your place. Every component is live, in every theme, over a photo backdrop. Link straight to a look with `?theme=frost-deep&density=dense&backdrop=monstera`, or to a section with `#s-meters` / a chapter with `#c-overlays`.
 - **Theme Studio** (`#studio`): edit every token live, click any part of a component to edit just its tokens (Inspect), and save themes. Export them as CSS, JSON or TSX.
 - **Export kit** (`#export`): pick themes, saved themes and components, then download a `.zip` or write the kit into a folder.
 
@@ -94,6 +96,7 @@ Every kit carries both guides in its own `docs/`.
 
 Kit options:
 - `--themes <ids|all>` and `--components <ids|all>`;
+- `--type <ids|all>` (type systems; `fine`, the default, always comes along);
 - `--out <dir>`;
 - `--custom <file.css>`;
 - `--no-fonts`, `--no-materials` and `--no-docs`;
@@ -107,23 +110,25 @@ artinos-ui/
   src/              the components: what a kit copies into a project
     artinos.css       single stylesheet entry
     index.ts          public exports
-    tokens/           tokens.css · themes.css · materials.css · fonts.css
-    core/             ArtinosTheme · ThemedPortal · RollingValue · utils · hooks · core.css
+    tokens/           tokens.css · themes.css · materials.css · type.css · fonts.css
+    core/             ArtinosTheme · ThemedPortal · RollingValue · utils · hooks · motion · core.css
     slider/           Slider · RangeSlider · engine · HUD parts · slider.css
-    controls/         NumberField · Switch · ToggleGroup · Segmented · ColorField · Select
-                      TextField · FileDrop · Knob · XYPad · controls.css + one sheet each
-    actions/          Button · IconButton · Toolbar · Kbd · Badge · actions.css
-    display/          Meter · Sparkline · display.css
-    layout/           Panel · Section · Field · Tabs · PropertyRow · layout.css
+    controls/         NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented
+                      Select · ColorField · FileDrop · Knob · XYPad · controls.css + one sheet each
+    rig/              ViewGizmo · Trackball · Vector3Field · TransformGizmo (three) · math · rig.css
+    actions/          Button · IconButton · Toolbar · Kbd · Badge · Tag · actions.css
+    display/          Stat · Meter · Spectrum · Progress · Sparkline · display.css
+    layout/           Panel · Section · SectionGroup · Field · Text · StatStrip · Callout · Tabs
+                      PropertyRow · ItemRow · layout.css + one sheet each
     overlays/         Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · overlays.css
-    dock/             Dock · PanelBar · DockMenu · Dock.css
+    dock/             Dock · PanelBar · DockMenu · sections (createDockSections) · params (createParamPanes)
       metablock/        the docking engine: workspace model, layout, physics, WorkspaceView
     graph/            NodeGraph · LiveGraphView · graph model · editor · gpu.ts (three TSL, opt-in)
-  docs/             components.md · theming.md
+  docs/             design.md · catalogue.md · components.md · theming.md
   skill/            SKILL.md: the Claude Code skill (installed by the command)
   tools/            kit.mjs (kit builder) · zip.mjs: shared by the command and the showcase
   showcase/         Vite app: the chaptered gallery · Theme Studio · Export kit, plus the built page
-  design/           design references, the original prototype and the written spec
+  design/           design references only; nothing imports it
 ```
 
 ## Develop
@@ -135,4 +140,4 @@ pnpm dev     # http://localhost:5173 (studio at #studio, export at #export)
 pnpm build   # type-check, then rebuild showcase/artinos-ui-showcase.html
 ```
 
-After changing `skill/` or `docs/`, run `node artinos.mjs skill --user` to refresh installed copies. After adding or editing themes in `src/core/utils.ts`, run `node artinos.mjs sync`.
+Keep the guides in step with the code, in the same change (see `AGENTS.md`). After changing `skill/` or `docs/`, run `node artinos.mjs skill --user` to refresh installed copies. After adding or editing themes in `src/core/utils.ts`, run `node artinos.mjs sync`.
