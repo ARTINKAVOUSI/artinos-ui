@@ -426,7 +426,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
-- **type**: the type collection, a font pairing with its own tuning (`sleek` by default, `sleek-air`, `sleek-serif`, `sleek-sharp`, `sleek-compact`, `instrument`, `editorial`, `book`, `couture`, `contrast`, `newsroom`, `soft`, `round`, `wide`, `swiss`, `bold`, `character`, `industrial`, `terminal`, `quiet`, `clean`, `legible`). It inherits through nested themes and follows portalled overlays.
+- **type**: the type system, one of five complete designs (`sleek` by default for control panels and tools, `product`, `editorial`, `native`, `legible`); see design.md.
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
@@ -464,24 +464,24 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 
 | variant | for | looks |
 |---|---|---|
-| `hero` | the page's one big line | the title face, 48 px light (24 in a panel), very tight |
-| `display` | one headline per page | the title face, 28 px light (20 in a panel), tight |
-| `title` | a page title (a Panel's `title` is its own, 16 px) | the title face, 20 px semibold, bright (16 in a panel) |
-| `heading` | a group's name inside prose | the title face, 16 px semibold, bright (14 in a panel) |
-| `subheading` | a step under a heading | the title face, 14 px semibold, bright (13 in a panel) |
+| `hero` | the page's one big line | the title face, 48 px (24 in a panel), very tight |
+| `display` | a chapter or page headline | the title face, 36 px (20 in a panel), tight |
+| `title` | a section of a page (a Panel's `title` is its own, 16 px) | the title face, 24 px semibold, bright (16 in a panel) |
+| `heading` | a group inside a section | the title face, 18 px semibold, bright (14 in a panel) |
+| `subheading` | a step under a heading | 14 px semibold, bright: told by weight, not size (13 in a panel) |
 | `statement` | a sentence that carries a page | the opening-sentence face, 20 px (16 in a panel), bright |
 | `overline` | a category above a title, or the name of a set of controls | 12 px semibold in the accent, sentence case |
 | `kicker` | a small label above a title | small and quiet; capitals only where a collection asks |
-| `eyebrow` | a live or current label above a title | 12 px in the accent, after a lit dot |
-| `lead` | the sentence that says what a view is for | the opening-sentence face, 16 px regular, bright (14 in a panel) |
+| `eyebrow` | the number or kind of a section, above its title | 12 px in the mark face (the mono in Sleek) and the accent, after a lit dot |
+| `lead` | the one sentence that says what a section is for | the opening-sentence face, 16 px regular, full ink (14 in a panel) |
 | `body` | a paragraph | the reading face, 14 px on a 22 px line at 88% ink (13 in a panel), at most `--ar-measure` (64ch) wide |
-| `note` | help or an aside | 13 px at 68% ink (12 in a panel): two steps quieter than the body |
-| `caption` | a line under the thing it describes | 12 px medium, the quietest ink (58%) |
-| `label` | a name beside a value outside a Field | 12 px regular at 70% ink |
-| `value` | a figure in a row | 13 px firm (550) in the full ink, tabular digits |
+| `note` | help or an aside | 13 px at 58% ink (12 in a panel): two steps quieter than the body |
+| `caption` | a line under the thing it describes | 12 px medium, the quietest ink (44%) |
+| `label` | a name beside a value outside a Field | 12 px medium in a solid 62% grey |
+| `value` | a figure in a row | 13 px semibold in the full ink, tabular digits |
 | `figure` | the one number that matters | 28 px medium (24 in a panel); a `<small>` inside is its unit |
 | `numeral` | a big number that marks a step or a chapter | large, in the accent, 28 px (20 in a panel) |
-| `meta` | a small fact: a date, a path, a count | 12 px, tabular digits, quiet |
+| `meta` | a small fact: a date, a path, a count | 12 px in the mark face, tabular digits, quiet |
 | `tag` | a status or a kind | 12 px, in a pill washed in the accent |
 | `quote` | a principle or a quoted line | the opening-sentence face, italic, 16 px (14 in a panel), between two hairlines; a `<cite>` inside is its source |
 | `code` | a token, key or file name | the mono, in a chip |
@@ -506,7 +506,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - **Inline emphasis inside a body:** `strong` is bold in the bright ink, `em` turns to the serif's italic, `mark` is washed in the accent for the one phrase that matters, `code` is a mono chip, `kbd` a key cap, `a` carries an accent underline. Use one or two per paragraph.
 - **Lists** are `Text as="ul"` (or `"ol"`): accent bullets, a row gap between items. Use one for three or more parallel things.
 - **Callout** sets apart what must not be missed: `tip` (the signal) for a shortcut or a better way, `note` for context, `warn` for a cost or a risk, `fault` for what will break. At most one or two in a view, after the text they qualify.
-- A panel has four sizes, each with its own weight and ink: its name (16 semibold, title face), a section's name (14 semibold, title face), values (13 firm, full ink) and names, notes and captions (12 regular, 70% ink and quieter). A name is quiet and its answer is loud, so the eye lands on the number first. Figures are the sans with tabular digits. Nothing in a panel is under 12px (ruler ticks and key caps excepted), nothing is in tracked capitals, and nothing but code is in a mono. `design.md` has the whole ladder.
+- A panel has four sizes, each with its own weight and ink: its name (16 semibold, title face), a section's name (14 semibold, title face), values (13 semibold, full ink) and names, notes and captions (12 regular, 70% ink and quieter). A name is quiet and its answer is loud, so the eye lands on the number first. Figures are the sans with tabular digits. Nothing in a panel is under 12px (ruler ticks and key caps excepted), nothing is in tracked capitals, and nothing but code is in a mono. `design.md` has the whole ladder.
 - `tone` changes ink only for meaning: `low` / `faint` for quieter, `signal` / `warn` / `fault` for state. Never colour text for decoration.
 - Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.
 - A caption goes under what it describes, never above. A kicker goes above a title, never alone.

@@ -42,6 +42,8 @@
 /* the panel's name: bold and close-set, with what it is in a quiet line under it */
 .ar-panel__title {
   font: var(--ar-type-panel);
+  font-stretch: var(--ar-title-stretch);
+  font-variation-settings: var(--ar-title-variation);
   letter-spacing: -0.016em;
   color: var(--ar-tone-title);
 }
@@ -141,7 +143,7 @@
   font: var(--ar-type-group);
   letter-spacing: 0;
   text-transform: none;
-  color: var(--ar-tone-accent);
+  color: var(--ar-tone-accent); /* a group inside a section: small, in the accent */
 }
 /* rows of a list sit on hairlines, so the eye runs along them and the columns stay aligned */
 .ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
@@ -297,6 +299,8 @@ button.ar-section__trigger:focus-visible {
      in any panel, open or folded. The rows under it are 12 in the label tone, so it leads by size,
      weight and ink at once, without capitals */
   font: var(--ar-type-section);
+  font-stretch: var(--ar-title-stretch);
+  font-variation-settings: var(--ar-title-variation);
   letter-spacing: -0.012em;
   text-transform: none;
   color: var(--ar-tone-title);
@@ -392,6 +396,7 @@ button.ar-section__trigger:focus-visible {
   white-space: nowrap;
   font: var(--ar-type-label);
   line-height: var(--ar-h);
+  letter-spacing: var(--ar-track-small);
   color: var(--ar-tone-label);
 }
 .ar-field__control {

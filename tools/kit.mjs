@@ -85,7 +85,7 @@ export function readRegistry(sources) {
 
 export const BASE_TYPE = 'sleek';
 /** Earlier type ids, still accepted on the command line. */
-export const TYPE_ALIASES = { manrope: 'sleek', source: 'book', luxe: 'couture', atelier: 'contrast', schibsted: 'newsroom', figtree: 'soft', 'red-hat': 'round', mona: 'wide', jakarta: 'bold', bricolage: 'character', grotesk: 'industrial', modern: 'terminal', geist: 'quiet', onest: 'clean', hyperlegible: 'legible' };
+export const TYPE_ALIASES = { manrope: 'sleek', code: 'sleek', form: 'sleek', quiet: 'sleek', geist: 'sleek', terminal: 'sleek', modern: 'sleek', industrial: 'sleek', grotesk: 'sleek', 'sleek-air': 'sleek', 'sleek-sharp': 'sleek', 'sleek-compact': 'sleek', pro: 'product', neue: 'product', instrument: 'product', round: 'product', 'red-hat': 'product', wide: 'product', mona: 'product', swiss: 'product', bold: 'product', jakarta: 'product', character: 'product', bricolage: 'product', clean: 'product', onest: 'product', figtree: 'product', 'sleek-serif': 'editorial', book: 'editorial', source: 'editorial', couture: 'editorial', luxe: 'editorial', contrast: 'editorial', atelier: 'editorial', newsroom: 'editorial', schibsted: 'editorial', soft: 'editorial', hyperlegible: 'legible' };
 const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', (?:serif: '([^']*)', )?description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
 
 /** TYPE_COLLECTIONS in registry order and TYPE_META, parsed from the package source. */
@@ -106,8 +106,10 @@ export const facesOf = (types, tmeta) => [...new Set(types.flatMap((t) => [tmeta
 /** tokens/fonts.css for a kit: one Google Fonts request naming each family once. */
 function buildFontsCss(types, tmeta) {
   const params = new Map();
-  for (const t of types) for (const p of tmeta[t].fonts.split('&')) params.set(p.split(':')[0], p);
+  const share = new Map(); // Fontshare faces: f[]=slug@weights
+  for (const t of types) for (const p of tmeta[t].fonts.split('&').filter(Boolean)) (p.startsWith('f[]=') ? share : params).set(p.split(/[:@]/)[0], p);
   params.set('family=Roboto+Mono', 'family=Roboto+Mono:wght@500;700');
+  const fontshare = share.size ? `@import url('https://api.fontshare.com/v2/css?${[...share.values()].join('&')}&display=swap');\n` : '';
   const list = types.map((t) => `${t.padEnd(12)}${facesOf([t], tmeta).join(' · ')}`).join('\n *   ');
   return `/* ARTINOS UI — typefaces for the type collections in this kit (tokens/type.css):
  *   ${list}
@@ -115,7 +117,7 @@ function buildFontsCss(types, tmeta) {
  * tokens name. To self-host, delete this import from artinos.css and declare the same families
  * with @font-face; every stack falls back to system fonts. */
 @import url('https://fonts.googleapis.com/css2?${[...params.values()].join('&')}&display=swap');
-`;
+${fontshare}`;
 }
 
 /* ---------- dependency graph ---------- */

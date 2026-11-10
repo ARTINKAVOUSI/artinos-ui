@@ -10,11 +10,11 @@
 .ed {
   --sc-bare-ink: #ffffff;
   --sc-bare-edge: rgba(0, 0, 0, 0.7);
-  --sc-text-hero: 44px; /* the page's name */
-  --sc-text-chapter: 24px; /* a chapter's title */
-  --sc-text-section: 18px; /* a section's title */
-  --sc-text-deck: 16px; /* the serif sentence that opens a section */
-  --sc-text-note: 16px; /* the serif sentence under a chapter's title */
+  --sc-text-hero: 48px; /* the page's name */
+  --sc-text-chapter: 36px; /* a chapter's headline */
+  --sc-text-section: 24px; /* a section's title */
+  --sc-text-deck: 16px; /* the sentence that opens a section */
+  --sc-text-note: 18px; /* the sentence under a chapter's headline */
   --sc-text-prose: 14px; /* reading paragraphs */
   --sc-figure: 28px; /* big numerals: display figures */
 }
@@ -196,7 +196,7 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-sheet {
   /* a tight edge on the page's own words, in the opposite of the ink: the glass itself is untouched */
   --sc-edge: oklch(from var(--ar-text-hi) calc((1 - l) * 1.1) 0 0 / 0.24);
-  --sc-ink-prose: color-mix(in srgb, var(--ar-text-hi) 92%, transparent);
+  --sc-ink-prose: var(--ar-tone-body);
   position: relative;
   isolation: isolate;
   max-width: 1440px;
@@ -628,7 +628,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 .sc-text :where(b, strong) {
   font-weight: var(--ar-weight-bold);
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-accent);
 }
 /* the keys: a ruled table of key and meaning, the key in the mono, the meaning in the note ink */
 .sc-keys {
@@ -1665,139 +1665,6 @@ html::-webkit-scrollbar-thumb:hover {
   font-size-adjust: var(--ar-serif-adjust);
 }
 
-/* ---------- each type set's own system, on the page ---------- */
-.sc-hero h1 {
-  font-size: round(calc(var(--sc-text-hero) * var(--ar-title-scale)), 4px);
-  font-weight: var(--ar-weight-display);
-  font-stretch: var(--ar-title-stretch);
-  line-height: var(--ar-leading-heading);
-  letter-spacing: var(--ar-track-heading);
-  text-transform: var(--ar-title-case);
-}
-.sc-hero h1 em {
-  font-family: var(--ar-font-accent);
-  font-style: var(--ar-accent-style);
-  font-weight: var(--ar-weight-accent);
-  font-stretch: 100%;
-}
-.sc-chapter__titles h2 {
-  font-size: round(calc(var(--sc-text-chapter) * var(--ar-title-scale)), 4px);
-  font-weight: var(--ar-weight-display);
-  font-stretch: var(--ar-title-stretch);
-  line-height: var(--ar-leading-heading);
-  letter-spacing: var(--ar-track-heading);
-  text-transform: var(--ar-title-case);
-}
-.sc-title {
-  font-size: max(16px, round(calc(var(--sc-text-section) * var(--ar-title-scale)), 4px));
-  font-weight: var(--ar-weight-title);
-  font-stretch: var(--ar-title-stretch);
-  line-height: round(calc(1em * 1.25), 2px);
-  letter-spacing: var(--ar-track-heading-sm);
-  text-transform: var(--ar-title-case);
-}
-.sc-spec--compact .sc-title {
-  font-size: var(--ar-text-md);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.sc-subhead,
-.sc-card__name,
-.sc-mat b {
-  font-stretch: var(--ar-title-stretch);
-  font-weight: var(--ar-weight-title);
-}
-.sc-deck {
-  font-size: max(14px, round(calc(var(--sc-text-deck) * var(--ar-lead-scale)), 2px));
-  font-style: var(--ar-lead-style);
-  font-weight: max(var(--ar-weight-lead), 400);
-  line-height: round(calc(1em * 1.44), 2px);
-}
-.sc-chapter__titles p {
-  font-size: max(14px, round(calc(var(--sc-text-note) * var(--ar-lead-scale)), 2px));
-  font-style: var(--ar-lead-style);
-  font-weight: max(var(--ar-weight-lead), 400);
-  line-height: round(calc(1em * 1.4), 2px);
-}
-.sc-text,
-.sc-hero p {
-  font-family: var(--ar-font-prose);
-  line-height: round(calc(1em * var(--ar-leading-prose)), 1px);
-}
-.sc-text {
-  font-size: round(calc(var(--sc-text-prose) * var(--ar-prose-scale)), 1px);
-}
-.sc-hero p {
-  font-size: round(calc(14px * var(--ar-prose-scale)), 1px);
-}
-.sc-keys dd {
-  font-family: var(--ar-font-prose);
-}
-.sc-num,
-.sc-hero__kicker,
-.sc-styles__label {
-  font-family: var(--ar-font-mark);
-  font-weight: var(--ar-weight-mark);
-  letter-spacing: var(--ar-mark-track);
-  text-transform: var(--ar-mark-case);
-}
-.sc-stat b {
-  font-weight: var(--ar-weight-display);
-  font-stretch: var(--ar-title-stretch);
-}
-.sc-root .sc-chapter__num {
-  font-family: var(--ar-font-numeral);
-  font-style: var(--ar-numeral-style);
-}
-
-/* the type cards: each is set in its own system, so the differences show at a glance */
-.sc-grid--type {
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
-.sc-type {
-  gap: 12px;
-  padding: 18px;
-}
-.sc-type__hero {
-  display: block;
-  font-family: var(--ar-font-display);
-  font-size: round(calc(22px * var(--ar-title-scale)), 2px);
-  font-weight: var(--ar-weight-display);
-  font-stretch: var(--ar-title-stretch);
-  line-height: var(--ar-leading-heading);
-  letter-spacing: var(--ar-track-heading);
-  text-transform: var(--ar-title-case);
-  color: var(--ar-text-hi);
-}
-.sc-type__hero em {
-  font-family: var(--ar-font-accent);
-  font-style: var(--ar-accent-style);
-  font-weight: var(--ar-weight-accent);
-  font-stretch: 100%;
-  color: var(--ar-tone-accent);
-}
-.sc-type__lead {
-  font-family: var(--ar-font-lead);
-  font-size: round(calc(14px * var(--ar-lead-scale)), 2px);
-  font-style: var(--ar-lead-style);
-  font-weight: var(--ar-weight-lead);
-  line-height: 1.4;
-}
-.sc-type .sc-card__text {
-  font-family: var(--ar-font-prose);
-  font-size: round(calc(12px * var(--ar-prose-scale)), 1px);
-  line-height: round(calc(1em * var(--ar-leading-prose)), 1px);
-}
-.sc-type .sc-card__name {
-  font: var(--ar-weight-mark) var(--ar-text-xs) / 16px var(--ar-font-mark);
-  letter-spacing: var(--ar-mark-track);
-  text-transform: var(--ar-mark-case);
-  color: var(--ar-tone-accent);
-}
-.sc-type__faces {
-  color: var(--ar-tone-note);
-}
-
 /* ---------- phones ----------
    The explanation stacks in one column, the bar stops following (it would cover a third of the
    screen), and a demo too wide for a phone scrolls inside its stage rather than being cut off. */
@@ -1922,4 +1789,161 @@ html::-webkit-scrollbar-thumb:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* ---------- the reading layout: one method for every heading, sentence and paragraph ----------
+   Each level differs from its neighbours in two ways at once (size and weight, size and ink, or
+   face), and space says what belongs together: a heading sits close to what it heads and far from
+   what came before. Sizes come from the one ladder; faces, weights and tracking from the type system.
+     hero 48 · chapter 36 · section 24 · lead 18 / 16 · body 14 on 22 · marks 12 in the mark face */
+.sc-hero__kicker,
+.sc-chapter__eyebrow,
+.sc-num {
+  font: var(--ar-weight-mark) 12px / 16px var(--ar-font-mark);
+  letter-spacing: var(--ar-mark-track);
+  color: var(--ar-tone-accent);
+}
+.sc-hero h1 {
+  font: var(--ar-weight-display) var(--sc-text-hero) / 1.08 var(--ar-font-display);
+  font-variation-settings: var(--ar-title-variation);
+  letter-spacing: var(--ar-track-heading);
+  color: var(--ar-tone-title);
+}
+.sc-hero h1 em {
+  font-family: var(--ar-font-accent);
+  font-style: var(--ar-accent-style);
+  font-weight: var(--ar-weight-accent);
+  letter-spacing: var(--ar-track-heading);
+}
+.sc-hero p {
+  margin-top: 20px;
+  max-width: 54ch;
+  font: var(--ar-weight-regular) 16px / 26px var(--ar-font-prose);
+  color: var(--ar-tone-body);
+}
+
+/* a chapter: eyebrow, headline, one sentence, the parts it covers; then a long breath */
+.sc-chapter + .sc-chapter {
+  margin-top: 64px;
+}
+.sc-chapter__head {
+  padding: 72px 0 32px;
+}
+.sc-chapter__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+}
+.sc-chapter__titles h2 {
+  font: var(--ar-weight-display) var(--sc-text-chapter) / 1.1 var(--ar-font-display);
+  font-variation-settings: var(--ar-title-variation);
+  letter-spacing: var(--ar-track-heading);
+  color: var(--ar-tone-title);
+}
+.sc-chapter__titles p {
+  margin-top: 14px;
+  max-width: 56ch;
+  font: var(--ar-weight-lead) var(--sc-text-note) / 28px var(--ar-font-lead);
+  font-style: var(--ar-lead-style);
+  color: var(--ar-tone-body);
+}
+.sc-chapter__parts {
+  margin-top: 20px;
+}
+
+/* a section: number, title, the opening sentence, then the paragraphs. A firm line and 48px of
+   air either side part one section from the next */
+.sc-spec {
+  padding: 48px 0;
+  column-gap: 56px;
+}
+.sc-spec + .sc-spec {
+  border-top: 1px solid var(--ar-line);
+}
+.sc-spec__head {
+  gap: 8px;
+}
+.sc-title {
+  font: var(--ar-weight-title) var(--sc-text-section) / 30px var(--ar-font-display);
+  font-variation-settings: var(--ar-title-variation);
+  letter-spacing: var(--ar-track-heading-sm);
+  color: var(--ar-tone-title);
+}
+.sc-about {
+  gap: 16px;
+}
+.sc-deck {
+  font: var(--ar-weight-lead) round(calc(var(--sc-text-deck) * var(--ar-lead-scale)), 2px) / 1.6 var(--ar-font-lead);
+  font-style: var(--ar-lead-style);
+  color: var(--ar-tone-title);
+}
+.sc-text {
+  font: var(--ar-weight-regular) var(--sc-text-prose) / 22px var(--ar-font-prose);
+  color: var(--ar-tone-body);
+}
+.sc-text p + p {
+  margin-top: 12px;
+}
+/* the term a paragraph is about opens it, bright and semibold, so the eye finds each part by name */
+.sc-text :where(b, strong) {
+  font-weight: var(--ar-weight-bold);
+  color: var(--ar-tone-title);
+}
+.sc-text ul {
+  margin-top: 12px;
+  padding-left: 18px;
+}
+.sc-text li + li {
+  margin-top: 8px;
+}
+.sc-keys dt {
+  font: var(--ar-weight-mark) 12px / 18px var(--ar-font-mark);
+  color: var(--ar-tone-accent);
+}
+.sc-keys dd {
+  font: var(--ar-weight-regular) 13px / 20px var(--ar-font-prose);
+  color: var(--ar-tone-body);
+}
+.sc-subhead {
+  font: var(--ar-weight-title) 14px / 20px var(--ar-font-heading);
+  color: var(--ar-tone-title);
+}
+.sc-spec--compact .sc-title {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+.sc-root .sc-chapter__num {
+  font-family: var(--ar-font-numeral);
+  font-style: var(--ar-numeral-style);
+}
+
+/* ---------- the type lineup: the five systems, each on the same page excerpt and panel ---------- */
+.sc-lineup {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px 24px;
+}
+.sc-lineup__card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 20px 20px 22px;
+  border-radius: var(--ar-radius-panel);
+  box-shadow: inset 0 0 0 1px var(--ar-line);
+}
+.sc-lineup__card[data-current] {
+  box-shadow: inset 0 0 0 1px var(--ar-signal-line);
+}
+.sc-lineup__text {
+  display: flex;
+  flex-direction: column;
+  min-height: 236px;
+}
+.sc-lineup__text > .ar-type[data-variant='title'] {
+  margin-top: 10px;
+}
+.sc-lineup__text > .ar-type[data-variant='caption'] {
+  margin-top: auto;
+  padding-top: 12px;
 }

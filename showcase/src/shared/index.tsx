@@ -184,6 +184,10 @@ export function Chapter({ id, children }: { id: string; children: ReactNode }) {
       <header className="sc-chapter__head">
         <span className="sc-chapter__num">{chapterNumber(id)}</span>
         <div className="sc-chapter__titles">
+          <span className="sc-chapter__eyebrow">
+            Chapter {chapterNumber(id)}
+            {def.components ? ` · ${def.components.length} components` : ''}
+          </span>
           <h2>{def.title}</h2>
           {mode.compact ? null : <p>{def.note}</p>}
         </div>

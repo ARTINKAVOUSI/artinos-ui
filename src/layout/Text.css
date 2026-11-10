@@ -370,7 +370,7 @@
    washed in the accent; links carry an accent underline */
 .ar-type :where(strong, b) {
   font-weight: var(--ar-weight-bold);
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-title); /* the term a paragraph is about: bright and semibold, so the eye finds it */
 }
 .ar-type :where(em, i) {
   font-style: italic;
@@ -568,6 +568,7 @@
 .ar-type[data-variant='display'] {
   font-weight: var(--ar-weight-display);
   font-stretch: var(--ar-title-stretch);
+  font-variation-settings: var(--ar-title-variation);
   letter-spacing: var(--ar-track-heading);
   text-transform: var(--ar-title-case);
 }
@@ -580,6 +581,7 @@
 }
 .ar-type:is([data-variant='title'], [data-variant='heading'], [data-variant='subheading']) {
   font-stretch: var(--ar-title-stretch);
+  font-variation-settings: var(--ar-title-variation);
   letter-spacing: var(--ar-track-heading-sm);
   text-transform: var(--ar-title-case);
 }
@@ -597,6 +599,12 @@
   font-style: var(--ar-lead-style);
   /* under 28px nothing is lighter than regular, whatever a set asks: thin strokes vanish on glass */
   font-weight: max(var(--ar-weight-lead), 400);
+}
+/* the smallest title is set like a section's name: the small-title face, never under semibold,
+   so it holds at 14px in a set whose titles are a light serif */
+.ar-type[data-variant='subheading'] {
+  font-family: var(--ar-font-heading);
+  font-weight: max(var(--ar-weight-title), 600);
 }
 /* the opening sentence is never smaller than the paragraph it opens */
 .ar-type[data-variant='lead'] {

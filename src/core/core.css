@@ -203,8 +203,8 @@
 /* a control's own name (not a choice, not an action): regular and quieter than the readout beside
    it, on the well and on the insert alike, so the eye lands on the number first */
 .ar-text:where(.ar-slider__label, .ar-number__label, .ar-color__label, .ar-xypad__label, .ar-meter__label) {
-  font-weight: var(--ar-weight-regular);
-  color: color-mix(in srgb, var(--ar-label-ink) var(--ar-name-strength), transparent);
+  font-weight: var(--ar-weight-name);
+  color: color-mix(in oklab, var(--ar-label-ink) var(--ar-name-strength), var(--ar-ink-mid));
 }
 .ar-text--over:where(.ar-slider__label, .ar-number__label, .ar-color__label, .ar-xypad__label, .ar-meter__label) {
   color: color-mix(in srgb, var(--ar-insert-ink) calc(var(--ar-name-strength) + 8%), transparent);

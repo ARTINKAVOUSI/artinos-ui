@@ -2,10 +2,10 @@
    quick-token builder. */
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArtinosTheme, TYPE_META,
+  ArtinosTheme,
   Slider, RangeSlider, NumberField, Switch, Segmented, ColorField, Select, Field,
 } from '../../../src';
-import type { ThemeName, TypeCollection } from '../../../src';
+import type { ThemeName } from '../../../src';
 import { THEME_OPTIONS, Code } from '../shared';
 
 /* ---------- foundations ---------- */
@@ -53,39 +53,6 @@ export const FAMILIES: Array<[string, string[]]> = [
   ['Luxe frost — coloured premium frost: satin and glazed controls, precious-metal accents', ['luxe-frost']],
 ];
 
-/** A type collection as a specimen: the display face, the sans title, the mono caps and a live
- *  control, each card its own data-ar-type scope inside the page's theme. */
-export function TypeCard({ t, active, onPick }: { t: TypeCollection; active: boolean; onPick: () => void }) {
-  const m = TYPE_META[t];
-  const faces = [...new Set([m.display, m.ui, m.serif, m.mono].filter(Boolean))].join(' · ');
-  return (
-    <figure
-      data-ar-type={t}
-      className="sc-card sc-type"
-      data-active={active ? '' : undefined}
-      role="button"
-      tabIndex={0}
-      aria-pressed={active}
-      onClick={onPick}
-      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onPick())}
-    >
-      <b className="sc-type__hero">
-        Light, <em>held</em>
-      </b>
-      <div className="sc-card__head">
-        <span className="sc-card__name">{m.label}</span>
-        <span className="sc-card__meta sc-type__faces">{faces}</span>
-      </div>
-      <p className="sc-type__lead">Glass reads as glass when its edge is bright.</p>
-      <p className="sc-card__text">{m.description}</p>
-      <div className="sc-type__specimen" onClick={(e) => e.stopPropagation()}>
-        <b className="sc-type__title">Material · Optical body</b>
-        <span className="sc-type__caps">Frequency · 440 Hz · 3 changed</span>
-        <Slider label="Exposure" defaultValue={0.62} format="percent" decimals={0} density="dense" />
-      </div>
-    </figure>
-  );
-}
 
 /* ---------- custom theme builder ---------- */
 export function ThemeBuilder() {

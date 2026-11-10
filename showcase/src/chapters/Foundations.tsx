@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import type { TextFace, TextVariant, TypeCollection } from '../../../src';
-import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS } from '../../../src';
-import { TokenTable, TypeCard } from '../app/foundations';
+import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Select, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
+import { TokenTable } from '../app/foundations';
 import { ThemeTile, themeFamilies } from '../themes/ThemesPage';
 import { Chapter, Spec } from '../shared';
 
@@ -67,18 +67,18 @@ function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: 
 type Role = [TextVariant, string, string, TextFace?];
 /** Every text role with its rule beside it: the ladder a page is set by. */
 const ROLES: Role[] = [
-  ['display', 'display · title face · 28 light', 'Light, held'],
-  ['title', 'title · title face · 20 semibold', 'Material and light'],
+  ['display', 'display · title face · 36', 'Light, held'],
+  ['title', 'title · title face · 24 semibold', 'Material and light'],
   ['title', 'title · face="serif"', 'An editorial title', 'serif'],
-  ['heading', 'heading · title face · 16 semibold', 'Surface response'],
-  ['subheading', 'subheading · title face · 14 semibold', 'Roughness and gloss'],
+  ['heading', 'heading · title face · 18 semibold', 'Surface response'],
+  ['subheading', 'subheading · 14 semibold', 'Roughness and gloss'],
   ['overline', 'overline · 12 semibold · accent', 'Material · glass'],
-  ['lead', 'lead · 16 regular · full ink', 'A lead says what the view is for, a size up from the body.'],
+  ['lead', 'lead · 16 · full ink', 'A lead says what the view is for, a size up from the body.'],
   ['body', 'body · 14 on 22 · 88% ink', 'Body text carries the explanation at a comfortable line length.'],
-  ['note', 'note · 13 · 68% ink', 'A note is help or an aside, two steps quieter than the body.'],
-  ['caption', 'caption · 12 medium · 58% ink', 'Fig. 3, the rim at grazing angles'],
-  ['label', 'label · 12 regular · 70% ink', 'Exposure'],
-  ['value', 'value · 13 firm · full ink · tabular', '0.71 · 1,284 · −4.5 dB'],
+  ['note', 'note · 13 · 58% ink', 'A note is help or an aside, two steps quieter than the body.'],
+  ['caption', 'caption · 12 medium · 44% ink', 'Fig. 3, the rim at grazing angles'],
+  ['label', 'label · 12 medium · 62% ink', 'Exposure'],
+  ['value', 'value · 13 semibold · full ink · tabular', '0.71 · 1,284 · −4.5 dB'],
   ['figure', 'figure · 28 medium · tight', '1,284'],
 ];
 
@@ -151,17 +151,71 @@ function Typography() {
 
 /* ---------- type collections, by feel ---------- */
 
-const TYPE_GROUPS: [string, TypeCollection[]][] = [
-  ['Sleek, the default and its variants', ['sleek', 'sleek-air', 'sleek-serif', 'sleek-sharp', 'sleek-compact']],
-  ['Elegant, with serif titles', ['editorial', 'book', 'couture', 'contrast', 'newsroom', 'soft']],
-  ['Modern sans', ['instrument', 'round', 'wide', 'swiss', 'bold', 'character']],
-  ['Technical and quiet', ['industrial', 'terminal', 'quiet', 'clean']],
-  ['Reading first', ['legible']],
-];
+/** What each type system is for, in a few words. */
+const TYPE_USE: Record<TypeCollection, string> = {
+  sleek: 'Control panels, tools and dashboards',
+  product: 'Product apps and inspectors',
+  editorial: 'Documentation, onboarding and pages',
+  native: 'Desktop-like apps, nothing to load',
+  legible: 'Accessibility and long reading',
+};
+
+/** The five type systems, each set in itself on the same page excerpt and the same panel, so they
+ *  compare line for line: an eyebrow, a title, the opening line, a paragraph, then a control panel. */
+function TypeLineup({ type, onPick }: { type: string; onPick: (t: TypeCollection) => void }) {
+  return (
+    <div className="sc-lineup">
+      {TYPE_COLLECTIONS.map((t, i) => {
+        const m = TYPE_META[t];
+        const faces = [...new Set([m.display, m.ui, m.mono].filter(Boolean))].join(' · ');
+        const current = t === type;
+        return (
+          <article key={t} data-ar-type={t} className="sc-lineup__card" data-current={current ? '' : undefined}>
+            <div className="sc-lineup__text">
+              <Text variant="meta">
+                {String(i + 1).padStart(2, '0')} · {TYPE_USE[t]}
+              </Text>
+              <Text variant="title" as="h4">
+                {m.label}
+              </Text>
+              <Text variant="lead">The shell bends what is behind it and keeps a bright rim.</Text>
+              <Text>
+                Raise <strong>Transmission</strong> to let more of the scene through, then lower the roughness for a sharper image at 1.52 IOR.
+              </Text>
+              <Text variant="caption">{faces}</Text>
+            </div>
+            <Panel
+              title="Material"
+              subtitle="Optical body · thick glass"
+              actions={
+                <Button size="sm" variant={current ? 'primary' : 'default'} onClick={() => onPick(t)}>
+                  {current ? 'In use' : 'Use'}
+                </Button>
+              }
+              labelWidth={84}
+            >
+              <Section title="Surface" count="3 changed">
+                <Slider label="Transmission" defaultValue={0.71} format="percent" decimals={0} />
+                <Slider label="Gain" bipolar detents={[0]} min={-12} max={12} defaultValue={-4.5} format="db" />
+                <Field label="Finish">
+                  <Select label="Finish" appearance="well" options={['Polished', 'Satin', 'Frosted']} defaultValue="Satin" />
+                </Field>
+                <Field label="Samples">
+                  <NumberField aria-label="Samples" defaultValue={2048} decimals={0} />
+                </Field>
+              </Section>
+            </Panel>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
 
 /* ---------- type styles ---------- */
 
-const RAMP = [11, 12, 13, 14, 16, 18, 20, 24, 28, 48];
+const RAMP = [12, 13, 14, 16, 18, 20, 24, 28, 36, 48];
 const METHODS = ['ink', 'underline', 'marker', 'rule', 'bar', 'gradient', 'outline'] as const;
 
 function TypeStyles() {
@@ -624,9 +678,9 @@ import { ArtinosTheme } from './artinos-ui';
 /* a panel's roles: a whole font and an ink each */
 --ar-type-panel     16 / 600  title face     --ar-tone-title  100%
 --ar-type-section   14 / 600  title face     --ar-tone-title  100%
---ar-type-value     13 / 550  tabular        --ar-tone-value  100%
---ar-type-label     12 / 400                 --ar-tone-label   70%
---ar-type-note      12 / 400                 --ar-tone-note    68%`}
+--ar-type-value     13 / 600  tabular        --ar-tone-value  100%
+--ar-type-label     12 / 500  +0.01em        --ar-tone-label   62% solid
+--ar-type-note      12 / 400                 --ar-tone-note    58% solid`}
       >
         <TokenTable deps={[theme]} />
         <TypeScale />
@@ -635,26 +689,17 @@ import { ArtinosTheme } from './artinos-ui';
       <Spec
         wide
         id="type"
-        text={`Type sets change the whole voice of a page, not just the font. Each has its own title size, weight, case and width, its own paragraph face and line spacing, and its own way of setting accent words and small labels. Control sizes stay the same, so every component keeps its proportions. There are ${TYPE_COLLECTIONS.length}; Sleek is the default. Click one to set it for the page. Each card is its own data-ar-type scope, so collections nest like themes and carry through portalled overlays.`}
+        text={`Five type systems, each a complete design for one use. Every system uses the same sizes, so a page and a panel keep their proportions; it changes the faces, the weights, the tracking and how an opening line and a small mark are set. Sleek is the default. Click Use on a panel to set the whole page in it.`}
         code={`
-<ArtinosTheme theme="frost-deep" type="editorial"> … </ArtinosTheme>
+<ArtinosTheme theme="frost-deep" type="product"> … </ArtinosTheme>
 
 // or on any element, inside any theme:
-<div data-ar-type="couture"> … </div>
+<div data-ar-type="editorial"> … </div>
 
-// a kit carries the collections it was exported with:
-node artinos.mjs export --project . --themes onyx --components all --type luxe,editorial`}
+// a kit carries the systems it was exported with (sleek always):
+node artinos.mjs export --project . --themes onyx --components all --type product,editorial`}
       >
-        {TYPE_GROUPS.map(([name, sets]) => (
-          <div key={name} className="sc-family">
-            <span className="sc-subhead">{name}</span>
-            <div className="sc-grid sc-grid--cards sc-grid--type">
-              {sets.map((t) => (
-                <TypeCard key={t} t={t} active={t === type} onPick={() => onPickType(t)} />
-              ))}
-            </div>
-          </div>
-        ))}
+        <TypeLineup type={type} onPick={onPickType} />
       </Spec>
 
       <Spec id="density" text="Three control heights: dense 24 · standard 26 · comfort 30. Type size, padding and radius follow. Set it per control or on any scope." code={`<Slider density="dense" />   <div data-ar-density="comfort"> … </div>`}>
@@ -699,8 +744,8 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
           <>
             <p>Every kind of text has its own role, and neighbouring roles differ in at least two ways at once.</p>
             <ul>
-              <li><b>A name is quiet, its answer is loud:</b> a label is 12 regular in a soft ink, its value 13 and firm in the full ink.</li>
-              <li><b>Weight runs against size:</b> display sizes are light, titles of 20 and under are semibold.</li>
+              <li><b>A name is quiet, its answer is loud:</b> a label is 12 medium in a solid grey, its value 13 semibold in the full ink.</li>
+              <li><b>One scale for every system:</b> 48 · 36 · 24 · 18 · 16 · 14 · 13 · 12. A system changes the faces and weights, never the sizes.</li>
               <li>Each face has one job: one titles, one reads, the serif opens and quotes; figures are the sans with tabular digits, and the mono is for code.</li>
               <li>Titles balance their lines; paragraphs keep a comfortable measure and no lone last word.</li>
               <li>Inside a paragraph, strong, mark, code, key and link each have their own look.</li>
@@ -716,7 +761,7 @@ node artinos.mjs export --project . --themes onyx --components all --type luxe,e
       <Spec
         id="type-styles"
         wide
-        text="Beyond the roles: one fine ladder of sizes from 11 to 48, six more styles, and seven ways to bring the accent into any of them. The accent is blended toward the ink, so small words stay readable on glass whichever accent you pick; change it in the bar and all of this follows."
+        text="Beyond the roles: one ladder of sizes from 12 to 48, six more styles, and seven ways to bring the accent into any of them. The accent is blended toward the ink, so small words stay readable on glass whichever accent you pick; change it in the bar and all of this follows."
         code={`<Text variant="eyebrow">Live preview</Text>
 <Text variant="hero">Light, <em>held</em> in glass</Text>
 <Text variant="statement">Every surface is <em>one material</em>.</Text>
