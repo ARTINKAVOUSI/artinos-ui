@@ -14,8 +14,8 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - where its source lives;
    - whether a kit already exists there. If so, update it with `--force`; don't add a second one.
 
-3. **Choose themes and components.** List them with `node <this folder>/artinos.mjs list`. Use what the user named. If they named no theme, pick one that fits and say which:
-   - dark app → `frost-deep` or `studio`
+3. **Choose themes and components.** List them with `node <this folder>/artinos.mjs list`. Use what the user named. If they named no theme, use the default, `nimbus` (soft carved Haze glass; `ArtinosTheme` sets it when `theme` is omitted), and say so. Otherwise:
+   - flat dark app → `studio` or `frost-deep`
    - light app → `studio-light` or `frost-light`
    - over a 3D canvas, video or photo → any glass or frost theme, with `scene="light"` on `ArtinosTheme` when what is behind is light
 
@@ -31,7 +31,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - `export` instead of `setup` for the kit alone;
    - `--force` to update;
    - `--dry-run` to preview;
-   - `--type product,editorial` for type systems (five: `sleek` default and always included, `product`, `editorial`, `native`, `legible`), used with `<ArtinosTheme type="…">`;
+   - `--type instrument,salon` for type systems (twelve: `fine` default and always included, `sleek`, `product`, `native`, `legible`, the pairings `instrument`, `salon`, `wide`, `grotesk`, `editorial`, and the hairline-and-heavy `fine`, `mass`, `round`), used with `<ArtinosTheme type="…">`;
    - `--no-fonts`, `--no-materials` and `--no-docs`;
    - `--custom theme.css` for Theme Studio themes.
 

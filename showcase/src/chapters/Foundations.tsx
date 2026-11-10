@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import type { TextFace, TextVariant, TypeCollection } from '../../../src';
-import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Select, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
+import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Select, Slider, Stack, StatStrip, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
 import { TokenTable } from '../app/foundations';
 import { ThemeTile, themeFamilies } from '../themes/ThemesPage';
 import { Chapter, Spec } from '../shared';
@@ -75,9 +75,9 @@ const ROLES: Role[] = [
   ['overline', 'overline · 12 semibold · accent', 'Material · glass'],
   ['lead', 'lead · 16 · full ink', 'A lead says what the view is for, a size up from the body.'],
   ['body', 'body · 14 on 22 · 88% ink', 'Body text carries the explanation at a comfortable line length.'],
-  ['note', 'note · 13 · 58% ink', 'A note is help or an aside, two steps quieter than the body.'],
-  ['caption', 'caption · 12 medium · 44% ink', 'Fig. 3, the rim at grazing angles'],
-  ['label', 'label · 12 medium · 62% ink', 'Exposure'],
+  ['note', 'note · 13 · 66% ink', 'A note is help or an aside, two steps quieter than the body.'],
+  ['caption', 'caption · 12 medium · 54% ink', 'Fig. 3, the rim at grazing angles'],
+  ['label', 'label · 12 medium · 76% ink', 'Exposure'],
   ['value', 'value · 13 semibold · full ink · tabular', '0.71 · 1,284 · −4.5 dB'],
   ['figure', 'figure · 28 medium · tight', '1,284'],
 ];
@@ -158,31 +158,57 @@ const TYPE_USE: Record<TypeCollection, string> = {
   editorial: 'Documentation, onboarding and pages',
   native: 'Desktop-like apps, nothing to load',
   legible: 'Accessibility and long reading',
+  instrument: 'Studio tools and creative software',
+  salon: 'Premium products and launch pages',
+  wide: 'Hardware, devices and confident brands',
+  grotesk: 'Technical and developer products',
+  fine: 'The default: precision instruments and pro tools',
+  mass: 'Hardware and industrial products',
+  round: 'Consumer devices and friendly products',
 };
 
-/** The five type systems, each set in itself on the same page excerpt and the same panel, so they
+/** The lineup's two kinds: one family told apart by weight and ink, or a display face over a text face. */
+const TYPE_KINDS: [string, string, TypeCollection[]][] = [
+  ['One family', 'One face from the smallest label to the headline, told apart by size, weight and ink.', ['sleek', 'product', 'native', 'legible']],
+  ['Pairings', 'A display face for titles over a text face for every control and paragraph: character in the headlines, calm in the controls.', ['instrument', 'salon', 'wide', 'grotesk', 'editorial']],
+  ['Hairline and heavy', 'Thin words on every control in a bright ink, under heavy titles: the levels part by weight at a glance.', ['fine', 'mass', 'round']],
+];
+
+/** The type systems, each set in itself on the same page excerpt and the same panel, so they
  *  compare line for line: an eyebrow, a title, the opening line, a paragraph, then a control panel. */
 function TypeLineup({ type, onPick }: { type: string; onPick: (t: TypeCollection) => void }) {
   return (
-    <div className="sc-lineup">
-      {TYPE_COLLECTIONS.map((t, i) => {
+    <div className="sc-kinds">
+      {TYPE_KINDS.map(([kind, about, list]) => (
+        <div key={kind} className="sc-kinds__group">
+          <div className="sc-kinds__head">
+            <Text variant="heading" as="h4">
+              {kind}
+            </Text>
+            <Text variant="note">{about}</Text>
+          </div>
+          <div className="sc-lineup">
+      {list.map((t) => {
+        const i = TYPE_COLLECTIONS.indexOf(t);
         const m = TYPE_META[t];
         const faces = [...new Set([m.display, m.ui, m.mono].filter(Boolean))].join(' · ');
         const current = t === type;
         return (
           <article key={t} data-ar-type={t} className="sc-lineup__card" data-current={current ? '' : undefined}>
             <div className="sc-lineup__text">
-              <Text variant="meta">
-                {String(i + 1).padStart(2, '0')} · {TYPE_USE[t]}
+              <Text variant="eyebrow">
+                {String(i + 1).padStart(2, '0')} · {m.label}
               </Text>
-              <Text variant="title" as="h4">
-                {m.label}
+              <Text variant="display" as="h4">
+                Light, <em>held</em> in glass
               </Text>
               <Text variant="lead">The shell bends what is behind it and keeps a bright rim.</Text>
               <Text>
                 Raise <strong>Transmission</strong> to let more of the scene through, then lower the roughness for a sharper image at 1.52 IOR.
               </Text>
-              <Text variant="caption">{faces}</Text>
+              <Text variant="caption">
+                {TYPE_USE[t]} · {faces}
+              </Text>
             </div>
             <Panel
               title="Material"
@@ -194,20 +220,31 @@ function TypeLineup({ type, onPick }: { type: string; onPick: (t: TypeCollection
               }
               labelWidth={84}
             >
+              <StatStrip
+                items={[
+                  { label: 'Index', value: '1.52', unit: 'IOR' },
+                  { label: 'Frame', value: '16.4', unit: 'ms' },
+                ]}
+              />
               <Section title="Surface" count="3 changed">
                 <Slider label="Transmission" defaultValue={0.71} format="percent" decimals={0} />
-                <Slider label="Gain" bipolar detents={[0]} min={-12} max={12} defaultValue={-4.5} format="db" />
                 <Field label="Finish">
                   <Select label="Finish" appearance="well" options={['Polished', 'Satin', 'Frosted']} defaultValue="Satin" />
                 </Field>
-                <Field label="Samples">
-                  <NumberField aria-label="Samples" defaultValue={2048} decimals={0} />
-                </Field>
+                <Section title="Response">
+                  <Slider label="Gain" bipolar detents={[0]} min={-12} max={12} defaultValue={-4.5} format="db" />
+                  <Field label="Samples">
+                    <NumberField aria-label="Samples" defaultValue={2048} decimals={0} />
+                  </Field>
+                </Section>
               </Section>
             </Panel>
           </article>
         );
       })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -679,8 +716,8 @@ import { ArtinosTheme } from './artinos-ui';
 --ar-type-panel     16 / 600  title face     --ar-tone-title  100%
 --ar-type-section   14 / 600  title face     --ar-tone-title  100%
 --ar-type-value     13 / 600  tabular        --ar-tone-value  100%
---ar-type-label     12 / 500  +0.01em        --ar-tone-label   62% solid
---ar-type-note      12 / 400                 --ar-tone-note    58% solid`}
+--ar-type-label     12 / 500  +0.01em        --ar-tone-label   76% solid
+--ar-type-note      12 / 400                 --ar-tone-note    66% solid`}
       >
         <TokenTable deps={[theme]} />
         <TypeScale />
@@ -689,7 +726,7 @@ import { ArtinosTheme } from './artinos-ui';
       <Spec
         wide
         id="type"
-        text={`Five type systems, each a complete design for one use. Every system uses the same sizes, so a page and a panel keep their proportions; it changes the faces, the weights, the tracking and how an opening line and a small mark are set. Sleek is the default. Click Use on a panel to set the whole page in it.`}
+        text={`Twelve type systems, each a complete design for one use: four set in one family, five pairing a display face with a text face, three setting hairline control text under heavy titles. Every system uses the same sizes, so a page and a panel keep their proportions; it changes the faces, the weights, the tracking and how an opening line and a small mark are set. Fine is the default. Click Use on a panel to set the whole page in it.`}
         code={`
 <ArtinosTheme theme="frost-deep" type="product"> … </ArtinosTheme>
 

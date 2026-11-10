@@ -24,18 +24,20 @@
   align-items: baseline;
   margin: 0;
   overflow: hidden;
-  font: var(--ar-weight-medium) var(--ar-text-2xl) / 1 var(--ar-font-num); /* figures in the number face, like every readout */
-  letter-spacing: -0.02em;
-  letter-spacing: -0.035em;
+  /* the system sets the figure: hairline, bold, wide, an italic serif (--ar-stat-*) */
+  font: var(--ar-stat-style, normal) var(--ar-stat-weight, 500) var(--ar-stat-size, 20px) / 1 var(--ar-stat-font, var(--ar-font-num));
+  font-stretch: var(--ar-title-stretch);
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--ar-tone-title);
+  color: color-mix(in oklab, var(--ar-tone-accent) var(--ar-stat-accent, 0%), var(--ar-tone-title));
 }
 .ar-stat-strip__value small {
-  margin-left: 2px;
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 1 var(--ar-font-num);
+  margin-left: 3px;
+  font: var(--ar-weight-medium) var(--ar-text-xs) / 1 var(--ar-font-ui);
+  font-stretch: 100%;
   letter-spacing: 0;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-accent);
 }
 .ar-stat-strip__label {
   overflow: hidden;

@@ -200,7 +200,7 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
 
 export const THEMES = [
   'sheer', 'veil', 'haze', 'smoke', 'ink', 'mist', 'chalk', 'pressed', 'hairline', 'frosted',
-  'haze-rim', 'haze-lift', 'haze-carve', 'haze-carve-custom', 'haze-glow', 'haze-bevel', 'haze-night', 'haze-day',
+  'haze-rim', 'haze-lift', 'haze-carve', 'nimbus', 'haze-glow', 'haze-bevel', 'haze-night', 'haze-day',
   'lift', 'edge', 'inset', 'halo', 'tile', 'groove', 'drift', 'shade', 'linen', 'cloud',
   'groove-light', 'inset-light', 'carve', 'carve-light', 'groove-smoke', 'inset-smoke',
   'marble', 'slate', 'travertine', 'basalt', 'steel', 'bisque', 'concrete', 'walnut',
@@ -235,7 +235,7 @@ export const THEME_META: Record<ThemeName, ThemeMeta> = {
   'haze-rim': { label: 'Haze Rim', family: 'scene', kind: 'glass', description: 'Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
   'haze-lift': { label: 'Haze Lift', family: 'scene', kind: 'glass', description: 'Haze floating high: the pane rides a deep soft shadow and the values float over their tracks.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
   'haze-carve': { label: 'Haze Carve', family: 'scene', kind: 'glass', description: 'Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
-  'haze-carve-custom': { label: 'Haze Carve Custom', family: 'scene', kind: 'glass', description: 'Haze Carve as used in BLOBBY: softer carved wells, a brighter value gradient, a touch taller and roomier.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
+  nimbus: { label: 'Nimbus', family: 'scene', kind: 'glass', description: 'The default. Haze Carve softened: deep frost, gently carved wells, a bright value gradient and a little more room. Calm over any scene.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
   'haze-glow': { label: 'Haze Glow', family: 'scene', kind: 'glass', description: 'Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
   'haze-bevel': { label: 'Haze Bevel', family: 'scene', kind: 'glass', description: 'Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
   'haze-night': { label: 'Haze Night', family: 'scene', kind: 'glass', description: 'The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'], parent: 'haze' },
@@ -347,6 +347,10 @@ export const GLASS_THEMES = THEMES.filter((t) => THEME_META[t].kind === 'glass')
 /* the place to start: one theme per kind of look, each with its variations (THEME_META.parent).
    A theme with no parent is a hero, so a kit that leaves a hero out promotes its variations. */
 const HERO_RANK: Record<string, number> = { studio: 1, 'studio-light': 2, 'frost-deep': 3, 'frost-light': 4, glass: 5, haze: 6, satin: 7, onyx: 8 };
+/** Earlier theme ids, still accepted by ArtinosTheme's `theme` and the command line. */
+export const THEME_ALIASES: Record<string, ThemeName> = { 'haze-carve-custom': 'nimbus' };
+/** The theme ArtinosTheme sets when none is given: every kit carries it. */
+export const DEFAULT_THEME: ThemeName = 'nimbus';
 export const HERO_THEMES = THEMES.filter((t) => !THEME_META[t].parent).sort((a, b) => (HERO_RANK[a] ?? 99) - (HERO_RANK[b] ?? 99));
 /** The variations of a hero theme, in registry order. */
 export const variationsOf = (hero: ThemeName) => THEMES.filter((t) => THEME_META[t].parent === hero);
@@ -374,10 +378,10 @@ export type Density = (typeof DENSITIES)[number];
 /* ---------- type collections ----------
    A type set is a whole voice, not just a font: its faces plus its own title scale, weight, case and
    width, paragraph face and line spacing. Control sizes stay. Pick one with <ArtinosTheme type="…"> or
-   data-ar-type; tokens/fonts.css loads the faces and tokens/type.css carries the rest. `sleek` is the default. */
-export const TYPE_COLLECTIONS = ['sleek', 'product', 'editorial', 'native', 'legible'] as const;
+   data-ar-type; tokens/fonts.css loads the faces and tokens/type.css carries the rest. `fine` is the default. */
+export const TYPE_COLLECTIONS = ['sleek', 'product', 'native', 'legible', 'instrument', 'salon', 'wide', 'grotesk', 'editorial', 'fine', 'mass', 'round'] as const;
 /** Earlier ids, still accepted by ArtinosTheme's `type` and the command line. */
-export const TYPE_ALIASES: Record<string, TypeCollection> = { manrope: 'sleek', code: 'sleek', form: 'sleek', quiet: 'sleek', geist: 'sleek', terminal: 'sleek', modern: 'sleek', industrial: 'sleek', grotesk: 'sleek', 'sleek-air': 'sleek', 'sleek-sharp': 'sleek', 'sleek-compact': 'sleek', pro: 'product', neue: 'product', instrument: 'product', round: 'product', 'red-hat': 'product', wide: 'product', mona: 'product', swiss: 'product', bold: 'product', jakarta: 'product', character: 'product', bricolage: 'product', clean: 'product', onest: 'product', figtree: 'product', 'sleek-serif': 'editorial', book: 'editorial', source: 'editorial', couture: 'editorial', luxe: 'editorial', contrast: 'editorial', atelier: 'editorial', newsroom: 'editorial', schibsted: 'editorial', soft: 'editorial', hyperlegible: 'legible' };
+export const TYPE_ALIASES: Record<string, TypeCollection> = { manrope: 'sleek', code: 'sleek', form: 'sleek', quiet: 'sleek', geist: 'sleek', terminal: 'sleek', modern: 'sleek', industrial: 'sleek', 'sleek-air': 'sleek', 'sleek-sharp': 'sleek', 'sleek-compact': 'sleek', pro: 'product', neue: 'product', 'red-hat': 'round', mona: 'wide', swiss: 'product', bold: 'product', jakarta: 'product', character: 'product', bricolage: 'product', clean: 'product', onest: 'product', figtree: 'product', 'sleek-serif': 'editorial', book: 'editorial', source: 'editorial', couture: 'editorial', luxe: 'editorial', contrast: 'editorial', atelier: 'editorial', newsroom: 'editorial', schibsted: 'editorial', soft: 'editorial', hyperlegible: 'legible' };
 export type TypeCollection = (typeof TYPE_COLLECTIONS)[number];
 
 export interface TypeMeta {
@@ -397,11 +401,18 @@ export interface TypeMeta {
 
 /* one entry per line: the kit builder reads this table from the source */
 export const TYPE_META: Record<TypeCollection, TypeMeta> = {
-  sleek: { label: 'Sleek', ui: 'Geist', mono: 'Geist Mono', display: '', serif: '', description: 'The default, for control panels, tools and dashboards. Geist from label to headline, with Geist Mono for section numbers, meta lines and code. Precise and quiet.', fonts: 'family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&family=Instrument+Serif:ital@0;1' },
+  sleek: { label: 'Sleek', ui: 'Geist', mono: 'Geist Mono', display: '', serif: '', description: 'For control panels, tools and dashboards. Geist from label to headline, with Geist Mono for section numbers, meta lines and code. Precise and quiet.', fonts: 'family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&family=Instrument+Serif:ital@0;1' },
   product: { label: 'Product', ui: 'Inter', mono: 'JetBrains Mono', display: 'Inter Display', serif: '', description: 'For product apps and inspectors. Inter, its display cut for titles and its text cut for every control. Neutral and refined: the type of most professional design tools.', fonts: 'family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:ital,wght@0,300..600;1,300..600&family=Instrument+Serif:ital@0;1' },
   editorial: { label: 'Editorial', ui: 'Inter', mono: 'JetBrains Mono', display: 'Newsreader', serif: 'Newsreader', description: 'For documentation, onboarding and pages around the panels. Newsreader titles and opening lines over Inter for every control and paragraph. Considered and calm.', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:ital,wght@0,300..600;1,300..600&family=Instrument+Serif:ital@0;1' },
   native: { label: 'Native', ui: 'System UI', mono: 'System Mono', display: '', serif: '', description: 'For desktop-like apps. The platform face, SF Pro on Apple and Segoe UI Variable on Windows: nothing to load and the sharpest rendering each system has.', fonts: 'family=Instrument+Serif:ital@0;1' },
   legible: { label: 'Legible', ui: 'Atkinson Hyperlegible Next', mono: 'Atkinson Hyperlegible Mono', display: '', serif: '', description: 'For accessibility, kiosks and long reading. Atkinson Hyperlegible, drawn so that similar letters are hard to confuse, with open line spacing.', fonts: 'family=Atkinson+Hyperlegible+Next:ital,wght@0,400..700;1,400..700&family=Atkinson+Hyperlegible+Mono:wght@400..600&family=Instrument+Serif:ital@0;1' },
+  instrument: { label: 'Instrument', ui: 'Inter', mono: 'Geist Mono', display: 'Instrument Sans', serif: '', description: 'For studio tools and creative software. Instrument Sans, narrowed, for titles over Inter for every control: drawn, precise and a little warmer than a plain grotesk.', fonts: 'family=Instrument+Sans:wdth,wght@75..100,400..700&family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Geist+Mono:wght@300..600&family=Instrument+Serif:ital@0;1' },
+  salon: { label: 'Salon', ui: 'Geist', mono: 'Geist Mono', display: 'Instrument Serif', serif: 'Instrument Serif', description: 'For premium products and launch pages around a tool. Tall Instrument Serif titles and italic opening lines over crisp Geist controls: the serif names, the sans measures.', fonts: 'family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@300..600' },
+  wide: { label: 'Wide', ui: 'Inter', mono: 'Geist Mono', display: 'Mona Sans', serif: '', description: 'For hardware, devices and confident brands. Mona Sans set wide for titles over a neutral Inter: engineered headlines, calm controls.', fonts: 'family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=Geist+Mono:wght@300..600&family=Instrument+Serif:ital@0;1' },
+  grotesk: { label: 'Grotesk', ui: 'Inter', mono: 'JetBrains Mono', display: 'Space Grotesk', serif: '', description: 'For technical and developer products. Space Grotesk titles, with their engineered quirks, over Inter for every control and paragraph.', fonts: 'family=Space+Grotesk:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:ital,wght@0,300..600;1,300..600&family=Instrument+Serif:ital@0;1' },
+  fine: { label: 'Fine', ui: 'Inter', mono: 'JetBrains Mono', display: 'Inter Tight', serif: '', description: 'The default, for precision instruments, control panels and pro tools. Hairline Inter on every control in a bright ink, under extra-bold, tight Inter Tight titles: the Swiss contrast of weight.', fonts: 'family=Inter+Tight:wght@200..900&family=Inter:ital,opsz,wght@0,14..32,200..700;1,14..32,200..700&family=JetBrains+Mono:ital,wght@0,300..600;1,300..600&family=Instrument+Serif:ital@0;1' },
+  mass: { label: 'Mass', ui: 'Geist', mono: 'Geist Mono', display: 'Archivo', serif: '', description: 'For hardware and industrial products. Hairline Geist on every control under black, expanded Archivo titles: fine instruments in a heavy chassis.', fonts: 'family=Archivo:wdth,wght@62..125,100..900&family=Geist:wght@200..700&family=Geist+Mono:wght@300..600&family=Instrument+Serif:ital@0;1' },
+  round: { label: 'Round', ui: 'Hanken Grotesk', mono: 'JetBrains Mono', display: 'Unbounded', serif: '', description: 'For consumer devices and friendly products. Hairline Hanken Grotesk on every control under wide, rounded Unbounded titles: soft and confident.', fonts: 'family=Unbounded:wght@200..900&family=Hanken+Grotesk:wght@200..700&family=JetBrains+Mono:ital,wght@0,300..600;1,300..600&family=Instrument+Serif:ital@0;1' },
 };
 
 /** Props every control accepts to override its theme's finish or size. */

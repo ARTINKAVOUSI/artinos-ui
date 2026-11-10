@@ -7,7 +7,7 @@
 // design system
 export { ArtinosTheme, themeStyle } from './core/Theme';
 export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
-export { THEMES, THEME_META, GLASS_THEMES, HERO_THEMES, variationsOf, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
+export { THEMES, THEME_META, GLASS_THEMES, HERO_THEMES, variationsOf, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
 export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
@@ -101,14 +101,14 @@ export { Tabs } from './layout/Tabs';
 export type { TabsProps } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
-export { ItemList, ItemRow } from './layout/ItemRow';
+export { ItemGroup, ItemList, ItemRow } from './layout/ItemRow';
 export { moveBetween } from './core/sortable';
 export type { SortPlace } from './core/sortable';
 export { Inline, Stack, Text } from './layout/Text';
 export type { InlineProps, Space, StackProps, TextAccent, TextFace, TextProps, TextTone, TextVariant } from './layout/Text';
 export { Callout } from './layout/Callout';
 export type { CalloutProps, CalloutTone } from './layout/Callout';
-export type { ItemListProps, ItemRowProps } from './layout/ItemRow';
+export type { ItemGroupProps, ItemListProps, ItemListSize, ItemListVariant, ItemRowProps, ItemStatus } from './layout/ItemRow';
 
 // overlays
 export { Menu, ContextMenu } from './overlays/Menu';

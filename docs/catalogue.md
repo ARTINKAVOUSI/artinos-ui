@@ -8,7 +8,7 @@ Contents:
 - [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge · Tag
 - [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline
-- [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemRow
+- [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
 - [Workspace](#workspace): Dock · MetaBlock · NodeGraph · LiveGraphView · GraphGPU
 - [Scopes](#scopes): theme · density · material
@@ -39,7 +39,7 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | on / off | `Switch` | `variant="compact"` inside a `Field` | shutter or knob |
 | several independent flags (passes, layers, A/B/C) | `ToggleGroup` | `led`, icon options | LED chips in one well |
 | tags, moods, categories, filters — more than fit one well | `ChipGroup` | `multiple={false}`, `count` | outlined pills that wrap; on is the insert |
-| a list of things to pick from or manage (layers, bodies, presets, files) | `ItemList` + `ItemRow` | `swatch`, `meta`, `trailing`, `selected` | a name with a line of detail and tools at the end; never a stack of buttons |
+| a list of things to pick from or manage (layers, renders, materials, presets, files, people) | `ItemList` + `ItemRow` | `variant` plain · divided · cards · grid, `size`, `thumbnail`, `icon`, `meta`, `value`, `status`, `trailing`, `selected` | a lead, a name with a line of detail, its answer and tools at the end; a tree, tiles or cards; never a stack of buttons |
 | one of a few (2–4 choices, all visible) | `Segmented` | | the insert travels to the choice |
 | one of many (5+), or choices with icons and descriptions | `Select` | `appearance="well"` in forms | a frosted list that never clips |
 | a colour | `ColorField` | `alpha` | the colour is the insert; hex and opacity are scrubbable |
@@ -300,7 +300,7 @@ Sections that behave together. `accordion` keeps one open at a time (each Sectio
 
 ### Section
 
-A titled group: a light 22px title, the same size in any panel, over a firm hairline from the section before it. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · icon · title · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
+A titled group: its title alone, with no icon, and a hairline running through the title row from the name to its count; sections stand apart by air, with no line between them. A section inside a section is a group, its name in the accent's mono capitals on a hairline of its own. Everything about the group lives in its one title row: LED · title · hairline · count · reset · actions · chevron. `description` adds a quiet line of purpose under it; `variant="card"` sets the group on a soft tonal surface; `columns={3}` lays its rows side by side (X · Y · Z); `modified` + `onReset` show a reset while it differs from its defaults; `storageKey` remembers its fold.
 
 | kind | props | behaviour |
 |---|---|---|
@@ -320,14 +320,24 @@ A label column beside one or more controls: `Width [268] [Fixed ˅]`. `label` re
 
 A tab strip with a travelling underline. `items`, `value` / `defaultValue` / `onChange`, `label`, `idBase` (wires `aria-controls` to your panels). Usually in a Panel's `tabs` slot.
 
-### ItemList · ItemRow
+### ItemList · ItemGroup · ItemRow
 
-One thing in a list: a layer, a body, a preset, a file. Use it wherever a panel lists things, instead of a column of full-width buttons.
-- A `swatch` colour or a `leading` icon, the `title` in the sans, a `meta` line of detail (kind, size, state).
-- `trailing` tools at the end — a `Badge`, a compact `Switch`, an `IconButton` or `Menu` — that never select the row.
-- `selected`: the active wash; `onSelect` makes the row a button.
+Things in a list: layers, renders, materials, presets, files, people. Use it wherever a panel lists things, instead of a column of full-width buttons. Pick the look from what is listed:
+
+| what is listed | `variant` · `size` | the row |
+|---|---|---|
+| a scene, a file tree, an outliner | `plain` · `sm` | `icon`, `depth` + `expanded`, `status`, a visibility `IconButton` |
+| layers, bodies, a short list of things | `plain` · `md` | `swatch` or `icon`, `meta`, `trailing` tools |
+| renders, videos, scenes, uploads | `divided` · `lg` | `thumbnail` `thumbShape="wide"`, `description`, `value`, `progress`, `checked` |
+| materials, images, presets to pick by look | `grid` (`tileWidth`) | `thumbnail` (`round` for materials and people), `meta`; `ItemGroup` per family |
+| a few rich choices | `cards` · `md` | `icon`, `meta`, `value`, a `Badge` |
+| people | `plain` or `cards` | `thumbnail` `thumbShape="round"`, `status` for presence |
+
+- `selected` + `onSelect` for the current one; `checked` + `onCheckedChange` when many can be picked at once.
+- `status` is a light, never a word in the meta: `live` running, `warn`, `fault`, `idle`.
+- `value` is the row's answer (a size, a time, a percent); `progress` shows work under way along the row's foot.
 - `disabled`: the name side goes quiet and the trailing tools stay live, so a hidden layer can be shown again.
-- Rows stand in an `ItemList`, 2px apart, no dividers.
+- `empty` says what to do when there is nothing yet; never leave a list blank.
 
 ### PropertyRow
 
@@ -426,7 +436,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
-- **type**: the type system, one of five complete designs (`sleek` by default for control panels and tools, `product`, `editorial`, `native`, `legible`); see design.md.
+- **type**: the type system, one of twelve complete designs: one family (`sleek` by default for control panels and tools, `product`, `native`, `legible`) a pairing of a display face with a text face (`instrument`, `salon`, `wide`, `grotesk`, `editorial`), or hairline control text under heavy titles (`fine`, `mass`, `round`); see design.md.
 - **density**: `dense` (24px controls; docks and strips), `standard` (26px; default), `comfort` (30px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
@@ -452,7 +462,7 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 Use the whole family, not bare panels:
 - a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
 - settings described as data and set by `createParamPanes` (the right control per value, groups with icon, count, reset and on/off, dockable panes); by hand only when there is no schema, as:
-- inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with an `icon`, a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
+- inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
 - live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
 - lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;
 - an editor around a canvas as a `Dock` (built on MetaBlock) rather than absolutely positioned panels;
@@ -475,9 +485,9 @@ Use `Text` with a `variant`; never set a font size, weight or colour by hand.
 | `eyebrow` | the number or kind of a section, above its title | 12 px in the mark face (the mono in Sleek) and the accent, after a lit dot |
 | `lead` | the one sentence that says what a section is for | the opening-sentence face, 16 px regular, full ink (14 in a panel) |
 | `body` | a paragraph | the reading face, 14 px on a 22 px line at 88% ink (13 in a panel), at most `--ar-measure` (64ch) wide |
-| `note` | help or an aside | 13 px at 58% ink (12 in a panel): two steps quieter than the body |
-| `caption` | a line under the thing it describes | 12 px medium, the quietest ink (44%) |
-| `label` | a name beside a value outside a Field | 12 px medium in a solid 62% grey |
+| `note` | help or an aside | 13 px at 66% ink (12 in a panel): two steps quieter than the body |
+| `caption` | a line under the thing it describes | 12 px medium, the quietest ink (54%) |
+| `label` | a name beside a value outside a Field | 12 px medium in a solid 76% grey |
 | `value` | a figure in a row | 13 px semibold in the full ink, tabular digits |
 | `figure` | the one number that matters | 28 px medium (24 in a panel); a `<small>` inside is its unit |
 | `numeral` | a big number that marks a step or a chapter | large, in the accent, 28 px (20 in a panel) |
@@ -527,7 +537,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 
 - A Section holds one idea and about seven rows at most; split a longer one.
 - Related numbers sit side by side: `Section columns={3}` for X · Y · Z, a `RangeSlider` for an interval, an `XYPad` for a pair.
-- Every part of a panel reads as a part. Sections directly in a Panel or dock pane sit on their own cards, so give each an `icon` and let `count` carry a small fact. `variant="plain"` is for a section that flows on from the one above.
+- Every part of a panel reads as a part. Sections directly in a Panel or dock pane sit on their own cards, so let `count` carry a small fact. `variant="plain"` is for a section that flows on from the one above.
 - Open with what matters: `icon`, a bold `title` and a live `Badge` in `actions` say what this is; a `StatStrip` gives the two to four figures someone looks for first.
 - In a row, the label is quiet and the value firm. A small fact beside a value is a `Tag`, not more words: `Friend` `visit 8`, not "friend, visit 8".
 - Name a set of controls inside a section with `Text variant="overline"`. Help that must be remembered goes in a `Callout`, with `<kbd>` for gestures and keys, not in a caption.
@@ -552,7 +562,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - The panel is a `Panel` (or a Dock panel) so the gutter marks and the glass are there.
 - Every gap comes from the space scale (`Stack` / `Inline`, the roles); no hand-set margins.
 - Every piece of text is a `Text` role or a component's own; from arm's length the panel name, a section name, a value and a label are told apart without reading them.
-- Each section has an icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
+- Section titles carry no icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
 - Sentence case; capitals only for small headings; no full stops on labels.
 - Look at it: take a screenshot and check the rules above before calling it done.

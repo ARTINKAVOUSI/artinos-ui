@@ -22,7 +22,7 @@ export function App() {
   // ?theme=frost&density=dense&backdrop=monstera — links straight to a look
   const q = new URLSearchParams(location.search);
   const pick = <T extends string>(k: string, list: readonly T[], d: T) => (list.includes(q.get(k) as T) ? (q.get(k) as T) : d);
-  const [theme, setTheme] = useState<string>(pick('theme', THEMES, 'frost-deep'));
+  const [theme, setTheme] = useState<string>(pick('theme', THEMES, 'nimbus'));
   const [customs, setCustoms] = useState<CustomTheme[]>(() => loadThemes());
   type View = 'showcase' | 'studio' | 'themes';
   const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : 'showcase');
@@ -65,7 +65,7 @@ export function App() {
   }, [view]);
 
   const [density, setDensity] = useState<Density>(pick('density', DENSITIES, 'standard'));
-  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'sleek'));
+  const [type, setType] = useState<string>(pick('type', TYPE_COLLECTIONS, 'fine'));
   const [accent, setAccent] = useState<string>(pick('accent', ['theme', ...ACCENTS] as const, 'theme'));
   const [bg, setBg] = useState<Backdrop>(pick('backdrop', ['none', 'garden', 'monstera', 'studio'] as const, 'garden'));
   const [exporting, setExporting] = useState(() => location.hash === '#export');
@@ -180,7 +180,7 @@ export function App() {
 /* ---------- hero ---------- */
 
 /** The chapter a kit group is shown in, so the index counts the same parts as the Components stat. */
-const chapterOfGroup = (group: string) => (group === 'Dock' || group === 'Graph' ? 'workspace' : group.toLowerCase());
+const chapterOfGroup = (group: string) => (group === 'Dock' ? 'layout' : group.toLowerCase());
 
 function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => void }) {
   const componentChapters = CHAPTERS.filter((c) => !c.meta);

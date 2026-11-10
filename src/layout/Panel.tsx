@@ -187,8 +187,6 @@ export interface SectionProps {
   title: ReactNode;
   /** A quiet line under the heading, at the top of the body: what this group does. */
   description?: ReactNode;
-  /** A small mark before the title. */
-  icon?: ReactNode;
   /** Quiet info right after the title: a count (numbers roll) or a short note such as
    *  "1 changed · 3". Clicking it folds the group like the title. */
   count?: ReactNode;
@@ -228,7 +226,6 @@ export interface SectionProps {
 export function Section({
   title,
   description,
-  icon,
   count,
   actions,
   modified = false,
@@ -320,7 +317,6 @@ export function Section({
     <>
       {/* a switchable group says on or off with an LED before its title */}
       {toggleable ? <i className="ar-led ar-section__led" data-on={isOn ? '' : undefined} /> : null}
-      {icon ? <span className="ar-section__icon">{icon}</span> : null}
       <span className="ar-section__title" id={titleId}>
         {title}
       </span>
@@ -331,7 +327,7 @@ export function Section({
       {count != null ? (
         <span className="ar-section__count">{typeof count === 'number' || typeof count === 'string' ? <RollingText text={String(count)} base={0} /> : count}</span>
       ) : null}
-      {/* no line: the space between the title and the chevron is still the fold's hit area */}
+      {/* the section's hairline, between the title and the count; still the fold's hit area */}
       <i className="ar-section__rule" />
     </>
   );

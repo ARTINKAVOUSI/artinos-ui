@@ -49,7 +49,7 @@ export const PART_RULES: Array<[string, Part]> = [
   ['.sc-num, .sc-title, .sc-part span, .sc-subhead', P('caption', 'Caption', ['text-low', 'text-mid', 'text-hi', 'font-num'])],
   ['.sc-text, .sc-note, .ed-sheet__head span, p', P('body-text', 'Body text', ['text-mid', 'text-low', 'font-ui'])],
   ['h1, h2, .ed-sheet__head h2', P('heading', 'Heading', ['text-hi', 'font-ui'])],
-  ['.ar-panel, .sc-sheet, .sc-dock, .sc-dock__card', P('panel', 'Panel glass', PANEL)],
+  ['.ar-panel, .sc-sheet', P('panel', 'Panel glass', PANEL)],
 ];
 
 /** Friendly component names for the selection title. */

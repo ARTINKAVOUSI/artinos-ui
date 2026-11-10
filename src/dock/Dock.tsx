@@ -10,7 +10,7 @@ import { DockMenu } from './DockMenu';
 import { DockIcons } from './icons';
 import { PanelBarSlot, PanelIdContext } from './PanelBar';
 import { useWorkspaceRevision } from './metablock/hooks';
-import type { MetaBlockGroup, MetaBlockInstance } from './metablock/types';
+import type { MetaBlockCapabilities, MetaBlockGroup, MetaBlockInstance } from './metablock/types';
 import { MetaBlockWorkspace } from './metablock/workspace';
 import { MetaBlockWorkspaceView } from './metablock/WorkspaceView';
 import type { GroupChromeContext, MetaBlockWorkspaceViewProps } from './metablock/WorkspaceView';
@@ -38,6 +38,9 @@ export interface DockPanel {
   content: ReactNode;
   /** Quiet status line along the panel's foot. */
   footer?: ReactNode;
+  /** What this panel may do, on top of the MetaBlock defaults (all true): e.g. { closable: false,
+   *  floatable: false } keeps a panel docked and open. Drags, menus and window buttons follow it. */
+  capabilities?: Partial<MetaBlockCapabilities>;
 }
 
 export interface DockApi {
@@ -109,6 +112,11 @@ export function useDock(): DockApi {
   return api;
 }
 
+/** The surrounding Dock's API, or null outside a Dock: for parts that work in both places. */
+export function useDockOptional(): DockApi | null {
+  return useContext(DockContext);
+}
+
 /** Keys typed into a field, list or slider are for that control, not the dock. */
 const typingTarget = (target: EventTarget | null) =>
   target instanceof Element &&
@@ -140,13 +148,13 @@ function buildWorkspace(
     const groupId = `dock.${edge}`;
     workspace.createGroup({ id: groupId, title: edge[0].toUpperCase() + edge.slice(1), role: 'dock', meta: { persistentContainer: true } });
     // meta is structured-cloned for undo and persistence, so it stays JSON-safe
-    for (const p of members) workspace.createMetaBlock({ id: p.id, title: p.title, role: 'panel', meta: { description: p.description ?? null } }, { groupId });
+    for (const p of members) workspace.createMetaBlock({ id: p.id, title: p.title, role: 'panel', capabilities: p.capabilities as MetaBlockCapabilities, meta: { description: p.description ?? null } }, { groupId });
     workspace.dockGroup(groupId, { area: edge, size: o.sizes[edge] });
     const first = members.find((p) => p.active) ?? members[0];
     if (first) workspace.activateBlock(first.id);
   }
   for (const p of floating) {
-    workspace.createMetaBlock({ id: p.id, title: p.title, role: 'panel' });
+    workspace.createMetaBlock({ id: p.id, title: p.title, role: 'panel', capabilities: p.capabilities as MetaBlockCapabilities });
     workspace.floatBlock(p.id, o.float);
   }
 
@@ -170,7 +178,7 @@ function buildWorkspace(
           const groupId = `dock.${p.dock ?? 'bottom'}`;
           const docked = workspace.groups.get(groupId)?.role === 'dock';
           workspace.createMetaBlock(
-            { id: p.id, title: p.title, role: 'panel', meta: { description: p.description ?? null } },
+            { id: p.id, title: p.title, role: 'panel', capabilities: p.capabilities as MetaBlockCapabilities, meta: { description: p.description ?? null } },
             { groupId: docked ? groupId : undefined },
           );
           if (!docked) workspace.floatBlock(p.id, o.float);
@@ -258,7 +266,7 @@ export function Dock({
       if (!workspace.blocks.has(id)) {
         // back into its dock if there is one, else the first dock, else a floating window
         const home = [`dock.${panel.dock ?? 'bottom'}`, 'dock.bottom', ...workspace.groups.keys()].find((g) => workspace.groups.get(g)?.role === 'dock');
-        workspace.createMetaBlock({ id, title: panel.title, role: 'panel' }, { groupId: home });
+        workspace.createMetaBlock({ id, title: panel.title, role: 'panel', capabilities: panel.capabilities as MetaBlockCapabilities }, { groupId: home });
         if (!home) workspace.floatBlock(id, floatBounds ?? DEFAULT_FLOAT);
       }
       workspace.activateBlock(id);
@@ -283,7 +291,7 @@ export function Dock({
     (panel, place) => {
       setExtras((e) => [...e.filter((p) => p.id !== panel.id), panel]);
       if (!workspace.blocks.has(panel.id)) {
-        workspace.createMetaBlock({ id: panel.id, title: panel.title, role: 'panel', meta: { description: panel.description ?? null } });
+        workspace.createMetaBlock({ id: panel.id, title: panel.title, role: 'panel', capabilities: panel.capabilities as MetaBlockCapabilities, meta: { description: panel.description ?? null } });
         const base = floatBounds ?? DEFAULT_FLOAT;
         const box = rootRef.current?.getBoundingClientRect();
         const at = place?.at && box ? { x: Math.max(8, place.at.x - box.left), y: Math.max(8, place.at.y - box.top) } : { x: base.x, y: base.y };
@@ -429,6 +437,7 @@ export function Dock({
         <div className="ar-dock__window-actions" data-no-drag>
           {c.activeBlock ? (
             <>
+              {c.activeBlock.capabilities.maximizable === false ? null : (
               <button
                 type="button"
                 className="ar-tool"
@@ -437,12 +446,15 @@ export function Dock({
               >
                 {c.group.posture === 'maximized' ? DockIcons.minimize : DockIcons.maximize}
               </button>
+              )}
               <button type="button" className="ar-tool" title="Return to its dock" onClick={() => c.blockActions.returnHome(c.activeBlock!.id)}>
                 {DockIcons.returnHome}
               </button>
-              <button type="button" className="ar-tool" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
-                {DockIcons.close}
-              </button>
+              {c.activeBlock.capabilities.closable === false ? null : (
+                <button type="button" className="ar-tool" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
+                  {DockIcons.close}
+                </button>
+              )}
             </>
           ) : null}
         </div>

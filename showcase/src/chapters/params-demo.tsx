@@ -1,21 +1,14 @@
-/* The Workspace chapter's settings-from-a-schema demo: a fluid engine's settings as data, and the panes the kit
-   builds from them. The app below writes no control code. */
-import { createParamPanes, Dock } from '../../../src';
-import type { DockPanel, Param, ParamGroup, ParamStore, ParamValues } from '../../../src';
-import { BACKDROPS } from '../shared';
-
-const mark = (d: string) => (
-  <svg viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d={d} />
-  </svg>
-);
+/* Settings from a schema: a fluid engine's settings as data, and the panes the kit builds from them.
+   The app writes no control code. */
+import { createParamPanes } from '../../../src';
+import type { Param, ParamGroup, ParamStore, ParamValues } from '../../../src';
 
 const GROUPS: ParamGroup[] = [
-  { id: 'solver', title: 'Solver', icon: mark('M3.5 3.5h7v7h-7zM5.5 1.5v2M8.5 1.5v2M5.5 10.5v2M8.5 10.5v2'), open: true },
-  { id: 'matter', title: 'Matter', icon: mark('M7 1.8c2.2 2.6 3.4 4.4 3.4 6a3.4 3.4 0 01-6.8 0c0-1.6 1.2-3.4 3.4-6z'), open: true },
-  { id: 'heat', title: 'Heat', icon: mark('M7 1.8c.6 2-2.4 3.2-2.4 5.6a2.4 2.4 0 004.8 0c0-1-.5-1.7-1-2.3'), switch: 'thermal', description: 'Temperature, melting and boiling.' },
-  { id: 'optics', title: 'Optics', icon: mark('M7 1.8a5.2 5.2 0 100 10.4A5.2 5.2 0 007 1.8zM2 6h10'), open: true },
-  { id: 'camera', title: 'Camera', icon: mark('M1.8 4.5h2.4l1-1.5h3.6l1 1.5h2.4v6.5H1.8z') },
+  { id: 'solver', title: 'Solver', open: true },
+  { id: 'matter', title: 'Matter', open: true },
+  { id: 'heat', title: 'Heat', switch: 'thermal', description: 'Temperature, melting and boiling.' },
+  { id: 'optics', title: 'Optics', open: true },
+  { id: 'camera', title: 'Camera' },
 ];
 
 const PARAMS: Param[] = [
@@ -49,30 +42,5 @@ const store: ParamStore = {
   },
 };
 
-const settings = createParamPanes({ params: PARAMS, groups: GROUPS, panes: { physics: ['solver', 'matter', 'heat'], look: ['optics', 'camera'] }, store, storageKey: 'artinos-showcase.params' });
-
-const PANELS: DockPanel[] = [
-  { id: 'physics', title: 'Physics', description: 'Solver, matter, heat', dock: 'right', active: true, content: <settings.Pane id="physics" label="Physics groups" /> },
-  { id: 'look', title: 'Look', description: 'Optics and camera', dock: 'right', content: <settings.Pane id="look" label="Look groups" /> },
-];
-
-export function ParamsDemo() {
-  return (
-    <div className="sc-workspace">
-      <Dock panels={PANELS} viewport={<img className="sc-workspace__view" src={BACKDROPS.monstera} alt="" />} storageKey="artinos-showcase.params-dock.v1" sizes={{ right: 0.42 }} viewProps={{ padding: 8, gap: 6 }} />
-    </div>
-  );
-}
-
-export const PARAMS_CODE = `const settings = createParamPanes({
-  params,            // [{ key, label, group, kind: 'number' | 'choice' | 'toggle', default, min, max, step, face, when, advanced }]
-  groups,            // [{ id, title, icon, description, switch: 'thermal', open }]
-  panes: { physics: ['solver', 'matter', 'heat'], look: ['optics', 'camera'] },
-  store,             // { get, subscribe, set }: your own state
-  storageKey: 'my-app.settings',
-});
-
-<Dock panels={[
-  { id: 'physics', title: 'Physics', dock: 'right', content: <settings.Pane id="physics" /> },
-  { id: 'look', title: 'Look', dock: 'right', content: <settings.Pane id="look" /> },
-]} viewport={<Canvas>…</Canvas>} />`;
+/** The fluid engine's settings as panes of sections; the workspace docks them as Physics and Look. */
+export const settings = createParamPanes({ params: PARAMS, groups: GROUPS, panes: { physics: ['solver', 'matter', 'heat'], look: ['optics', 'camera'] }, store, storageKey: 'artinos-showcase.params' });

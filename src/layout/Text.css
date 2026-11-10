@@ -293,6 +293,17 @@
   font-family: inherit;
 }
 
+/* a system may fade its titles from the ink into the accent (--ar-title-gradient, --ar-title-fill);
+   an explicit accent on the role wins */
+.ar-type:is([data-variant='hero'], [data-variant='display'], [data-variant='title']):not([data-accent]) {
+  background: linear-gradient(100deg, var(--ar-tone-title) 15%, var(--ar-tone-accent)) no-repeat 0 0 / var(--ar-title-gradient, 0 0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: var(--ar-title-fill, currentColor);
+  width: fit-content; /* the fade runs across the words, not the empty line after them */
+  max-width: 100%;
+}
+
 /* accent: seven ways to bring the accent into any role */
 .ar-type[data-accent='ink'] {
   --_ink: var(--ar-tone-accent);

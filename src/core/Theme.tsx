@@ -1,7 +1,7 @@
 import type { CSSProperties, ElementType, HTMLAttributes, ReactNode } from 'react';
 import { cx } from './utils';
 import type { Accent, Density, MaterialName, ThemeName, TypeCollection } from './utils';
-import { TYPE_ALIASES } from './utils';
+import { DEFAULT_THEME, THEME_ALIASES, TYPE_ALIASES } from './utils';
 
 /** Token overrides: `{ signal: '#ff4fa3', 'radius-control': '6px' }` or full `--ar-*` names. */
 export type TokenOverrides = Record<string, string | number>;
@@ -21,7 +21,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   material?: MaterialName;
   density?: Density;
   /** A type collection (see TYPE_COLLECTIONS): the faces and their tuning. Inherits when omitted;
-   *  the default is `sleek`. Earlier ids still work (TYPE_ALIASES). */
+   *  the default is `fine`. Earlier ids still work (TYPE_ALIASES). */
   type?: TypeCollection | (string & {});
   /** An accent (see ACCENTS) in place of the theme's own signal: live edges, LEDs, focus and
    *  selection take it, nothing else changes. Each accent has a dark and a light value. */
@@ -43,14 +43,14 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
  * Optional scope wrapper. It only sets data attributes and inline tokens, so the
  * same result is available without React: <div data-ar-theme="frost">.
  */
-export function ArtinosTheme({ theme = 'studio', material, density, type, accent, scene, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+export function ArtinosTheme({ theme = DEFAULT_THEME, material, density, type, accent, scene, tokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'div';
   return (
     <Tag
       {...rest}
-      data-ar-theme={theme}
+      data-ar-theme={THEME_ALIASES[theme] ?? theme}
       data-ar-material={material}
       data-ar-density={density}
       data-ar-type={type ? (TYPE_ALIASES[type] ?? type) : undefined}

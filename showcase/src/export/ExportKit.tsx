@@ -63,7 +63,7 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
   const [themes, setThemes] = useState<string[]>(() => (current.startsWith('c:') ? [] : [current]));
   const [customIds, setCustomIds] = useState<string[]>(() => (current.startsWith('c:') ? [current.slice(2)] : []));
   const [comps, setComps] = useState<string[]>(() => ALL_COMPONENTS);
-  const [types, setTypes] = useState<string[]>(['sleek']);
+  const [types, setTypes] = useState<string[]>(['fine']);
   const [folder, setFolder] = useState('artinos-ui');
   const [googleFonts, setGoogleFonts] = useState(true);
   const [materials, setMaterials] = useState(true);
@@ -230,11 +230,11 @@ export function ExportKit({ customs, current, onClose }: { customs: CustomTheme[
             <p className="xk__note">Shared helpers (hooks, formatting, the theme scope) come along automatically when a component needs them.</p>
 
             <div className="xk__sub">
-              Type collections <em><RollingValue text={String(new Set(['sleek', ...types]).size)} base={0} /></em>
+              Type collections <em><RollingValue text={String(new Set(['fine', ...types]).size)} base={0} /></em>
             </div>
             <div className="xk__comps">
               {TYPE_COLLECTIONS.map((t) => (
-                <button key={t} type="button" className="xk__comp" aria-pressed={t === 'sleek' || types.includes(t)} disabled={t === 'sleek'} onClick={() => flip(setTypes, t)}>
+                <button key={t} type="button" className="xk__comp" aria-pressed={t === 'fine' || types.includes(t)} disabled={t === 'fine'} onClick={() => flip(setTypes, t)}>
                   <i className="xk__tick" />
                   <b>{TYPE_META[t].label}</b>
                   <span>{[TYPE_META[t].display, TYPE_META[t].ui, TYPE_META[t].serif, TYPE_META[t].mono].filter(Boolean).join(' · ')}</span>

@@ -22,14 +22,14 @@
      theme's own hue, and the quiet steps stay readable. (A theme's own values for these steps are
      superseded here; inline tokens, as the Theme Studio writes them, still win.) */
   --ar-text-mid: color-mix(in oklab, var(--ar-text-hi) 90%, var(--ar-ink-mid));
-  --ar-text-low: color-mix(in oklab, var(--ar-text-hi) 66%, var(--ar-ink-mid));
-  --ar-text-faint: color-mix(in oklab, var(--ar-text-hi) 48%, var(--ar-ink-mid));
+  --ar-text-low: color-mix(in oklab, var(--ar-text-hi) 74%, var(--ar-ink-mid));
+  --ar-text-faint: color-mix(in oklab, var(--ar-text-hi) 58%, var(--ar-ink-mid));
   --ar-text-ghost: color-mix(in srgb, var(--ar-text-hi) 40%, transparent);
 
   /* type */
   --ar-control-font: var(--ar-font-ui); /* one voice: words and figures in the sans, digits tabular */
   --ar-label-weight: 500;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-label-tracking: 0.13em;
   --ar-label-case: var(--ar-caps-case);
   /* the voice of control text — labels, buttons, chips, segments, menu actions: the sans in
@@ -38,7 +38,7 @@
   --ar-voice-case: none;
   --ar-voice-tracking: var(--ar-track-small);
   --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump)); /* a label is never larger than its value */
-  --ar-voice-weight: var(--ar-weight-medium); /* control words (buttons, chips, segments) are medium */
+  --ar-voice-weight: var(--ar-weight-voice, 500); /* control words (buttons, chips, segments) are medium */
   --ar-label-bump: 0px;
   --ar-value-bump: 0px;
 
@@ -371,7 +371,7 @@
 [data-ar-theme='wisteria']:not([data-ar-material]),
 [data-ar-theme='dune']:not([data-ar-material]) {
   --ar-label-weight: 500;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: var(--ar-bg-well);
   --ar-trough-backdrop: blur(6px);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
@@ -624,7 +624,7 @@
   --ar-trough: color-mix(in srgb, var(--ar-bg-app) 34%, transparent);
   --ar-trough-backdrop: blur(18px) saturate(1.1);
   --ar-well: inset 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 1px 0 rgba(255, 255, 255, 0.07);
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-label-ink: color-mix(in oklab, var(--ar-text-hi) 88%, var(--ar-ink-mid));
   --ar-value-ink: color-mix(in oklab, var(--ar-text-hi) 88%, var(--ar-ink-mid));
   --ar-unit-ink: color-mix(in oklab, var(--ar-text-hi) 70%, var(--ar-ink-mid));
@@ -844,7 +844,7 @@
 /* GLASS — clear glass controls: a light veil of white, a bright hairline rim,
    white ink. The pane already blurs, so wells and inserts don't blur again. */
 [data-ar-theme='glass']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.2);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   --ar-insert: rgba(255, 255, 255, 0.2);
@@ -878,7 +878,7 @@
 
 /* GLASS DARK — the same clear-glass controls, quieter on the deeper veil. */
 [data-ar-theme='glass-dark']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.3);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   --ar-insert: rgba(255, 255, 255, 0.19);
@@ -912,7 +912,7 @@
 /* FROST — frosted-white controls on the frosted pane: dark ink on the insert,
    white type on the pane, a deepened signal for the live edge. */
 [data-ar-theme='frost']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.13);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-insert: rgba(255, 255, 255, 0.82);
@@ -975,7 +975,7 @@
 
 /* GLASS LIGHT — clear white glass controls with dark ink on a light veil. */
 [data-ar-theme='glass-light']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(255, 255, 255, 0.2);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
   --ar-insert: rgba(255, 255, 255, 0.55);
@@ -1007,7 +1007,7 @@
 
 /* CRYSTAL — all rim: near-clear inserts with a bright hairline, white ink. */
 [data-ar-theme='crystal']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.18);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
   --ar-insert: rgba(255, 255, 255, 0.13);
@@ -1043,7 +1043,7 @@
 
 /* FROST DARK — frosted-grey controls on a charcoal frost; white ink. */
 [data-ar-theme='frost-dark']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.24);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-insert: rgba(255, 255, 255, 0.27);
@@ -1077,7 +1077,7 @@
 
 /* ICE — icy blue-white frosted controls, deep navy ink, white type on the pane. */
 [data-ar-theme='ice']:not([data-ar-material]) {
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 20, 40, 0.14);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-insert: rgba(237, 246, 253, 0.85);
@@ -1114,7 +1114,7 @@
 /* ONYX — dark glass inserts rimmed in a fine gold hairline; gold seam and LEDs. */
 [data-ar-theme='onyx']:not([data-ar-material]) {
   --ar-label-tracking: 0.18em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.34);
   --ar-well: inset 0 0 0 1px rgba(212, 175, 106, 0.12);
   --ar-insert: rgba(255, 255, 255, 0.09);
@@ -1150,7 +1150,7 @@
 /* SAPPHIRE — icy clear inserts with a platinum rim; silver-blue live edge. */
 [data-ar-theme='sapphire']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 6, 24, 0.3);
   --ar-well: inset 0 0 0 1px rgba(180, 205, 255, 0.1);
   --ar-insert: rgba(175, 204, 255, 0.2);
@@ -1186,7 +1186,7 @@
 /* CHAMPAGNE — ivory frosted inserts with an antique-gold rim, espresso ink. */
 [data-ar-theme='champagne']:not([data-ar-material]) {
   --ar-label-tracking: 0.18em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(40, 26, 8, 0.14);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-insert: rgba(251, 244, 228, 0.9);
@@ -1257,7 +1257,7 @@
 /* PLATINUM — crystal-clear inserts with a bright platinum rim; white seam. */
 [data-ar-theme='platinum']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.16);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
   --ar-insert: rgba(255, 255, 255, 0.21);
@@ -1293,7 +1293,7 @@
 /* DIAMOND — all-rim inserts with a faint spectral fire; ice-white seam. */
 [data-ar-theme='diamond']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 0, 0, 0.1);
   --ar-well: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --ar-insert: rgba(234, 239, 244, 0.25);
@@ -1330,7 +1330,7 @@
 /* EMERALD — green-clear inserts rimmed in pale gold; gold seam, emerald LEDs. */
 [data-ar-theme='emerald']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(0, 16, 10, 0.3);
   --ar-well: inset 0 0 0 1px rgba(230, 204, 146, 0.12);
   --ar-insert: rgba(110, 213, 168, 0.17);
@@ -1366,7 +1366,7 @@
 /* ROSE GOLD — blush-clear inserts with a rose-gold rim and seam. */
 [data-ar-theme='rose-gold']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(30, 6, 10, 0.24);
   --ar-well: inset 0 0 0 1px rgba(236, 178, 158, 0.14);
   --ar-insert: rgba(248, 203, 191, 0.21);
@@ -1402,7 +1402,7 @@
 /* COGNAC — amber-clear inserts with a brass rim; brass seam, amber LEDs. */
 [data-ar-theme='cognac']:not([data-ar-material]) {
   --ar-label-tracking: 0.18em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(20, 8, 0, 0.32);
   --ar-well: inset 0 0 0 1px rgba(222, 170, 102, 0.12);
   --ar-insert: rgba(228, 163, 100, 0.17);
@@ -1438,7 +1438,7 @@
 /* AMETHYST — violet-clear inserts with a silver rim; lavender live edge. */
 [data-ar-theme='amethyst']:not([data-ar-material]) {
   --ar-label-tracking: 0.16em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(10, 0, 24, 0.28);
   --ar-well: inset 0 0 0 1px rgba(225, 220, 240, 0.1);
   --ar-insert: rgba(188, 160, 248, 0.2);
@@ -1643,7 +1643,7 @@
 /* VELVET — rosy frosted inserts on bordeaux, silver rim; rose live edge. */
 [data-ar-theme='velvet']:not([data-ar-material]) {
   --ar-label-tracking: 0.18em;
-  --ar-value-weight: 600;
+  --ar-value-weight: var(--ar-weight-readout, 600);
   --ar-trough: rgba(20, 0, 8, 0.26);
   --ar-well: inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.26), inset -1px -1px 2px rgba(255, 255, 255, 0.1);
   --ar-insert: rgba(255, 214, 229, 0.22);
@@ -1871,7 +1871,7 @@
 [data-ar-theme='haze-rim']:not([data-ar-material]),
 [data-ar-theme='haze-lift']:not([data-ar-material]),
 [data-ar-theme='haze-carve']:not([data-ar-material]),
-[data-ar-theme='haze-carve-custom']:not([data-ar-material]),
+[data-ar-theme='nimbus']:not([data-ar-material]),
 [data-ar-theme='haze-glow']:not([data-ar-material]),
 [data-ar-theme='haze-bevel']:not([data-ar-material]),
 [data-ar-theme='haze-night']:not([data-ar-material]) {
@@ -3085,7 +3085,7 @@
 
 /* HAZE CARVE */
 [data-ar-theme='haze-carve']:not([data-ar-material]),
-[data-ar-theme='haze-carve-custom']:not([data-ar-material]) {
+[data-ar-theme='nimbus']:not([data-ar-material]) {
   --ar-trough: rgba(0, 0, 0, 0.08);
   --ar-well: inset 0 1px 2px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 0 rgba(255, 255, 255, 0.1);
   --ar-insert-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 4px 10px -4px rgba(0, 0, 0, 0.3);
@@ -3096,8 +3096,8 @@
   --ar-base-text-shadow: var(--ar-panel-text-shadow);
 }
 
-/* HAZE CARVE CUSTOM: the changes made in the Theme Studio for BLOBBY, on top of Haze Carve */
-[data-ar-theme='haze-carve-custom']:not([data-ar-material]) {
+/* NIMBUS: Haze Carve softened, the default theme: softer carved wells, a brighter value gradient, a touch taller and roomier */
+[data-ar-theme='nimbus']:not([data-ar-material]) {
   --ar-insert: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.275) 100%);
   --ar-insert-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.67);
   --ar-inset: 1.5px;
@@ -3105,7 +3105,7 @@
   --ar-well: inset 0 1px 4.3px rgba(0, 0, 0, 0.41), inset 0 0 0 1px rgba(255, 255, 255, 0.145), 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 /* its control size gives way to a density the host asks for */
-[data-ar-theme='haze-carve-custom']:not([data-ar-density]) {
+[data-ar-theme='nimbus']:not([data-ar-density]) {
   --ar-h: 27px;
   --ar-pad-x: 10px;
 }

@@ -6,6 +6,10 @@
    artinos.css and README.md to match (plus docs/ when given). */
 
 export const BASE_THEME = 'studio';
+/** ArtinosTheme's default theme: every kit carries it beside the base. */
+export const DEFAULT_THEME = 'nimbus';
+/** Earlier theme ids, still accepted on the command line. */
+export const THEME_ALIASES = { 'haze-carve-custom': 'nimbus' };
 
 export const COMPONENTS = [
   { group: 'Sliders', id: 'Slider', label: 'Slider', file: 'slider/Slider.tsx', note: 'material · stepped · gradient · ruler · curve · wave' },
@@ -44,7 +48,7 @@ export const COMPONENTS = [
   { group: 'Layout', id: 'Text', label: 'Text · Stack · Inline', file: 'layout/Text.tsx', note: 'type roles and spacing primitives' },
   { group: 'Layout', id: 'StatStrip', label: 'StatStrip', file: 'layout/StatStrip.tsx', note: 'key figures side by side at the top of a panel' },
   { group: 'Layout', id: 'Callout', label: 'Callout', file: 'layout/Callout.tsx', note: 'note · tip · warn · fault, set apart from the text' },
-  { group: 'Layout', id: 'ItemRow', label: 'ItemList · ItemRow', file: 'layout/ItemRow.tsx', note: 'a list of things: layers, bodies, presets' },
+  { group: 'Layout', id: 'ItemRow', label: 'ItemList · ItemGroup · ItemRow', file: 'layout/ItemRow.tsx', note: 'lists of things: trees, thumbnails, tiles, cards' },
   { group: 'Overlays', id: 'Menu', label: 'Menu · ContextMenu', file: 'overlays/Menu.tsx', note: 'dropdown and right-click menus' },
   { group: 'Overlays', id: 'Dialog', label: 'Dialog', file: 'overlays/Dialog.tsx', note: 'modal' },
   { group: 'Overlays', id: 'Toast', label: 'Toast', file: 'overlays/Toast.tsx', note: 'notifications' },
@@ -83,9 +87,9 @@ export function readRegistry(sources) {
 
 /* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
 
-export const BASE_TYPE = 'sleek';
+export const BASE_TYPE = 'fine';
 /** Earlier type ids, still accepted on the command line. */
-export const TYPE_ALIASES = { manrope: 'sleek', code: 'sleek', form: 'sleek', quiet: 'sleek', geist: 'sleek', terminal: 'sleek', modern: 'sleek', industrial: 'sleek', grotesk: 'sleek', 'sleek-air': 'sleek', 'sleek-sharp': 'sleek', 'sleek-compact': 'sleek', pro: 'product', neue: 'product', instrument: 'product', round: 'product', 'red-hat': 'product', wide: 'product', mona: 'product', swiss: 'product', bold: 'product', jakarta: 'product', character: 'product', bricolage: 'product', clean: 'product', onest: 'product', figtree: 'product', 'sleek-serif': 'editorial', book: 'editorial', source: 'editorial', couture: 'editorial', luxe: 'editorial', contrast: 'editorial', atelier: 'editorial', newsroom: 'editorial', schibsted: 'editorial', soft: 'editorial', hyperlegible: 'legible' };
+export const TYPE_ALIASES = { manrope: 'sleek', code: 'sleek', form: 'sleek', quiet: 'sleek', geist: 'sleek', terminal: 'sleek', modern: 'sleek', industrial: 'sleek', 'sleek-air': 'sleek', 'sleek-sharp': 'sleek', 'sleek-compact': 'sleek', pro: 'product', neue: 'product', 'red-hat': 'round', mona: 'wide', swiss: 'product', bold: 'product', jakarta: 'product', character: 'product', bricolage: 'product', clean: 'product', onest: 'product', figtree: 'product', 'sleek-serif': 'editorial', book: 'editorial', source: 'editorial', couture: 'editorial', luxe: 'editorial', contrast: 'editorial', atelier: 'editorial', newsroom: 'editorial', schibsted: 'editorial', soft: 'editorial', hyperlegible: 'legible' };
 const TYPE_RE = /^ {2}(?:'([^']+)'|([\w-]+)): \{ label: '([^']*)', ui: '([^']*)', mono: '([^']*)', display: '([^']*)', (?:serif: '([^']*)', )?description: '((?:[^'\\]|\\.)*)', fonts: '([^']*)' \}/;
 
 /** TYPE_COLLECTIONS in registry order and TYPE_META, parsed from the package source. */
@@ -393,7 +397,7 @@ ${files.map((f) => `${o.folder}/${f}`).join('\n')}
 export function buildKit(sources, o) {
   const { themes: all, meta } = readRegistry(sources);
   const { meta: tmeta } = readTypes(sources);
-  const themes = [BASE_THEME, ...o.themes.filter((t) => t !== BASE_THEME)];
+  const themes = [BASE_THEME, DEFAULT_THEME, ...o.themes.filter((t) => t !== BASE_THEME && t !== DEFAULT_THEME)];
   const keep = new Set(themes);
   // `:not([data-ar-material])` names no material, so theme finishes survive without the overrides
   const themeOk = (s) => themesIn(s).every((t) => keep.has(t)) && (o.materials || materialsIn(s).length === 0);

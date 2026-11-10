@@ -1,9 +1,10 @@
-/* ARTINOS UI — the type systems. Five, each a complete design for one use: Sleek (the default,
-   control panels and tools), Product (product apps), Editorial (documentation and pages), Native
-   (desktop-like apps) and Legible (accessibility). Pick one with <ArtinosTheme type="…"> or
-   data-ar-type on any element; it carries through nested themes and portalled overlays. The
-   registry (TYPE_COLLECTIONS, TYPE_META, TYPE_ALIASES for earlier ids) is in core/utils.ts and the
-   faces load in tokens/fonts.css. tokens.css gives Sleek without any scope. */
+/* ARTINOS UI — the type systems. Twelve, each a complete design for one use; Fine is the default. One family, told
+   apart by weight and ink: Sleek (the default; control panels and tools), Product, Native and
+   Legible. Pairings, a display face over a text face: Instrument, Salon, Wide, Grotesk and
+   Editorial. Pick one with <ArtinosTheme type="…"> or data-ar-type on any element; it carries
+   through nested themes and portalled overlays. The registry (TYPE_COLLECTIONS, TYPE_META,
+   TYPE_ALIASES for earlier ids) is in core/utils.ts and the faces load in tokens/fonts.css.
+   tokens.css gives Fine without any scope. */
 
 /* A type scope that is not also a theme scope sits inside one, where the inherited font-family
    and the control face were already resolved from the outer faces. The scope re-points both,
@@ -26,7 +27,34 @@
   --ar-title-variation: normal;
   --ar-panel-title-size: 16px;
   --ar-panel-title-weight: 600;
+  /* how the system marks its titles (layout.css reads these; see "treatments") */
+  --ar-panel-mark: none; /* block: an accent bar above a panel's name */
+  --ar-panel-rule: 0px; /* a line under a panel's head */
+  --ar-panel-title-accent: 0%; /* how much of the accent a panel's name takes */
+  --ar-title-gradient: 0 0; /* 100% 100%: titles fade from the ink into the accent */
+  --ar-title-fill: currentColor; /* transparent with the gradient */
+  --ar-section-tick: none; /* block: an accent tick before a section's name */
+  --ar-section-tick-w: 2px;
+  --ar-section-rule: 0px; /* a line under a section's name */
+  --ar-section-accent: 0%; /* how much of the accent a section's name takes */
+  --ar-section-quiet: 0%; /* how far a section's name steps back toward the label grey */
+  --ar-group-accent: 100%; /* a group inside a section, in the accent */
+  --ar-stat-font: var(--ar-font-num); /* a StatStrip's figures */
+  --ar-stat-weight: 500;
+  --ar-stat-size: 20px;
+  --ar-stat-style: normal;
+  --ar-stat-accent: 0%;
   --ar-weight-name: 500;
+  --ar-weight-note: 400;
+  --ar-weight-section: 600;
+  --ar-weight-readout: 600;
+  --ar-weight-voice: 500;
+  --ar-label-strength: 76%;
+  --ar-note-strength: 66%;
+  --ar-tone-label: color-mix(in oklab, var(--ar-paper) var(--ar-label-strength), var(--ar-ink-mid));
+  --ar-tone-note: color-mix(in oklab, var(--ar-paper) var(--ar-note-strength), var(--ar-ink-mid));
+  --ar-name-strength: 86%;
+  --ar-track-small: 0.01em;
   --ar-weight-display: 500;
   --ar-weight-title: 600;
   --ar-track-heading: -0.03em;
@@ -54,6 +82,9 @@
 [data-ar-type]:not([data-ar-theme]):not([data-ar-material]) {
   --ar-control-font: var(--ar-font-ui);
   --ar-voice-font: var(--ar-font-ui);
+  /* the readout and control-word weights were resolved by the theme outside: take the system's */
+  --ar-value-weight: var(--ar-weight-readout);
+  --ar-voice-weight: var(--ar-weight-voice);
 }
 /* themes whose control text is the sans keep that inside a nested type scope, in the collection's sans */
 [data-ar-theme='lagoon'] [data-ar-type]:not([data-ar-theme]):not([data-ar-material]),
@@ -66,7 +97,7 @@
   --ar-control-font: 'Roboto Mono', var(--ar-font-num);
 }
 
-/* ---------- the five systems ----------
+/* ---------- the systems ----------
    One scale for all of them (tokens.css): a system changes the faces, the weights, the tracking and
    how an opening line, an accent word and a small mark are set. Sizes never change, so a page and a
    panel keep their proportions whichever system is chosen. */
@@ -79,7 +110,6 @@
   --ar-font-display: var(--ar-font-ui);
   --ar-font-lead: var(--ar-font-ui);
   --ar-font-mark: var(--ar-font-code); /* section numbers, meta lines, eyebrows: the mono, small */
-  --ar-weight-display: 500;
   --ar-weight-title: 600;
   --ar-track-heading: -0.04em;
   --ar-track-heading-sm: -0.022em;
@@ -89,6 +119,12 @@
   --ar-weight-accent: 300;
   --ar-font-numeral: var(--ar-font-ui);
   --ar-numeral-style: normal;
+  /* the look: hairline headlines and figures over firm small titles; a fine accent tick marks each section */
+  --ar-weight-display: 300;
+  --ar-section-tick: block;
+  --ar-section-tick-w: 2px;
+  --ar-stat-weight: 300;
+  --ar-stat-size: 24px;
 }
 
 /* Product — for product apps and inspectors: Inter, its display cut for titles · JetBrains Mono */
@@ -109,6 +145,129 @@
   --ar-weight-accent: 400;
   --ar-font-numeral: var(--ar-font-ui);
   --ar-numeral-style: normal;
+  /* the look: neutral and solid. Semibold everywhere, a line under each panel's head, no marks */
+  --ar-panel-rule: 1px;
+  --ar-stat-weight: 600;
+}
+
+
+/* Instrument — for studio tools and creative software: Instrument Sans (narrowed) titles · Inter · Geist Mono marks */
+[data-ar-type='instrument'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Instrument Sans', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-mark: var(--ar-font-code);
+  --ar-title-stretch: 88%; /* titles in the narrowed cut: drawn and tall */
+  --ar-weight-display: 500;
+  --ar-weight-title: 600;
+  --ar-track-heading: -0.03em;
+  --ar-track-heading-sm: -0.012em;
+  --ar-leading-heading: 1.06;
+  --ar-font-accent: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ar-accent-style: italic;
+  --ar-weight-accent: 400;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  /* the look: a studio console. An accent bar over each panel's name, section names in the accent, narrow figures */
+  --ar-panel-mark: block;
+  --ar-section-accent: 100%;
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 500;
+  --ar-stat-size: 24px;
+}
+
+/* Salon — for premium products and pages around a tool: Instrument Serif titles and opening lines · Geist · Geist Mono marks */
+[data-ar-type='salon'] {
+  --ar-font-ui: 'Geist', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ar-font-lead: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ar-font-heading: var(--ar-font-ui); /* a section's name in a panel stays in the sans */
+  --ar-font-mark: var(--ar-font-code);
+  --ar-panel-title-size: 20px; /* a narrow serif at its one weight needs the size to lead a pane */
+  --ar-panel-title-weight: 400;
+  --ar-weight-display: 400;
+  --ar-weight-title: 400;
+  --ar-track-heading: -0.018em;
+  --ar-track-heading-sm: -0.006em;
+  --ar-leading-heading: 1.02;
+  --ar-lead-style: italic;
+  --ar-lead-scale: 1.25; /* the serif opening line at 20: it reads at the size of a heading */
+  --ar-font-accent: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ar-accent-style: italic;
+  --ar-weight-accent: 400;
+  --ar-font-numeral: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ar-numeral-style: italic;
+  /* the look: luxe. Serif names that fade from the ink into the accent, hairlines under sections, italic serif figures */
+  --ar-title-gradient: 100% 100%;
+  --ar-title-fill: transparent;
+  --ar-section-rule: 1px;
+  --ar-section-midrule: 0px; /* the name stands on its own line instead */
+  --ar-type-section: 500 14px / 20px var(--ar-font-heading);
+  --ar-stat-font: 'Instrument Serif', Georgia, serif;
+  --ar-stat-weight: 400;
+  --ar-stat-size: 28px;
+  --ar-stat-style: italic;
+}
+
+/* Wide — for hardware, devices and confident brands: Mona Sans (wide) titles · Inter · Geist Mono marks */
+[data-ar-type='wide'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Mona Sans', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-mark: var(--ar-font-code);
+  --ar-title-stretch: 125%; /* titles at the family's widest: engineered and calm */
+  --ar-track-heading: -0.025em;
+  --ar-track-heading-sm: -0.01em;
+  --ar-leading-heading: 1.06;
+  --ar-font-accent: var(--ar-font-display);
+  --ar-accent-style: normal;
+  --ar-weight-accent: 300;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  /* the look: thick. Extra-bold wide titles, a heavy accent tick on every section, heavy wide figures */
+  --ar-weight-display: 800;
+  --ar-weight-title: 700;
+  --ar-panel-title-size: 18px;
+  --ar-panel-title-weight: 800;
+  --ar-type-section: 700 14px / 20px var(--ar-font-heading);
+  --ar-section-tick: block;
+  --ar-section-tick-w: 4px;
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 700;
+  --ar-stat-size: 24px;
+}
+
+/* Grotesk — for technical and developer products: Space Grotesk titles · Inter · JetBrains Mono marks */
+[data-ar-type='grotesk'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Space Grotesk', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-mark: var(--ar-font-code);
+  --ar-weight-display: 500;
+  --ar-weight-title: 600;
+  --ar-track-heading: -0.035em;
+  --ar-track-heading-sm: -0.015em;
+  --ar-leading-heading: 1.06;
+  --ar-font-accent: var(--ar-font-display);
+  --ar-accent-style: normal;
+  --ar-weight-accent: 300;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  /* the look: an engineering tool. Section names in the accent, groups in the mono, a line under each panel's head */
+  --ar-panel-rule: 1px;
+  --ar-section-accent: 100%;
+  --ar-type-group: 500 12px / 18px var(--ar-font-code);
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 500;
+  --ar-stat-size: 24px;
 }
 
 /* Editorial — for documentation and pages around the panels: Newsreader titles and opening lines · Inter */
@@ -133,6 +292,12 @@
   --ar-accent-style: italic;
   --ar-weight-accent: 400;
   --ar-numeral-style: italic;
+  /* the look: a printed page. Serif names, a hairline under each section's name, serif figures */
+  --ar-section-rule: 1px;
+  --ar-section-midrule: 0px; /* the name stands on its own line instead */
+  --ar-stat-font: Newsreader, Georgia, serif;
+  --ar-stat-weight: 400;
+  --ar-stat-size: 28px;
 }
 
 /* Native — for desktop-like apps: the system UI face and the system mono */
@@ -152,6 +317,10 @@
   --ar-weight-accent: 400;
   --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
+  /* the look: an operating system's settings. Section names smaller and stepped back, like group headings */
+  --ar-type-section: 600 13px / 18px var(--ar-font-heading);
+  --ar-section-quiet: 45%;
+  --ar-stat-weight: 600;
 }
 
 /* Legible — for accessibility, kiosks and long reading: Atkinson Hyperlegible Next · Mono */
@@ -173,4 +342,117 @@
   --ar-weight-accent: 400;
   --ar-font-numeral: var(--ar-font-ui);
   --ar-numeral-style: normal;
+  /* the look: strong contrast. Bold titles and figures, a firm line under every section's name */
+  --ar-section-rule: 2px;
+  --ar-section-midrule: 0px; /* the name stands on its own line instead */
+  --ar-stat-weight: 700;
+  --ar-stat-size: 24px;
+  --ar-type-label: 500 12px / 18px var(--ar-font-ui);
+  --ar-name-strength: 84%;
+}
+
+/* ---------- hairline and heavy: thin words on every control, heavy titles over them ----------
+   The control text is set light but in a bright ink, so its strokes are fine and never faint; the
+   titles are heavy, so the levels part by weight at a glance. */
+
+/* Fine — for precision instruments and pro tools: hairline Inter · extra-bold Inter Tight titles */
+[data-ar-type='fine'] {
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Inter Tight', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-weight-display: 800;
+  --ar-weight-title: 800;
+  --ar-panel-title-weight: 800;
+  --ar-weight-section: 800;
+  --ar-track-heading: -0.045em;
+  --ar-track-heading-sm: -0.02em;
+  --ar-leading-heading: 1.02;
+  --ar-weight-lead: 300;
+  --ar-font-accent: var(--ar-font-display);
+  --ar-accent-style: normal;
+  --ar-weight-accent: 200;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 200;
+  --ar-stat-size: 28px;
+  --ar-weight-name: 300;
+  --ar-weight-note: 300;
+  --ar-weight-readout: 500;
+  --ar-weight-voice: 400;
+  --ar-label-strength: 90%; /* thin strokes, bright ink */
+  --ar-note-strength: 80%;
+  --ar-name-strength: 96%;
+  --ar-track-small: 0.025em; /* light small words need more air between letters */
+}
+/* Mass — for hardware and industrial products: hairline Geist · black expanded Archivo titles */
+[data-ar-type='mass'] {
+  --ar-font-ui: 'Geist', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'Geist Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Archivo', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-font-mark: var(--ar-font-code);
+  --ar-title-stretch: 125%; /* expanded: a heavy, wide chassis */
+  --ar-weight-display: 900;
+  --ar-weight-title: 800;
+  --ar-panel-title-weight: 900;
+  --ar-weight-section: 800;
+  --ar-track-heading: -0.02em;
+  --ar-track-heading-sm: -0.005em;
+  --ar-leading-heading: 1.04;
+  --ar-weight-lead: 300;
+  --ar-font-accent: var(--ar-font-display);
+  --ar-accent-style: normal;
+  --ar-weight-accent: 300;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  --ar-panel-rule: 1px;
+  --ar-stat-font: var(--ar-font-ui);
+  --ar-stat-weight: 200;
+  --ar-stat-size: 28px;
+  --ar-weight-name: 300;
+  --ar-weight-note: 300;
+  --ar-weight-readout: 500;
+  --ar-weight-voice: 400;
+  --ar-label-strength: 90%; /* thin strokes, bright ink */
+  --ar-note-strength: 80%;
+  --ar-name-strength: 96%;
+  --ar-track-small: 0.025em; /* light small words need more air between letters */
+}
+/* Round — for consumer devices and friendly products: hairline Hanken Grotesk · rounded wide Unbounded titles */
+[data-ar-type='round'] {
+  --ar-font-ui: 'Hanken Grotesk', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-num: var(--ar-font-ui);
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-display: 'Unbounded', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ar-font-lead: var(--ar-font-ui);
+  --ar-weight-display: 600;
+  --ar-weight-title: 600;
+  --ar-panel-title-weight: 600;
+  --ar-panel-title-size: 15px;
+  --ar-type-section: 500 13px / 18px var(--ar-font-heading);
+  --ar-track-heading: -0.03em;
+  --ar-track-heading-sm: -0.01em;
+  --ar-leading-heading: 1.1;
+  --ar-weight-lead: 300;
+  --ar-font-accent: var(--ar-font-display);
+  --ar-accent-style: normal;
+  --ar-weight-accent: 300;
+  --ar-font-numeral: var(--ar-font-display);
+  --ar-numeral-style: normal;
+  --ar-section-accent: 100%;
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 300;
+  --ar-stat-size: 24px;
+  --ar-weight-name: 300;
+  --ar-weight-note: 300;
+  --ar-weight-readout: 500;
+  --ar-weight-voice: 400;
+  --ar-label-strength: 90%; /* thin strokes, bright ink */
+  --ar-note-strength: 80%;
+  --ar-name-strength: 96%;
+  --ar-track-small: 0.025em; /* light small words need more air between letters */
 }

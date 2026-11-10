@@ -113,12 +113,12 @@
   --ar-tone-title: var(--ar-paper);
   --ar-tone-value: var(--ar-paper);
   --ar-tone-body: color-mix(in oklab, var(--ar-paper) 88%, var(--ar-ink-mid));
-  --ar-tone-label: color-mix(in oklab, var(--ar-paper) 62%, var(--ar-ink-mid));
-  --ar-tone-note: color-mix(in oklab, var(--ar-paper) 58%, var(--ar-ink-mid));
-  --ar-tone-hint: color-mix(in oklab, var(--ar-paper) 44%, var(--ar-ink-mid));
+  --ar-tone-label: color-mix(in oklab, var(--ar-paper) var(--ar-label-strength, 76%), var(--ar-ink-mid));
+  --ar-tone-note: color-mix(in oklab, var(--ar-paper) var(--ar-note-strength, 66%), var(--ar-ink-mid));
+  --ar-tone-hint: color-mix(in oklab, var(--ar-paper) 54%, var(--ar-ink-mid));
   /* a name is quiet, its answer is loud: how much of its ink a control's own label keeps beside
      the readout (slider, number field, colour, meter). The readout keeps all of it. */
-  --ar-name-strength: 70%;
+  --ar-name-strength: 96%;
   /* the accent as text: blended toward the ink, so small words stay readable on glass in any accent */
   --ar-tone-accent: color-mix(in oklab, var(--ar-signal) 62%, var(--ar-text-hi));
 
@@ -165,14 +165,13 @@
    Declared on :root only, not at every theme boundary, so a type collection (tokens/type.css,
    data-ar-type) set on a scope carries through the themes nested inside it. */
 :root {
-  /* the default set, Sleek: Geist for everything, one family from the smallest label to the largest
-     title, told apart by size, weight and ink rather than by a second face */
-  --ar-font-ui: 'Geist', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* the default system, Fine: hairline Inter on every control in a bright ink, extra-bold Inter Tight titles */
+  --ar-font-ui: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* figures and small marks: readouts, counts, badges, ticks. The sans itself, set with tabular
      digits (.ar-theme), so numbers line up without a second, coding voice in the panel */
   --ar-font-num: var(--ar-font-ui);
   /* code */
-  --ar-font-code: 'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --ar-font-code: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   /* a serif for the editorial voice: quotes, and titles set as editorial */
   --ar-font-serif: 'Instrument Serif', Newsreader, Georgia, 'Times New Roman', serif;
   /* the serif for sentences: sturdy at reading sizes, where a display serif goes thin on glass */
@@ -183,28 +182,28 @@
   --ar-font-prose: var(--ar-font-ui);
   --ar-font-accent: var(--ar-font-display);
   --ar-font-numeral: var(--ar-font-display);
-  --ar-font-mark: var(--ar-font-code); /* section numbers, meta lines, eyebrows: the mono, small */
+  --ar-font-mark: var(--ar-font-num);
   --ar-title-scale: 1;
   --ar-title-case: none;
   --ar-title-stretch: 100%;
   --ar-title-variation: normal; /* font-variation-settings for titles: a family's rounded or other cut */
-  --ar-weight-display: 500;
-  --ar-track-heading: -0.04em;
-  --ar-track-heading-sm: -0.022em;
-  --ar-leading-heading: 1.08;
+  --ar-weight-display: 800;
+  --ar-track-heading: -0.045em;
+  --ar-track-heading-sm: -0.02em;
+  --ar-leading-heading: 1.02;
   --ar-prose-scale: 1;
   --ar-leading-prose: 1.6;
   --ar-lead-style: normal;
-  --ar-weight-lead: 400;
+  --ar-weight-lead: 300;
   --ar-lead-scale: 1;
   --ar-accent-style: normal;
-  --ar-weight-accent: 300; /* one word of a title, set light in the same family and in the accent */
+  --ar-weight-accent: 200;
   --ar-numeral-style: normal;
   --ar-mark-case: none;
   --ar-mark-track: 0;
   --ar-weight-mark: 500;
-  /* titles: the same family, close-set and firm */
-  --ar-font-display: var(--ar-font-ui);
+  /* titles: Inter Tight, extra-bold and close-set over the hairline controls */
+  --ar-font-display: 'Inter Tight', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* small titles on a pane (a section's name): the title face where it is a sans. A collection whose
      title face is a serif keeps the sans here, so a 14px name stays crisp beside its controls */
   --ar-font-heading: var(--ar-font-display);
@@ -215,8 +214,15 @@
   --ar-weight-light: 400; /* kept for themes that ask for it: resolves to regular */
   --ar-weight-regular: 400; /* prose, values, menu rows */
   --ar-weight-medium: 500; /* labels, tabs, small marks */
-  --ar-weight-name: 500; /* the name beside a value: medium, so a 12px word holds its shape; told from its value by ink and size */
-  --ar-weight-title: 600; /* titles up to 20px: firm, so a small title still leads. Only display sizes go light */
+  --ar-weight-name: 300; /* the name beside a value: hairline in a bright ink (--ar-label-strength) */
+  --ar-weight-note: 300;
+  --ar-weight-section: 800;
+  --ar-weight-readout: 500; /* a value's weight, in every finish */
+  --ar-weight-voice: 400; /* control words: buttons, chips, segments */
+  --ar-label-strength: 90%;
+  --ar-note-strength: 80%;
+  --ar-panel-title-weight: 800;
+  --ar-weight-title: 800; /* Fine: titles extra-bold over hairline controls */
   --ar-weight-bold: 600; /* section names, strong text */
   --ar-weight-black: 700; /* the one word that must win: a figure's number, a primary button */
   --ar-weight-text: var(--ar-weight-regular);
@@ -264,7 +270,7 @@
   /* tracking: caps open up, large sans closes in, text is set as drawn */
   --ar-track-caps: 0.1em;
   --ar-track-text: 0;
-  --ar-track-small: 0.01em; /* 12px words open a hair: small type set as drawn looks cramped */
+  --ar-track-small: 0.025em; /* small light words need air between letters */
   --ar-track-title: -0.012em; /* 18px and up */
   --ar-track-display: -0.022em; /* 28px and up */
 
@@ -287,11 +293,11 @@
 [data-ar-material],
 [data-ar-type] {
   --ar-type-panel: var(--ar-panel-title-weight, 600) var(--ar-panel-title-size, 16px) / 22px var(--ar-font-display); /* the panel's name: the title face, the largest line on the pane */
-  --ar-type-section: 600 14px / 20px var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
+  --ar-type-section: var(--ar-weight-section, 600) 14px / 20px var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
   --ar-type-group: 600 12px / 18px var(--ar-font-ui); /* a group inside a section: sentence case, in the accent */
-  --ar-type-value: 600 13px / 18px var(--ar-font-ui); /* the answer: a size up, semibold, in the full ink */
+  --ar-type-value: var(--ar-weight-readout, 600) 13px / 18px var(--ar-font-ui); /* the answer: a size up and firm, in the full ink */
   --ar-type-label: var(--ar-weight-name, 500) 12px / 18px var(--ar-font-ui); /* the name: medium in a solid grey, so the answer beside it speaks */
-  --ar-type-note: 400 12px / 18px var(--ar-font-ui);
+  --ar-type-note: var(--ar-weight-note, 400) 12px / 18px var(--ar-font-ui);
   --ar-type-hero: 400 28px / 32px var(--ar-font-ui);
   --ar-type-quote: italic 400 16px / 22px var(--ar-font-serif);
   --ar-track-role: 0; /* no tracked capitals in a panel: names are set in sentence case */
@@ -324,7 +330,8 @@
   --ar-gap: 7px;
   --ar-row-gap: var(--ar-space-4);
   --ar-group-gap: var(--ar-space-6);
-  --ar-section-gap: 18px; /* air on each side of the hairline between sections: over twice a row gap, so groups part at a glance */
+  --ar-section-gap: 18px; /* air around a section: over twice a row gap, so groups part at a glance */
+  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4)); /* from one section to the next; the line is in each title row */
   --ar-panel-pad-x: var(--ar-space-7);
   --ar-panel-pad-y: var(--ar-space-6);
 }
@@ -337,6 +344,7 @@
   --ar-row-gap: var(--ar-space-3);
   --ar-group-gap: var(--ar-space-5);
   --ar-section-gap: var(--ar-space-6);
+  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4));
   --ar-panel-pad-x: var(--ar-space-5);
   --ar-panel-pad-y: var(--ar-space-5);
 }
@@ -349,6 +357,7 @@
   --ar-row-gap: 10px;
   --ar-group-gap: var(--ar-space-7);
   --ar-section-gap: var(--ar-space-8);
+  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4));
   --ar-panel-pad-x: var(--ar-space-8);
   --ar-panel-pad-y: var(--ar-space-7);
 }
@@ -375,6 +384,24 @@
 
 :root {
   --ar-panel-floor: transparent;
+  /* title treatments, as Sleek sets them (tokens/type.css has every system's) */
+  --ar-panel-mark: none;
+  --ar-panel-rule: 0px;
+  --ar-panel-title-accent: 0%;
+  --ar-title-gradient: 0 0;
+  --ar-title-fill: currentColor;
+  --ar-section-tick: none;
+  --ar-section-tick-w: 2px;
+  --ar-section-rule: 0px;
+  --ar-section-midrule: 1px; /* the hairline through a section's title row, from its name to its count */
+  --ar-section-accent: 0%;
+  --ar-section-quiet: 0%;
+  --ar-group-accent: 100%;
+  --ar-stat-font: var(--ar-font-display);
+  --ar-stat-weight: 200;
+  --ar-stat-size: 28px;
+  --ar-stat-style: normal;
+  --ar-stat-accent: 0%;
   --ar-floor-amount: 72%; /* white ink stays near 4.5:1 over a light grey scene */
 }
 [data-ar-scene] {

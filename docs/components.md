@@ -10,7 +10,7 @@ This is the prop reference. For *which kind* to use — the six slider faces, th
 
 Contents:
 - Controls: Slider · RangeSlider · NumberField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · ColorField · Select · Knob · XYPad · TextField · FileDrop
-- Layout: Panel / Section / SectionGroup / Field · Text · Stack / Inline · Tabs · PropertyRow · ItemList / ItemRow
+- Layout: Panel / Section / SectionGroup / Field · Text · Stack / Inline · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
 - Display: RollingValue · RollingText · Stat · Meter · Spectrum · Progress · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
@@ -173,8 +173,8 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
 ```
 - **Stack** / **Inline** — a column / a row whose gaps come from the space scale. `gap`: a step `1`–`9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px), `'row'`, `'group'` or `'none'` (Stack default `'row'`, Inline default `4`). Stack `align` (`stretch` default · `start` · `center` · `end`); Inline `align` (`center` default · `baseline` · `start` · `end` · `stretch`), `justify` (`start` · `center` · `end` · `between`), `wrap`. Both take `as`.
 - **SectionGroup** — sections that behave together. Props: `accordion` (one open at a time; give each Section an `id`), `defaultOpen` (the id open first), `toolbar` (Expand all · Collapse all above the sections; only this group's sections answer), `label`, `onReorder(from, to)` (drag sections by their heading into a new order; Alt+↑/↓ on a heading), and `group` + `id` + `onMove(from, to)`: groups that share a group name trade sections by drag, across panels and Dock panes — the way a section moves from one pane of a workspace to another. `onTearOff(from, at)` is called when a section is dropped outside every group of its name, with the screen point; without it, such a drop cancels. In a Dock, `createDockSections` wires all of this for you. A drop goes to the group on the surface that is on top under the pointer, so a floating panel over a pane takes the drop, not the pane beneath it. Every Section inside a group can fold.
-- **Section** — a titled group: a quiet title over its rows, on hairlines, with no box. `variant="card"` puts it on a soft tonal surface. `icon` draws as the glyph alone and `count` as a small fact at the end of the title row. Everything about the group lives in its one title row: LED (switchable groups) · title · count · actions · chevron. Props:
-  - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title), `icon` (a small mark before the title), `description` (a quiet line at the top of the body: what the group does);
+- **Section** — a titled group: a quiet title over its rows, on hairlines, with no box. `variant="card"` puts it on a soft tonal surface. The title stands alone, with no icon; a hairline runs from it to `count`, a small fact at the end of the title row. Everything about the group lives in its one title row: LED (switchable groups) · title · hairline · count · actions · chevron. Props:
+  - `title` (required), `heading` (`'caps'` a small sans heading in capitals, default · `'text'` a larger sans title), `description` (a quiet line at the top of the body: what the group does);
   - `variant` (`'plain'` default · `'card'`: the group sits on a soft tonal surface, to set one group apart in a long panel), `columns` (2 or 3: the rows become cells of a grid, e.g. X · Y · Z);
   - `modified` with `onReset`: a reset button appears in the title row while something in the group differs from its default;
   - `storageKey`: remembers open or closed across visits (localStorage; read after mount, so server HTML matches), and makes the group foldable;
@@ -311,18 +311,47 @@ const bins = new Uint8Array(analyser.frequencyBinCount);
 <Stat label="Frame" value={ms} decimals={1} unit="ms" zones={[{ from: 16.7, tone: 'hot' }]} />
 ```
 
-## ItemList · ItemRow
+## ItemList · ItemGroup · ItemRow
 
-A list of things: layers, bodies, presets, files. Rows stand in an `ItemList` (`role="list"`, `label`) 2px apart with no dividers.
+A list of things: layers, renders, materials, presets, files, people. Rows stand in an `ItemList` (`role="list"`, `label`).
+
+**ItemList** props:
+- `variant`: `'plain'` (default; rows on the panel, 2px apart) · `'divided'` (hairlines between rows) · `'cards'` (each row on a soft tonal surface) · `'grid'` (tiles: the lead on top, the words under it, the trailing tools over the tile's corner on hover).
+- `size`: `'sm'` (one line, the meta beside the name; outliners) · `'md'` (default) · `'lg'` (a 44px lead and the description; media).
+- `tileWidth`: the narrowest a grid tile gets, in px (default 120).
+- `empty`: shown when the list has no rows, e.g. `"No favourites yet: star a material to keep it here."`.
+
+**ItemGroup** names a run of rows inside a list: `label` (an overline in the accent), `count`, `actions`. In a grid it spans the full width. Drag works on the list's flat order.
+
+**ItemRow** props:
+- The lead, first match wins: `thumbnail` (an image URL, or any element: a canvas, a video, a drawn sphere) with `thumbShape` `'square'` · `'round'` (people, materials) · `'wide'` (16:9: scenes, video, renders); `icon` (a glyph in the quiet ink); `swatch` (a colour); `leading` (anything else).
+- The words: `title` (the name, in the sans), `status` (a light after the name: `'live'` · `'warn'` · `'fault'` · `'idle'`), `meta` (a quiet second line; truncates), `description` (a third line that wraps to two; md and lg only).
+- `value`: the row's answer at the end, before its tools, in tabular figures (a size, a duration, a percent).
+- `progress`: 0–1, a thin bar along the row's foot (an upload, a render, a bake).
+- `trailing`: tools at the end (a `Badge`, `Switch variant="compact"`, `IconButton`, `Menu`); clicks there never select the row.
+- `selected` (the active wash and an accent edge) and `onSelect` (makes the row a button); `checked` + `onCheckedChange` put a checkbox before the lead, for picking many at once.
+- A tree: `depth` indents the row (0 at the root); `expanded` + `onExpandedChange` give a row with children its disclosure arrow. Render the children only while it is expanded.
+- `disabled`: the name side goes quiet; the trailing tools stay live, so a hidden layer can be shown again.
 
 **Drag to reorder and to move.** `ItemList onReorder={(from, to) => …}` lets rows be dragged into a new order (Alt+↑/↓ moves the focused row). Lists that share a `group` trade rows: give each an `id` and handle `onMove(from, to)`, where each is `{ list, index }`; `moveBetween(lists, from, to)` does the array work for a record of lists. The dragged row lifts and follows the pointer; a lit line shows where it lands; the click that ends a drag never selects. Tools at the end of a row and form controls never start a drag.
 
-**ItemRow** props: `title` (the name, in the sans), `meta` (a quiet second line; truncates), `swatch` (a colour drawn as a round swatch) or `leading` (any icon or thumbnail), `trailing` (tools at the end: a `Badge`, `Switch variant="compact"`, `IconButton`, `Menu`; clicks there never select the row), `selected` (the active wash), `onSelect` (makes the row a button), `disabled` (the name side goes quiet; the trailing tools stay live).
-
 ```tsx
-<ItemList label="Layers">
-  <ItemRow title="Orb" meta="Glass shell · 12,480 tris" swatch="#4fd1ba" selected={picked === 'orb'} onSelect={() => setPicked('orb')}
-           trailing={<><Badge tone="live" dot>Live</Badge><Switch variant="compact" aria-label="Show Orb" value={on} onChange={setOn} /></>} />
+<ItemList label="Renders" variant="divided" size="lg">
+  <ItemRow thumbnail="/renders/dusk.jpg" thumbShape="wide" title="Garden · dusk" meta="1920 × 1080 · 240 frames"
+           description="Orb drifting through the arches." status="live" value="42%" progress={0.42}
+           checked={picked.has('dusk')} onCheckedChange={(on) => toggle('dusk', on)}
+           trailing={<IconButton size="sm" label="Actions" icon={<More />} />} />
+</ItemList>
+
+<ItemList label="Materials" variant="grid" tileWidth={84}>
+  <ItemGroup label="Glass" count={3}>
+    <ItemRow thumbnail={<Sphere colour="#9fd8d0" />} thumbShape="round" title="Clear" meta="IOR 1.52" selected onSelect={pick} />
+  </ItemGroup>
+</ItemList>
+
+<ItemList label="Outliner" size="sm">
+  <ItemRow depth={0} expanded={open} onExpandedChange={setOpen} icon={<Folder />} title="Scene" />
+  {open ? <ItemRow depth={1} icon={<Mesh />} title="Orb" meta="12,480 tris" status="live" /> : null}
 </ItemList>
 ```
 
@@ -392,7 +421,7 @@ A studio workspace in one component, with no setup.
 - Panes are the theme's panel glass, tab strips use the signal underline, and the drag feedback (drop preview, intent chip, ghost) is drawn in the family's materials.
 
 Props:
-- `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer? }`;
+- `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer?, capabilities? }`. A panel is a MetaBlock: `capabilities` (`closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, all on by default) says what it may do, and drags, menus and window buttons follow it, e.g. `{ closable: false, floatable: false }` keeps it docked and open;
 - `viewport`;
 - `storageKey`: saves the arrangement to localStorage, and restores it only while every saved id still exists;
 - `sizes`: fractions per edge; default left .22, right .24, bottom .36. A side dock never drops below 220px (taking at most 40% of the room left), a top or bottom dock below 120px (at most half), so a small workspace keeps usable columns;
@@ -412,9 +441,9 @@ Inside a panel:
 - The panel body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content.
 - A panel that throws shows a Retry card instead of taking the dock down.
 
-**Settings from a schema.** `createParamPanes({ params, groups, panes, store, storageKey?, hide? })`, called once outside your components, sets an app's settings the family's way. `params`: `{ key, label, group, kind: 'number' | 'choice' | 'toggle', default, min, max, step, unit?, face?: 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees', help?, advanced?, when? }`; `groups`: `{ id, title, icon?, description?, switch? (a toggle key that turns the group on or off), open? }`; `panes`: which groups start in which pane; `store`: `{ get, subscribe, set }` over your own state. Put `<settings.Pane id="…" toolbar={…} />` in a Dock panel or a Panel: it draws the pane bar (Advanced, Reset n, your toolbar first) and the groups as dockable sections. `ParamSection` (one group) and `ParamControl` (one value, the control its kind calls for) are exported for use on their own, and `paramShown(param, values)` applies `when`.
+**Settings from a schema.** `createParamPanes({ params, groups, panes, store, storageKey?, hide? })`, called once outside your components, sets an app's settings the family's way. `params`: `{ key, label, group, kind: 'number' | 'choice' | 'toggle', default, min, max, step, unit?, face?: 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees', help?, advanced?, when? }`; `groups`: `{ id, title, description?, switch? (a toggle key that turns the group on or off), open? }`; `panes`: which groups start in which pane; `store`: `{ get, subscribe, set }` over your own state. Put `<settings.Pane id="…" toolbar={…} />` in a Dock panel or a Panel: it draws the pane bar (Advanced, Reset n, your toolbar first) and the groups as dockable sections. `ParamSection` (one group) and `ParamControl` (one value, the control its kind calls for) are exported for use on their own, and `paramShown(param, values)` applies `when`.
 
-**Sections across panes.** `createDockSections({ panes, render, title?, group? })`, called once outside your components, keeps where every section is. Put its `<Pane id="…" />` in a panel's content; `panes` says which section ids start in which pane, and `render(id)` draws a section (a `<Section>`).
+**Sections across panes.** `createDockSections({ panes, render, title?, group? })`, called once outside your components, keeps where every section is. Put its `<Pane id="…" />` in a Dock panel's content or in a plain `Panel` on a page (`toolbar` adds Expand all · Collapse all); sections drag between every pane of the set, and tear off into their own panel only inside a Dock; `panes` says which section ids start in which pane, and `render(id)` draws a section (a `<Section>`).
 - Drag a section by its heading into another pane to move it there.
 - Drag it out over open space and it tears off into its own floating panel at that point, titled by `title(id)`.
 - Drag sections into and out of a torn-off panel like any pane; once it is empty it closes.
@@ -479,7 +508,7 @@ Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-mat
 
 Every component moves with the same few durations and curves, all of them tokens (see the theming guide), and nothing loops unless it means something live.
 - **Numbers roll** (RollingValue) wherever they change.
-- **One fixed scale.** A role is one size everywhere, in any panel, at any width, open or folded, at any density: 16px semibold in the title face for a panel's name, 14px semibold in the title face, sentence case, for a section's name (the brightest line of its group), 12px semibold in the accent for a group inside it, 13px semibold in the full ink for values, 12px medium in a solid 62% grey for labels, 12px for notes, captions and meta lines (quieter still, told by ink, not by shrinking), 28px for the one big statement. A name is quiet and its answer is loud: a label differs from its value by size, weight and ink at once. One voice: words and figures are the same sans, figures with tabular digits; a mono is for code only, and there are no tracked capitals. A label above its control (`layout="stacked"`) is medium weight and brighter than the hint under it. Each role is a whole font in `--ar-type-*` and an ink in `--ar-tone-*`, drawn from the collection's faces and the theme's ink, so they hold on any theme with any type. For your own text, write `font: var(--ar-type-note); color: var(--ar-tone-note)` rather than a size and a colour. Small text on a pane is never light: inside a Panel, Dock or Dialog `--ar-weight-light` is regular.
+- **One fixed scale.** A role is one size everywhere, in any panel, at any width, open or folded, at any density: 16px semibold in the title face for a panel's name, 14px semibold in the title face, sentence case, for a section's name (the brightest line of its group), 12px semibold in the accent for a group inside it, 13px semibold in the full ink for values, 12px medium in a solid 76% grey for labels, 12px for notes, captions and meta lines (quieter still, told by ink, not by shrinking), 28px for the one big statement. A name is quiet and its answer is loud: a label differs from its value by size, weight and ink at once. One voice: words and figures are the same sans, figures with tabular digits; a mono is for code only, and there are no tracked capitals. A label above its control (`layout="stacked"`) is medium weight and brighter than the hint under it. Each role is a whole font in `--ar-type-*` and an ink in `--ar-tone-*`, drawn from the collection's faces and the theme's ink, so they hold on any theme with any type. For your own text, write `font: var(--ar-type-note); color: var(--ar-tone-note)` rather than a size and a colour. Small text on a pane is never light: inside a Panel, Dock or Dialog `--ar-weight-light` is regular.
 - **The serif speaks once.** Wrap one word of a title in `<em>` (`Talk with <em>it</em>`) and it takes Instrument Serif italic; in a `Text` title, `hero` or `statement` it also takes the accent. Give a panel one focal point with `<Field variant="hero">`, where an `<em>` word also takes the accent, and set someone's words with `<Field variant="quote">`. Use them sparingly.
 - **Hairlines do the structure, not boxes.** A section stands apart over a firm hairline, and the rows of a list sit on fine ones so the columns stay aligned. A Field holding only text sits on its baseline at text height. In a Section with `columns`, each Field is a tile with its label above its value; give a long one `style={{ gridColumn: '1 / -1' }}`.
 - **Focus is lift, never a line.** A recessed surface takes light: a field's well, a slider's track, an off chip, a row. A polished part rises off its ground: a segmented thumb, a slider's fill, an on chip, a primary button. Light rises from the foot of a tab. Nothing is drawn around a control, so a scrolling strip or a panel never clips it. For your own parts, use `background: var(--ar-focus-lift)` on a recessed one and `filter: var(--ar-focus-raise)` on a polished one. `box-shadow: var(--ar-focus-ring)` is the same light where only a shadow will do, and it must stand alone: `--ar-well` and `--ar-insert-shadow` can be `none`, which makes a shadow list that includes them invalid.

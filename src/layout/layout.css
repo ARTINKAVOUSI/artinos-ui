@@ -45,7 +45,29 @@
   font-stretch: var(--ar-title-stretch);
   font-variation-settings: var(--ar-title-variation);
   letter-spacing: -0.016em;
-  color: var(--ar-tone-title);
+  color: color-mix(in oklab, var(--ar-tone-accent) var(--ar-panel-title-accent, 0%), var(--ar-tone-title));
+  /* a system may fade the name from the ink into the accent (--ar-title-gradient, --ar-title-fill) */
+  background: linear-gradient(100deg, var(--ar-tone-title) 15%, var(--ar-tone-accent)) no-repeat 0 0 / var(--ar-title-gradient, 0 0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: var(--ar-title-fill, currentColor);
+  width: fit-content; /* the fade runs across the words, not the empty row after them */
+  max-width: 100%;
+}
+/* a system may set an accent bar above the name (--ar-panel-mark: block) */
+.ar-panel__titles::before {
+  content: '';
+  display: var(--ar-panel-mark, none);
+  width: 20px;
+  height: 2px;
+  margin-bottom: 8px;
+  border-radius: 1px;
+  background: var(--ar-signal);
+}
+/* and a line under the head (--ar-panel-rule) */
+.ar-panel__head {
+  border-bottom: var(--ar-panel-rule, 0px) solid var(--ar-line);
+  margin-bottom: calc(var(--ar-panel-rule, 0px) * 8);
 }
 /* the one word that speaks: the serif's italic, in a title or a large value */
 :is(.ar-panel__title, .ar-section__title, .ar-field__control) em {
@@ -97,22 +119,18 @@
 .ar-panel > .ar-panel__fold:first-child > .ar-panel__inner > .ar-panel__body {
   padding-top: var(--ar-panel-pad-y);
 }
-/* Hairlines and air do the structure, not boxes: a section stands well apart from the last over a
-   firm hairline, its large title close to what it heads, wherever the two sit. */
-.ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']),
+/* Air does the structure, not boxes: a section stands well apart from the last, and carries its
+   own hairline in its title row (see .ar-section__rule), so no line is drawn between sections. */
+.ar-section + .ar-section:not([data-variant='card']),
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + :is(.ar-section, .ar-section-group, .ar-panel) {
-  margin-top: var(--ar-section-gap);
-  padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line);
+  margin-top: var(--ar-section-apart);
 }
 .ar-section:not([data-open]) > .ar-section__head {
   padding-bottom: 0;
 }
 /* the same after loose controls in a panel; a stat strip brings its own line */
 .ar-panel__body > :not(.ar-section, .ar-section-group, .ar-panel, .ar-stat-strip) + .ar-section:not([data-variant='card']) {
-  margin-top: var(--ar-section-gap);
-  padding-top: var(--ar-section-gap);
-  border-top: 1px solid var(--ar-line);
+  margin-top: var(--ar-section-apart);
 }
 .ar-panel__body > .ar-stat-strip + .ar-section {
   margin-top: var(--ar-space-5);
@@ -143,7 +161,7 @@
   font: var(--ar-type-group);
   letter-spacing: 0;
   text-transform: none;
-  color: var(--ar-tone-accent); /* a group inside a section: small, in the accent */
+  color: color-mix(in oklab, var(--ar-tone-accent) var(--ar-group-accent, 100%), var(--ar-tone-title)); /* a group inside a section: small, in the accent */
 }
 /* rows of a list sit on hairlines, so the eye runs along them and the columns stay aligned */
 .ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
@@ -154,7 +172,7 @@
 }
 /* cards carry their own edges: no line and no air, only a gap, and the panel's gutter tightens so
    the cards hold the width; the head keeps a little more, level with the cards' own content */
-.ar-panel__body > .ar-section[data-variant='card'] + :is(.ar-section, .ar-section-group, .ar-panel),
+.ar-panel__body > .ar-section[data-variant='card'] + :is(.ar-section[data-variant='card'], .ar-section-group, .ar-panel),
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + .ar-section[data-variant='card'] {
   margin-top: 4px;
   padding-top: 0;
@@ -175,7 +193,7 @@
 }
 /* a SectionGroup spaces its sections itself (a dock pane's sections, a sortable list): only the line
    and the air under it; cards carry their own edges and keep none */
-.ar-section-group > .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']) {
+.ar-section-group > .ar-section + .ar-section:not([data-variant='card']) {
   margin-top: 0;
 }
 .ar-panel__foot {
@@ -303,12 +321,39 @@ button.ar-section__trigger:focus-visible {
   font-variation-settings: var(--ar-title-variation);
   letter-spacing: -0.012em;
   text-transform: none;
-  color: var(--ar-tone-title);
+  /* the system sets how much accent it takes and how far it steps back (--ar-section-accent, --ar-section-quiet) */
+  color: color-mix(in oklab, var(--ar-tone-label) var(--ar-section-quiet, 0%), color-mix(in oklab, var(--ar-tone-accent) var(--ar-section-accent, 0%), var(--ar-tone-title)));
 }
+/* a system may set an accent tick before a section's name (--ar-section-tick: block) and a line under it */
+.ar-section > .ar-section__head::before {
+  content: '';
+  display: var(--ar-section-tick, none);
+  flex: none;
+  width: var(--ar-section-tick-w, 2px);
+  height: 14px;
+  border-radius: 1px;
+  background: var(--ar-signal);
+}
+.ar-section__body > .ar-section > .ar-section__head::before,
+.ar-section[data-variant='card'] > .ar-section__head::before {
+  display: none;
+}
+.ar-section > .ar-section__head {
+  border-bottom: var(--ar-section-rule, 0px) solid var(--ar-line-strong);
+}
+/* the section's own hairline: through the title row, from the name to its count and chevron. A
+   group inside a section, and a type system that sets its names on a line, draw none here. */
 .ar-section__rule {
   flex: 1;
   align-self: stretch;
   order: 1;
+  min-width: 12px;
+  /* air between the line and the words on either side: twice the title row's own gap */
+  margin-inline: 7px;
+  background: linear-gradient(var(--ar-line-strong) 0 0) center / 100% var(--ar-section-midrule, 1px) no-repeat;
+}
+.ar-section__body > .ar-section > .ar-section__head .ar-section__rule {
+  background: none;
 }
 .ar-section__led {
   height: 8px;
@@ -681,19 +726,7 @@ button.ar-section__trigger:focus-visible {
   padding: 8px 14px 12px;
 }
 
-/* ---------- Section: icon, reset, description, card, columns ---------- */
-.ar-section__icon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  color: var(--ar-tone-title);
-}
-.ar-section__icon svg {
-  width: 18px;
-  height: 18px;
-}
+/* ---------- Section: reset, description, card, columns ---------- */
 .ar-section__reset {
   --_tool: 18px;
   animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring);
@@ -749,7 +782,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section-group {
   display: flex;
   flex-direction: column;
-  gap: var(--ar-section-gap);
+  gap: var(--ar-section-apart);
   min-width: 0;
 }
 /* cards carry their own edges, so they sit closer */

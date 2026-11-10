@@ -4,12 +4,13 @@ import { moveBetween } from '../core/sortable';
 import type { SortPlace } from '../core/sortable';
 import { SectionGroup } from '../layout/Panel';
 import type { MetaBlockWorkspace } from './metablock/workspace';
-import { TEAR_PREFIX, useDock } from './Dock';
+import { TEAR_PREFIX, useDockOptional } from './Dock';
 import type { DockApi } from './Dock';
 
-/* ARTINOS dock sections — sections that live in a workspace's panes, the way panels live in its
-   docks. Drag a section by its heading into another pane; drag it out over open space and it
-   tears off into its own floating panel there; drag it back into any pane and the empty panel
+/* ARTINOS dock sections — sections that live in panes, the way panels live in docks. A pane is
+   any place a set of sections shows: a Dock panel, or a plain Panel on a page. Drag a section by
+   its heading into another pane of the same set. Inside a Dock, drag it out over open space and
+   it tears off into its own floating panel there; drag it back into any pane and the empty panel
    closes. Close a torn-off panel and its section goes home. The arrangement is kept here, so
    every pane and torn-off panel shows the same one. */
 
@@ -25,8 +26,8 @@ export interface DockSectionsOptions {
 }
 
 export interface DockSections {
-  /** One pane's sections: put `<Pane id="inspector" />` in a Dock panel's content. */
-  Pane: (props: { id: string; label?: string }) => ReactElement;
+  /** One pane's sections: put `<Pane id="inspector" />` in a Dock panel's content or in a Panel. */
+  Pane: (props: { id: string; label?: string; toolbar?: boolean }) => ReactElement;
   /** Where every section is now (torn-off panels are keyed by their panel id). */
   get: () => Readonly<Record<string, readonly string[]>>;
   subscribe: (listener: () => void) => () => void;
@@ -51,7 +52,8 @@ export function createDockSections(options: DockSectionsOptions): DockSections {
   const get = () => lists;
 
   /** Torn-off panels left empty close. */
-  const closeEmpty = (dock: DockApi) => {
+  const closeEmpty = (dock: DockApi | null) => {
+    if (!dock) return;
     for (const [pane, ids] of Object.entries(lists)) {
       if (!pane.startsWith(TEAR_PREFIX) || ids.length) continue;
       const next = { ...lists };
@@ -61,7 +63,7 @@ export function createDockSections(options: DockSectionsOptions): DockSections {
     }
   };
 
-  const move = (from: SortPlace, to: SortPlace, dock: DockApi) => {
+  const move = (from: SortPlace, to: SortPlace, dock: DockApi | null) => {
     publish(moveBetween(lists, from, to));
     closeEmpty(dock);
   };
@@ -82,7 +84,8 @@ export function createDockSections(options: DockSectionsOptions): DockSections {
 
   // a torn-off panel closed by its window button: its sections go back to their home panes
   const watched = new WeakSet<MetaBlockWorkspace>();
-  const watch = (dock: DockApi) => {
+  const watch = (dock: DockApi | null) => {
+    if (!dock) return;
     const ws = dock.workspace;
     if (watched.has(ws)) return;
     watched.add(ws);
@@ -99,12 +102,13 @@ export function createDockSections(options: DockSectionsOptions): DockSections {
     });
   };
 
-  function Pane({ id, label }: { id: string; label?: string }) {
-    const dock = useDock();
+  function Pane({ id, label, toolbar }: { id: string; label?: string; toolbar?: boolean }) {
+    // outside a Dock the pane still trades sections; only tearing off needs a Dock to float into
+    const dock = useDockOptional();
     const now = useSyncExternalStore(subscribe, get, get);
     useEffect(() => watch(dock), [dock]);
     return (
-      <SectionGroup id={id} group={group} label={label} onMove={(from, to) => move(from, to, dock)} onTearOff={(from, at) => tearOff(from, at, dock)}>
+      <SectionGroup id={id} group={group} label={label} toolbar={toolbar} onMove={(from, to) => move(from, to, dock)} onTearOff={dock ? (from, at) => tearOff(from, at, dock) : undefined}>
         {(now[id] ?? []).map((sid) => (
           <Fragment key={sid}>{options.render(sid)}</Fragment>
         ))}

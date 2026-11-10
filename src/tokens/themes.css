@@ -24,7 +24,7 @@
  *     haze-rim        Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline.
  *     haze-lift       Haze floating high: the pane rides a deep soft shadow and the values float over their tracks.
  *     haze-carve      Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.
- *     haze-carve-customHaze Carve as used in BLOBBY: softer carved wells, a brighter value gradient, a touch taller and roomier.
+ *     nimbus          The default. Haze Carve softened: deep frost, gently carved wells, a bright value gradient and a little more room. Calm over any scene.
  *     haze-glow       Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline.
  *     haze-bevel      Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value.
  *     haze-night      The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values.
@@ -2028,7 +2028,7 @@
 [data-ar-theme='haze-rim'],
 [data-ar-theme='haze-lift'],
 [data-ar-theme='haze-carve'],
-[data-ar-theme='haze-carve-custom'],
+[data-ar-theme='nimbus'],
 [data-ar-theme='haze-glow'],
 [data-ar-theme='haze-bevel'],
 [data-ar-theme='haze-night'] {
@@ -3132,7 +3132,7 @@
 
 /* HAZE CARVE — Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. */
 [data-ar-theme='haze-carve'],
-[data-ar-theme='haze-carve-custom'] {
+[data-ar-theme='nimbus'] {
   --ar-floor-amount: 73%; /* scene floor: hi and mid ink hold 4.5:1 over the other kind of scene */
   --ar-panel-tint: rgba(255, 255, 255, 0.07);
   --ar-panel-blur: blur(64px);

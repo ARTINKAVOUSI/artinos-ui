@@ -1212,53 +1212,133 @@ html::-webkit-scrollbar-thumb:hover {
   margin-right: 8px;
 }
 
-/* ---------- control strip ---------- */
-.sc-dock {
-  display: flex;
-  gap: 4px;
-  padding: 6px;
-  border-radius: var(--ar-radius-panel);
-  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
-  box-shadow: var(--ar-panel-shadow);
+/* ---------- layout system: the one workspace, its engine toolbar over the canvas ---------- */
+.sc-workspace.sc-workspace--system {
+  height: 780px;
 }
-.sc-dock__card {
+.sc-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.sc-engine {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 11px;
-  border-radius: 11px;
-  background: var(--ar-bg-hover);
-  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
-}
-.sc-dock__card .ar-section__head {
-  padding-bottom: 4px;
-}
-.sc-dock__foot {
-  font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
-  color: var(--ar-text-faint);
-  margin-top: auto;
-}
-.sc-console {
-  display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 8px 12px 2px;
-  font: var(--ar-weight-light) var(--ar-text-xs) var(--ar-font-num);
-  letter-spacing: var(--ar-track-text);
-  color: var(--ar-text-low);
+  gap: 6px;
 }
-.sc-console b {
-  font: var(--ar-weight-medium) var(--ar-caps-sm) var(--ar-font-num);
-  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+.sc-engine .ar-select {
+  width: 116px;
+}
+.sc-engine__state {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font: 500 12px/16px var(--ar-font-mark);
+  color: var(--ar-text);
+  background: color-mix(in oklab, var(--ar-bg) 60%, transparent);
+}
+/* panels side by side: two across with room to read, one on a narrow screen */
+.sc-grid.sc-grid--top {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+/* the lists: media lists take two columns, a tree or a few cards one */
+.sc-lists {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+.sc-lists__wide {
+  grid-column: span 2;
+}
+@media (max-width: 1100px) {
+  .sc-lists {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-lists__wide {
+    grid-column: auto;
+  }
+}
+/* a material sphere drawn for a list thumbnail */
+.sc-sphere {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.sc-console-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sc-console-pane__meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+
+/* ---------- layout system: the reference, one row per level ---------- */
+.sc-ref {
+  display: flex;
+  flex-direction: column;
+}
+.sc-ref__level {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 16px 48px;
+  padding: 24px 0;
+}
+.sc-ref__level + .sc-ref__level {
+  border-top: 1px solid var(--ar-line-subtle);
+}
+.sc-ref__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sc-ref__head h4 {
+  margin: 0;
+  font: 600 18px/24px var(--ar-font-heading);
+  color: var(--ar-text-hi);
+}
+.sc-ref__head p {
+  margin: 0;
+  font: 400 14px/22px var(--ar-font-prose);
+  color: var(--ar-text);
+}
+.sc-ref__head code {
+  margin-top: 4px;
+  font: 500 12px/18px var(--ar-font-mark);
   color: var(--ar-signal-hi);
 }
-.sc-inspector {
-  width: 100%;
-  max-width: 380px;
+.sc-ref__props {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px 40px;
+  margin: 0;
 }
+.sc-ref__props div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sc-ref__props dt {
+  font: 500 12px/16px var(--ar-font-mark);
+  color: var(--ar-text-hi);
+}
+.sc-ref__props dd {
+  margin: 0;
+  font: 400 13px/20px var(--ar-font-prose);
+  color: var(--ar-tone-note, var(--ar-text));
+}
+
 
 /* ---------- actions: a floating toolbar over a strip of the scene ---------- */
 .sc-canvas-strip {
@@ -1365,6 +1445,9 @@ html::-webkit-scrollbar-thumb:hover {
   }
 }
 @media (max-width: 860px) {
+  .sc-ref__level {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .sc-root {
     --sc-text-hero: 36px;
     --sc-text-chapter: 20px;
@@ -1377,9 +1460,6 @@ html::-webkit-scrollbar-thumb:hover {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'about' 'demo';
     gap: 16px;
-  }
-  .sc-dock {
-    flex-direction: column;
   }
   .sc-materials,
   .sc-voices {
@@ -1402,16 +1482,6 @@ html::-webkit-scrollbar-thumb:hover {
   border-radius: 2px;
   background: var(--ar-signal);
   box-shadow: 0 0 6px var(--ar-signal-line);
-}
-
-/* the layout chapter's character panel: one dense column, as an app's play panel */
-.sc-character {
-  max-width: 340px;
-}
-.sc-character__acts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
 }
 
 /* the Typography specimen: a page set at full scale beside a panel, then the role ladder */
@@ -1938,7 +2008,7 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-lineup__text {
   display: flex;
   flex-direction: column;
-  min-height: 236px;
+  min-height: 300px;
 }
 .sc-lineup__text > .ar-type[data-variant='title'] {
   margin-top: 10px;
@@ -1946,4 +2016,21 @@ html::-webkit-scrollbar-thumb:hover {
 .sc-lineup__text > .ar-type[data-variant='caption'] {
   margin-top: auto;
   padding-top: 12px;
+}
+
+/* the lineup's two kinds, each under its own heading */
+.sc-kinds {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.sc-kinds__group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sc-kinds__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }

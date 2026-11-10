@@ -13,7 +13,7 @@ import { createDockSections } from './sections';
 
 /* ARTINOS params — settings from a schema, set the way the family sets them. Give a list of
    parameters (what each value is, its range, its group) and a store, and every value gets the
-   control its kind calls for, every group its icon, count, reset and on/off, and the groups sit in
+   control its kind calls for, every group its count, reset and on/off, and the groups sit in
    dock panes that trade sections and tear off. An app writes no control code of its own. */
 
 export type ParamValue = number | string | boolean;
@@ -42,8 +42,6 @@ export type Param = NumberParam | ChoiceParam | ToggleParam;
 export interface ParamGroup {
   id: string;
   title: string;
-  /** A small mark before the title. */
-  icon?: ReactNode;
   /** A quiet line at the top of the group: what it does. */
   description?: ReactNode;
   /** A toggle parameter that turns the whole group on or off: it becomes the group's LED, not a row. */
@@ -118,7 +116,7 @@ export interface ParamSectionProps {
   storageKey?: string;
 }
 
-/** One group of parameters as a Section: icon, count, reset while anything differs from its default, and the
+/** One group of parameters as a Section: count, reset while anything differs from its default, and the
  *  group's own on/off when a toggle owns it. */
 export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], storageKey }: ParamSectionProps) {
   const mine = params.filter((p) => p.group === g.id && !hide.includes(p.key));
@@ -129,7 +127,6 @@ export function ParamSection({ group: g, params, values, onChange, advanced = fa
   return (
     <Section
       id={g.id}
-      icon={g.icon}
       title={g.title}
       description={g.description}
       count={rows.length}
