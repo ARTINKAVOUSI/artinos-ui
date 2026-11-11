@@ -98,7 +98,7 @@ export type { PanelProps, SectionProps, SectionGroupProps, FieldProps } from './
 export { StatStrip } from './layout/StatStrip';
 export type { StatStripProps, StatStripItem } from './layout/StatStrip';
 export { Tabs } from './layout/Tabs';
-export type { TabsProps } from './layout/Tabs';
+export type { TabItem, TabsOrientation, TabsProps, TabsVariant } from './layout/Tabs';
 export { PropertyRow } from './layout/PropertyRow';
 export type { PropertyRowProps, PropertyDensity } from './layout/PropertyRow';
 export { ItemGroup, ItemList, ItemRow } from './layout/ItemRow';

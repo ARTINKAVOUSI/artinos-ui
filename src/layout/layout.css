@@ -566,30 +566,54 @@ button.ar-section__trigger:focus-visible {
 }
 
 /* ---------- Tabs ---------- */
+/* line (default): quiet words over a travelling bar · pill: a soft wash travels under the current
+   tab · icon: icons alone, named by their tooltips. Horizontal is a strip; vertical a rail. */
 .ar-tabs {
   position: relative;
   display: flex;
   gap: 18px;
+  min-width: 0;
+}
+.ar-tabs[data-orientation='vertical'] {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+}
+.ar-tabs[data-variant='pill'],
+.ar-tabs[data-variant='icon'] {
+  gap: 2px;
+}
+.ar-tabs[data-fill] > * {
+  flex: 1 1 0;
+  justify-content: center;
 }
 .ar-tabs__tab {
   all: unset;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
   padding: 10px 0 11px;
   font: var(--ar-weight-medium) var(--ar-text-sm) / 18px var(--ar-font-ui);
   color: var(--ar-tone-label);
+  white-space: nowrap;
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-tabs[data-fill] .ar-tabs__tab {
+  justify-content: center;
 }
 .ar-tabs__tab:hover {
   color: var(--ar-tone-body);
 }
-/* the ink and the bar say which: a bolder word would push its neighbours along on every switch */
+/* the ink and the marker say which: a bolder word would push its neighbours along on every switch */
 .ar-tabs__tab[aria-selected='true'] {
   color: var(--ar-tone-title);
 }
-/* focus on a tab: light rises from its foot, kept to the tab's own width, and a selected tab's bar lights */
+/* focus on a tab: light rises from its foot (from its edge, on a rail), kept to the tab itself */
 .ar-tabs__tab:focus-visible {
   color: var(--ar-text-hi);
   background: linear-gradient(to top, var(--ar-focus-lift), transparent 75%);
@@ -601,17 +625,186 @@ button.ar-section__trigger:focus-visible {
   opacity: 0.4;
   cursor: not-allowed;
 }
+.ar-tabs__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ar-tabs__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+.ar-tabs__icon svg {
+  width: 16px;
+  height: 16px;
+}
+/* how many things are in a tab: a quiet figure after its name */
+.ar-tabs__count {
+  font: var(--ar-weight-text) 12px / 16px var(--ar-font-ui);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-text-faint);
+}
+.ar-tabs__tab[aria-selected='true'] .ar-tabs__count {
+  color: var(--ar-tone-accent);
+}
+/* something in the tab wants a look: a small light */
+.ar-tabs__dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ar-signal);
+  box-shadow: 0 0 5px var(--ar-signal-line);
+}
+.ar-tabs[data-variant='icon'] .ar-tabs__dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+/* the marker */
 .ar-tabs__bar {
   position: absolute;
   left: 0;
+  top: 0;
+  pointer-events: none;
+  transition:
+    transform var(--ar-dur-layout) var(--ar-ease),
+    width var(--ar-dur-layout) var(--ar-ease),
+    height var(--ar-dur-layout) var(--ar-ease),
+    background var(--ar-dur-state) var(--ar-ease);
+}
+.ar-tabs[data-variant='line'] > .ar-tabs__bar {
+  top: auto;
   bottom: -1px;
   height: 1.5px;
   border-radius: 1px;
   background: var(--ar-text-hi);
+}
+/* a line rail: the bar stands along the rail's inner edge */
+.ar-tabs[data-variant='line'][data-orientation='vertical'] > .ar-tabs__bar {
+  top: 0;
+  right: -1px;
+  bottom: auto;
+  left: auto;
+  width: 1.5px;
+}
+.ar-tabs[data-variant='pill'] > .ar-tabs__bar,
+.ar-tabs[data-variant='icon'] > .ar-tabs__bar {
+  border-radius: var(--ar-radius-control);
+  background: var(--ar-bg-active);
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+}
+
+/* pill and icon tabs are small plates; a line rail's tabs are rows */
+.ar-tabs[data-variant='pill'] .ar-tabs__tab {
+  padding: 5px 10px;
+  border-radius: var(--ar-radius-control);
+}
+.ar-tabs[data-variant='icon'] .ar-tabs__tab {
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: var(--ar-radius-control);
+}
+.ar-tabs[data-variant='line'][data-orientation='vertical'] .ar-tabs__tab {
+  padding: 7px 14px 7px 0;
+}
+.ar-tabs[data-orientation='vertical'] .ar-tabs__tab,
+.ar-tabs[data-orientation='vertical'] .ar-tabs__item {
+  width: 100%;
+}
+.ar-tabs[data-orientation='vertical'][data-variant='icon'] .ar-tabs__tab {
+  width: 30px;
+}
+.ar-tabs[data-orientation='vertical'] .ar-tabs__count {
+  margin-left: auto;
+}
+.ar-tabs:is([data-variant='pill'], [data-variant='icon']) .ar-tabs__tab:hover:not([aria-selected='true']) {
+  background: var(--ar-bg-hover);
+}
+.ar-tabs:is([data-variant='pill'], [data-variant='icon']) .ar-tabs__tab:focus-visible {
+  background: var(--ar-focus-lift);
+}
+
+/* closable tabs: the tab and its close button side by side; the close shows on hover, focus or the current tab */
+/* a strip keeps every tab whole and scrolls when they do not fit; only fill shares the width */
+.ar-tabs[data-orientation='horizontal']:not([data-fill]) > :is(.ar-tabs__tab, .ar-tabs__item) {
+  flex: none;
+}
+.ar-tabs__item {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.ar-tabs__close {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  color: var(--ar-text-faint);
+  opacity: 0;
+  cursor: pointer;
   transition:
-    transform var(--ar-dur-layout) var(--ar-ease),
-    width var(--ar-dur-layout) var(--ar-ease),
-    background var(--ar-dur-state) var(--ar-ease);
+    opacity var(--ar-dur-state) var(--ar-ease),
+    color var(--ar-dur-state) var(--ar-ease);
+}
+.ar-tabs__close svg {
+  width: 10px;
+  height: 10px;
+}
+.ar-tabs__item:is(:hover, :focus-within, [data-selected]) .ar-tabs__close {
+  opacity: 1;
+}
+.ar-tabs__close:hover {
+  color: var(--ar-text-hi);
+  background: var(--ar-bg-hover);
+}
+.ar-tabs[data-variant='pill'] .ar-tabs__item .ar-tabs__tab {
+  padding-right: 4px;
+}
+.ar-tabs[data-variant='pill'] .ar-tabs__close {
+  margin-right: 6px;
+}
+
+/* ---------- Panel: tabs down the side ---------- */
+/* tabsPlacement="side": the tabs become a rail on the left, beside the body, with a hairline
+   between; the head stays across the top. */
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner > .ar-panel__tabs {
+  grid-row: 1;
+  overflow: visible auto;
+  max-width: 180px;
+  padding: var(--ar-space-2) 0 var(--ar-panel-pad-y) var(--ar-panel-pad-x);
+  border-right: 1px solid var(--ar-line-subtle);
+  border-bottom: 0;
+}
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner > .ar-panel__tabs:has(.ar-tabs[data-variant='icon']) {
+  padding-right: var(--ar-space-3);
+}
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner > .ar-panel__tabs:has(.ar-tabs:not([data-variant='line'])) {
+  padding-right: var(--ar-space-4);
+}
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner > .ar-panel__body {
+  grid-row: 1;
+  padding-top: var(--ar-space-2);
+}
+.ar-panel[data-tabs='side'] > .ar-panel__fold > .ar-panel__inner > .ar-panel__foot {
+  grid-column: 1 / -1;
 }
 
 /* ---------- Panel: icon, fold, variants, scrolling body ---------- */
@@ -831,4 +1024,26 @@ button.ar-section__trigger:focus-visible {
 .ar-section[data-variant='card'] > .ar-section__head:has(> button.ar-section__trigger) {
   margin-inline: -4px;
   padding-inline: 4px;
+}
+
+/* ---------- a Panel in a Dock pane is the pane ---------- */
+/* The pane has the glass, the padding and (in its tab) the name; the panel keeps its subtitle,
+   actions, tabs, side rail, sections and footer, so the same Panel reads the same on a page and
+   in a workspace, and can float, dock, join another as a tab or split like any panel. */
+.ar-panel[data-pane] {
+  --ar-panel-pad-x: 0px;
+  --ar-panel-pad-y: 0px;
+  border-radius: 0;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  text-shadow: inherit;
+}
+.ar-panel[data-pane]::before,
+.ar-panel[data-pane]::after {
+  display: none;
+}
+.ar-panel[data-pane] > .ar-panel__head {
+  padding-top: 0;
 }

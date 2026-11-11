@@ -9,6 +9,7 @@ import { Badge, IconButton, ItemGroup, ItemList, ItemRow, Panel, Text } from '..
 import type { ItemStatus } from '../../../src';
 import { BACKDROPS } from '../shared';
 import { IC } from './demos';
+import { PanelSpace } from './space';
 
 const glyph = (d: string) => (
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -105,7 +106,7 @@ function Renders() {
     return () => clearInterval(t);
   }, []);
   return (
-    <Panel className="sc-lists__wide" title="Renders" subtitle="divided · lg · thumbnails, many picked" actions={<Badge>{`${picked.length} picked`}</Badge>}>
+    <Panel title="Renders" subtitle="divided · lg · thumbnails, many picked" actions={<Badge>{`${picked.length} picked`}</Badge>}>
       <ItemList label="Renders" variant="divided" size="lg">
         {RENDERS.map((r) => (
           <ItemRow
@@ -149,7 +150,7 @@ const MATERIALS: Record<string, { id: string; title: string; meta: string; c: st
 function Materials() {
   const [picked, setPicked] = useState('clear');
   return (
-    <Panel className="sc-lists__wide" title="Materials" subtitle="grid · round thumbnails · groups">
+    <Panel title="Materials" subtitle="grid · round thumbnails · groups">
       <ItemList label="Materials" variant="grid" tileWidth={84}>
         {Object.entries(MATERIALS).map(([group, items]) => (
           <ItemGroup key={group} label={group} count={items.length}>
@@ -206,11 +207,16 @@ function Presets() {
 
 export function ListsDemo() {
   return (
-    <div className="sc-lists">
-      <Renders />
-      <Outliner />
-      <Materials />
-      <Presets />
-    </div>
+    <PanelSpace
+      id="lists"
+      height={760}
+      sizes={{ left: 0.24, right: 0.27, bottom: 0.4 }}
+      panels={[
+        { id: 'outliner', title: 'Outliner', dock: 'left', content: <Outliner /> },
+        { id: 'renders', title: 'Renders', dock: 'center', content: <Renders /> },
+        { id: 'presets', title: 'Presets', dock: 'right', content: <Presets /> },
+        { id: 'materials', title: 'Materials', dock: 'bottom', content: <Materials /> },
+      ]}
+    />
   );
 }

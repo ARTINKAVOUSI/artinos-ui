@@ -43,6 +43,7 @@ import type { DockApi, DockPanel } from '../../../src';
 import { BACKDROPS } from '../shared';
 import { GraphPanel, IC, useLiveSeries } from './demos';
 import { settings } from './params-demo';
+import { PanelSpace } from './space';
 
 const glyph = (d: string, fill = 'none') => (
   <svg viewBox="0 0 16 16" fill={fill} stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -242,6 +243,9 @@ const T = {
   undo: glyph('M5.5 4L2.5 7l3 3M2.5 7H10a3.5 3.5 0 010 7H8'),
   redo: glyph('M10.5 4l3 3-3 3M13.5 7H6a3.5 3.5 0 000 7h2'),
   reset: glyph('M3 8a5 5 0 105-5H5M5 1v2h2'),
+  physics: glyph('M8 9.2a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4zM8 14c3.3 0 6-2.7 6-6S11.3 2 8 2 2 4.7 2 8M2.5 5.5c2 3.5 6 6.5 9.5 7M13.5 5.5c-2 3.5-6 6.5-9.5 7'),
+  look: glyph('M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8zM8 10a2 2 0 100-4 2 2 0 000 4z'),
+  layers: glyph('M8 2l6 3.2-6 3.2-6-3.2zM2 8l6 3.2L14 8M2 10.8L8 14l6-3.2'),
 };
 
 const ENGINE_PANELS = [
@@ -307,9 +311,9 @@ export function PanelDemo() {
         capabilities: { closable: false, floatable: false },
       },
       { id: 'effects', title: 'Effects', description: 'A floating pane of sections', dock: 'float', content: <sections.Pane id="effects" label="Effects sections" /> },
-      { id: 'physics', title: 'Physics', description: 'Sections built from a schema', dock: 'right', active: true, content: <settings.Pane id="physics" label="Physics groups" /> },
-      { id: 'look', title: 'Look', description: 'Sections built from a schema', dock: 'right', content: <settings.Pane id="look" label="Look groups" /> },
-      { id: 'layers', title: 'Layers', description: 'A list — right-click a layer', dock: 'right', content: <LayersPane /> },
+      { id: 'physics', title: 'Physics', icon: T.physics, description: 'Sections built from a schema', dock: 'right', active: true, content: <settings.Pane id="physics" label="Physics groups" /> },
+      { id: 'look', title: 'Look', icon: T.look, description: 'Sections built from a schema', dock: 'right', content: <settings.Pane id="look" label="Look groups" /> },
+      { id: 'layers', title: 'Layers', icon: T.layers, description: 'A list — right-click a layer', dock: 'right', content: <LayersPane /> },
       { id: 'console', title: 'Console', description: 'Live readouts', active: true, content: <ConsolePane />, footer: 'Sampling · 220 ms' },
       { id: 'graph', title: 'Graph', description: 'Node editor', keywords: ['nodes', 'wires'], content: <GraphPanel /> },
     ],
@@ -325,8 +329,9 @@ export function PanelDemo() {
             {api ? <EngineBar api={api} /> : null}
           </div>
         }
-        storageKey="artinos-showcase.layout.v1"
-        sizes={{ left: 0.25, right: 0.26, bottom: 0.27 }}
+        storageKey="artinos-showcase.layout.v2"
+        tabs={{ right: 'side' }}
+        sizes={{ left: 0.25, right: 0.3, bottom: 0.27 }}
         floatBounds={{ x: 330, y: 104, width: 290, height: 300 }}
         viewProps={{ padding: 10, gap: 8 }}
         onReady={setApi}
@@ -337,9 +342,8 @@ export function PanelDemo() {
 
 /* ---------- 02 · Section: grouping and categories, on a page ---------- */
 
-export function SectionDemo() {
+function ScenePanel() {
   return (
-    <div className="sc-grid sc-grid--top">
       <Panel
         icon={glyph('M2.5 4.5h11M2.5 8h11M2.5 11.5h7')}
         title="Scene"
@@ -350,6 +354,11 @@ export function SectionDemo() {
       >
         <sections.Pane id="page" label="Scene sections" toolbar />
       </Panel>
+  );
+}
+
+function CategoriesPanel() {
+  return (
       <Panel title="Categories" subtitle="One open at a time" variant="solid" collapsible>
         <SectionGroup accordion defaultOpen="camera" label="Categories">
           <Section id="camera" title="Camera" count={2}>
@@ -367,16 +376,28 @@ export function SectionDemo() {
           </Section>
         </SectionGroup>
       </Panel>
-    </div>
+  );
+}
+
+export function SectionDemo() {
+  return (
+    <PanelSpace
+      id="section"
+      height={560}
+      sizes={{ left: 0.4 }}
+      panels={[
+        { id: 'scene', title: 'Scene', dock: 'left', content: <ScenePanel /> },
+        { id: 'categories', title: 'Categories', dock: 'center', content: <CategoriesPanel /> },
+      ]}
+    />
   );
 }
 
 /* ---------- 03 · Parts: what a section holds ---------- */
 
-export function PartsDemo() {
+function RowsPanel() {
   const [gain, setGain] = useState(-4.5);
   return (
-    <div className="sc-grid sc-grid--top">
       <Panel title="Rows & controls" subtitle="Setting values" labelWidth={84}>
         <Section title="Rows" count={4} description="A name and its answer.">
           <Field label="Width">
@@ -404,6 +425,11 @@ export function PartsDemo() {
           </Field>
         </Section>
       </Panel>
+  );
+}
+
+function ReadoutsPanel() {
+  return (
       <Panel title="Readouts & text" subtitle="Showing what is">
         <Section title="Readouts" count={2}>
           <StatStrip
@@ -423,6 +449,19 @@ export function PartsDemo() {
           </Callout>
         </Section>
       </Panel>
-    </div>
+  );
+}
+
+export function PartsDemo() {
+  return (
+    <PanelSpace
+      id="parts"
+      height={600}
+      sizes={{ left: 0.4 }}
+      panels={[
+        { id: 'rows', title: 'Rows & controls', dock: 'left', content: <RowsPanel /> },
+        { id: 'readouts', title: 'Readouts & text', dock: 'center', content: <ReadoutsPanel /> },
+      ]}
+    />
   );
 }

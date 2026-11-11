@@ -1427,8 +1427,8 @@ export function MetaBlockWorkspaceView({
                 </div>
               ) : group.role === 'dock' || group.meta?.persistentContainer ? (
                 <div className="mb-empty-container">
-                  <b>EMPTY DOCK</b>
-                  <span>DRAG A METABLOCK HERE TO ATTACH</span>
+                  <b>Nothing here</b>
+                  <span>Drag a panel's tab here to place it</span>
                 </div>
               ) : null}
             </div>

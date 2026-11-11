@@ -1243,14 +1243,14 @@
   color: var(--au-faint, #7d8885);
   pointer-events: none;
 }
+/* an empty dock says so in the panel's own voice: a quiet name and a note, sentence case */
 .mb-empty-container b {
-  font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
-  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
+  font: var(--ar-type-label, var(--ar-weight-medium) 12px/16px var(--ar-font-ui));
+  color: var(--ar-tone-label, var(--ar-text-mid));
 }
 .mb-empty-container span {
-  font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-snug) var(--ar-font-num);
-  letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
-  opacity: 0.65;
+  font: var(--ar-type-note, var(--ar-weight-regular) 12px/18px var(--ar-font-ui));
+  color: var(--ar-tone-hint, var(--ar-text-low));
 }
 
 /* Detach feels like one surface peeling out of its parent, not a new window popping in. */

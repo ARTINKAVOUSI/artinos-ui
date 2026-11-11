@@ -198,6 +198,8 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
 
 ## Tabs
 
+**Orientation and looks.** `orientation` `horizontal` (default, a strip) or `vertical` (a rail); `variant` `line` (default, words over a travelling bar) · `pill` (a soft wash travels under the current tab) · `icon` (icons alone, each named by its tooltip); `fill` shares the width. An item may be `{ value, label, icon, title, disabled, count, dot }`: `count` is how many things are in the tab, `dot` a light when something wants a look. `onClose(value)` gives every tab a close button, and Delete closes the focused one. Arrow keys follow the orientation. `Panel tabsPlacement="side"` puts its tabs down the left of the body and turns a Tabs inside vertical. In a Dock, `tabs={{ right: 'side' }}` makes that dock's panels a rail (each `DockPanel` may carry an `icon`; a narrow dock shows icons alone).
+
 A tab strip with a travelling underline. Props: `items: OptionInput[]`, `value` / `defaultValue` / `onChange`, `label` (list accessible name), `idBase` (ids: `${idBase}-tab-${v}` / `${idBase}-panel-${v}` — use it to wire `aria-controls` to your panels).
 
 ```tsx
@@ -447,9 +449,10 @@ A studio workspace in one component, with no setup.
 - Panes are the theme's panel glass, tab strips use the signal underline, and the drag feedback (drop preview, intent chip, ghost) is drawn in the family's materials.
 
 Props:
-- `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'float', active?, content, footer?, capabilities? }`. A panel is a MetaBlock: `capabilities` (`closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, `popoutable`, `nestable`, `acceptsDrop`, all on by default) says what it may do, and drags, menus and window buttons follow it, e.g. `{ closable: false, floatable: false }` keeps it docked and open;
+- `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'center' | 'float', active?, content, footer?, icon?, capabilities? }`. `dock: 'center'` fills what the edge docks leave, for a workspace of panels with no canvas (over a `viewport` it would cover it). `icon` is the glyph on the panel's tab, alone on a narrow side rail. A `Panel` given as `content` becomes the pane: no glass or title of its own (the tab names it), its subtitle, actions, tabs, side rail and footer kept. A panel is a MetaBlock: `capabilities` (`closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, `popoutable`, `nestable`, `acceptsDrop`, all on by default) says what it may do, and drags, menus and window buttons follow it, e.g. `{ closable: false, floatable: false }` keeps it docked and open;
 - `viewport`;
 - `storageKey`: saves the arrangement to localStorage, and restores it only while every saved id still exists;
+- `tabs`: where each dock's tabs sit, per edge (`left`, `right`, `bottom`, `center`): `'top'` (default, a strip) or `'side'` (a rail down the dock's outer edge, each tab its icon and name; icons alone when the dock is 320px or narrower). The panel's `PanelBar` stays in the panel on a rail;
 - `sizes`: fractions per edge; default left .22, right .24, bottom .36. A side dock never drops below 220px (taking at most 40% of the room left), a bottom dock below 120px (at most half), so a small workspace keeps usable columns;
 - `floatBounds`;
 - `commands`: extra palette entries;

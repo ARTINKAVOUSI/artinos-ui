@@ -4,6 +4,7 @@
 import { Chapter, Spec } from '../shared';
 import { PanelDemo, PartsDemo, SectionDemo } from './layout-demo';
 import { ListsDemo } from './lists-demo';
+import { TabsDemo } from './tabs-demo';
 
 /** What each level owns, prop by prop. */
 const REFERENCE: { level: string; parts: string; owns: string; props: [string, string][] }[] = [
@@ -15,11 +16,12 @@ const REFERENCE: { level: string; parts: string; owns: string; props: [string, s
       ['icon · title · subtitle', 'what it is, in two lines; in a workspace the title is its tab'],
       ['actions · PanelBar', 'a live Badge or tools in the header; in a workspace the PanelBar rises into the tab strip'],
       ['footer', 'a quiet status line, on a Panel and on a DockPanel alike'],
-      ['tabs', 'a Tabs strip under the header'],
+      ['tabs · tabsPlacement', 'a Tabs strip under the header, or a rail down the left (side); Tabs: orientation, variant line · pill · icon, fill, count, dot, onClose'],
       ['variant', 'glass · solid for busy scenes · inset inside another panel'],
       ['collapsible · maxHeight', 'folds to its header; scrolls under soft fades'],
       ['labelWidth', 'one label column for every row inside'],
-      ['dock', 'where it starts in a workspace: left · right · bottom · float'],
+      ['dock · icon', 'where it starts in a workspace: left · right · bottom · float; the glyph for its tab'],
+      ['Dock tabs', "each dock's tabs as a strip ('top') or a rail down its side ('side')"],
       ['capabilities', 'closable, movable, resizable, floatable, dockable, splittable, tabbable, maximizable, pinable, autoHideable: all on unless set false'],
       ['Dock', 'the workspace: panels, viewport, storageKey (the arrangement is saved), sizes, palette'],
       ['api.workspace', 'the MetaBlock engine: floatBlock, dockBlock, maximizeBlock, returnBlock, undo, redo, serialize'],
@@ -89,7 +91,7 @@ export function LayoutChapter() {
       <Spec
         id="panel"
         wide
-        text="A panel is one thing wherever it sits: a named frame that holds sections. On a page it is a Panel; in a workspace it is a MetaBlock, and its capabilities say what it may do (float, dock, join another as a tab, split, maximize, pin, close). The workspace has no parts of its own: it is only where panels are arranged, around a canvas, and it remembers the arrangement. Every move is a MetaBlock call, so the toolbar over the canvas moves panels with the same calls a drag makes. The Inspector here is closable and floatable off: it stays docked and open, and the toolbar's Float is off for it."
+        text="A panel is one thing wherever it sits, and every panel is a MetaBlock: a named frame that holds sections, which can be dragged, floated, docked, joined to another as a tab, split and maximized. Every panel on this page lives in a workspace, so try it on any of them. On a page it is a Panel; in a workspace it is a MetaBlock, and its capabilities say what it may do (float, dock, join another as a tab, split, maximize, pin, close). The workspace has no parts of its own: it is only where panels are arranged, around a canvas, and it remembers the arrangement. Every move is a MetaBlock call, so the toolbar over the canvas moves panels with the same calls a drag makes. The Inspector here is closable and floatable off: it stays docked and open, and the toolbar's Float is off for it."
         keys={[
           ['floatable', 'drag a tab out over the canvas'],
           ['dockable', 'drop it on an edge of the workspace'],
@@ -120,6 +122,33 @@ export function LayoutChapter() {
 <Panel title="Inspector" subtitle="Orb" footer="Ready"><Inspector /></Panel>`}
       >
         <PanelDemo />
+      </Spec>
+
+      <Spec
+        id="tabs"
+        wide
+        text="Tabs switch a panel between its views. A strip runs across under the header; with tabsPlacement side it becomes a rail down the panel's left, for a settings sheet or a panel with many views. Three looks: line, quiet words over a travelling bar; pill, a soft wash that travels under the current tab, with fill to share the width; icon, icons alone for a tool rail, each named by its tooltip. A tab can carry a count of what is in it or a dot when something wants a look, and with onClose every tab closes (Delete on the focused one). In a Dock, tabs right or left set to side turns that dock's panels into a rail too, each tab its icon and name, icons alone when the dock is narrow; the Physics dock above is one."
+        keys={[
+          ['← → · ↑ ↓', 'move along the strip or the rail'],
+          ['Home · End', 'the first or last tab'],
+          ['Delete', 'close the focused tab (with onClose)'],
+        ]}
+        code={`<Panel title="Inspector" tabs={
+  <Tabs items={[{ value: 'object', label: 'Object', count: 4 }, { value: 'material', label: 'Material', dot: true }]}
+        value={tab} onChange={setTab} />
+}> … </Panel>
+
+<Panel title="Settings" tabsPlacement="side" tabs={
+  <Tabs items={[{ value: 'general', label: 'General', icon: <Gear /> }, …]} value={tab} onChange={setTab} />
+}> … </Panel>                                                         // a rail: the Tabs turns vertical
+
+<Tabs variant="pill" fill items={['scene', 'camera', 'lights']} … />  // a few views sharing the width
+<Tabs variant="icon" orientation="vertical" items={[{ value: 'move', label: 'Move', icon: <Move /> }, …]} … />
+<Tabs items={openDocs} value={cur} onChange={setCur} onClose={close} />
+
+<Dock tabs={{ right: 'side' }} panels={[{ id: 'physics', title: 'Physics', icon: <Atom />, dock: 'right', … }]} />`}
+      >
+        <TabsDemo />
       </Spec>
 
       <Spec

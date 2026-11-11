@@ -134,6 +134,7 @@ export const CHAPTERS: readonly ChapterDef[] = [
     components: ['Panel', 'Dock', 'MetaBlock', 'PanelBar', 'Tabs', 'Section', 'SectionGroup', 'Params', 'Field', 'PropertyRow', 'ItemList', 'ItemRow', 'StatStrip', 'Callout', 'Text'],
     sections: [
       { id: 'panel', title: 'Panel' },
+      { id: 'tabs', title: 'Tabs' },
       { id: 'section', title: 'Section' },
       { id: 'parts', title: 'Parts' },
       { id: 'lists', title: 'Lists' },

@@ -107,6 +107,10 @@ Read `references/design.md` in full, then build the ARTINOS way. These are the p
 - **Parts** — everything else, always inside a section: `Field` and `PropertyRow` rows, controls, readouts (`StatStrip`, `Meter`, `Sparkline`), lists (`ItemList` / `ItemRow`), and text (`Text variant="overline"` names a sub-group, `note` helps, `Callout` must not be missed).
 - Never skip a level: a control straight in a panel has no group to fold, reset or move.
 
+**Every panel is a MetaBlock.** Put panels in a `Dock`, so each can be dragged, floated, docked, joined to another as a tab, split and maximized: around a canvas (`viewport`), or with no canvas as a workspace of panels (`dock: 'center'` fills the middle). Write the panel once as a `Panel`: given as a `DockPanel`'s `content` it becomes the pane (the tab names it; subtitle, actions, tabs and footer stay). Restrict a panel only through `capabilities`.
+
+**Tabs switch a panel's views:** `variant="line"` across the top; `Panel tabsPlacement="side"` for a settings sheet or many views; `variant="pill" fill` for two to four modes; `variant="icon"` for a tool rail; `count`, `dot` and `onClose` per tab (`references/catalogue.md` → Tabs). A dock's panels go on a side rail with `Dock tabs={{ right: 'side' }}` and an `icon` per panel.
+
 **A tool around a canvas is a `Dock`.** The canvas goes in `viewport`; browsers and lists dock left, settings right, readouts and consoles bottom. Never position floating panels with CSS. Each pane's tools go in a `PanelBar`, which rises into the tab strip. A panel is a MetaBlock: `capabilities: { closable: false, floatable: false }` on a `DockPanel` keeps it docked and open; `api.workspace` (from `onReady` or `useDock()`) moves panels in code (`floatBlock`, `dockBlock`, `maximizeBlock`, `returnBlock`, `undo`).
 
 **Settings come from data.** Describe each value once (key, label, group, kind, range, `face`: percent, log, count, bipolar, degrees) and let `createParamPanes` build the sections: the right control per value, each group's count and reset, a toggle that owns a group as its on/off, Advanced and Reset in the pane bar. Hand-written sections that should move between panes go through `createDockSections`; its `Pane` works in a `Panel` and in a `DockPanel`.
@@ -167,7 +171,7 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 ```
 
 - `--force` rewrites the kit and removes files it no longer needs; anything the app changed inside the kit is lost, which is why restyling lives in tokens.
-- Then run the type-check: an update can rename or remove a prop. Fix the app's code to the guides, never the kit. Recent changes worth checking: `Section` and `createParamPanes` groups no longer take `icon` (a section title stands alone); `DockPanel` takes `capabilities`; `ItemList` takes `variant`, `size`, `tileWidth` and `empty`, and `ItemRow` takes `thumbnail`, `icon`, `description`, `value`, `status`, `progress`, `checked` and a tree (`depth`, `expanded`).
+- Then run the type-check: an update can rename or remove a prop. Fix the app's code to the guides, never the kit. Recent changes worth checking: `Tabs` takes `orientation`, `variant` (`line` · `pill` · `icon`), `fill`, `onClose` and per-item `count` / `dot`; `Panel` takes `tabsPlacement`; `DockPanel` takes `dock: 'center'` and `icon`, `Dock` takes `tabs`, and a `Panel` inside a Dock pane now drops its own glass and title; `Section` and `createParamPanes` groups no longer take `icon` (a section title stands alone); `DockPanel` takes `capabilities`; `ItemList` takes `variant`, `size`, `tileWidth` and `empty`, and `ItemRow` takes `thumbnail`, `icon`, `description`, `value`, `status`, `progress`, `checked` and a tree (`depth`, `expanded`).
 - Re-read `references/design.md` after an update: the rules move with the package.
 - The skill itself is refreshed by `setup`; `node "{{PACKAGE}}/artinos.mjs" skill --user` refreshes it for every project.
 

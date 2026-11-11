@@ -4,6 +4,7 @@ import type { CSSProperties, ReactElement, ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { Kbd } from '../actions/Kbd';
 import { cx } from '../core/utils';
+import { PaneContext } from '../core/pane';
 import { CommandPalette } from '../overlays/CommandPalette';
 import type { Command } from '../overlays/CommandPalette';
 import { DockMenu } from './DockMenu';
@@ -31,13 +32,16 @@ export interface DockPanel {
   description?: string;
   /** Extra search words for the command palette. */
   keywords?: string[];
-  /** Starting place. Default 'bottom'. */
-  dock?: DockEdge | 'float';
+  /** Starting place. Default 'bottom'. 'center' fills what the docks leave: a workspace of panels
+   *  with no canvas behind them (over a viewport it would cover it). */
+  dock?: DockEdge | 'center' | 'float';
   /** The tab shown first in its dock. */
   active?: boolean;
   content: ReactNode;
   /** Quiet status line along the panel's foot. */
   footer?: ReactNode;
+  /** A glyph for the panel's tab: shown beside its name, and alone on a narrow side rail. */
+  icon?: ReactNode;
   /** What this panel may do, on top of the MetaBlock defaults (all true): e.g. { closable: false,
    *  floatable: false } keeps a panel docked and open. Drags, menus and window buttons follow it. */
   capabilities?: Partial<MetaBlockCapabilities>;
@@ -82,6 +86,9 @@ export interface DockProps {
   toolbar?: ReactNode;
   /** A chip in the top-left corner, e.g. the app name. */
   brand?: ReactNode;
+  /** Where each dock's tabs sit: 'top' (default, a strip over the panel) or 'side' (a rail down
+   *  the dock's outer edge, each tab its icon and name; icons alone when the dock is narrow). */
+  tabs?: Partial<Record<DockEdge | 'center', 'top' | 'side'>>;
   /** Key that hides / shows the docks (the viewport stays). Off by default; e.g. 'h'. */
   hideKey?: string | null;
   /** Engine tuning passed to the workspace view: padding, gap, snapping, motion… */
@@ -138,7 +145,7 @@ function buildWorkspace(
     workspace.createGroup({ id: 'viewport', title: 'Viewport', role: 'viewport', lockedFullscreen: true });
     workspace.createMetaBlock({ id: VIEWPORT, title: 'Viewport', role: 'viewport' }, { groupId: 'viewport' });
   }
-  const byDock = new Map<DockEdge, DockPanel[]>();
+  const byDock = new Map<DockEdge | 'center', DockPanel[]>();
   const floating: DockPanel[] = [];
   for (const panel of panels) {
     if (panel.dock === 'float') floating.push(panel);
@@ -146,10 +153,11 @@ function buildWorkspace(
   }
   for (const [edge, members] of byDock) {
     const groupId = `dock.${edge}`;
-    workspace.createGroup({ id: groupId, title: edge[0].toUpperCase() + edge.slice(1), role: 'dock', meta: { persistentContainer: true } });
+    // the center group takes what the edge docks leave; the engine lets it only when asked (allowRootCenter)
+    workspace.createGroup({ id: groupId, title: edge[0].toUpperCase() + edge.slice(1), role: 'dock', meta: { persistentContainer: true, ...(edge === 'center' ? { allowRootCenter: true } : {}) } });
     // meta is structured-cloned for undo and persistence, so it stays JSON-safe
     for (const p of members) workspace.createMetaBlock({ id: p.id, title: p.title, role: 'panel', capabilities: p.capabilities as MetaBlockCapabilities, meta: { description: p.description ?? null } }, { groupId });
-    workspace.dockGroup(groupId, { area: edge, size: o.sizes[edge] });
+    workspace.dockGroup(groupId, edge === 'center' ? { area: 'center' } : { area: edge, size: o.sizes[edge] });
     const first = members.find((p) => p.active) ?? members[0];
     if (first) workspace.activateBlock(first.id);
   }
@@ -201,6 +209,7 @@ export function Dock({
   palette = true,
   toolbar,
   brand,
+  tabs: tabPlacement,
   hideKey = null,
   viewProps,
   onReady,
@@ -390,8 +399,8 @@ export function Dock({
     else if (left + element.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = left + element.offsetWidth - strip.clientWidth + 8;
   };
 
-  const tabStrip = (c: GroupChromeContext) => (
-    <div className="ar-dock__tabs" data-mb-tabs="true" role="tablist" aria-label={`${c.group.title} panels`}>
+  const tabStrip = (c: GroupChromeContext, side = false) => (
+    <div className="ar-dock__tabs" data-mb-tabs="true" role="tablist" aria-orientation={side ? 'vertical' : undefined} aria-label={`${c.group.title} panels`}>
       {c.blocks.map((block) => {
         const active = block.id === c.activeBlock?.id;
         return (
@@ -405,6 +414,7 @@ export function Dock({
             ref={active ? (el) => revealTab(c.group.id, block.id, el) : undefined}
             {...c.blockProps(block.id)}
           >
+            {byId.get(block.id)?.icon ? <span className="ar-dock__tab-icon">{byId.get(block.id)?.icon}</span> : side ? <span className="ar-dock__tab-icon ar-dock__tab-initial">{block.title.slice(0, 1)}</span> : null}
             <span className="ar-dock__tab-label">{block.title}</span>
           </button>
         );
@@ -413,8 +423,23 @@ export function Dock({
   );
 
   // a dock carries the furniture (tabs, the panel's bar, search, toolbar); a detached panel gets tabs and window controls
-  const renderGroupChrome = (c: GroupChromeContext) =>
-    c.group.role === 'dock' ? (
+  /** The edge a docked group belongs to, from its id (dock.left · dock.right · dock.bottom). */
+  const edgeOf = (groupId: string) => (groupId.startsWith('dock.') ? (groupId.slice(5) as DockEdge | 'center') : null);
+  const renderGroupChrome = (c: GroupChromeContext) => {
+    const edge = c.group.role === 'dock' ? edgeOf(c.group.id) : null;
+    if (edge && tabPlacement?.[edge] === 'side')
+      // a rail: the tabs down the side, search at its foot; the panel's bar stays in the panel
+      return (
+        <header className="ar-dock__strip ar-dock__strip--side" data-edge={edge} {...c.dragHandleProps}>
+          {tabStrip(c, true)}
+          {palette ? (
+            <button type="button" className="ar-dock__search ar-dock__search--rail" data-no-drag onClick={() => setPaletteOpen(true)} title="Search panels and commands" aria-label="Search panels and commands">
+              {DockIcons.search}
+            </button>
+          ) : null}
+        </header>
+      );
+    return c.group.role === 'dock' ? (
       <header className="ar-dock__strip" {...c.dragHandleProps}>
         {tabStrip(c)}
         <PanelBarSlot panelId={c.activeBlock?.id ?? null} />
@@ -460,6 +485,7 @@ export function Dock({
         </div>
       </header>
     );
+  };
 
   const renderGroupFooter = (group: MetaBlockGroup) => {
     const footer = byId.get(group.activeChild ?? '')?.footer;
@@ -506,7 +532,9 @@ function PanelBody({ title, children }: { title: string; children: ReactNode }) 
   }, []);
   return (
     <section ref={ref} className="ar-dock__panel" data-layout={layout} aria-label={title}>
-      <PanelErrorBoundary title={title}>{children}</PanelErrorBoundary>
+      <PanelErrorBoundary title={title}>
+        <PaneContext.Provider value={true}>{children}</PaneContext.Provider>
+      </PanelErrorBoundary>
     </section>
   );
 }

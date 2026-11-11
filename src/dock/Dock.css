@@ -560,3 +560,126 @@
 .ar-dock__search:hover svg {
   transform: scale(1.1) rotate(-8deg);
 }
+
+/* ---------- a dock's tabs down its side ---------- */
+/* tabs={{ left: 'side' }}: the dock's panels become a rail along its outer edge (on the right for a
+   right dock), each tab its icon and name; when the dock is narrow, the icons alone. The panel's
+   own bar stays in the panel, and search sits at the rail's foot. */
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side[data-edge='right']) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) > .mb-group-chrome {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  min-height: 0;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side[data-edge='right']) > .mb-group-chrome {
+  grid-column: 2;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) > .mb-group-body {
+  grid-row: 1;
+  grid-column: 2;
+  min-width: 0;
+  min-height: 0;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) > .mb-group-footer {
+  grid-row: 2;
+  grid-column: 2;
+}
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side[data-edge='right']) > :is(.mb-group-body, .mb-group-footer) {
+  grid-column: 1;
+}
+.ar-dock__strip--side {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 0;
+  padding: 10px 6px;
+  border-bottom: 0;
+  border-right: 1px solid var(--ar-line-subtle);
+  /* the rail is as wide as its tabs: no size containment here */
+  container-type: normal;
+}
+.ar-dock__strip--side[data-edge='right'] {
+  border-right: 0;
+  border-left: 1px solid var(--ar-line-subtle);
+}
+.ar-dock__strip--side .ar-dock__tabs {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  height: auto;
+  max-width: none;
+  overflow: hidden auto;
+}
+.ar-dock__strip--side .ar-dock__tabs > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  min-width: 0;
+  max-width: 132px;
+  padding: 0 10px 0 8px;
+  border-radius: var(--ar-radius-control);
+  box-shadow: none;
+}
+.ar-dock__strip--side .ar-dock__tabs > button::after {
+  display: none;
+}
+.ar-dock__strip--side .ar-dock__tabs > button:hover:not(.is-active) {
+  background: var(--ar-bg-hover);
+}
+.ar-dock__strip--side .ar-dock__tabs > button.is-active {
+  background: var(--ar-bg-active);
+  box-shadow: inset 2px 0 0 var(--ar-signal);
+}
+.ar-dock__strip--side[data-edge='right'] .ar-dock__tabs > button.is-active {
+  box-shadow: inset -2px 0 0 var(--ar-signal);
+}
+.ar-dock__tab-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+.ar-dock__tab-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.ar-dock__tab-initial {
+  font: var(--ar-weight-title) 12px / 16px var(--ar-font-ui);
+  color: var(--ar-tone-title);
+}
+.ar-dock__strip--side .ar-dock__tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ar-dock__search--rail {
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  align-self: center;
+}
+/* a narrow dock: the rail keeps the icons alone, each tab named by its tooltip */
+.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) {
+  container: ar-dock-group / inline-size;
+}
+@container ar-dock-group (max-width: 320px) {
+  .ar-dock__strip--side .ar-dock__tab-label {
+    display: none;
+  }
+  .ar-dock__strip--side .ar-dock__tabs > button {
+    justify-content: center;
+    width: 30px;
+    padding: 0;
+  }
+}

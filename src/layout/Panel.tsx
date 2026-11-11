@@ -7,6 +7,8 @@ import { FieldContext } from '../core/field';
 import { useSortable } from '../core/sortable';
 import type { SortPlace } from '../core/sortable';
 import { cx, revealClipped } from '../core/utils';
+import { TabsDefaults } from './Tabs';
+import { PaneContext } from '../core/pane';
 
 /* ARTINOS layout — the frames controls live in.
  *   Panel         frosted card: header (icon · title · subtitle · actions), body, foot status line;
@@ -25,6 +27,9 @@ export interface PanelProps {
   actions?: ReactNode;
   /** Slot between header and body, e.g. <Tabs>. */
   tabs?: ReactNode;
+  /** top (default): the tabs run across under the header · side: they become a rail down the
+   *  left of the body (a Tabs inside turns vertical), for a panel with many views or a settings sheet. */
+  tabsPlacement?: 'top' | 'side';
   /** Foot status line. */
   footer?: ReactNode;
   /** glass: the theme's frosted pane (default) · solid: opaque, for busy scenes · inset: a quiet
@@ -56,24 +61,26 @@ const Chevron = ({ up }: { up: boolean }) => (
   </svg>
 );
 
-export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, labelWidth, children, as = 'section', className, style, id }: PanelProps) {
+export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 'top', footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, labelWidth, children, as = 'section', className, style, id }: PanelProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'section';
   const [isOpen, setOpen] = useControllable(open, defaultOpen, onOpenChange);
+  // in a Dock pane the panel is the pane: its tab carries the name, the pane its glass
+  const inPane = useContext(PaneContext);
   const shown = !collapsible || isOpen;
   const bodyId = useId();
   const titles = (
     <div className="ar-panel__titles">
-      {title ? <div className="ar-panel__title">{title}</div> : null}
+      {title && !inPane ? <div className="ar-panel__title">{title}</div> : null}
       {subtitle ? <div className="ar-panel__subtitle">{subtitle}</div> : null}
     </div>
   );
   return (
-    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} style={{ ...labelColumn(labelWidth), ...style }}>
-      {title || subtitle || actions || icon ? (
+    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }}>
+      {(inPane ? subtitle || actions : title || subtitle || actions || icon) ? (
         <header className="ar-panel__head">
-          {icon ? <span className="ar-panel__icon">{icon}</span> : null}
+          {icon && !inPane ? <span className="ar-panel__icon">{icon}</span> : null}
           {collapsible ? (
             <button type="button" className="ar-panel__toggle" aria-expanded={shown} aria-controls={bodyId} onClick={() => setOpen(!isOpen)}>
               {titles}
@@ -91,13 +98,18 @@ export function Panel({ title, subtitle, icon, actions, tabs, footer, variant = 
       ) : null}
       <div className="ar-panel__fold" id={bodyId} inert={!shown || undefined}>
         <div className="ar-panel__inner">
-          {tabs ? <div className="ar-panel__tabs">{tabs}</div> : null}
+          {tabs ? (
+            <div className="ar-panel__tabs">
+              {tabsPlacement === 'side' ? <TabsDefaults.Provider value={{ orientation: 'vertical' }}>{tabs}</TabsDefaults.Provider> : tabs}
+            </div>
+          ) : null}
           <div
             className="ar-panel__body"
             data-scroll={maxHeight !== undefined ? '' : undefined}
             style={maxHeight !== undefined ? { maxHeight: typeof maxHeight === 'number' ? maxHeight + 'px' : maxHeight } : undefined}
           >
-            {children}
+            {/* what the panel holds is not the pane: a panel inside it is drawn as usual */}
+            {inPane ? <PaneContext.Provider value={false}>{children}</PaneContext.Provider> : children}
           </div>
           {footer ? <footer className="ar-panel__foot">{footer}</footer> : null}
         </div>

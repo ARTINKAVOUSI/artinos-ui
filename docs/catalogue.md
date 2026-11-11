@@ -319,7 +319,19 @@ A label column beside one or more controls: `Width [268] [Fixed ˅]`. `label` re
 
 ### Tabs
 
-A tab strip with a travelling underline. `items`, `value` / `defaultValue` / `onChange`, `label`, `idBase` (wires `aria-controls` to your panels). Usually in a Panel's `tabs` slot.
+Switches a panel between its views. `items`, `value` / `defaultValue` / `onChange`, `label`, `idBase` (wires `aria-controls` to your views). Usually in a Panel's `tabs` slot. Pick the look from the views:
+
+| the views are… | use |
+|---|---|
+| a few named views of one panel (Object · Material · Physics) | `variant="line"` (default), across the top |
+| many views, or a settings sheet (General · Display · Audio · Keys) | `Panel tabsPlacement="side"`: a rail down the left, with `icon`s |
+| two to four modes of the same thing (Scene · Camera · Lights) | `variant="pill" fill` |
+| tools picked by their glyph (move · rotate · scale · paint) | `variant="icon"` on a side rail; each named by its tooltip |
+| open documents | `onClose`: each tab closes, and Delete closes the focused one |
+
+- `count` on an item says how many things are in that view; `dot` that something in it wants a look (an unbaked change, a warning).
+- Arrow keys follow the orientation; Home and End jump to the ends; disabled tabs are skipped.
+- A dock's own panels can sit on a side rail too: `Dock tabs={{ right: 'side' }}`, each `DockPanel` with an `icon`.
 
 ### ItemList · ItemGroup · ItemRow
 

@@ -1247,24 +1247,6 @@ html::-webkit-scrollbar-thumb:hover {
   gap: 24px;
   align-items: start;
 }
-/* the lists: media lists take two columns, a tree or a few cards one */
-.sc-lists {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  align-items: start;
-}
-.sc-lists__wide {
-  grid-column: span 2;
-}
-@media (max-width: 1100px) {
-  .sc-lists {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .sc-lists__wide {
-    grid-column: auto;
-  }
-}
 /* a material sphere drawn for a list thumbnail */
 .sc-sphere {
   display: block;
