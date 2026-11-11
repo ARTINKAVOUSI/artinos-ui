@@ -394,6 +394,12 @@
   --ar-section-tick-w: 2px;
   --ar-section-rule: 0px;
   --ar-section-midrule: 1px; /* the hairline through a section's title row, from its name to its count */
+  /* tab names, in a strip or a rail, in a panel or a workspace: hairline capitals, tracked open so a
+     fine stroke stays readable; the current tab is told by its ink and its lit line, never by weight */
+  --ar-tab-weight: 300;
+  --ar-tab-size: 12px;
+  --ar-tab-case: uppercase;
+  --ar-tab-tracking: 0.12em;
   --ar-section-accent: 0%;
   --ar-section-quiet: 0%;
   --ar-group-accent: 100%;

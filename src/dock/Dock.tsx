@@ -24,6 +24,14 @@ import type { GroupChromeContext, MetaBlockWorkspaceViewProps } from './metabloc
 
 export type DockEdge = 'left' | 'right' | 'bottom';
 
+/** How a group of panels shows its tabs. placement: top (a strip) · side (a rail down its outer
+ *  edge). look: line (names over a lit underline) · pill (the current tab on a soft wash) · icon
+ *  (icons alone, each named by its tooltip). */
+export interface DockTabStyle {
+  placement: 'top' | 'side';
+  look: 'line' | 'pill' | 'icon';
+}
+
 export interface DockPanel {
   /** Unique and stable: the saved layout is keyed by it. */
   id: string;
@@ -86,9 +94,10 @@ export interface DockProps {
   toolbar?: ReactNode;
   /** A chip in the top-left corner, e.g. the app name. */
   brand?: ReactNode;
-  /** Where each dock's tabs sit: 'top' (default, a strip over the panel) or 'side' (a rail down
-   *  the dock's outer edge, each tab its icon and name; icons alone when the dock is narrow). */
-  tabs?: Partial<Record<DockEdge | 'center', 'top' | 'side'>>;
+  /** How each group shows its tabs, per dock edge (and 'float' for detached windows): 'top' · 'side',
+   *  or { placement, look } (look: 'line' · 'pill' · 'icon'). It seeds the group's MetaBlock meta;
+   *  the tab's right-click menu changes it at run time, and the layout keeps it. */
+  tabs?: Partial<Record<DockEdge | 'center' | 'float', 'top' | 'side' | Partial<DockTabStyle>>>;
   /** Key that hides / shows the docks (the viewport stays). Off by default; e.g. 'h'. */
   hideKey?: string | null;
   /** Engine tuning passed to the workspace view: padding, gap, snapping, motion… */
@@ -399,57 +408,114 @@ export function Dock({
     else if (left + element.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = left + element.offsetWidth - strip.clientWidth + 8;
   };
 
-  const tabStrip = (c: GroupChromeContext, side = false) => (
-    <div className="ar-dock__tabs" data-mb-tabs="true" role="tablist" aria-orientation={side ? 'vertical' : undefined} aria-label={`${c.group.title} panels`}>
-      {c.blocks.map((block) => {
-        const active = block.id === c.activeBlock?.id;
-        return (
-          <button
-            key={block.id}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            className={active ? 'is-active' : undefined}
-            title={byId.get(block.id)?.description ?? block.title}
-            ref={active ? (el) => revealTab(c.group.id, block.id, el) : undefined}
-            {...c.blockProps(block.id)}
-          >
-            {byId.get(block.id)?.icon ? <span className="ar-dock__tab-icon">{byId.get(block.id)?.icon}</span> : side ? <span className="ar-dock__tab-icon ar-dock__tab-initial">{block.title.slice(0, 1)}</span> : null}
-            <span className="ar-dock__tab-label">{block.title}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-
-  // a dock carries the furniture (tabs, the panel's bar, search, toolbar); a detached panel gets tabs and window controls
-  /** The edge a docked group belongs to, from its id (dock.left · dock.right · dock.bottom). */
+  /** The edge a docked group belongs to, from its id (dock.left · dock.right · dock.bottom · dock.center). */
   const edgeOf = (groupId: string) => (groupId.startsWith('dock.') ? (groupId.slice(5) as DockEdge | 'center') : null);
-  const renderGroupChrome = (c: GroupChromeContext) => {
-    const edge = c.group.role === 'dock' ? edgeOf(c.group.id) : null;
-    if (edge && tabPlacement?.[edge] === 'side')
-      // a rail: the tabs down the side, search at its foot; the panel's bar stays in the panel
-      return (
-        <header className="ar-dock__strip ar-dock__strip--side" data-edge={edge} {...c.dragHandleProps}>
-          {tabStrip(c, true)}
-          {palette ? (
-            <button type="button" className="ar-dock__search ar-dock__search--rail" data-no-drag onClick={() => setPaletteOpen(true)} title="Search panels and commands" aria-label="Search panels and commands">
-              {DockIcons.search}
+  /** A group's tab style: its MetaBlock meta first (set from the tab menu and kept with the layout),
+   *  then the Dock's `tabs` for its edge (or 'float'), then a strip of lines. */
+  const styleOf = (group: MetaBlockGroup): DockTabStyle => {
+    const own = (group.meta?.tabs ?? {}) as Partial<DockTabStyle>;
+    // a dock takes its edge's style; a detached window the 'float' style while it floats; a group split
+    // off and docked beside another takes the plain default until someone sets its own
+    const key = group.role === 'dock' ? edgeOf(group.id) ?? 'center' : group.posture === 'floating' ? 'float' : null;
+    const given = key ? tabPlacement?.[key] : undefined;
+    const seed: Partial<DockTabStyle> = typeof given === 'string' ? { placement: given } : given ?? {};
+    return { placement: own.placement ?? seed.placement ?? 'top', look: own.look ?? seed.look ?? 'line' };
+  };
+
+  const tabStrip = (c: GroupChromeContext, style: DockTabStyle) => {
+    const side = style.placement === 'side';
+    return (
+      <div className="ar-dock__tabs" data-mb-tabs="true" data-look={style.look} role="tablist" aria-orientation={side ? 'vertical' : undefined} aria-label={`${c.group.title} panels`}>
+        {c.blocks.map((block) => {
+          const active = block.id === c.activeBlock?.id;
+          const icon = byId.get(block.id)?.icon;
+          // names only, on a strip or a rail; the icon look shows the panel's icon (else its initial) instead
+          const mark = style.look !== 'icon' ? null : icon ? (
+            <span className="ar-dock__tab-icon">{icon}</span>
+          ) : (
+            <span className="ar-dock__tab-icon ar-dock__tab-initial">{block.title.slice(0, 1)}</span>
+          );
+          return (
+            <button
+              key={block.id}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-label={style.look === 'icon' ? block.title : undefined}
+              className={active ? 'is-active' : undefined}
+              title={byId.get(block.id)?.description ?? block.title}
+              ref={active ? (el) => revealTab(c.group.id, block.id, el) : undefined}
+              {...c.blockProps(block.id)}
+            >
+              {mark}
+              <span className="ar-dock__tab-label">{block.title}</span>
             </button>
-          ) : null}
+          );
+        })}
+      </div>
+    );
+  };
+
+  const search = (rail: boolean) =>
+    palette ? (
+      rail ? (
+        <button type="button" className="ar-dock__search ar-dock__search--rail" data-no-drag onClick={() => setPaletteOpen(true)} title="Search panels and commands" aria-label="Search panels and commands">
+          {DockIcons.search}
+        </button>
+      ) : (
+        <button type="button" className="ar-dock__search" data-no-drag onClick={() => setPaletteOpen(true)} title="Search panels and commands">
+          {DockIcons.search}
+          <span>Search…</span>
+          <Kbd keys={['mod', 'K']} />
+        </button>
+      )
+    ) : null;
+
+  // a detached panel's window controls, honouring its capabilities
+  const windowActions = (c: GroupChromeContext) =>
+    c.activeBlock ? (
+      <>
+        {c.activeBlock.capabilities.maximizable === false ? null : (
+          <button
+            type="button"
+            className="ar-tool"
+            title={c.group.posture === 'maximized' ? 'Restore' : 'Maximize'}
+            onClick={() => (c.group.posture === 'maximized' ? c.restore() : c.maximize())}
+          >
+            {c.group.posture === 'maximized' ? DockIcons.minimize : DockIcons.maximize}
+          </button>
+        )}
+        <button type="button" className="ar-tool" title="Return to its dock" onClick={() => c.blockActions.returnHome(c.activeBlock!.id)}>
+          {DockIcons.returnHome}
+        </button>
+        {c.activeBlock.capabilities.closable === false ? null : (
+          <button type="button" className="ar-tool" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
+            {DockIcons.close}
+          </button>
+        )}
+      </>
+    ) : null;
+
+  // a dock carries the furniture (tabs, the panel's bar, search, toolbar); a detached panel gets tabs
+  // and window controls. Either can wear its tabs as a strip or a rail, in any look.
+  const renderGroupChrome = (c: GroupChromeContext) => {
+    const style = styleOf(c.group);
+    const docked = c.group.role === 'dock';
+    if (style.placement === 'side')
+      // a rail: the tabs down the side, search or the window controls at its foot; the panel's bar stays in the panel
+      return (
+        <header className="ar-dock__strip ar-dock__strip--side" data-edge={docked ? edgeOf(c.group.id) ?? 'center' : 'float'} data-look={style.look} {...c.dragHandleProps}>
+          {tabStrip(c, style)}
+          <div className="ar-dock__rail-foot" data-no-drag>
+            {docked ? search(true) : windowActions(c)}
+          </div>
         </header>
       );
-    return c.group.role === 'dock' ? (
-      <header className="ar-dock__strip" {...c.dragHandleProps}>
-        {tabStrip(c)}
+    return docked ? (
+      <header className="ar-dock__strip" data-look={style.look} {...c.dragHandleProps}>
+        {tabStrip(c, style)}
         <PanelBarSlot panelId={c.activeBlock?.id ?? null} />
-        {palette ? (
-          <button type="button" className="ar-dock__search" data-no-drag onClick={() => setPaletteOpen(true)} title="Search panels and commands">
-            {DockIcons.search}
-            <span>Search…</span>
-            <Kbd keys={['mod', 'K']} />
-          </button>
-        ) : null}
+        {search(false)}
         {toolbar ? (
           <div className="ar-dock__toolbar" data-no-drag>
             {toolbar}
@@ -457,31 +523,10 @@ export function Dock({
         ) : null}
       </header>
     ) : (
-      <header className="ar-dock__strip ar-dock__strip--window" {...c.dragHandleProps}>
-        {tabStrip(c)}
+      <header className="ar-dock__strip ar-dock__strip--window" data-look={style.look} {...c.dragHandleProps}>
+        {tabStrip(c, style)}
         <div className="ar-dock__window-actions" data-no-drag>
-          {c.activeBlock ? (
-            <>
-              {c.activeBlock.capabilities.maximizable === false ? null : (
-              <button
-                type="button"
-                className="ar-tool"
-                title={c.group.posture === 'maximized' ? 'Restore' : 'Maximize'}
-                onClick={() => (c.group.posture === 'maximized' ? c.restore() : c.maximize())}
-              >
-                {c.group.posture === 'maximized' ? DockIcons.minimize : DockIcons.maximize}
-              </button>
-              )}
-              <button type="button" className="ar-tool" title="Return to its dock" onClick={() => c.blockActions.returnHome(c.activeBlock!.id)}>
-                {DockIcons.returnHome}
-              </button>
-              {c.activeBlock.capabilities.closable === false ? null : (
-                <button type="button" className="ar-tool" title="Close panel" onClick={() => c.blockActions.close(c.activeBlock!.id)}>
-                  {DockIcons.close}
-                </button>
-              )}
-            </>
-          ) : null}
+          {windowActions(c)}
         </div>
       </header>
     );
@@ -502,7 +547,16 @@ export function Dock({
         renderBlock={renderBlock}
         renderGroupChrome={renderGroupChrome}
         renderGroupFooter={renderGroupFooter}
-        renderContextMenu={(context) => <DockMenu {...context} />}
+        renderContextMenu={(context) => {
+          // the menu also sets how this group shows its tabs: written to its MetaBlock meta, so it is saved and travels with it
+          const group = context.groupId ? workspace.groups.get(context.groupId) : undefined;
+          return (
+            <DockMenu
+              {...context}
+              tabs={group ? { value: styleOf(group), onChange: (next) => workspace.setGroupMeta(group.id, { tabs: next }) } : undefined}
+            />
+          );
+        }}
       />
       {brand ? <div className="ar-dock__brand">{brand}</div> : null}
       {!visible && hideKey ? <div className="ar-dock__hint">Press {hideKey.toUpperCase()} to show the interface</div> : null}

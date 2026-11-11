@@ -127,11 +127,12 @@ export function LayoutChapter() {
       <Spec
         id="tabs"
         wide
-        text="Tabs switch a panel between its views. A strip runs across under the header; with tabsPlacement side it becomes a rail down the panel's left, for a settings sheet or a panel with many views. Three looks: line, quiet words over a travelling bar; pill, a soft wash that travels under the current tab, with fill to share the width; icon, icons alone for a tool rail, each named by its tooltip. A tab can carry a count of what is in it or a dot when something wants a look, and with onClose every tab closes (Delete on the focused one). In a Dock, tabs right or left set to side turns that dock's panels into a rail too, each tab its icon and name, icons alone when the dock is narrow; the Physics dock above is one."
+        text="Tabs come in two kinds, built on the same MetaBlock. A group of panels has its own tabs, one per panel: here the left group wears a rail of lines, the center a strip of lines, the right a strip of pills, the bottom a strip of icons, and a panel dragged out floats with a rail. Right-click any tab and its menu's Tabs row switches that group between Top and Side, and Line, Pill and Icon; the layout keeps the choice and it goes with the group when it floats, docks or joins another. Inside a panel, Tabs switch its views: a strip under the header, a rail down the side with tabsPlacement side, pills that share the width, icons for a tool rail, a count or a dot on a tab, and closable tabs for documents."
         keys={[
           ['← → · ↑ ↓', 'move along the strip or the rail'],
           ['Home · End', 'the first or last tab'],
           ['Delete', 'close the focused tab (with onClose)'],
+          ['Right-click a tab', 'Tabs: Top · Side · Line · Pill · Icon for its group'],
         ]}
         code={`<Panel title="Inspector" tabs={
   <Tabs items={[{ value: 'object', label: 'Object', count: 4 }, { value: 'material', label: 'Material', dot: true }]}
@@ -146,7 +147,12 @@ export function LayoutChapter() {
 <Tabs variant="icon" orientation="vertical" items={[{ value: 'move', label: 'Move', icon: <Move /> }, …]} … />
 <Tabs items={openDocs} value={cur} onChange={setCur} onClose={close} />
 
-<Dock tabs={{ right: 'side' }} panels={[{ id: 'physics', title: 'Physics', icon: <Atom />, dock: 'right', … }]} />`}
+// a group's own tabs: seeded per dock, switched from any tab's menu, kept in the group's MetaBlock meta
+<Dock
+  tabs={{ left: 'side', right: { look: 'pill' }, bottom: { look: 'icon' }, float: { placement: 'side' } }}
+  panels={[{ id: 'settings', title: 'Settings', icon: <Gear />, dock: 'left', content: <Settings /> }, …]}
+/>
+api.workspace.setGroupMeta('dock.right', { tabs: { placement: 'side', look: 'line' } });`}
       >
         <TabsDemo />
       </Spec>

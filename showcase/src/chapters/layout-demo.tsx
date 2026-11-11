@@ -329,9 +329,8 @@ export function PanelDemo() {
             {api ? <EngineBar api={api} /> : null}
           </div>
         }
-        storageKey="artinos-showcase.layout.v2"
-        tabs={{ right: 'side' }}
-        sizes={{ left: 0.25, right: 0.3, bottom: 0.27 }}
+        storageKey="artinos-showcase.layout.v3"
+        sizes={{ left: 0.25, right: 0.27, bottom: 0.27 }}
         floatBounds={{ x: 330, y: 104, width: 290, height: 300 }}
         viewProps={{ padding: 10, gap: 8 }}
         onReady={setApi}

@@ -329,9 +329,10 @@ Switches a panel between its views. `items`, `value` / `defaultValue` / `onChang
 | tools picked by their glyph (move · rotate · scale · paint) | `variant="icon"` on a side rail; each named by its tooltip |
 | open documents | `onClose`: each tab closes, and Delete closes the focused one |
 
+- Tab names are hairline capitals in every look; a vertical rail is the strip turned 90°, names reading down it; an item's `icon` shows only with `variant="icon"`.
 - `count` on an item says how many things are in that view; `dot` that something in it wants a look (an unbaked change, a warning).
 - Arrow keys follow the orientation; Home and End jump to the ends; disabled tabs are skipped.
-- A dock's own panels can sit on a side rail too: `Dock tabs={{ right: 'side' }}`, each `DockPanel` with an `icon`.
+- A group of panels in a Dock has its own tabs, in the same looks: `Dock tabs={{ left: 'side', right: { look: 'pill' }, bottom: { look: 'icon' } }}`, each `DockPanel` with an `icon`. A rail of names for a dock of many panels (Scene · Camera · Light), a strip of lines for a few, pills for two or three modes, icons for a dock of tools. People change it from any tab's right-click menu (Tabs · Look), and the layout keeps it.
 
 ### ItemList · ItemGroup · ItemRow
 
@@ -548,7 +549,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Paragraphs stay narrow (`measure`, on by default), wrap evenly (`text-wrap: pretty`), and are start-aligned. Centre text only in an empty state.
 - A caption goes under what it describes, never above. A kicker goes above a title, never alone.
 - Long text is cut by the kit, never by hand: `truncate` for one line, `lines={2}` to clamp, and controls show the full text as a tooltip when cut. Give full names.
-- Sentence case everywhere ("Env intensity", "Export kit"), section names included; no capitals. No full stop after a label or a button.
+- Sentence case everywhere ("Env intensity", "Export kit"), section names included; no capitals except tab names, which the package sets in hairline capitals. No full stop after a label or a button.
 - Numbers carry their unit through `format` / `unit`, never typed into the label ("Gain −4.5 dB", not "Gain (dB)").
 
 ### Alignment
@@ -591,5 +592,5 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Every piece of text is a `Text` role or a component's own; from arm's length the panel name, a section name, a value and a label are told apart without reading them.
 - Section titles carry no icon; the figures that matter most are in a `StatStrip`; small facts are `Tag`s.
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
-- Sentence case everywhere, section names included; no capitals; no full stops on labels.
+- Sentence case everywhere, section names included; no capitals except tab names (hairline capitals, set by the package); no full stops on labels.
 - Look at it: take a screenshot and check the rules above before calling it done.

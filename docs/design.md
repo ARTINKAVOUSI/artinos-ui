@@ -137,7 +137,7 @@ Spacing does the grouping: about 48px and a hairline between the sections of a p
 
 - Lines stay short: `body` and `lead` stop at 64 characters on their own; never stretch a paragraph across a wide card.
 - Emphasis is rare: one `strong` per paragraph, one `mark` or `accent` per view.
-- Sentence case everywhere. No full stop after a label, a title or a button.
+- Sentence case everywhere, with one exception: **tab names are hairline capitals** (300, 12px, tracked 0.12em: the `--ar-tab-*` tokens), in every strip and rail, in a panel and in a workspace. No full stop after a label, a title or a button.
 
 ## Layout
 
@@ -153,7 +153,7 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 
 - **A panel is one thing wherever it sits, and every panel is a MetaBlock.** It can be dragged, floated, docked, joined to another as a tab, split beside it, maximized and sent home, unless its `capabilities` say otherwise. So panels live in a `Dock`: around a canvas (`viewport`), or, with no canvas, side by side on a page (`dock: 'center'` fills what the edge docks leave). A static card that cannot move is the exception, kept for a panel inside a page's flow of text.
 - **Write a panel once.** A `Panel` given as a `DockPanel`'s content becomes the pane: the tab carries its name and the pane its glass, and it keeps its subtitle, actions, tabs, side rail, sections and footer. The same `<Panel>` reads the same on a page and in a workspace.
-- **Tabs switch a panel's views.** Across the top by default; down the side (`tabsPlacement="side"`) for a settings sheet or many views; `variant="pill"` with `fill` for two to four views of the same thing; `variant="icon"` for a tool rail. A `count` says what is in a tab, a `dot` that it wants a look; `onClose` for open documents. A dock's own panels can sit on a side rail too (`Dock tabs={{ right: 'side' }}`, each panel with an `icon`).
+- **Tabs switch a panel's views, and are names, not icons.** Hairline capitals; a vertical rail is the strip turned 90° (names read down it, the lit line on the side facing the content); an icon shows only in the icon look. Across the top by default; down the side (`tabsPlacement="side"`) for a settings sheet or many views; `variant="pill"` with `fill` for two to four views of the same thing; `variant="icon"` for a tool rail. A `count` says what is in a tab, a `dot` that it wants a look; `onClose` for open documents. A group of panels has its own tabs in the same looks, set per dock (`Dock tabs`), changed from any tab's menu and kept with the layout; never put a panel's side rail beside its group's side rail.
 - **The workspace is not a level.** A `Dock` is only the place where panels are arranged around a canvas, and it remembers the arrangement (`storageKey`). It draws nothing of its own.
 - **Capabilities say how a panel may move:** `closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, all on by default. Set one `false` on the `DockPanel` and every drag, menu and window button follows it: `capabilities: { closable: false, floatable: false }` keeps a panel docked and open.
 - **Every move is a MetaBlock call.** `api.workspace` (from `onReady` or `useDock()`) is the engine: `floatBlock`, `dockBlock`, `maximizeBlock`, `returnBlock`, `undo`, `redo`, `serialize`. A drag calls the same methods.
@@ -194,7 +194,7 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 
 - `font-size`, `font-weight`, `font-family`, `letter-spacing`, `line-height` or a text `color` in app CSS for anything inside a theme scope. For a part of your own, take a whole role: `font: var(--ar-type-label); color: var(--ar-tone-label);` (also `-value`, `-section`, `-group`, `-panel`, `-note`).
 - A second type system on the same screen, a font that is not in the chosen system, or a display face on labels, values or paragraphs.
-- `text-transform: uppercase`, tracked capitals, or a monospace font on labels and numbers.
+- `text-transform: uppercase`, tracked capitals, or a monospace font on labels and numbers. (Tab names are the one place for capitals, and the package already sets them.)
 - A label typed with its unit ("Gain (dB)"). Use `format` / `unit`.
 - A title made from a bold `body`, or a hint made from a faded `label`. Use the role that exists.
 - Every number as a plain slider. Pick the kind from `catalogue.md`.

@@ -597,8 +597,11 @@ button.ar-section__trigger:focus-visible {
   gap: 6px;
   min-width: 0;
   padding: 10px 0 11px;
-  font: var(--ar-weight-medium) var(--ar-text-sm) / 18px var(--ar-font-ui);
-  color: var(--ar-tone-label);
+  /* hairline capitals (the tab tokens); a hairline name is set in the body ink so it never goes faint */
+  font: var(--ar-tab-weight, 300) var(--ar-tab-size, 12px) / 18px var(--ar-font-ui);
+  text-transform: var(--ar-tab-case, uppercase);
+  letter-spacing: var(--ar-tab-tracking, 0.12em);
+  color: var(--ar-tone-body);
   white-space: nowrap;
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -607,7 +610,7 @@ button.ar-section__trigger:focus-visible {
   justify-content: center;
 }
 .ar-tabs__tab:hover {
-  color: var(--ar-tone-body);
+  color: var(--ar-text-hi);
 }
 /* the ink and the marker say which: a bolder word would push its neighbours along on every switch */
 .ar-tabs__tab[aria-selected='true'] {
@@ -710,18 +713,30 @@ button.ar-section__trigger:focus-visible {
   padding: 0;
   border-radius: var(--ar-radius-control);
 }
+/* vertical is the strip turned 90°: the names run down the rail, 18 apart, the bar on the side
+   that faces the view, and no icons (the icon look keeps them) */
+.ar-tabs[data-orientation='vertical'][data-variant='line'] {
+  gap: 18px;
+}
+.ar-tabs[data-orientation='vertical']:not([data-variant='icon']) :is(.ar-tabs__tab, .ar-tabs__item) {
+  writing-mode: vertical-rl;
+}
 .ar-tabs[data-variant='line'][data-orientation='vertical'] .ar-tabs__tab {
-  padding: 7px 14px 7px 0;
+  padding: 0 11px 0 10px;
+}
+/* tabs are names: an item's icon shows only in the icon look */
+.ar-tabs:not([data-variant='icon']) .ar-tabs__icon {
+  display: none;
+}
+.ar-tabs[data-variant='pill'][data-orientation='vertical'] .ar-tabs__tab {
+  padding: 10px 5px;
 }
 .ar-tabs[data-orientation='vertical'] .ar-tabs__tab,
 .ar-tabs[data-orientation='vertical'] .ar-tabs__item {
-  width: 100%;
+  justify-content: flex-start;
 }
 .ar-tabs[data-orientation='vertical'][data-variant='icon'] .ar-tabs__tab {
   width: 30px;
-}
-.ar-tabs[data-orientation='vertical'] .ar-tabs__count {
-  margin-left: auto;
 }
 .ar-tabs:is([data-variant='pill'], [data-variant='icon']) .ar-tabs__tab:hover:not([aria-selected='true']) {
   background: var(--ar-bg-hover);

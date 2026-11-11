@@ -1247,6 +1247,15 @@ html::-webkit-scrollbar-thumb:hover {
   gap: 24px;
   align-items: start;
 }
+/* the Tabs demo: two workspaces, each under a quiet name */
+.sc-tabs-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sc-tabs-demo > .sc-workspace + * {
+  margin-top: 16px;
+}
 /* a material sphere drawn for a list thumbnail */
 .sc-sphere {
   display: block;

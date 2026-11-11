@@ -126,7 +126,7 @@ export type { Command, CommandPaletteProps } from './overlays/CommandPalette';
 export { Dock, TEAR_PREFIX, useDock } from './dock/Dock';
 export { createDockSections } from './dock/sections';
 export type { DockSections, DockSectionsOptions } from './dock/sections';
-export type { DockProps, DockPanel, DockApi, DockEdge } from './dock/Dock';
+export type { DockProps, DockPanel, DockApi, DockEdge, DockTabStyle } from './dock/Dock';
 export { PanelBar } from './dock/PanelBar';
 export { createParamPanes, ParamControl, ParamSection, paramShown } from './dock/params';
 export type { ChoiceParam, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamSectionProps, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';

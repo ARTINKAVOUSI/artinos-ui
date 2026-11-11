@@ -116,17 +116,19 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font: var(--ar-weight-regular) var(--ar-text-md)/var(--ar-leading-none) var(--ar-font-ui);
-  letter-spacing: var(--ar-track-text);
+  /* hairline capitals, the same tab tokens as a panel's own tabs */
+  font: var(--ar-tab-weight, 300) var(--ar-tab-size, 12px)/var(--ar-leading-none) var(--ar-font-ui);
+  text-transform: var(--ar-tab-case, uppercase);
+  letter-spacing: var(--ar-tab-tracking, 0.12em);
   white-space: nowrap;
-  color: var(--ar-tone-label);
+  color: var(--ar-tone-body);
   cursor: pointer;
   transition:
     color 130ms var(--ar-ease),
     border-color 130ms var(--ar-ease);
 }
 .ar-dock__tabs > button:hover {
-  color: var(--ar-tone-body);
+  color: var(--ar-text-hi);
 }
 .ar-dock__tabs > button.is-active {
   color: var(--ar-tone-title);
@@ -561,10 +563,11 @@
   transform: scale(1.1) rotate(-8deg);
 }
 
-/* ---------- a dock's tabs down its side ---------- */
-/* tabs={{ left: 'side' }}: the dock's panels become a rail along its outer edge (on the right for a
-   right dock), each tab its icon and name; when the dock is narrow, the icons alone. The panel's
-   own bar stays in the panel, and search sits at the rail's foot. */
+/* ---------- a group's tabs down its side: the strip turned 90° ---------- */
+/* placement 'side': the group's strip becomes a rail along its outer edge (on the right for a right
+   dock; on the left for the others and for a detached window). It is the same strip turned a
+   quarter: names run down it, tabs 18 apart, and the current tab's lit line stands on the side that
+   faces the content. No icons, unless the look is 'icon'. */
 .mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -594,13 +597,17 @@
 .mb-group:has(> .mb-group-chrome > .ar-dock__strip--side[data-edge='right']) > :is(.mb-group-body, .mb-group-footer) {
   grid-column: 1;
 }
+
+/* the rail: as wide as the strip is tall */
 .ar-dock__strip--side {
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
+  gap: 12px;
+  width: 36px;
   height: 100%;
   min-height: 0;
-  padding: 10px 6px;
+  padding: 14px 0 10px;
   border-bottom: 0;
   border-right: 1px solid var(--ar-line-subtle);
   /* the rail is as wide as its tabs: no size containment here */
@@ -613,34 +620,54 @@
 .ar-dock__strip--side .ar-dock__tabs {
   flex-direction: column;
   align-items: stretch;
-  gap: 2px;
+  gap: 18px;
+  width: 100%;
   height: auto;
   max-width: none;
+  min-height: 0;
   overflow: hidden auto;
 }
+/* a tab: the horizontal tab turned, its name reading down the rail */
 .ar-dock__strip--side .ar-dock__tabs > button {
-  display: flex;
+  writing-mode: vertical-rl;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
-  height: 30px;
-  min-width: 0;
-  max-width: 132px;
-  padding: 0 10px 0 8px;
-  border-radius: var(--ar-radius-control);
-  box-shadow: none;
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  padding: 0;
 }
-.ar-dock__strip--side .ar-dock__tabs > button::after {
+.ar-dock__strip--side .ar-dock__tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* no icons on a rail: the names carry it, as on the strip */
+.ar-dock__strip--side .ar-dock__tabs:not([data-look='icon']) .ar-dock__tab-icon {
   display: none;
 }
-.ar-dock__strip--side .ar-dock__tabs > button:hover:not(.is-active) {
-  background: var(--ar-bg-hover);
+/* the lit line, turned: it stands on the side that faces the content, drawing out from its centre */
+.ar-dock__strip--side .ar-dock__tabs[data-look='line'] > button::after {
+  top: 0;
+  bottom: 0;
+  left: auto;
+  right: 0;
+  width: 1.5px;
+  height: auto;
+  transform: scaleY(0);
 }
-.ar-dock__strip--side .ar-dock__tabs > button.is-active {
-  background: var(--ar-bg-active);
-  box-shadow: inset 2px 0 0 var(--ar-signal);
+.ar-dock__strip--side[data-edge='right'] .ar-dock__tabs[data-look='line'] > button::after {
+  right: auto;
+  left: 0;
 }
-.ar-dock__strip--side[data-edge='right'] .ar-dock__tabs > button.is-active {
-  box-shadow: inset -2px 0 0 var(--ar-signal);
+.ar-dock__strip--side .ar-dock__tabs[data-look='line'] > button.is-active::after {
+  transform: none;
+}
+.ar-dock__strip--side .ar-dock__tabs > button:focus-visible {
+  background: linear-gradient(to left, var(--ar-focus-lift), transparent 75%);
+}
+.ar-dock__strip--side[data-edge='right'] .ar-dock__tabs > button:focus-visible {
+  background: linear-gradient(to right, var(--ar-focus-lift), transparent 75%);
 }
 .ar-dock__tab-icon {
   display: grid;
@@ -657,29 +684,67 @@
   font: var(--ar-weight-title) 12px / 16px var(--ar-font-ui);
   color: var(--ar-tone-title);
 }
-.ar-dock__strip--side .ar-dock__tab-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+/* the rail's foot: search on a dock, the window controls on a detached panel */
+.ar-dock__rail-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 .ar-dock__search--rail {
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   padding: 0;
+}
+
+/* ---------- a group's tab looks: line (default) · pill · icon, on a strip or a rail ---------- */
+/* pill: the current tab on a soft wash, no underline */
+.ar-dock__tabs:is([data-look='pill'], [data-look='icon']) {
+  gap: 2px;
+  align-items: center;
+}
+.ar-dock__tabs[data-look='pill'] > button,
+.ar-dock__tabs[data-look='icon'] > button {
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--ar-radius-control);
+}
+.ar-dock__tabs:is([data-look='pill'], [data-look='icon']) > button::after {
+  display: none;
+}
+.ar-dock__tabs:is([data-look='pill'], [data-look='icon']) > button:hover:not(.is-active) {
+  background: var(--ar-bg-hover);
+}
+.ar-dock__tabs:is([data-look='pill'], [data-look='icon']) > button.is-active {
+  background: var(--ar-bg-active);
+  box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
+}
+/* a pill on a rail: the same plate turned */
+.ar-dock__strip--side .ar-dock__tabs[data-look='pill'] > button {
+  width: 26px;
+  height: auto;
+  padding: 10px 0;
   align-self: center;
 }
-/* a narrow dock: the rail keeps the icons alone, each tab named by its tooltip */
-.mb-group:has(> .mb-group-chrome > .ar-dock__strip--side) {
-  container: ar-dock-group / inline-size;
+/* icon: the mark alone; the name is its tooltip and its accessible name */
+.ar-dock__tabs[data-look='icon'] > button {
+  justify-content: center;
+  width: 28px;
+  padding: 0;
 }
-@container ar-dock-group (max-width: 320px) {
-  .ar-dock__strip--side .ar-dock__tab-label {
-    display: none;
-  }
-  .ar-dock__strip--side .ar-dock__tabs > button {
-    justify-content: center;
-    width: 30px;
-    padding: 0;
-  }
+.ar-dock__tabs[data-look='icon'] .ar-dock__tab-label {
+  display: none;
+}
+.ar-dock__strip--side .ar-dock__tabs[data-look='icon'] > button {
+  writing-mode: horizontal-tb;
+  width: 28px;
+  height: 28px;
+  align-self: center;
+}
+/* the menu's Tabs and Look rows: the current choice lit */
+.ar-dock-menu__chip[data-active] {
+  color: var(--ar-text-hi);
+  background: var(--ar-bg-active);
+  box-shadow: inset 0 0 0 1px var(--ar-signal-line);
 }

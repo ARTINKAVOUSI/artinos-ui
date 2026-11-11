@@ -1,4 +1,5 @@
 import { useEffect, useRef, type KeyboardEvent, type ReactNode } from 'react';
+import type { DockTabStyle } from './Dock';
 import type { MetaBlockContextMenuItem, MetaBlockContextMenuRenderContext } from './metablock/WorkspaceView';
 import { DockIcons as Icons } from './icons';
 
@@ -59,7 +60,22 @@ const PLACEMENT_ROWS: Array<{ label: string; kinds: Placement[] }> = [
  * diagrams, actions into icon rows and attach targets into chips, so twelve
  * text rows become four compact lines.
  */
-export function DockMenu({ model, close }: MetaBlockContextMenuRenderContext) {
+export interface DockMenuProps extends MetaBlockContextMenuRenderContext {
+  /** How the group shows its tabs, and how to change it: a Tabs row of placement and look. */
+  tabs?: { value: DockTabStyle; onChange: (next: DockTabStyle) => void };
+}
+
+const TAB_PLACEMENTS: Array<[DockTabStyle['placement'], string]> = [
+  ['top', 'Top'],
+  ['side', 'Side'],
+];
+const TAB_LOOKS: Array<[DockTabStyle['look'], string]> = [
+  ['line', 'Line'],
+  ['pill', 'Pill'],
+  ['icon', 'Icon'],
+];
+
+export function DockMenu({ model, close, tabs }: DockMenuProps) {
   const root = useRef<HTMLDivElement>(null);
   const items = model.sections.flatMap((section) => section.items);
   const placements = items.flatMap((item) => {
@@ -183,6 +199,51 @@ export function DockMenu({ model, close }: MetaBlockContextMenuRenderContext) {
           </div>
         </div>
       )}
+
+      {tabs ? (
+        <>
+          <div className="ar-dock-menu__attach ar-dock-menu__tabs">
+            <span className="ar-dock-menu__label">Tabs</span>
+            <div className="ar-dock-menu__chips">
+              {TAB_PLACEMENTS.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                role="menuitemradio"
+                aria-checked={tabs.value.placement === value}
+                data-item
+                data-active={tabs.value.placement === value || undefined}
+                className="ar-dock-menu__chip"
+                title={value === 'side' ? 'Tabs in a rail down the side' : 'Tabs in a strip along the top'}
+                onClick={() => tabs.onChange({ ...tabs.value, placement: value })}
+              >
+                {label}
+              </button>
+            ))}
+            </div>
+          </div>
+          <div className="ar-dock-menu__attach ar-dock-menu__tabs">
+            <span className="ar-dock-menu__label">Look</span>
+            <div className="ar-dock-menu__chips">
+              {TAB_LOOKS.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                role="menuitemradio"
+                aria-checked={tabs.value.look === value}
+                data-item
+                data-active={tabs.value.look === value || undefined}
+                className="ar-dock-menu__chip"
+                title={value === 'icon' ? 'Icons alone, named by their tooltips' : value === 'pill' ? 'The current tab on a soft wash' : 'Names over a lit underline'}
+                onClick={() => tabs.onChange({ ...tabs.value, look: value })}
+              >
+                {label}
+              </button>
+            ))}
+            </div>
+          </div>
+        </>
+      ) : null}
 
       {danger.map((item) => (
         <button

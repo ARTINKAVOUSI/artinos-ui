@@ -106,6 +106,9 @@ export interface MetaBlockContextMenuRenderContext {
   y: number;
   model: MetaBlockContextMenuModel;
   close: () => void;
+  /** The group the menu was opened on, and the block (its tab) when opened on one. */
+  groupId?: string;
+  blockId?: string | null;
 }
 
 export interface MetaBlockWorkspaceViewProps {
@@ -367,6 +370,20 @@ export function MetaBlockWorkspaceView({
     const b = rootRef.current?.getBoundingClientRect();
     return { x: clientX - (b?.left ?? 0), y: clientY - (b?.top ?? 0) };
   }
+  /** Only what is on top can take a drop: when the pointer is over a floating window (the highest one,
+   *  not the one being dragged), only candidates for that window count; docks and windows beneath it
+   *  never win through it. */
+  function onTop(candidates: DockCandidate[], p: { x: number; y: number }, excludeId: string | null): DockCandidate[] {
+    let top: { id: string; z: number } | null = null;
+    for (const g of workspace.groups.values()) {
+      if (g.id === excludeId || g.posture !== 'floating') continue;
+      const r = getRectForGroup(g.id);
+      if (!r || p.x < r.x || p.x > r.x + r.width || p.y < r.y || p.y > r.y + r.height) continue;
+      const z = workspace.floating.get(g.id)?.z ?? 0;
+      if (!top || z >= top.z) top = { id: g.id, z };
+    }
+    return top ? candidates.filter((c) => c.targetId === top!.id) : candidates;
+  }
   function getRectForGroup(groupId: string): Rect | null {
     const group = workspace.groups.get(groupId);
     if (!group || (group.meta?.visible ?? true) === false || group.posture === 'popout') return null;
@@ -458,7 +475,9 @@ export function MetaBlockWorkspaceView({
           canSplitSource = isSource && g.children.length > 1 && g.capabilities.splittable !== false;
         return {
           id: g.id,
-          mergeOnly: !canSplitSource && (isSource || isHome || isDock),
+          // a panel splits beside any group, a dock included; only its own group, when the panel is all
+          // it holds, takes it back as a tab alone (splitting a group from itself means nothing)
+          mergeOnly: isSource && !canSplitSource,
           priority: canSplitSource ? 0.18 : isHome ? 0.16 : isDock ? 0.1 : 0,
           relation: isSource ? 'source' : isHome ? 'home' : isDock ? 'dock' : 'group',
           mergeIntent: isSource ? 'KEEP AS TAB' : isHome ? 'ATTACH BACK TO PARENT' : isDock ? 'ATTACH TO DOCK' : 'GROUP / MERGE',
@@ -467,6 +486,31 @@ export function MetaBlockWorkspaceView({
       })
       .filter(Boolean) as Array<{ id: string; mergeOnly?: boolean; priority?: number; relation?: string; mergeIntent?: string; rect: any }>;
   };
+  /** Show `incoming` beside the group's current block inside one group: it joins the group if it is
+   *  not in it yet, and the group lists its split blocks in order (left/top first) along one axis. */
+  const splitInside = (targetId: string, incoming: string, area?: string) => {
+    const before = workspace.groups.get(targetId);
+    if (!before) return;
+    const anchorBefore = before.activeChild && before.activeChild !== incoming ? before.activeChild : null;
+    if (!before.children.includes(incoming)) workspace.mergeBlock(incoming, targetId);
+    const target = workspace.groups.get(targetId);
+    if (!target) return;
+    const current = (Array.isArray(target.meta?.splitChildren) ? target.meta.splitChildren : []).filter(
+        (id: string) => target.children.includes(id) && id !== incoming,
+      ),
+      anchor = anchorBefore ?? target.children.find((id) => id !== incoming),
+      base = current.length ? current : anchor ? [anchor] : [],
+      first = area === 'left' || area === 'top',
+      at = Math.max(0, anchor ? base.indexOf(anchor) : -1),
+      order = first ? [...base.slice(0, at), incoming, ...base.slice(at)] : [...base.slice(0, at + 1), incoming, ...base.slice(at + 1)];
+    workspace.setGroupMeta(targetId, {
+      splitChildren: [...new Set(order)],
+      splitAxis: area === 'top' || area === 'bottom' ? 'vertical' : 'horizontal',
+    });
+    workspace.activateBlock(anchor ?? incoming);
+  };
+  /** Docked groups split in the layout; anything else (floating, maximized) splits inside itself. */
+  const splitsInside = (targetId: string) => workspace.groups.get(targetId)?.posture !== 'docked';
   const previewFor = (candidate: DockCandidate | null) =>
     candidate
       ? resolveDockPreviewRect(candidate, {
@@ -554,7 +598,7 @@ export function MetaBlockWorkspaceView({
     x = snapped.x;
     y = snapped.y;
     d.currentRect = rect(x, y, width, height);
-    const candidates = event.altKey
+    const reachable = event.altKey
       ? []
       : resolveDockCandidates(p, {
           workspaceRect: {
@@ -569,6 +613,7 @@ export function MetaBlockWorkspaceView({
           radius: dockRadius,
           velocity,
         });
+    const candidates = onTop(reachable, p, group.id);
     d.rawCandidate = chooseDockCandidate(candidates, d.rawCandidate, { hysteresis });
     d.candidate = d.rawCandidate && d.rawCandidate.strength >= previewStrength ? d.rawCandidate : null;
     const relation = d.rawCandidate?.relation,
@@ -617,7 +662,12 @@ export function MetaBlockWorkspaceView({
     if (!d.started) return;
     if (c && liveDocking) {
       if (c.kind === 'workspace-edge') workspace.dockGroup(d.groupId, { area: c.area ?? 'right', size: dockRatio });
-      else if (c.kind === 'split' && c.targetId) workspace.splitGroup(d.groupId, c.targetId, c.area ?? 'right', splitRatio);
+      else if (c.kind === 'split' && c.targetId && splitsInside(c.targetId)) {
+        const source = workspace.groups.get(d.groupId),
+          lead = source?.activeChild ?? source?.children[0];
+        workspace.mergeGroups(d.groupId, c.targetId);
+        if (lead) splitInside(c.targetId, lead, c.area);
+      } else if (c.kind === 'split' && c.targetId) workspace.splitGroup(d.groupId, c.targetId, c.area ?? 'right', splitRatio);
       else if (c.kind === 'merge' && c.targetId) {
         const source = workspace.groups.get(d.groupId),
           single = source?.children.length === 1 ? source.children[0] : null,
@@ -747,7 +797,7 @@ export function MetaBlockWorkspaceView({
       const snapThreshold = velocity > 1100 ? 0 : velocity > 650 ? snap * 0.35 : snap;
       const snapped = snapRect(proposed, { workspaceRect, peers: peerRects(d.sourceGroupId), threshold: snapThreshold });
       d.ghost = rect(snapped.x, snapped.y, proposed.width, proposed.height);
-      const candidates = event.altKey
+      const reachable = event.altKey
         ? []
         : resolveDockCandidates(p, {
             workspaceRect: {
@@ -762,6 +812,7 @@ export function MetaBlockWorkspaceView({
             radius: dockRadius,
             velocity,
           });
+      const candidates = onTop(reachable, p, null);
       d.rawCandidate = chooseDockCandidate(candidates, d.rawCandidate, { hysteresis });
       d.candidate = d.rawCandidate && d.rawCandidate.strength >= previewStrength ? d.rawCandidate : null;
       const relation = d.rawCandidate?.relation,
@@ -845,23 +896,8 @@ export function MetaBlockWorkspaceView({
             if (home?.sourceGroupId === c.targetId) workspace.returnBlock(blockId);
             else workspace.mergeBlock(blockId, c.targetId);
           }
-        } else if (c.kind === 'split' && c.targetId === d.sourceGroupId) {
-          const source = workspace.groups.get(d.sourceGroupId);
-          if (source) {
-            const current = (Array.isArray(source.meta?.splitChildren) ? source.meta.splitChildren : []).filter(
-                (id: string) => source.children.includes(id) && id !== blockId,
-              ),
-              anchor = source.activeChild !== blockId && source.activeChild ? source.activeChild : source.children.find((id) => id !== blockId),
-              base = current.length ? current : anchor ? [anchor] : [],
-              before = c.area === 'left' || c.area === 'top',
-              at = Math.max(0, anchor ? base.indexOf(anchor) : -1),
-              splitChildren = before ? [...base.slice(0, at), blockId, ...base.slice(at)] : [...base.slice(0, at + 1), blockId, ...base.slice(at + 1)];
-            workspace.setGroupMeta(source.id, {
-              splitChildren: [...new Set(splitChildren)],
-              splitAxis: c.area === 'top' || c.area === 'bottom' ? 'vertical' : 'horizontal',
-            });
-            workspace.activateBlock(anchor ?? blockId);
-          }
+        } else if (c.kind === 'split' && c.targetId && (c.targetId === d.sourceGroupId || splitsInside(c.targetId))) {
+          splitInside(c.targetId, blockId, c.area);
         } else if (c.kind === 'split' && c.targetId) workspace.splitBlock(blockId, c.targetId, c.area ?? 'right', splitRatio);
         else if (c.kind === 'workspace-edge') workspace.dockBlock(blockId, { area: c.area ?? 'right', size: dockRatio });
         workspace.activateBlock(
@@ -1569,7 +1605,7 @@ export function MetaBlockWorkspaceView({
           onContextMenu={(e) => e.preventDefault()}
         >
           {renderContextMenu ? (
-            renderContextMenu({ x: contextMenu.x, y: contextMenu.y, model: contextModel, close: () => setContextMenu(null) })
+            renderContextMenu({ x: contextMenu.x, y: contextMenu.y, model: contextModel, close: () => setContextMenu(null), groupId: contextMenu.groupId, blockId: contextMenu.blockId })
           ) : (
             <div className="mb-context-menu" role="menu">
               <div className="mb-context-head">
