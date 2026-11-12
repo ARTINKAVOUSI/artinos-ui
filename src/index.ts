@@ -129,7 +129,7 @@ export type { DockSections, DockSectionsOptions } from './dock/sections';
 export type { DockProps, DockPanel, DockApi, DockEdge, DockTabStyle } from './dock/Dock';
 export { PanelBar } from './dock/PanelBar';
 export { createParamPanes, ParamControl, ParamSection, paramShown } from './dock/params';
-export type { ChoiceParam, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamSectionProps, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';
+export type { ChoiceParam, ColorParam, TextParam, Vector3Param, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamSectionProps, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';
 export { DockMenu } from './dock/DockMenu';
 export { MetaBlockWorkspace, defaultCapabilities } from './dock/metablock/workspace';
 export { MetaBlockWorkspaceView } from './dock/metablock/WorkspaceView';
@@ -138,6 +138,12 @@ export { MetaBlockBody, MetaBlockEmpty } from './dock/metablock/BlockBody';
 export type { MetaBlockBodyProps } from './dock/metablock/BlockBody';
 export { useWorkspaceRevision } from './dock/metablock/hooks';
 export * from './dock/metablock/types';
+
+// inspector: optional schema-driven property editor (standalone or docked)
+export { Inspector } from './inspector/Inspector';
+export type { InspectorProps } from './inspector/Inspector';
+export { createInspectorStore } from './inspector/store';
+export type { InspectorStore } from './inspector/store';
 
 // graph: the node editor and the live graph view
 export { NodeGraph } from './graph/NodeGraph';
