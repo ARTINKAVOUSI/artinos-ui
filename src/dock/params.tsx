@@ -2,6 +2,10 @@
 import { useSyncExternalStore } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { Button } from '../actions/Button';
+import { ColorField } from '../controls/ColorField';
+import { TextField } from '../controls/TextField';
+import { Vector3Field } from '../rig/Vector3Field';
+import type { Vec3 } from '../rig/math';
 import { Segmented } from '../controls/Segmented';
 import { Select } from '../controls/Select';
 import { Switch } from '../controls/Switch';
@@ -16,7 +20,7 @@ import { createDockSections } from './sections';
    control its kind calls for, every group its count, reset and on/off, and the groups sit in
    dock panes that trade sections and tear off. An app writes no control code of its own. */
 
-export type ParamValue = number | string | boolean;
+export type ParamValue = number | string | boolean | Vec3;
 export type ParamValues = Record<string, ParamValue>;
 
 /** How a number reads: plain, a share shown in %, signed around 0, a count, a rate over decades, an angle. */
@@ -37,7 +41,16 @@ interface ParamBase {
 export type NumberParam = ParamBase & { kind: 'number'; default: number; min: number; max: number; step: number; unit?: string; face?: NumberFace };
 export type ChoiceParam = ParamBase & { kind: 'choice'; default: string; options: readonly { value: string; label: string }[] };
 export type ToggleParam = ParamBase & { kind: 'toggle'; default: boolean };
-export type Param = NumberParam | ChoiceParam | ToggleParam;
+export type TextParam = ParamBase & { kind: 'text'; default: string; placeholder?: string; multiline?: boolean };
+export type ColorParam = ParamBase & { kind: 'color'; default: string; alpha?: boolean };
+export type Vector3Param = ParamBase & { kind: 'vector3'; default: Vec3; min?: number; max?: number; step?: number; decimals?: number; unit?: string };
+export type Param = NumberParam | ChoiceParam | ToggleParam | TextParam | ColorParam | Vector3Param;
+
+export function paramValueEquals(a: ParamValue | undefined, b: ParamValue | undefined): boolean {
+  if (Array.isArray(a) || Array.isArray(b))
+    return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => v === b[i]);
+  return a === b;
+}
 
 export interface ParamGroup {
   id: string;
@@ -80,6 +93,9 @@ export function ParamControl({ param: p, value, onChange }: { param: Param; valu
       <Select label={p.label} options={options} value={String(value)} onChange={(v) => onChange(String(v))} appearance="well" />
     );
   }
+  if (p.kind === 'text') return <TextField label={p.label} value={String(value)} placeholder={p.placeholder} multiline={p.multiline} onChange={onChange} />;
+  if (p.kind === 'color') return <ColorField label={p.label} value={String(value)} alpha={p.alpha} onChange={onChange} />;
+  if (p.kind === 'vector3') return <Vector3Field label={p.label} value={value as Vec3} min={p.min} max={p.max} step={p.step} decimals={p.decimals} unit={p.unit} onChange={onChange} />;
   const face = p.face ?? 'plain';
   const decimals = p.step >= 1 ? 0 : p.step >= 0.1 ? 1 : p.step >= 0.01 ? 2 : 3;
   const span = (p.max - p.min) / p.step;
@@ -112,16 +128,18 @@ export interface ParamSectionProps {
   advanced?: boolean;
   /** Keys never drawn as rows (an app may put one in its own toolbar, such as a pause). */
   hide?: readonly string[];
+  /** Filter displayed rows without excluding properties from group reset. */
+  visibleKeys?: readonly string[];
   /** Remembers the group open or closed across visits under this key + the group's id. */
   storageKey?: string;
 }
 
 /** One group of parameters as a Section: count, reset while anything differs from its default, and the
  *  group's own on/off when a toggle owns it. */
-export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], storageKey }: ParamSectionProps) {
+export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], visibleKeys, storageKey }: ParamSectionProps) {
   const mine = params.filter((p) => p.group === g.id && !hide.includes(p.key));
-  const rows = mine.filter((p) => p.key !== g.switch && (advanced || !p.advanced) && paramShown(p, values));
-  const changed = mine.filter((p) => values[p.key] !== undefined && values[p.key] !== p.default);
+  const rows = mine.filter((p) => p.key !== g.switch && (advanced || !p.advanced) && paramShown(p, values) && (!visibleKeys || visibleKeys.includes(p.key)));
+  const changed = mine.filter((p) => values[p.key] !== undefined && !paramValueEquals(values[p.key], p.default));
   const owner = g.switch ? params.find((p) => p.key === g.switch) : undefined;
   const switchable = owner ? { enabled: Boolean(values[owner.key]), onEnabledChange: (on: boolean) => onChange(owner.key, on) } : {};
   return (
@@ -134,12 +152,13 @@ export function ParamSection({ group: g, params, values, onChange, advanced = fa
       onReset={() => changed.forEach((p) => onChange(p.key, p.default))}
       storageKey={storageKey ? `${storageKey}.${g.id}` : undefined}
       defaultOpen={g.open ?? false}
+      collapsible
       {...switchable}
     >
       {rows.map((p) => {
         const value = values[p.key] ?? p.default;
         return (
-          <PropertyRow key={p.key} label={p.label} modified={value !== p.default} onReset={() => onChange(p.key, p.default)}>
+          <PropertyRow key={p.key} label={p.label} density={p.kind === 'text' || p.kind === 'vector3' ? 'compact' : 'default'} modified={!paramValueEquals(value, p.default)} onReset={() => onChange(p.key, p.default)}>
             <ParamControl param={p} value={value} onChange={(v) => onChange(p.key, v)} />
           </PropertyRow>
         );
@@ -210,7 +229,7 @@ export function createParamPanes({ params, groups, panes, store, storageKey, hid
     const values = useValues();
     const on = useAdvanced();
     const held = new Set(panes[id] ?? []);
-    const changed = params.filter((p) => held.has(p.group) && !hide.includes(p.key) && values[p.key] !== undefined && values[p.key] !== p.default);
+    const changed = params.filter((p) => held.has(p.group) && !hide.includes(p.key) && values[p.key] !== undefined && !paramValueEquals(values[p.key], p.default));
     return (
       <>
         <PanelBar>

@@ -5,6 +5,7 @@ import { Chapter, Spec } from '../shared';
 import { PanelDemo, PartsDemo, SectionDemo } from './layout-demo';
 import { ListsDemo } from './lists-demo';
 import { TabsDemo } from './tabs-demo';
+import { InspectorDemo } from './inspector-demo';
 
 /** What each level owns, prop by prop. */
 const REFERENCE: { level: string; parts: string; owns: string; props: [string, string][] }[] = [
@@ -198,6 +199,16 @@ api.workspace.setGroupMeta('dock.right', { tabs: { placement: 'side', look: 'lin
 </Section>`}
       >
         <PartsDemo />
+      </Spec>
+
+      <Spec
+        id="inspector"
+        text="A full control editor built from the same ARTINOS parts. Define parameters as data, bind them to an external store, search by property or group, reveal advanced settings and reset edits. Use it on its own or put it into a Dock pane. Pick Inspector in Export kit only when needed."
+        code={`const store = createInspectorStore(params);
+<Inspector title="Properties" groups={groups} params={params} store={store} searchable advancedToggle storageKey="scene.properties" />
+// Engine changes appear live: store.set('viscosity', 0.45)`}
+      >
+        <InspectorDemo />
       </Spec>
 
       <Spec

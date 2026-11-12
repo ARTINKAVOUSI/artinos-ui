@@ -21,6 +21,7 @@
 @import './display/display.css';
 @import './layout/layout.css';
 @import './layout/PropertyRow.css';
+@import './inspector/inspector.css';
 @import './layout/ItemRow.css';
 @import './layout/Text.css';
 @import './layout/Callout.css';

@@ -190,3 +190,8 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 - **Double-click on a slider body** toggles it off, keeping its value. Pass `toggleable={false}` where that must never happen.
 - **Everything is a plain slider.** Frequencies without `mapping="log"`, focal lengths that aren't rulers, white balance that isn't a gradient, counts that aren't stepped, intervals as two sliders. Go back through `references/catalogue.md`'s checklist.
 - **Browsers.** The CSS needs `@property`, `color-mix()`, `:has()` and `backdrop-filter`, which every evergreen browser has.
+
+
+### Optional Inspector
+
+When the user wants a Leva/Tweakpane-style settings editor, select the `Inspector` kit component. It composes existing `Panel`, `Section`, `PropertyRow`, `ParamControl` and controls; do not create another control design. Use `createInspectorStore` for simple cases, or an app-provided `ParamStore` for real-time simulations. Keep the store instance stable. Use `createParamPanes` if the sections themselves must move or tear off independently. See `docs/components.md`.

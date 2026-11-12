@@ -591,3 +591,39 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
 - Evergreen browsers: the CSS uses `@property`, `color-mix()`, `:has()` and `backdrop-filter`.
 - No permanent animation loop. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
 - Respects `prefers-reduced-motion`.
+
+
+## Optional Inspector — Leva/Tweakpane-style property editor
+
+The `Inspector` component assembles existing ARTINOS UI controls into a searchable, grouped parameter editor. It supports live bidirectional values, precision numeric sliders, segmented/select choices, switches, text, color and 3D vectors, section folding, advanced-only properties and per-property/group/global reset. It does not depend on Leva or Tweakpane.
+
+Choose `--components Inspector` when setting up or exporting a kit. It can sit on a page or inside a `Dock` pane and preserves the library's theme, density and material system.
+
+```tsx
+import { Inspector, createInspectorStore } from './artinos-ui';
+import type { Param, ParamGroup } from './artinos-ui';
+
+const groups: ParamGroup[] = [
+  { id: 'physics', title: 'Physics', open: true },
+  { id: 'surface', title: 'Surface', open: true },
+];
+const params: Param[] = [
+  { key: 'viscosity', group: 'physics', label: 'Viscosity', kind: 'number', default: 0.3, min: 0, max: 1, step: 0.01 },
+  { key: 'active', group: 'physics', label: 'Active', kind: 'toggle', default: true },
+  { key: 'name', group: 'surface', label: 'Name', kind: 'text', default: 'Blobby' },
+  { key: 'tint', group: 'surface', label: 'Tint', kind: 'color', default: '#35CDBF' },
+  { key: 'position', group: 'surface', label: 'Position', kind: 'vector3', default: [0, 0, 0], step: 0.1 },
+];
+const store = createInspectorStore(params);
+export function Properties() {
+  return <Inspector title="Properties" groups={groups} params={params} store={store} />;
+}
+```
+
+Create the store once (outside render or with stable memoization). App and engine code can call `store.get()`, `store.set(key, value)`, `store.patch(values)`, and `store.reset(keys?)`. Use an existing `ParamStore` instead to bind directly to another engine. Stores must return stable immutable snapshots between changes.
+
+Inspector props: `params`, `groups`, `store` (required); `title`, `subtitle`, `toolbar`, `searchable`, `advancedToggle`, `defaultAdvanced`, `storageKey`, `hide`, `maxHeight`, `variant`, `className`, `emptyMessage` (optional).
+
+Additional schema types shared with `createParamPanes`: `text` (string; optional multiline/placeholder), `color` (hex string; optional alpha), `vector3` ([x,y,z]; optional min/max/step/decimals/unit). As with other schema fields, `advanced` and `when` are supported. This is a composed control inspector; use `createParamPanes` when you want parameter sections to move independently between dock panes.
+
+`ParamSection` always supports folding; `group.open` sets its initial state without requiring `storageKey`. Its optional `visibleKeys` filters displayed rows only: group reset includes search-filtered, advanced and conditionally hidden properties. `hide` excludes properties from both display and group reset. Inspector uses these rules for search and resets. Undefined values in store initialization or patches are ignored.
