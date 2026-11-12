@@ -1,5 +1,7 @@
 'use client';
 import { useMemo, useState, useSyncExternalStore } from 'react';
+// Ensure the kit builder includes the store when Inspector is selected.
+export { createInspectorStore } from './store';
 import type { ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { TextField } from '../controls/TextField';
