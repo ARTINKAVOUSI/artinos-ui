@@ -57,6 +57,7 @@ export const COMPONENTS = [
   { group: 'Dock', id: 'Dock', label: 'Dock', file: 'dock/Dock.tsx', note: 'studio workspace: docks, tabs, floating panels' },
   { group: 'Dock', id: 'DockSections', label: 'createDockSections', file: 'dock/sections.tsx', note: 'sections that move between panes and tear off into panels' },
   { group: 'Dock', id: 'Params', label: 'createParamPanes · ParamSection · ParamControl', file: 'dock/params.tsx', note: 'settings from a schema: the right control per value, groups, dockable panes' },
+  { group: 'Inspector', id: 'Inspector', label: 'Inspector · createInspectorStore', file: 'inspector/Inspector.tsx', note: 'optional searchable property editor: groups, advanced, reset, colour, vector and text' },
   { group: 'Dock', id: 'MetaBlock', label: 'MetaBlock engine', file: 'dock/metablock/WorkspaceView.tsx', note: 'the docking engine alone' },
   { group: 'Graph', id: 'NodeGraph', label: 'NodeGraph', file: 'graph/NodeGraph.tsx', note: 'node editor' },
   { group: 'Graph', id: 'LiveGraphView', label: 'LiveGraphView', file: 'graph/LiveGraphView.tsx', note: 'read-only live graph' },
