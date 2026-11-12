@@ -1,0 +1,6 @@
+/* ARTINOS Inspector — a composed editor, never a second control design. */
+.ar-inspector { min-width: 0; }
+.ar-inspector__bar { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 4px 8px; }
+.ar-inspector__bar .ar-inspector__search { flex: 1 1 130px; min-width: 112px; max-width: 100%; }
+.ar-inspector__sections { min-width: 0; }
+.ar-inspector__empty { margin: 0; padding: 18px 12px; color: var(--ar-ink-quiet, var(--ar-ink)); font: inherit; text-align: center; opacity: .7; }
