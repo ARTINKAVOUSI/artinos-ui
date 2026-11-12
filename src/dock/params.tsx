@@ -128,15 +128,17 @@ export interface ParamSectionProps {
   advanced?: boolean;
   /** Keys never drawn as rows (an app may put one in its own toolbar, such as a pause). */
   hide?: readonly string[];
+  /** Filter displayed rows without excluding properties from group reset. */
+  visibleKeys?: readonly string[];
   /** Remembers the group open or closed across visits under this key + the group's id. */
   storageKey?: string;
 }
 
 /** One group of parameters as a Section: count, reset while anything differs from its default, and the
  *  group's own on/off when a toggle owns it. */
-export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], storageKey }: ParamSectionProps) {
+export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], visibleKeys, storageKey }: ParamSectionProps) {
   const mine = params.filter((p) => p.group === g.id && !hide.includes(p.key));
-  const rows = mine.filter((p) => p.key !== g.switch && (advanced || !p.advanced) && paramShown(p, values));
+  const rows = mine.filter((p) => p.key !== g.switch && (advanced || !p.advanced) && paramShown(p, values) && (!visibleKeys || visibleKeys.includes(p.key)));
   const changed = mine.filter((p) => values[p.key] !== undefined && !paramValueEquals(values[p.key], p.default));
   const owner = g.switch ? params.find((p) => p.key === g.switch) : undefined;
   const switchable = owner ? { enabled: Boolean(values[owner.key]), onEnabledChange: (on: boolean) => onChange(owner.key, on) } : {};
@@ -150,6 +152,7 @@ export function ParamSection({ group: g, params, values, onChange, advanced = fa
       onReset={() => changed.forEach((p) => onChange(p.key, p.default))}
       storageKey={storageKey ? `${storageKey}.${g.id}` : undefined}
       defaultOpen={g.open ?? false}
+      collapsible
       {...switchable}
     >
       {rows.map((p) => {

@@ -625,3 +625,5 @@ Create the store once (outside render or with stable memoization). App and engin
 Inspector props: `params`, `groups`, `store` (required); `title`, `subtitle`, `toolbar`, `searchable`, `advancedToggle`, `defaultAdvanced`, `storageKey`, `hide`, `maxHeight`, `variant`, `className`, `emptyMessage` (optional).
 
 Additional schema types shared with `createParamPanes`: `text` (string; optional multiline/placeholder), `color` (hex string; optional alpha), `vector3` ([x,y,z]; optional min/max/step/decimals/unit). As with other schema fields, `advanced` and `when` are supported. This is a composed control inspector; use `createParamPanes` when you want parameter sections to move independently between dock panes.
+
+`ParamSection` always supports folding; `group.open` sets its initial state without requiring `storageKey`. Its optional `visibleKeys` filters displayed rows only: group reset includes search-filtered, advanced and conditionally hidden properties. `hide` excludes properties from both display and group reset. Inspector uses these rules for search and resets. Undefined values in store initialization or patches are ignored.

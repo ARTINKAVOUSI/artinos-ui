@@ -70,7 +70,8 @@ export function Inspector({
           <ParamSection
             key={group.id + (search ? ':search' : ':normal')}
             group={search ? { ...group, open: true } : group}
-            params={selected}
+            params={params.filter((p) => !hidden.has(p.key))}
+            visibleKeys={selected.map((p) => p.key)}
             values={values}
             onChange={store.set}
             advanced={advanced}

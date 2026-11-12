@@ -7,6 +7,6 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 // inlines everything so dist/index.html opens straight from disk.
 export default defineConfig({
   plugins: [react(), viteSingleFile()],
-  resolve: { dedupe: ['react', 'react-dom'] },
+  resolve: { dedupe: ['react', 'react-dom', 'three'] },
   server: { fs: { allow: ['..'] } },
 });

@@ -11,11 +11,14 @@ export interface InspectorStore extends ParamStore {
 
 export function createInspectorStore(params: readonly Param[], initial: Partial<ParamValues> = {}): InspectorStore {
   const defaults: ParamValues = Object.fromEntries(params.map((p) => [p.key, p.default]));
-  let values: ParamValues = { ...defaults, ...initial };
+  const defined = (input: Partial<ParamValues>): ParamValues => Object.fromEntries(
+    Object.entries(input).filter((entry): entry is [string, ParamValue] => entry[1] !== undefined),
+  );
+  let values: ParamValues = { ...defaults, ...defined(initial) };
   const listeners = new Set<() => void>();
   const emit = () => listeners.forEach((listener) => listener());
   const patch = (next: Partial<ParamValues>) => {
-    const changed = Object.entries(next).filter(([key, value]) => !paramValueEquals(values[key], value));
+    const changed = Object.entries(defined(next)).filter(([key, value]) => !paramValueEquals(values[key], value));
     if (!changed.length) return;
     values = { ...values, ...Object.fromEntries(changed) };
     emit();
