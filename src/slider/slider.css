@@ -29,6 +29,7 @@
   overflow: hidden;
   touch-action: pan-y;
   cursor: default;
+  box-shadow: var(--ar-well-shade, var(--ar-well));
   transition:
     box-shadow var(--ar-dur-state) var(--ar-ease),
     --ar-lo var(--ar-dur-state) var(--ar-ease),
@@ -44,8 +45,12 @@
 .ar-slider[data-mode][data-quant] .ar-slider__track {
   transition-duration: var(--ar-dur-state), var(--ar-dur-value), var(--ar-dur-value), var(--ar-dur-value), var(--ar-dur-value);
 }
+/* the track clips what it holds, so it keeps the shading itself and its rim lays it over the fill */
+.ar-slider__track::after {
+  content: none;
+}
 .ar-slider[data-mode] .ar-slider__track:not(.ar-slider__track--gradient) {
-  box-shadow: var(--ar-well), inset 0 1px 3px rgba(0, 0, 0, 0.28);
+  --ar-well-shade: var(--ar-well), inset 0 1px 3px rgba(0, 0, 0, 0.28);
 }
 /* focus on a slider: the track takes light and the fill rises; the seam keeps its own colour, which
    is the one that reads on this theme's fill */
@@ -398,7 +403,7 @@
 .ar-ruler__mark { stroke: var(--ar-text-hi); stroke-width: 1.5; }
 .ar-ruler__num {
   fill: var(--ar-ruler-ink);
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: var(--ar-caps-xs);
   font-weight: var(--ar-value-weight);
 }
@@ -561,7 +566,7 @@
   background: var(--ar-float-bg);
   color: var(--ar-float-ink);
   box-shadow: inset 0 0 0 1px var(--ar-signal-line), 0 0 0 2px var(--ar-signal-wash);
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
   font-weight: var(--ar-value-weight);
   font-variant-numeric: tabular-nums;

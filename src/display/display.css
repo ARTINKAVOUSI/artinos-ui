@@ -52,9 +52,24 @@
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
-  box-shadow: var(--ar-well);
   /* the tip and the peak travel in this track's own width (cqw) */
   container-type: inline-size;
+}
+/* the trough's shading lies over the fill, as on every well (cells: only over the cells) */
+.ar-meter__track::after,
+.ar-progress__track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--ar-well);
+  pointer-events: none;
+}
+.ar-meter[data-segmented] .ar-meter__track::after,
+.ar-progress[data-segmented] .ar-progress__track::after {
+  border-radius: 0;
+  -webkit-mask: var(--_cells);
+  mask: var(--_cells);
 }
 /* the fill: a translucent tone that brightens into its leading edge, clipped (not scaled) at the
    level Meter.tsx glides every frame, so the gradient keeps its shape at any value */
@@ -125,7 +140,6 @@
   position: absolute;
   inset: 0;
   background: var(--ar-trough);
-  box-shadow: var(--ar-well);
   -webkit-mask: var(--_cells);
   mask: var(--_cells);
 }
@@ -417,7 +431,7 @@
 .ar-stat__prefix {
   margin-right: 0.08em;
   font-size: round(0.62em, 2px);
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 .ar-stat__level {
   height: max(calc(10px * var(--ar-k, 1)), 10px);
@@ -438,13 +452,14 @@
   min-width: 0;
 }
 .ar-stat__label {
+  letter-spacing: var(--ar-track-small);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
-  color: var(--ar-text-low);
+  font: var(--ar-type-label);
+  color: var(--ar-tone-label);
 }
 .ar-stat__value {
   font-size: round(calc(var(--ar-value-size) * 1.9), 4px);
@@ -461,7 +476,7 @@
 }
 .ar-stat__value .ar-roll__unit {
   font-size: round(0.5em, 1px);
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 .ar-stat__delta {
   --_d: var(--ar-text-low);
@@ -474,7 +489,7 @@
   border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
   background: color-mix(in srgb, var(--_d) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_d) 24%, transparent);
-  font: var(--ar-weight-text) max(var(--ar-text-xs), calc(var(--ar-value-size) - 1px)) / 1 var(--ar-control-font);
+  font: var(--ar-weight-text) max(var(--ar-text-xs), calc(var(--ar-value-size) - 1px)) / 1 var(--ar-figure-font, var(--ar-control-font));
   font-variant-numeric: tabular-nums;
   color: var(--_d);
 }
@@ -499,8 +514,8 @@
   color: var(--_tone);
 }
 .ar-stat__caption {
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
-  color: var(--ar-text-faint);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 
 /* ---------- Progress: a task under way ---------- */
@@ -535,13 +550,14 @@
   min-width: 0;
 }
 .ar-progress__label {
+  letter-spacing: var(--ar-track-small);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
-  color: var(--ar-text-mid);
+  font: var(--ar-type-label);
+  color: var(--ar-tone-label);
 }
 .ar-progress__value {
   flex: none;
@@ -558,7 +574,6 @@
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
-  box-shadow: var(--ar-well);
   container-type: inline-size;
 }
 .ar-progress__fill {
@@ -622,7 +637,6 @@
   position: absolute;
   inset: 0;
   background: var(--ar-trough);
-  box-shadow: var(--ar-well);
   -webkit-mask: var(--_cells);
   mask: var(--_cells);
 }
@@ -771,8 +785,8 @@
   }
 }
 .ar-progress__caption {
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
-  color: var(--ar-text-faint);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 .ar-progress[data-status='error'] .ar-progress__caption {
   color: color-mix(in srgb, var(--ar-fault) 72%, var(--ar-text-hi));

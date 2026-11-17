@@ -241,8 +241,8 @@ export const MATERIALS = ['optical', 'frost', 'milk', 'clear', 'tint', 'smoked',
 export const DENSITIES = ['dense', 'standard', 'comfort'] as const;
 export const DENSITY_META: Record<(typeof DENSITIES)[number], { label: string; scale: number; h: number; description: string }> = {
   dense: { label: 'Dense', scale: 22 / 28, h: 22, description: 'A working instrument: forty parameters on one screen' },
-  standard: { label: 'Standard', scale: 1, h: 28, description: 'The family as drawn: to read as much as to work' },
-  comfort: { label: 'Comfort', scale: 32 / 28, h: 32, description: 'Read at arm’s length, or touched' },
+  standard: { label: 'Standard', scale: 25 / 28, h: 25, description: 'The working default: between the theme as drawn and Dense' },
+  comfort: { label: 'Comfort', scale: 1, h: 28, description: 'The theme as drawn: to read as much as to work' },
 };
 /** Accents any theme can take (data-ar-accent): the signal changes, nothing else does. */
 export const ACCENTS = ['teal', 'azure', 'violet', 'rose', 'coral', 'amber', 'lime', 'mono'] as const;
@@ -305,7 +305,7 @@ export const TYPE_META: Record<TypeCollection, TypeMeta> = {
 export interface ScopeProps {
   /** Advanced: override the theme's control finish for this control. */
   material?: MaterialName;
-  /** The density family (see DENSITIES): dense 22 · standard 28 · comfort 32 for a 28px theme, every
+  /** The density family (see DENSITIES): dense 22 · standard 25 · comfort 28 for a 28px theme, every
    *  size and corner of the theme scaled with it. Inherits when omitted. */
   density?: Density;
 }

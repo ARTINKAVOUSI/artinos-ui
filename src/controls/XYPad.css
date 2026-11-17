@@ -3,12 +3,19 @@
 .ar-xypad {
   display: block;
   width: 100%;
-  overflow: hidden;
   background:
     radial-gradient(circle, var(--ar-line) 0.8px, transparent 1.3px) 10px 10px / 20px 20px,
     var(--ar-trough);
   cursor: crosshair;
   touch-action: none;
+}
+/* the cross and the puck stay inside the pad; the pad's shading lies over them */
+.ar-xypad__field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
 }
 .ar-xypad__cross {
   position: absolute;

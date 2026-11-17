@@ -94,19 +94,23 @@ One ladder for every size on every screen: **12 · 13 · 14 · 16 · 18 · 20 ·
 
 ### A panel
 
-One fixed ladder in every Panel, Dock pane and Dialog, at any width and density.
+One ladder in every Panel, Dock pane and Dialog, at any width; the density family steps the headings and the answer along the scale, never under 12. Weights are the type system's (Fine shown).
 
-| level | set as | ink | drawn by |
-|---|---|---|---|
-| panel name | 16 / 600, title face | full | `Panel title` |
-| what the panel is | 12 / 400 | 66% | `Panel subtitle` |
-| section name | 14 / 600 | full | `Section title` |
-| group inside a section | 12 / 600 | the accent | a nested `Section`, or `Text variant="overline"` |
-| the answer | 13 / 600, tabular digits | full | every readout, `NumberField`, `Select`, a `Field`'s plain value |
-| the name | 12 / 500, +0.01em | 76% | every `label` prop |
-| help and facts | 12 / 400 | 66%, hints 54% | `description`, `hint`, `count`, `Text variant="note"` |
+| level | Dense | Standard | Comfort | ink | drawn by |
+|---|---|---|---|---|---|
+| panel name | 14 | 14 | 16 | full | `Panel title` |
+| what the panel is | 12 | 12 | 12 | note | `Panel subtitle` |
+| section name | 12 | 13 | 14 | full | `Section title` |
+| group inside a section | 12 | 12 | 12 | the accent | a nested `Section`, or `Text variant="overline"` |
+| the answer | 12 | 13 | 13 | full | every readout, `NumberField`, `Select`, a `Field`'s plain value |
+| the name | 12 | 12 | 12 | label | every `label` prop |
+| help and facts | 12 | 12 | 12 | note, hints quieter | `description`, `hint`, `count`, `Text variant="note"` |
 
-Twelve is the floor for every word in a panel. Quieter text is told by ink and weight, never by shrinking. Dense means tighter rows, not smaller words.
+Twelve is the floor for every word in a panel, keycaps and port tags included. Quieter text is told by ink and weight, never by shrinking. Dense means tighter rows, not smaller words.
+
+**Every number is one face.** Readouts, number fields, vector cells, colour codes, ruler marks, list and inspector values, graph readouts and stat figures share `--ar-figure-font`, in tabular digits. Fine sets it to its title face: Inter Tight at 300, the hairline of its names, so a figure ties to the panel's titles and is told from its name by face and ink. Other systems keep figures in the control face, one weight step above the name. A unit (px, %, °, dB, ×) has the name's weight and air, in the accent (`--ar-unit-ink`).
+
+**One look per role, in every component.** A word that names a value (a slider's, a field's, a stat's, a checkbox's, a node field's) is `--ar-type-label` in `--ar-tone-label`; a quiet line under or beside a thing (a subtitle, a description, a caption, a count, a list row's meta) is `--ar-type-note` in `--ar-tone-note` (a count in `--ar-tone-hint`); a figure is `--ar-type-value`; a heading inside a section, a list group or a callout is `--ar-type-group`. Control words (buttons, segments, chips) are the voice. Text never takes the fixed greys `--ar-text-mid` · `low` · `faint`: those are for glyphs; words take the theme's solid tones.
 
 ## The methods
 
@@ -153,20 +157,20 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 
 - **A panel is one thing wherever it sits, and every panel is a MetaBlock.** It can be dragged, floated, docked, joined to another as a tab, split beside it, maximized and sent home, unless its `capabilities` say otherwise. So panels live in a `Dock`: around a canvas (`viewport`), or, with no canvas, side by side on a page (`dock: 'center'` fills what the edge docks leave). A static card that cannot move is the exception, kept for a panel inside a page's flow of text.
 - **Write a panel once.** A `Panel` given as a `DockPanel`'s content becomes the pane: the tab carries its name and the pane its glass, and it keeps its subtitle, actions, tabs, side rail, sections and footer. The same `<Panel>` reads the same on a page and in a workspace.
-- **What sits in a well is inside it.** A slider's fill is inset within its frame, and the frame's own shading (its inner shade and rim, the deeper press while dragging, focus) falls over the fill as it does over the empty trough, so the fill reads as set into the control, never laid on top of it.
+- **What sits in a well is inside it.** In every control a part held by a well (a slider's or meter's fill, a switch's thumb, the chosen segment or chip, a knob's cap, the XY puck, a raised button's face) is inset within the frame, and the frame's own shading (its inner shade and rim, the deeper press while dragging, focus) falls over that part as it does over the empty trough, so it reads as set into the control, never laid on top of it.
 - **Tabs switch a panel's views, and are names, not icons.** Hairline capitals; a vertical rail is the strip turned 90° (names read down it, the lit line on the side facing the content); an icon shows only in the icon look. Across the top by default; down the side (`tabsPlacement="side"`) for a settings sheet or many views; `variant="pill"` with `fill` for two to four views of the same thing; `variant="icon"` for a tool rail. A `count` says what is in a tab, a `dot` that it wants a look; `onClose` for open documents. A group of panels has its own tabs in the same looks, set per dock (`Dock tabs`), changed from any tab's menu and kept with the layout; never put a panel's side rail beside its group's side rail.
 - **The workspace is not a level.** A `Dock` is only the place where panels are arranged around a canvas, and it remembers the arrangement (`storageKey`). It draws nothing of its own.
 - **Capabilities say how a panel may move:** `closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, all on by default. Set one `false` on the `DockPanel` and every drag, menu and window button follows it: `capabilities: { closable: false, floatable: false }` keeps a panel docked and open.
 - **Every move is a MetaBlock call.** `api.workspace` (from `onReady` or `useDock()`) is the engine: `floatBlock`, `dockBlock`, `maximizeBlock`, `returnBlock`, `undo`, `redo`, `serialize`. A drag calls the same methods.
 - Open a panel with what matters: `title`, `subtitle`, a live `Badge`, then a `StatStrip` of the two to four figures people look for first.
-- One label column per panel: `labelWidth` on the `Panel` (or a `Section`), never per `Field`.
+- One label column per panel, fitted to its longest name; `labelWidth` on the `Panel` (or a `Section`) fixes it, never per `Field`.
 - A tool around a canvas is a `Dock` with the canvas as `viewport`. Never position floating panels by hand.
 
 ### Section
 
 - **A section is the one way to group.** A group of settings, a category and a fold are all a `Section`. Categories where one is open at a time are a `SectionGroup accordion`, not tabs of their own making.
 - A section holds one idea and about seven parts. Its title stands alone, with no icon; let `count` carry one small fact; add `enabled` when the whole group can be off, `modified` and `onReset` when it can be put back.
-- **A working tool is dense.** An editor or control surface with many parameters sets `<ArtinosTheme density="dense">` once, around everything. Every size and corner of the theme scales by 22/28, rows lose their hairlines, headings step down to 14 and 13; words stay 12. The same family set as an instrument; never one dense panel among standard ones.
+- **Pick the family once, for everything.** Standard is the default. An editor or control surface with many parameters sets `<ArtinosTheme density="dense">` once, around everything; a panel to read at leisure sets `comfort` (the theme exactly as drawn). Never one dense panel among standard ones.
 - **Sections move between panels.** `createDockSections` keeps one set of sections; put `<sections.Pane id="…" />` in any `Panel` or `DockPanel` and a section drags between all of them by its heading. In a workspace it also tears off into its own panel. `createParamPanes` builds the same panes from a schema of parameters.
 - Never skip a level: a control straight in a panel has no group to fold, reset or move.
 
@@ -179,10 +183,42 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 - **Text** explains: `Text variant="overline"` names a sub-group, `note` helps, a `Callout` must not be missed.
 - Related numbers sit side by side (`Section columns={3}`, `RangeSlider`, `XYPad`). One `primary` action per view, last in its row, after a `ghost` Cancel.
 
+### The lines of a panel
+
+Every panel, in every density, is drawn on the same few lines. A part never invents its own.
+
+```
+ gutter │ content                                                       │ gutter
+   ●    │ Section name ──────────────────────────────────── count  ⌃   │
+        │ Name          │ control ..................................... │   ◆
+   ●    │ Name          │ control ..................................... │
+        │ Group name                                                    │
+        │ Name          │ control ..................................... │
+        │ [ an integrated slider: name and answer inside the capsule ] │
+```
+
+- **One start line.** Every section name, group name, row name and full-width part starts on the content's left line, at every depth. A nested group is told by its heading (smaller, in the accent), never by stepping in.
+- **One label column, as wide as its longest name.** Every row in a panel that names its value puts its control at the same column, and the column fits the panel's longest name, never wider than the density's column (85 · 96 · 108px for Dense · Standard · Comfort, from the theme's `--ar-label-col`). A panel of short names keeps no air between its names and its controls beyond the name gap (`--ar-label-gap`: 8 · 9 · 10px), the same in a Field and a PropertyRow. `Panel` and every Dock pane fit their column themselves; `labelWidth` on a `Panel` fixes one instead, never per row. A narrow Inspector (260px or less) caps it at 64px.
+- **One end line.** Every control and every full-width part ends on the content's right line.
+- **Marks live in the gutters.** A row's changed dot, a section's on/off light and a type system's accent tick before a section's name sit in the left gutter; the Inspector's keyframe diamond sits in the right gutter. They never push a name or a control off its line.
+- **One row height.** A row is the density's control height (21 · 24 · 27 for Nimbus), whatever it holds; a tall part (an XY pad, a curve, a list) keeps its own height, never a row stretched by padding. Rows sit on the row gap alone, with no hairline between them.
+- **One section rhythm.** A section's heading carries its own hairline through the title row and its first row follows directly; sections stand apart by `--ar-section-apart`. A group inside a section is the same heading in the group role, with the same gaps.
+- **A card is the one frame inside a panel.** A `Section variant="card"` draws its own edge; inside it, its heading and rows keep these same lines, measured from the card's edge.
+- **A section is one layout.** Its rows are all on the label column, or all integrated (a slider's name inside its capsule), never mixed within one section. An action row is one line.
+
+| measure | Dense | Standard | Comfort | token |
+|---|---|---|---|---|
+| scale | 22 / 28 | 25 / 28 | 1 | `--ar-k` |
+| control (Nimbus) | 21 | 24 | 27 | `--ar-h` |
+| row gap | 5 | 5 | 8 | `--ar-row-gap` (from `--ar-row-space`) |
+| between sections | 14 | 19 | 26 | `--ar-section-apart` (`--ar-section-gap` from `--ar-section-space`, plus a row gap) |
+| label column, at most | 85 | 96 | 108 | `--ar-field-label-w` (fitted to the longest name) |
+| name to control | 8 | 9 | 10 | `--ar-label-gap` |
+
 ### Spacing
 
-- Every gap comes from the space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32). Use `Stack` and `Inline` with `gap="row"`, `"group"` or a step. No hand-set margins or pixel gaps.
-- Parts in a section are 8 apart; sections in a panel 26 apart. A section gap is always more than twice a part gap.
+- Every gap comes from the space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32), scaled by the family. Use `Stack` and `Inline` with `gap="row"`, `"group"` or a step. No hand-set margins or pixel gaps.
+- A section gap is always more than twice a row gap.
 - **A section carries its own hairline, through its title row:** the name, a line to the count, the chevron. No line is drawn between sections, and none under a card or a group inside a section. (The salon, editorial and legible type systems set the name on a line of its own instead.)
 - A page section is two columns: the words on the left (about 340px), the thing they describe on the right. The words stay in view beside a tall demo.
 
@@ -256,7 +292,8 @@ Take a screenshot and look at it from arm's length.
 
 - Can you tell a section's eyebrow, title, lead and body apart without reading them? A panel name, a section name, a value and a label?
 - Does every value stand out from its label, and every section from the one above?
-- Is there one type system, one accent, one primary action, one label column per group?
+- Is there one type system, one accent, one primary action, one label column per panel?
+- Do every name, title and control start and end on the panel's lines, at every depth? Are the marks (dots, lights, diamonds) in the gutters? Is every row one height?
 - Is every control in a section, every section in a panel? Does each section carry its hairline in its title row, with no icon and no line between sections?
 - Is any text set by hand, in capitals, in a mono outside marks and code, or under 12px? Remove it.
 - Is any paragraph wider than a comfortable line, or any number missing its unit?

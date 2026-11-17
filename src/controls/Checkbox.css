@@ -90,16 +90,17 @@
   min-width: 0;
 }
 .ar-checkbox__label {
-  font: var(--ar-weight-text) var(--ar-voice-size) / var(--ar-leading-snug) var(--ar-voice-font);
-  color: var(--ar-text-mid);
+  letter-spacing: var(--ar-track-small);
+  font: var(--ar-type-label);
+  color: var(--ar-tone-label);
   transition: color var(--ar-dur-state) var(--ar-ease);
 }
 .ar-checkbox:hover .ar-checkbox__label {
-  color: var(--ar-text-hi);
+  color: var(--ar-tone-title);
 }
 .ar-checkbox__description {
-  font: var(--ar-weight-text) var(--ar-text-xs) / var(--ar-leading-snug) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 
 /* checked: the insert */

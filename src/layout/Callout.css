@@ -48,7 +48,7 @@
 }
 .ar-callout__title {
   margin: 0;
-  font: var(--ar-weight-title) var(--ar-text-sm) / 18px var(--ar-font-display);
+  font: var(--ar-type-group);
   color: var(--ar-tone-title);
   text-wrap: balance;
 }

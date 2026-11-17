@@ -107,14 +107,24 @@
   background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
-  box-shadow: var(--ar-well);
   outline: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    box-shadow var(--ar-dur-state) var(--ar-ease),
-    --ar-lift var(--ar-dur-state) var(--ar-ease);
+  transition: --ar-lift var(--ar-dur-state) var(--ar-ease);
+}
+/* What sits in a well is inside it. The well's shading (its inner shade, its rim) is a layer over
+   everything it holds, so a fill, a thumb, the chosen segment or a cap is set into the frame and the
+   frame's shade falls on it exactly as on the empty trough. A state that changes the shading sets
+   --ar-well-shade on the well; the layer takes no pointer. */
+.ar-well::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--ar-well-shade, var(--ar-well));
+  pointer-events: none;
+  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
 }
 /* a control in focus: the well takes light and what sits in it rises. Where the focus lands on a
    piece inside (a segment, a chip), that piece says so instead of the whole group. */
@@ -210,7 +220,7 @@
   color: color-mix(in srgb, var(--ar-insert-ink) calc(var(--ar-name-strength) + 8%), transparent);
 }
 .ar-value {
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
   font-weight: var(--ar-value-weight);
   line-height: var(--ar-leading-snug);
@@ -273,6 +283,9 @@
 }
 .ar-roll .ar-roll__unit {
   margin-left: 0.45em;
+  /* a unit belongs to the number but speaks like its name: the name's weight and air, never louder */
+  font-weight: var(--ar-weight-name);
+  letter-spacing: var(--ar-track-small);
   font-size: round(min(max(0.8em, var(--ar-text-xs)), 16px), 1px); /* never under the 11px floor, never oversized */
 }
 .ar-roll__unit[data-tight] {
@@ -359,7 +372,7 @@
     0 1px 0 rgba(0, 0, 0, 0.32);
   font: var(--ar-weight-medium) var(--ar-caps-sm) / var(--ar-leading-none) var(--ar-font-num);
   letter-spacing: 0;
-  color: var(--ar-text-mid);
+  color: var(--ar-tone-label);
   text-shadow: none;
 }
 

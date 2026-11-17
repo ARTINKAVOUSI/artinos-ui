@@ -475,7 +475,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
 - **theme**: the whole look (9; see `theming.md`). Glass and frost themes need something behind them; `pro-gray` and `studio-light` paint their own ground.
 - **type**: the type system, one of twelve complete designs: one family (`sleek`, `product`, `native`, `legible`), a pairing of a display face with a text face (`instrument`, `salon`, `wide`, `grotesk`, `editorial`), or hairline control text under heavy titles (`fine`, the default, `mass`, `round`); see design.md.
-- **density**: `dense` (26px controls; docks and strips), `standard` (28px; default), `comfort` (32px; touch and presentation). Also a prop on the original controls.
+- **density**: `dense` (22px controls on a 26px row pitch; editors, inspectors, docks and strips), `standard` (25px; the default, between Dense and the theme as drawn), `comfort` (28px; the theme exactly as drawn). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
 
 ## Layout and text

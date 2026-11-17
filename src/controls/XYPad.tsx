@@ -82,9 +82,11 @@ export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 
       }}
       onKeyDown={onKeyDown}
     >
-      <span className="ar-xypad__cross" data-axis="x" />
-      <span className="ar-xypad__cross" data-axis="y" />
-      <span className="ar-insert ar-xypad__point" />
+      <span className="ar-xypad__field">
+        <span className="ar-xypad__cross" data-axis="x" />
+        <span className="ar-xypad__cross" data-axis="y" />
+        <span className="ar-insert ar-xypad__point" />
+      </span>
       <span className="ar-text ar-xypad__label" aria-hidden>
         {label}
       </span>

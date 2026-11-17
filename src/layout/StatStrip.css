@@ -34,14 +34,16 @@
 }
 .ar-stat-strip__value small {
   margin-left: calc(3px * var(--ar-k, 1));
-  font: var(--ar-weight-medium) var(--ar-text-xs) / 1 var(--ar-font-ui);
+  /* the unit speaks like the figure's name, as on every readout */
+  font: var(--ar-weight-name) var(--ar-text-xs) / 1 var(--ar-font-ui);
   font-stretch: 100%;
-  letter-spacing: 0;
+  letter-spacing: var(--ar-track-small);
   color: var(--ar-tone-accent);
 }
 .ar-stat-strip__label {
+  letter-spacing: var(--ar-track-small);
   overflow: hidden;
-  font: var(--ar-weight-medium) var(--ar-text-xs) / 1.3 var(--ar-font-ui);
+  font: var(--ar-type-label);
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--ar-tone-label);

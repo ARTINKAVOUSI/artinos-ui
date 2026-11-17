@@ -92,6 +92,7 @@
 }
 .ar-graph__toolbar button,
 .ar-graph__toolbar-count {
+  color: var(--ar-tone-note);
   white-space: nowrap;
 }
 .ar-graph__toolbar button {
@@ -244,7 +245,7 @@
 .ar-graph__group header span {
   font: var(--ar-value-weight) calc(var(--ar-label-size) + var(--ar-label-bump)) var(--ar-control-font);
   font-variant-numeric: tabular-nums;
-  color: var(--ar-text-faint);
+  color: var(--ar-tone-hint);
 }
 
 /* ---------- nodes: the frosted sheet, the material every list and menu floats on ---------- */
@@ -337,7 +338,7 @@
   color: var(--ar-text-hi);
 }
 .ar-graph__node-readout {
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font: var(--ar-value-weight) var(--_value) var(--ar-figure-font, var(--ar-control-font));
   font-variant-numeric: tabular-nums;
   color: var(--ar-signal-hi);
 }
@@ -397,6 +398,8 @@
 
 .ar-graph__preview-canvas,
 .ar-graph__preview-pending {
+  color: var(--ar-tone-note);
+  font: var(--ar-type-note);
   display: block;
   width: 100%;
   height: 44px;
@@ -407,8 +410,8 @@
 .ar-graph__preview-pending {
   display: grid;
   place-items: center;
-  font: var(--ar-weight-text) var(--ar-text-xs) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 
 /* ---------- palette: the floating list, like Select's ---------- */
@@ -483,7 +486,7 @@
 }
 .ar-graph__palette-empty {
   padding: 6px;
-  font: var(--ar-weight-text) var(--ar-text-sm) var(--ar-font-ui);
+  font: var(--ar-type-note);
   color: var(--ar-float-ink-low);
 }
 
@@ -542,7 +545,7 @@
   gap: 8px;
 }
 .ar-graph__inspector-rows b {
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font: var(--ar-value-weight) var(--_value) var(--ar-figure-font, var(--ar-control-font));
   font-variant-numeric: tabular-nums;
   color: var(--ar-text-hi);
 }
@@ -580,7 +583,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 .ar-graph__status-hint {
   min-width: 0;
@@ -652,7 +655,7 @@
   position: absolute;
   top: 0;
   text-align: center;
-  color: var(--ar-text-faint);
+  color: var(--ar-tone-hint);
 }
 .ar-live__node {
   display: flex;
@@ -711,8 +714,8 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: var(--ar-weight-text) var(--ar-text-xs) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 .ar-live__side {
   display: flex;
@@ -723,11 +726,11 @@
 }
 .ar-live__side em {
   font-style: normal;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 .ar-live__side output,
 .ar-live__field output {
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font: var(--ar-value-weight) var(--_value) var(--ar-figure-font, var(--ar-control-font));
   font-variant-numeric: tabular-nums;
   color: var(--ar-signal-hi);
 }
@@ -747,8 +750,8 @@
   display: grid;
   place-content: center;
   margin: 0;
-  font: var(--ar-weight-text) var(--ar-text-sm) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
   pointer-events: none;
 }
 /* zoom: a small floating sheet in the corner */
@@ -787,9 +790,9 @@
 }
 .ar-live__zoom output {
   min-width: 34px;
-  font: var(--ar-value-weight) var(--ar-text-xs) var(--ar-control-font);
+  font: var(--ar-value-weight) var(--ar-text-xs) var(--ar-figure-font, var(--ar-control-font));
   text-align: center;
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 
 /* ======================= motion =======================
@@ -875,7 +878,7 @@
   height: 5px;
 }
 .ar-graph__node-readout {
-  font: var(--ar-value-weight) var(--_value) var(--ar-control-font);
+  font: var(--ar-value-weight) var(--_value) var(--ar-figure-font, var(--ar-control-font));
   font-variant-numeric: tabular-nums;
   color: var(--ar-signal);
 }
@@ -951,11 +954,9 @@
   gap: 8px;
 }
 .ar-graph__fields .ar-field__label {
-  font-family: var(--ar-voice-font);
-  font-size: var(--ar-voice-size);
-  font-weight: var(--ar-voice-weight);
-  letter-spacing: var(--ar-voice-tracking);
-  text-transform: var(--ar-voice-case);
+  /* a field's name in a node is the same name role as in any panel */
+  font: var(--ar-type-label);
+  letter-spacing: var(--ar-track-small);
   color: var(--ar-label-ink);
 }
 /* a vector: its label line, then three cells sharing the row */

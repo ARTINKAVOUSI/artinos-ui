@@ -243,7 +243,7 @@
   /* small marks outside a control (keycaps, port tags, counts, badges, foot lines): weight 500,
      never under 11px. Sentence case by default; a collection that wants tracked capitals turns
      the caps switch on (--ar-caps-case: uppercase, --ar-caps-on: 1). */
-  --ar-caps-xs: 11px; /* the smallest mark: keycaps, port tags, drop hints */
+  --ar-caps-xs: var(--ar-step-12); /* the smallest mark: keycaps, port tags, drop hints (the 12px floor holds) */
   --ar-caps-sm: var(--ar-step-12); /* kickers, foot lines, counts, badges, section numbers: the label size */
   --ar-caps-case: none;
   --ar-caps-on: 0; /* 1: marks and control labels take their tracking */
@@ -285,7 +285,7 @@
   --ar-type-panel: var(--ar-panel-title-weight, 600) calc(var(--ar-panel-title-size, 16px) - var(--ar-title-step, 0px)) / calc(22px - var(--ar-title-step, 0px)) var(--ar-font-display); /* the panel's name: the title face, the largest line on the pane */
   --ar-type-section: var(--ar-weight-section, 600) calc(var(--ar-section-size, 14px) - var(--ar-section-step, 0px)) / calc(var(--ar-section-line, 20px) - 2 * var(--ar-section-step, 0px)) var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
   --ar-type-group: 600 12px / 18px var(--ar-font-ui); /* a group inside a section: sentence case, in the accent */
-  --ar-type-value: var(--ar-weight-readout, 600) var(--ar-value-size, 13px) / calc(var(--ar-value-size, 13px) + 5px) var(--ar-font-ui); /* the answer: a size up and firm, in the full ink */
+  --ar-type-value: var(--ar-weight-readout, 600) var(--ar-value-size, 13px) / calc(var(--ar-value-size, 13px) + 5px) var(--ar-figure-font, var(--ar-font-ui)); /* the answer: a size up and firm, in the full ink */
   --ar-type-label: var(--ar-weight-name, 500) var(--ar-label-size, 12px) / calc(var(--ar-label-size, 12px) + 6px) var(--ar-font-ui); /* the name: medium in a solid grey, so the answer beside it speaks */
   --ar-type-note: var(--ar-weight-note, 400) var(--ar-label-size, 12px) / calc(var(--ar-label-size, 12px) + 6px) var(--ar-font-ui);
   --ar-type-hero: 400 28px / 32px var(--ar-font-ui);

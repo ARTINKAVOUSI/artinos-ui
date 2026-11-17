@@ -8,7 +8,7 @@
 .ar-select,
 .ar-number {
   width: 100%;
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
 }
 .ar-switch.is-disabled,
 .ar-select.is-disabled,
@@ -316,9 +316,9 @@
   padding: 1px calc(2px * var(--ar-k, 1));
   border-radius: calc(3px * var(--ar-k, 1));
   text-align: center;
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
-  font-weight: var(--ar-label-weight);
+  font-weight: var(--ar-value-weight); /* a colour's code is its value */
   letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on));
   text-transform: var(--ar-caps-case);
   cursor: text;
@@ -517,15 +517,15 @@
   flex: 1;
   min-width: 0;
   text-align: center;
-  font-family: var(--ar-font-ui);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: var(--ar-value-size);
-  font-weight: var(--ar-weight-text);
+  font-weight: var(--ar-value-weight);
 }
 .ar-number[data-align='end'] :is(.ar-number__value, .ar-number__input) {
   text-align: right;
 }
 .ar-number__value .ar-roll {
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
   font-weight: var(--ar-value-weight);
 }
@@ -536,7 +536,7 @@
   all: unset;
   flex: 1;
   min-width: 0;
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: calc(var(--ar-value-size) + var(--ar-value-bump));
   font-weight: var(--ar-value-weight); /* the figure keeps its weight while it is typed */
   color: var(--ar-value-ink-hi);
@@ -544,5 +544,5 @@
 }
 .ar-number[data-scrubbing] {
   color: var(--ar-value-ink-hi);
-  box-shadow: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
+  --ar-well-shade: var(--ar-well), inset 0 0 0 1px var(--ar-signal-line);
 }

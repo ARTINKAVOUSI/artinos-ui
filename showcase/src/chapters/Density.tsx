@@ -97,11 +97,11 @@ export function DensityChapter() {
       <Spec
         id="density-families"
         wide
-        text="Three families of the same instrument, chosen for a whole scope like a theme. A family is not the standard set shrunk: the theme draws itself at the standard size, and the family multiplies every size, gap, corner and inset by one scale, so each theme keeps its proportions in all three. Words step along the type scale instead of shrinking, with 12px the floor. The figures on each panel are measured from what the page draws, in the theme picked in the bar."
+        text="Three families of the same instrument, chosen for a whole scope like a theme. A family is not the standard set shrunk: the theme draws itself at its own size (Comfort), and the family multiplies every size, gap, corner and inset by one scale, so each theme keeps its proportions in all three. Words step along the type scale instead of shrinking, with 12px the floor. The figures on each panel are measured from what the page draws, in the theme picked in the bar."
         keys={[
-          ['Dense', '22 / 28: an editor, an inspector, forty parameters on one screen; no hairlines between rows'],
-          ['Standard', 'the family as drawn: to read as much as to work'],
-          ['Comfort', '32 / 28: a panel read at arm’s length, or touched'],
+          ['Dense', '22 / 28: an editor, an inspector, forty parameters on one screen; rows on a 26px pitch, no hairlines between them'],
+          ['Standard', '25 / 28: the working default, between the theme as drawn and Dense'],
+          ['Comfort', '28 / 28: the theme exactly as drawn, to read as much as to work'],
           ['the bar', 'Density sets the whole page, the instrument above included'],
         ]}
         code={`<ArtinosTheme density="dense"> … </ArtinosTheme>     // or data-ar-density="dense" on any element

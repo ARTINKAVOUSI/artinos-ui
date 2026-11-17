@@ -147,7 +147,7 @@
 }
 .ar-type[data-variant='value'] {
   --_ink: var(--ar-text-hi);
-  font-family: var(--ar-control-font);
+  font-family: var(--ar-figure-font, var(--ar-control-font));
   font-size: var(--ar-value-size);
   font-weight: var(--ar-value-weight);
   line-height: var(--ar-leading-snug);
@@ -188,8 +188,8 @@
 .ar-type[data-variant='quote'] :where(cite) {
   display: block;
   margin-top: 0.7em;
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 1.3 var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 .ar-type[data-variant='code'],
 .ar-type :where(code) {

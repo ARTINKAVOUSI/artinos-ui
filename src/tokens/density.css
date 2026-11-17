@@ -1,17 +1,17 @@
 /* ARTINOS UI — density: three families of the same instrument.
 
      dense      a working instrument: an editor's inspector, a control surface with forty parameters
-                on one screen. 22px controls.
-     standard   the family as drawn: a panel to read as much as to work. 28px controls. The default.
-     comfort    a panel read at arm's length, or touched. 32px controls.
+                on one screen. 22px controls on a 26px row pitch.
+     standard   the working default: tighter than the theme as drawn, roomier than Dense. 25px controls.
+     comfort    the theme exactly as drawn: a panel to read as much as to work. 28px controls.
 
    Chosen for a whole scope like a theme: <ArtinosTheme density="dense">, or data-ar-density on any
    element. A family is not the standard set scaled down: each is a complete definition of its own
    (scale, spacing, corners, type steps, row rules), and every theme has its equivalent in each.
 
-   How a theme keeps its character in every family: the theme draws at the standard size (its own
+   How a theme keeps its character in every family: the theme draws at its own size, which is Comfort (its own
    control height, side padding, gap, every corner and inset), and the family multiplies all of it
-   by one scale, --ar-k (22/28 · 1 · 32/28). Nimbus Dense is Nimbus, proportionally tighter: a 27px
+   by one scale, --ar-k (22/28 · 25/28 · 1). Nimbus Dense is Nimbus, proportionally tighter: a 27px
    Nimbus capsule becomes 21, its 7px corner 5.5, its 16px shell 12.5 (corners land on half pixels), its 1.5px inset 1.2. Corners
    and insets are multiplied where a component uses them, so a theme or a Theme Studio token that sets
    one is scaled with the rest. Words are the exception: 12px is the floor, so type steps along the
@@ -22,35 +22,45 @@
 /* ---------- the three families ---------- */
 :root,
 [data-ar-density='standard'] {
-  --ar-k: 1;
-  /* type: labels 12, values 13, a section's name 14, a panel's 16, the collection's own figures */
+  --ar-k: calc(25 / 28);
+  /* type: labels 12, values 13 (a readout a size above its name), a section's name 13, a panel's 14 */
   --ar-label-size: 12px;
-  --ar-value-size: 13px; /* a readout is a size above its name */
-  --ar-title-step: 0px;
-  --ar-section-step: 0px;
-  --ar-stat-scale: 1;
+  --ar-value-size: 13px;
+  --ar-title-step: 2px;
+  --ar-section-step: 1px;
+  --ar-stat-scale: calc(25 / 28);
+  /* rhythm, between Dense and Comfort: rows 5px apart, sections 14 */
+  --ar-row-space: 6px;
+  --ar-section-space: 16px;
 }
 [data-ar-density='dense'] {
   --ar-k: calc(22 / 28); /* exact, so a 7px corner is 5.5 and never 5.4999 */
-  /* type: the floor holds, so labels and values are 12; headings one step down the scale (a panel
-     14, a section 13); figures follow the scale (28 becomes 22) */
+  /* type: the floor holds, so labels, values and a section's name are 12; a panel's name 14;
+     figures follow the scale (28 becomes 22) */
   --ar-label-size: 12px;
   --ar-value-size: 12px;
   --ar-title-step: 2px;
-  --ar-section-step: 1px;
+  --ar-section-step: 2px; /* a section's name is 12, the label's size, told apart by weight and ink alone */
   --ar-stat-scale: calc(22 / 28);
+  /* rhythm: rows close up to a 26px pitch (21 + 5) and sections stand apart by 14, the way an
+     editor's inspector reads: forty parameters on one screen, still grouped at a glance */
+  --ar-row-space: 6.4px; /* 5px once scaled by 22/28: room to breathe between 21px rows */
+  --ar-section-space: 12px;
 }
 [data-ar-density='comfort'] {
-  --ar-k: calc(32 / 28);
-  /* type: a step up everywhere: labels 13, values 14, a section 16, a panel 18 */
-  --ar-label-size: 13px;
-  --ar-value-size: 14px;
-  --ar-title-step: -2px;
-  --ar-section-step: -2px;
-  --ar-stat-scale: calc(32 / 28);
+  --ar-k: 1; /* the theme exactly as drawn */
+  /* type: labels 12, values 13, a section's name 14, a panel's 16, the collection's own figures */
+  --ar-label-size: 12px;
+  --ar-value-size: 13px;
+  --ar-title-step: 0px;
+  --ar-section-step: 0px;
+  --ar-stat-scale: 1;
+  /* rhythm: rows 8px apart, sections 18 */
+  --ar-row-space: 8px;
+  --ar-section-space: 18px;
 }
 
-/* ---------- the theme's own sizes, at the standard size ----------
+/* ---------- the theme's own sizes, as drawn (Comfort) ----------
    A theme (or a Theme Studio export) sets these to draw itself; the family scales them. */
 :root {
   --ar-control-h: 28px;
@@ -68,28 +78,22 @@
   --ar-h: round(calc(var(--ar-control-h) * var(--ar-k)), 1px);
   --ar-pad-x: calc(var(--ar-control-pad) * var(--ar-k));
   --ar-gap: calc(var(--ar-control-gap) * var(--ar-k));
-  --ar-row-gap: round(calc(var(--ar-space-4) * var(--ar-k)), 1px);
+  --ar-row-gap: round(calc(var(--ar-row-space, var(--ar-space-4)) * var(--ar-k)), 1px);
   --ar-group-gap: round(calc(var(--ar-space-6) * var(--ar-k)), 1px);
-  --ar-section-gap: round(calc(18px * var(--ar-k)), 1px); /* air around a section: over twice a row gap */
-  --ar-section-apart: calc(var(--ar-section-gap) + round(calc(var(--ar-space-4) * var(--ar-k)), 1px));
+  --ar-section-gap: round(calc(var(--ar-section-space, 18px) * var(--ar-k)), 1px); /* air around a section: over twice a row gap */
+  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-row-gap));
   --ar-panel-pad-x: round(calc(var(--ar-space-7) * var(--ar-k)), 1px);
   --ar-panel-pad-y: round(calc(var(--ar-space-6) * var(--ar-k)), 1px);
   --ar-field-label-w: round(calc(var(--ar-label-col) * var(--ar-k)), 1px);
+  --ar-label-gap: round(calc(10px * var(--ar-k)), 1px); /* name to control, the same in every row kind: 8 · 9 · 10 */
+  /* control words follow the family's label size: computed here, so a family set inside a theme's
+     scope (a Comfort panel on a Standard page) takes its own size, not the page's */
+  --ar-voice-size: calc(var(--ar-label-size) + var(--ar-label-bump, 0px));
 }
 
 /* ---------- dense: its own row rules ----------
    What makes Dense an instrument and not a smaller Standard. */
-/* rows sit on the row gap alone: no hairline between them, so a long column stays calm */
-[data-ar-density='dense'] .ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
-[data-ar-density='dense'] .ar-panel__body > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
-[data-ar-density='dense'] .ar-prop:not([data-density='default']) + .ar-prop:not([data-density='default']) {
-  padding-top: 0;
-  border-top: 0;
-}
 /* a label column is tight to its control */
-[data-ar-density='dense'] .ar-prop__main {
-  gap: var(--ar-space-3);
-}
 [data-ar-density='dense'] .ar-prop__label {
   box-sizing: border-box;
 }

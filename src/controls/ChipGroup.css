@@ -77,7 +77,7 @@
 .ar-chip__count {
   margin-left: 1px;
   font-size: max(var(--ar-text-xs), calc(var(--ar-value-size) - 1px));
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 .ar-chip[data-on] .ar-chip__count {
   color: var(--ar-insert-unit-ink, var(--ar-insert-ink));

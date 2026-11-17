@@ -14,7 +14,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: calc(10px * var(--ar-k, 1));
+  gap: var(--ar-label-gap, 10px);
   min-height: var(--ar-h);
 }
 .ar-prop__control {
@@ -78,7 +78,7 @@
   opacity: 1;
 }
 .ar-prop__message {
-  margin: 0 0 0 calc(var(--_label-w) + 10px);
+  margin: 0 0 0 calc(var(--_label-w) + var(--ar-label-gap, 10px));
   font: var(--ar-type-note);
   color: var(--ar-tone-note);
   text-wrap: pretty;

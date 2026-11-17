@@ -73,7 +73,7 @@
   --ar-weight-mark: 500;
   --ar-caps-case: none;
   --ar-caps-on: 0;
-  --ar-caps-xs: 11px;
+  --ar-caps-xs: 12px; /* the floor holds for the smallest marks too */
   --ar-caps-sm: 12px;
   --ar-head-case: none;
   --ar-head-tracking: 0;
@@ -382,7 +382,8 @@
   --ar-stat-size: 28px;
   --ar-weight-name: 300;
   --ar-weight-note: 300;
-  --ar-weight-readout: 500;
+  --ar-weight-readout: 300; /* figures are hairline like the names, told apart by face and ink */
+  --ar-figure-font: var(--ar-font-display); /* every number in the title face: readouts, fields, values, stats */
   --ar-weight-voice: 400;
   --ar-label-strength: 90%; /* thin strokes, bright ink */
   --ar-note-strength: 80%;
@@ -417,7 +418,7 @@
   --ar-stat-size: 28px;
   --ar-weight-name: 300;
   --ar-weight-note: 300;
-  --ar-weight-readout: 500;
+  --ar-weight-readout: 400; /* one step above the hairline name, never two: the answer in the same voice, told by ink */
   --ar-weight-voice: 400;
   --ar-label-strength: 90%; /* thin strokes, bright ink */
   --ar-note-strength: 80%;
@@ -453,7 +454,7 @@
   --ar-stat-size: 24px;
   --ar-weight-name: 300;
   --ar-weight-note: 300;
-  --ar-weight-readout: 500;
+  --ar-weight-readout: 400; /* one step above the hairline name, never two: the answer in the same voice, told by ink */
   --ar-weight-voice: 400;
   --ar-label-strength: 90%; /* thin strokes, bright ink */
   --ar-note-strength: 80%;

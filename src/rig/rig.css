@@ -124,7 +124,15 @@
     var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
+}
+/* the ball's shading, over the axes and rings drawn in it */
+.ar-trackball__ball::after {
+  content: '';
+  position: absolute;
+  inset: calc(50% - var(--_r));
+  border-radius: 50%;
   box-shadow: var(--ar-well);
+  pointer-events: none;
 }
 .ar-trackball__ball:focus-visible::before {
   background:
@@ -212,6 +220,24 @@
 .ar-vec3__cell .ar-number__label {
   color: var(--_axis);
   font-weight: var(--ar-weight-bold, 700);
+}
+/* three figures always stay one row on their control's width, never wrapping under the name: when the
+   cells get narrow they drop the X · Y · Z letters and keep the axis as a short bar of its colour on
+   the cell's left, so the digits get the room */
+.ar-vec3 {
+  container: ar-vec3 / inline-size;
+}
+@container ar-vec3 (max-width: 200px) {
+  .ar-vec3__cell {
+    padding-inline: calc(4px * var(--ar-k, 1)) calc(3px * var(--ar-k, 1));
+    background:
+      linear-gradient(var(--_axis), var(--_axis)) left calc(3px * var(--ar-k, 1)) center / 2px 46% no-repeat,
+      linear-gradient(var(--ar-lift), var(--ar-lift)),
+      var(--ar-trough);
+  }
+  .ar-vec3__cell .ar-number__label {
+    display: none;
+  }
 }
 .ar-vec3__link[aria-pressed='true'] {
   color: var(--ar-signal);

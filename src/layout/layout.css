@@ -78,7 +78,7 @@
   letter-spacing: 0;
 }
 .ar-panel__subtitle {
-  font: var(--ar-weight-regular) var(--ar-text-xs) / 16px var(--ar-font-ui);
+  font: var(--ar-type-note);
   color: var(--ar-tone-note);
 }
 .ar-panel__actions {
@@ -153,8 +153,9 @@
   border-bottom: 1px solid var(--ar-line-strong);
   border-radius: 0;
 }
+/* a group's first row follows its heading exactly as a section's does: one rhythm at every depth */
 .ar-section__body > .ar-section > .ar-section__fold > .ar-section__body {
-  padding-top: var(--ar-row-gap);
+  padding-top: 0;
 }
 .ar-section__body > .ar-section > .ar-section__head .ar-section__title,
 .ar-section__body > .ar-section:not([data-open]) > .ar-section__head .ar-section__title {
@@ -163,12 +164,13 @@
   text-transform: none;
   color: color-mix(in oklab, var(--ar-tone-accent) var(--ar-group-accent, 100%), var(--ar-tone-title)); /* a group inside a section: small, in the accent */
 }
-/* rows of a list sit on hairlines, so the eye runs along them and the columns stay aligned */
+/* rows sit on the row gap alone, in every density: one row is one height wherever it is, and the
+   label column and the controls' two edges carry the eye down a long column, not lines between rows */
 .ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
 .ar-panel__body > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
 .ar-prop:not([data-density='default']) + .ar-prop:not([data-density='default']) {
-  padding-top: var(--ar-row-gap);
-  border-top: 1px solid var(--ar-line);
+  padding-top: 0;
+  border-top: 0;
 }
 /* cards carry their own edges: no line and no air, only a gap, and the panel's gutter tightens so
    the cards hold the width; the head keeps a little more, level with the cards' own content */
@@ -207,7 +209,7 @@
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 
 /* ---------- Section ---------- */
@@ -324,13 +326,20 @@ button.ar-section__trigger:focus-visible {
   /* the system sets how much accent it takes and how far it steps back (--ar-section-accent, --ar-section-quiet) */
   color: color-mix(in oklab, var(--ar-tone-label) var(--ar-section-quiet, 0%), color-mix(in oklab, var(--ar-tone-accent) var(--ar-section-accent, 0%), var(--ar-tone-title)));
 }
-/* a system may set an accent tick before a section's name (--ar-section-tick: block) and a line under it */
+/* a system may set an accent tick before a section's name (--ar-section-tick: block) and a line under it.
+   The tick is a mark, so it sits in the left gutter: the name stays on the line every name starts on */
+.ar-section > .ar-section__head {
+  position: relative;
+}
 .ar-section > .ar-section__head::before {
   content: '';
   display: var(--ar-section-tick, none);
-  flex: none;
+  position: absolute;
+  top: calc(50% - var(--ar-space-4) / 2); /* the middle of the title row, above the head's own foot */
+  left: calc(-8px * var(--ar-k, 1));
   width: var(--ar-section-tick-w, 2px);
   height: max(calc(14px * var(--ar-k, 1)), 14px);
+  translate: 0 -50%;
   border-radius: 1px;
   background: var(--ar-signal);
 }
@@ -357,8 +366,17 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body > .ar-section > .ar-section__head .ar-section__rule {
   background: none;
 }
+/* a switchable group's light sits in the gutter left of the line, like a row's changed dot: the
+   title stays on the line every name in the panel starts on */
+.ar-section__trigger {
+  position: relative;
+}
 .ar-section__led {
+  position: absolute;
+  top: 50%;
+  left: calc(-10px * var(--ar-k, 1));
   height: max(calc(8px * var(--ar-k, 1)), 8px);
+  translate: 0 -50%;
 }
 .ar-section__count {
   /* a small fact at the end of the title row, set like a Tag; in a narrow column it gives way
@@ -369,10 +387,10 @@ button.ar-section__trigger:focus-visible {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: var(--ar-weight-text) 12px / 18px var(--ar-font-ui);
+  font: var(--ar-type-note);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
-  color: var(--ar-text-faint);
+  color: var(--ar-tone-hint);
   transition:
     color var(--ar-dur-state) var(--ar-ease),
     opacity var(--ar-dur-surface) var(--ar-ease);
@@ -383,7 +401,7 @@ button.ar-section__trigger:focus-visible {
   color: var(--ar-text-hi);
 }
 .ar-section__trigger:hover .ar-section__count {
-  color: var(--ar-text-mid);
+  color: var(--ar-tone-label);
 }
 .ar-section[data-off] .ar-section__count {
   opacity: 0.5;
@@ -432,7 +450,7 @@ button.ar-section__trigger:focus-visible {
   /* top-aligned, with the label as tall as one control row: it sits level with the control's
      first line, even beside a multiline field or a tall pad */
   align-items: start;
-  column-gap: var(--ar-space-4);
+  column-gap: var(--ar-label-gap, 10px);
   row-gap: var(--ar-space-2);
   min-width: 0;
 }
@@ -548,7 +566,7 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-field__required {
   margin-left: calc(3px * var(--ar-k, 1));
-  color: var(--ar-text-faint);
+  color: var(--ar-tone-hint);
 }
 .ar-field__message {
   grid-column: 2;
@@ -650,9 +668,9 @@ button.ar-section__trigger:focus-visible {
 }
 /* how many things are in a tab: a quiet figure after its name */
 .ar-tabs__count {
-  font: var(--ar-weight-text) 12px / 16px var(--ar-font-ui);
+  font: var(--ar-type-note);
   font-variant-numeric: tabular-nums;
-  color: var(--ar-text-faint);
+  color: var(--ar-tone-hint);
 }
 .ar-tabs__tab[aria-selected='true'] .ar-tabs__count {
   color: var(--ar-tone-accent);

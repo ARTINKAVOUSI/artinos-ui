@@ -6,6 +6,7 @@ import { Kbd } from '../actions/Kbd';
 import { interfaceVisibility, useAutoHide } from '../core/autohide';
 import { cx } from '../core/utils';
 import { PaneContext } from '../core/pane';
+import { useLabelColumn } from '../core/hooks';
 import { CommandPalette } from '../overlays/CommandPalette';
 import type { Command } from '../overlays/CommandPalette';
 import { DockMenu } from './DockMenu';
@@ -625,6 +626,7 @@ export function Dock({
 function PanelBody({ title, children }: { title: string; children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [layout, setLayout] = useState('portrait');
+  useLabelColumn(ref);
   useEffect(() => {
     const host = ref.current?.parentElement;
     if (!host) return;
@@ -637,7 +639,7 @@ function PanelBody({ title, children }: { title: string; children: ReactNode }) 
     return () => observer.disconnect();
   }, []);
   return (
-    <section ref={ref} className="ar-dock__panel" data-layout={layout} aria-label={title}>
+    <section ref={ref} className="ar-dock__panel" data-ar-label-fit="" data-layout={layout} aria-label={title}>
       <PanelErrorBoundary title={title}>
         <PaneContext.Provider value={true}>{children}</PaneContext.Provider>
       </PanelErrorBoundary>

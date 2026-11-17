@@ -1,7 +1,7 @@
 'use client';
 import { createContext, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
-import { useControllable } from '../core/hooks';
+import { useControllable, useLabelColumn } from '../core/hooks';
 import { autoHideAttrs, useInterfaceVisibility } from '../core/autohide';
 import { RollingText } from '../core/RollingValue';
 import { FieldContext } from '../core/field';
@@ -75,6 +75,10 @@ export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 't
   const shown = !collapsible || isOpen;
   const bodyId = useId();
   const ui = useInterfaceVisibility();
+  // the label column fits the longest name in the panel; a labelWidth, or the pane around it, decides instead
+  const fit = labelWidth === undefined && !inPane;
+  const rootRef = useRef<HTMLElement>(null);
+  useLabelColumn(rootRef, fit);
   const hiding = autoHide && !inPane ? autoHideAttrs(ui) : undefined;
   const titles = (
     <div className="ar-panel__titles">
@@ -83,7 +87,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 't
     </div>
   );
   return (
-    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }} {...hiding} inert={(hiding && !ui.visible) || undefined}>
+    <Tag ref={rootRef} id={id} data-ar-label-fit={fit ? '' : undefined} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }} {...hiding} inert={(hiding && !ui.visible) || undefined}>
       {(inPane ? subtitle || actions : title || subtitle || actions || icon) ? (
         <header className="ar-panel__head">
           {icon && !inPane ? <span className="ar-panel__icon">{icon}</span> : null}

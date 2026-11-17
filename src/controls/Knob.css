@@ -25,8 +25,15 @@
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
+}
+/* the socket's shading, over the cap that sits in it */
+.ar-knob__dial::after {
+  content: '';
+  position: absolute;
+  inset: 21%;
+  border-radius: 50%;
   box-shadow: var(--ar-well);
-  transition: box-shadow var(--ar-dur-state) var(--ar-ease);
+  pointer-events: none;
 }
 .ar-knob__dial:focus-visible::before {
   background: linear-gradient(var(--ar-focus-lift), var(--ar-focus-lift)), var(--ar-trough);

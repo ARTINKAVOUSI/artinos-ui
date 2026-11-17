@@ -84,7 +84,7 @@
 
 /* invalid: the well keeps its shape and takes a fine fault edge; in focus it lights with the fault */
 .ar-textfield[data-invalid] {
-  box-shadow: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-fault) 70%, transparent);
+  --ar-well-shade: var(--ar-well), inset 0 0 0 1px color-mix(in srgb, var(--ar-fault) 70%, transparent);
 }
 .ar-textfield[data-invalid]:focus-within {
   --ar-lift: color-mix(in srgb, var(--ar-fault) 14%, transparent);

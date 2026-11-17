@@ -36,14 +36,8 @@
 .ar-inspector__row {
   min-width: 0;
 }
-/* a nested folder steps its names in, never its controls: every control at every depth starts
-   and ends on the same two lines */
-.ar-inspector .ar-section .ar-section :is(.ar-prop__label, .ar-section__head) {
-  padding-left: var(--ar-space-5);
-}
-.ar-inspector .ar-section .ar-section .ar-section :is(.ar-prop__label, .ar-section__head) {
-  padding-left: var(--ar-space-8);
-}
+/* a nested folder is told by its heading alone: its names and its controls stay on the panel's
+   lines at every depth, never stepped in */
 .ar-inspector .ar-section__body > .ar-section > .ar-section__head {
   border-bottom: 0;
 }
@@ -51,15 +45,23 @@
   visibility: hidden;
 }
 
+/* the keyframe diamond lives in the right gutter, as a row's changed dot lives in the left: every
+   control ends on the panel's right line, the same line as in any other panel */
+.ar-inspector .ar-prop__actions {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  translate: 0 -50%;
+}
 /* the keyframe diamond: hollow under the hand, filled in the signal once the row is keyed */
 .ar-inspector__key {
   all: unset;
   display: grid;
   place-items: center;
-  width: calc(16px * var(--ar-k, 1));
+  width: calc(12px * var(--ar-k, 1)); /* fits the gutter; the target below is larger than the mark */
   height: max(calc(16px * var(--ar-k, 1)), 16px);
   border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
-  color: var(--ar-text-mid);
+  color: var(--ar-tone-label);
   cursor: pointer;
   transition:
     color var(--ar-dur-state) var(--ar-ease),
@@ -160,7 +162,7 @@
 /* a multiple selection that disagrees says so in words beside the name ("mixed"); the control is
    drawn as the theme draws it */
 .ar-inspector .ar-prop__message {
-  margin-left: calc(var(--ar-field-label-w) + var(--ar-space-3));
+  margin-left: calc(var(--ar-field-label-w) + var(--ar-label-gap, 10px));
   margin-bottom: var(--ar-space-2);
 }
 
@@ -353,20 +355,14 @@
 }
 
 /* a narrow inspector (a side dock, a small floating window) gives its label column up before its
-   figures: the names take a shorter column, still in the family's proportion */
+   figures: the names take a shorter column, still in the family's proportion. A vector row stays one
+   row on that column like every other: its three cells share the control's width. */
 .ar-inspector {
   container: ar-inspector / inline-size;
 }
-@container ar-inspector (max-width: 340px) {
+/* narrower still (a strip of a dock): the names keep just their own width */
+@container ar-inspector (max-width: 260px) {
   .ar-inspector__body {
-    --ar-field-label-w: round(calc(80px * var(--ar-k, 1)), 1px);
-  }
-  /* three figures need the whole width: the name goes above them, as a two-line row */
-  .ar-inspector__row[data-kind='vector'] .ar-prop__main {
-    flex-wrap: wrap;
-    row-gap: var(--ar-space-2);
-  }
-  .ar-inspector__row[data-kind='vector'] .ar-prop__label {
-    flex: 1 0 100%;
+    --ar-field-label-w: round(calc(64px * var(--ar-k, 1)), 1px);
   }
 }

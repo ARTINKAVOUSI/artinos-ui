@@ -192,7 +192,7 @@
   backdrop-filter: var(--ar-trough-backdrop);
   box-shadow: var(--ar-well);
   font: var(--ar-weight-text) var(--ar-text-sm) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
   cursor: pointer;
 }
 .ar-dock__search > span {
@@ -247,7 +247,7 @@
   }
 }
 .ar-dock__search:hover {
-  color: var(--ar-text-mid);
+  color: var(--ar-tone-label);
 }
 .ar-dock__search:focus-visible {
   background: linear-gradient(var(--ar-focus-lift), var(--ar-focus-lift)), var(--ar-trough);
@@ -309,8 +309,8 @@
 }
 .ar-dock__error p {
   margin: 0;
-  font: var(--ar-weight-text) var(--ar-text-sm)/var(--ar-leading-text) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 .ar-dock__footer {
   padding: calc(6px * var(--ar-k, 1)) calc(14px * var(--ar-k, 1)) calc(8px * var(--ar-k, 1));
@@ -320,7 +320,7 @@
   font-weight: var(--ar-voice-weight);
   letter-spacing: var(--ar-voice-tracking);
   text-transform: var(--ar-voice-case);
-  color: var(--ar-text-low);
+  color: var(--ar-tone-note);
 }
 
 /* ---------- PanelBar: a panel's toolbar; rides in the strip when there is room ---------- */
@@ -351,8 +351,8 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font: var(--ar-weight-text) var(--ar-text-sm) var(--ar-font-ui);
-  color: var(--ar-text-low);
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
 }
 .ar-dock__slot > .ar-panel-bar {
   flex-wrap: nowrap;
