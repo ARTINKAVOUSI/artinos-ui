@@ -106,6 +106,23 @@
     opacity 240ms var(--ar-ease-exit),
     filter 160ms var(--ar-ease-exit);
 }
+/* the fill sits inside the frame, so the frame's shading falls on it too: the well's own shadow
+   (inner shade, rim, the deeper press while dragging, focus) is drawn again over the fill's area
+   only, above the fill and below the marks and the text. Its outer parts fall outside the track and
+   are clipped away, so only what lies inside the frame repeats. */
+.ar-slider__rim {
+  --_in: calc(var(--ar-inset) * var(--ar-k, 1));
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inherit;
+  clip-path: inset(var(--_in) calc(100% - var(--_x1)) var(--_in) var(--_x0) round var(--_ir));
+  pointer-events: none;
+  transition: opacity 200ms var(--ar-ease);
+}
+.ar-slider[data-off] .ar-slider__rim {
+  opacity: 0;
+}
 .ar-slider__offline {
   position: absolute;
   top: 50%;

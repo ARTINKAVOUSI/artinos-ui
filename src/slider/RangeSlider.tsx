@@ -435,6 +435,7 @@ export function RangeSlider(props: RangeSliderProps) {
         onDoubleClick={onDoubleClick}
       >
         <div className="ar-insert ar-slider__fill" />
+        <i className="ar-slider__rim" />
         <div className="ar-slider__offline" />
         {(detents ?? []).map((m, i) => (
           <i key={'d' + i} className="ar-slider__mark ar-slider__mark--detent" style={{ '--_m': toT(m) } as CSSProperties} />

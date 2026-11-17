@@ -586,6 +586,8 @@ export function Slider(props: SliderProps) {
         ) : (
           <div className="ar-insert ar-slider__fill" />
         )}
+        {/* the frame's own shading, laid again over the fill: the fill sits inside the frame */}
+        <i className="ar-slider__rim" />
         <div className="ar-slider__offline" />
         {originV !== null && variant === 'material' ? markTicks([originV], 'origin') : null}
         {markTicks(detents, 'detent')}
