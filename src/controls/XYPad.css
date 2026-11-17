@@ -50,8 +50,8 @@
   position: absolute;
   left: calc(var(--x, 0.5) * 100%);
   top: calc((1 - var(--y, 0.5)) * 100%);
-  width: 14px;
-  height: 14px;
+  width: calc(14px * var(--ar-k, 1));
+  height: max(calc(14px * var(--ar-k, 1)), 14px);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;

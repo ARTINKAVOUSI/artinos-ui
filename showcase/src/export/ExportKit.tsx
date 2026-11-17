@@ -5,7 +5,7 @@ import { Field, RollingText, RollingValue, Switch, THEMES, THEME_META, TYPE_COLL
 import type { ThemeName } from '../../../src';
 import { Swatch } from '../shared';
 import { collectTokenNames } from '../studio/spec';
-import { download, slugify, toCss } from '../studio/store';
+import { download, resolveTheme, slugify, toCss } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 import { BASE_THEME, buildKit, KIT_COMPONENTS } from './kit';
 import type { CustomThemeCss } from './kit';
@@ -40,17 +40,8 @@ const dirPicker = (window as unknown as { showDirectoryPicker?: DirPicker }).sho
 
 /** A saved theme as standalone CSS: every token resolved from its base plus the overrides. */
 function customCss(c: CustomTheme, names: string[]): CustomThemeCss {
-  const probe = document.createElement('div');
-  probe.setAttribute('data-ar-theme', c.base);
-  for (const [k, v] of Object.entries(c.tokens)) probe.style.setProperty(k, v);
-  probe.style.display = 'none';
-  document.body.appendChild(probe);
-  const cs = getComputedStyle(probe);
-  const resolved: Record<string, string> = {};
-  for (const n of names) resolved[n] = cs.getPropertyValue(n).trim();
-  const scheme = cs.colorScheme.includes('light') ? 'light' : 'dark';
-  probe.remove();
-  return { slug: slugify(c.name), name: c.name, css: toCss(c.name, c.base, resolved, c.tokens, scheme) };
+  const { resolved, scheme } = resolveTheme(c.base, c.tokens, names);
+  return { slug: slugify(c.name), name: c.name, css: toCss(c.name, c.base, resolved, c.tokens, scheme, c.layers) };
 }
 
 const COMPONENT_GROUPS = [...new Set(KIT_COMPONENTS.map((c) => c.group))];

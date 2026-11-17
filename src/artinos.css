@@ -1,6 +1,6 @@
 /* ARTINOS UI — single stylesheet entry. Import once, at the app root:
      import './artinos-ui/artinos.css';
-   Order matters: tokens → themes → materials → type → components. A folder's shared
+   Order matters: tokens → themes → materials → type → components → density (a density family has the last word). A folder's shared
    stylesheet (folder/folder.css) comes before its components' own. */
 @import './tokens/fonts.css';
 @import './tokens/tokens.css';
@@ -26,7 +26,9 @@
 @import './layout/Callout.css';
 @import './layout/StatStrip.css';
 @import './overlays/overlays.css';
+@import './inspector/inspector.css';
 @import './dock/metablock/WorkspaceView.css';
 @import './dock/Dock.css';
 @import './dock/DockMenu.css';
 @import './graph/graph.css';
+@import './tokens/density.css';

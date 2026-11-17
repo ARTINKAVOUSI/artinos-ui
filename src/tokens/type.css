@@ -206,7 +206,7 @@
   --ar-title-fill: transparent;
   --ar-section-rule: 1px;
   --ar-section-midrule: 0px; /* the name stands on its own line instead */
-  --ar-type-section: 500 14px / 20px var(--ar-font-heading);
+  --ar-weight-section: 500;
   --ar-stat-font: 'Instrument Serif', Georgia, serif;
   --ar-stat-weight: 400;
   --ar-stat-size: 28px;
@@ -235,7 +235,7 @@
   --ar-weight-title: 700;
   --ar-panel-title-size: 18px;
   --ar-panel-title-weight: 800;
-  --ar-type-section: 700 14px / 20px var(--ar-font-heading);
+  --ar-weight-section: 700;
   --ar-section-tick: block;
   --ar-section-tick-w: 4px;
   --ar-stat-font: var(--ar-font-display);
@@ -318,7 +318,9 @@
   --ar-font-numeral: var(--ar-font-display);
   --ar-numeral-style: normal;
   /* the look: an operating system's settings. Section names smaller and stepped back, like group headings */
-  --ar-type-section: 600 13px / 18px var(--ar-font-heading);
+  --ar-weight-section: 600;
+  --ar-section-size: 13px;
+  --ar-section-line: 18px;
   --ar-section-quiet: 45%;
   --ar-stat-weight: 600;
 }
@@ -433,7 +435,9 @@
   --ar-weight-title: 600;
   --ar-panel-title-weight: 600;
   --ar-panel-title-size: 15px;
-  --ar-type-section: 500 13px / 18px var(--ar-font-heading);
+  --ar-weight-section: 500;
+  --ar-section-size: 13px;
+  --ar-section-line: 18px;
   --ar-track-heading: -0.03em;
   --ar-track-heading-sm: -0.01em;
   --ar-leading-heading: 1.1;

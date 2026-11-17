@@ -16,7 +16,7 @@
   --_thick: 4px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10px * var(--ar-k, 1));
   min-width: 0;
   height: var(--ar-h);
 }
@@ -77,7 +77,7 @@
 }
 /* a heavy bar carries a fine line for a tip, not a dot wider than itself */
 .ar-meter:is([data-size='lg'], [data-size='xl']) .ar-meter__tip {
-  width: 2px;
+  width: calc(2px * var(--ar-k, 1));
   height: calc(var(--_thick) + 2px);
   margin: calc(var(--_thick) / -2 - 1px) 0 0 -1px;
   border-radius: 1px;
@@ -102,7 +102,7 @@
   top: calc(100% + 3px);
   right: 0;
   left: 0;
-  height: 3px;
+  height: max(calc(3px * var(--ar-k, 1)), 3px);
   background:
     linear-gradient(90deg, var(--ar-tick-major) 1px, transparent 0) 0 0 / calc((100% - 1px) / var(--_ticks)) 100%;
   pointer-events: none;
@@ -148,7 +148,7 @@
 /* upright: label under, reading over, the level rising through the track */
 .ar-meter[data-orientation='vertical'] {
   flex-direction: column-reverse;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
   width: max-content;
   height: var(--ar-meter-len, 132px);
 }
@@ -178,13 +178,13 @@
   top: auto;
   bottom: 0;
   left: 50%;
-  margin: 0 0 -3px -3px;
+  margin: 0 0 calc(-3px * var(--ar-k, 1)) calc(-3px * var(--ar-k, 1));
   transform: translateY(calc(var(--_p, 0) * -100cqh));
 }
 .ar-meter[data-orientation='vertical']:is([data-size='lg'], [data-size='xl']) .ar-meter__tip {
   left: -1px;
   width: calc(var(--_thick) + 2px);
-  height: 2px;
+  height: max(calc(2px * var(--ar-k, 1)), 2px);
   margin: 0 0 -1px;
 }
 .ar-meter[data-orientation='vertical'] .ar-meter__peak {
@@ -215,9 +215,9 @@
   position: absolute;
   top: 50%;
   left: 0;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -4px;
+  width: calc(6px * var(--ar-k, 1));
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
+  margin: calc(-3px * var(--ar-k, 1)) 0 0 calc(-4px * var(--ar-k, 1));
   border-radius: 50%;
   background: color-mix(in srgb, var(--ar-meter-tone) 55%, white);
   box-shadow:
@@ -245,7 +245,7 @@
   width: var(--ar-meter-label-w, 92px);
 }
 .ar-meter__value {
-  min-width: 44px;
+  min-width: calc(44px * var(--ar-k, 1));
   text-align: right;
   font-variant-numeric: tabular-nums;
   color: var(--ar-value-ink);
@@ -307,7 +307,7 @@
   content: '';
   position: absolute;
   inset: 0 0 auto;
-  height: 2px;
+  height: max(calc(2px * var(--ar-k, 1)), 2px);
   background: var(--ar-value-ink-hi);
   opacity: 0.85;
 }
@@ -398,7 +398,7 @@
   --_tone: var(--ar-signal);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: calc(4px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-stat[data-tone='warm'] {
@@ -420,11 +420,11 @@
   color: var(--ar-text-low);
 }
 .ar-stat__level {
-  height: 10px;
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
 }
 .ar-stat[data-framed] {
-  padding: 12px 14px 12px;
-  border-radius: var(--ar-radius-card);
+  padding: calc(12px * var(--ar-k, 1)) calc(14px * var(--ar-k, 1)) calc(12px * var(--ar-k, 1));
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   /* a quiet tile, lit from above: a soft wash, hairline edges and a brighter top edge */
   background: linear-gradient(180deg, color-mix(in srgb, var(--ar-text-hi) 6%, transparent), color-mix(in srgb, var(--ar-text-hi) 1.5%, transparent) 60%), var(--ar-bg-surface);
   box-shadow:
@@ -434,7 +434,7 @@
 .ar-stat__head {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-stat__label {
@@ -468,10 +468,10 @@
   display: inline-flex;
   flex: none;
   align-items: center;
-  gap: 3px;
-  height: 18px;
-  padding: 0 7px 0 5px;
-  border-radius: var(--ar-radius-control);
+  gap: calc(3px * var(--ar-k, 1));
+  height: max(calc(18px * var(--ar-k, 1)), 16px);
+  padding: 0 calc(7px * var(--ar-k, 1)) 0 calc(5px * var(--ar-k, 1));
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
   background: color-mix(in srgb, var(--_d) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_d) 24%, transparent);
   font: var(--ar-weight-text) max(var(--ar-text-xs), calc(var(--ar-value-size) - 1px)) / 1 var(--ar-control-font);
@@ -479,8 +479,8 @@
   color: var(--_d);
 }
 .ar-stat__delta svg {
-  width: 8px;
-  height: 8px;
+  width: calc(8px * var(--ar-k, 1));
+  height: max(calc(8px * var(--ar-k, 1)), 8px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
@@ -495,7 +495,7 @@
 }
 .ar-stat__trend {
   width: 100%;
-  margin-top: 4px;
+  margin-top: calc(4px * var(--ar-k, 1));
   color: var(--_tone);
 }
 .ar-stat__caption {
@@ -509,7 +509,7 @@
   --_thick: 4px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-progress[data-size='sm'] {
@@ -531,7 +531,7 @@
 .ar-progress__head {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: calc(10px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-progress__label {
@@ -578,9 +578,9 @@
   position: absolute;
   top: 50%;
   left: 0;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -4px;
+  width: calc(6px * var(--ar-k, 1));
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
+  margin: calc(-3px * var(--ar-k, 1)) 0 0 calc(-4px * var(--ar-k, 1));
   border-radius: 50%;
   background: color-mix(in srgb, var(--_tone) 55%, white);
   box-shadow:
@@ -635,7 +635,7 @@
 }
 /* a heavy bar carries a fine line for a tip */
 .ar-progress[data-size='lg'] .ar-progress__tip {
-  width: 2px;
+  width: calc(2px * var(--ar-k, 1));
   height: calc(var(--_thick) + 2px);
   margin: calc(var(--_thick) / -2 - 1px) 0 0 -1px;
   border-radius: 1px;
@@ -645,7 +645,7 @@
   --_ring: 56px;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
+  gap: calc(12px * var(--ar-k, 1));
 }
 .ar-progress[data-variant='ring'][data-size='sm'] {
   --_ring: 36px;
@@ -721,7 +721,7 @@
 .ar-progress__side {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
   min-width: 0;
 }
 /* running: a soft sheen travels along the fill, so a task that waits still looks alive */

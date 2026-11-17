@@ -20,19 +20,41 @@ export interface ChapterDef {
 
 export const CHAPTERS: readonly ChapterDef[] = [
   {
+    id: 'layout',
+    title: 'Workspace',
+    note: 'How a tool is built, from the outside in: a workspace arranges panels, a panel holds sections, a section holds parts. Every panel is a MetaBlock: it docks, floats, tabs and splits.',
+    components: ['Dock', 'MetaBlock', 'Panel', 'PanelBar', 'Tabs', 'Section', 'SectionGroup', 'Params', 'Field', 'PropertyRow', 'Inspector', 'InspectorTimeline', 'ItemList', 'ItemRow', 'StatStrip', 'Callout', 'Text'],
+    sections: [
+      { id: 'panel', title: 'Workspace & panels' },
+      { id: 'tabs', title: 'Tabs' },
+      { id: 'section', title: 'Sections' },
+      { id: 'parts', title: 'Parts' },
+      { id: 'inspector', title: 'Inspector' },
+      { id: 'lists', title: 'Lists' },
+      { id: 'reference', title: 'Reference' },
+    ],
+  },
+  {
+    id: 'density',
+    title: 'Density',
+    note: 'Dense, Standard and Comfort: the same instrument at three sizes, every theme scaled to each.',
+    meta: true,
+    sections: [
+      { id: 'density-families', title: 'Three families' },
+      { id: 'density-themes', title: 'A theme per family' },
+    ],
+  },
+  {
     id: 'foundations',
     title: 'Foundations',
-    note: 'One theme, five materials, one type system and one set of motions.',
+    note: 'One theme, five materials, one type scale and one set of motions.',
     meta: true,
     sections: [
       { id: 'themes', title: 'Themes' },
       { id: 'materials', title: 'Materials' },
-      { id: 'tokens', title: 'Tokens & type' },
+      { id: 'tokens', title: 'Tokens & space' },
       { id: 'type', title: 'Type collections' },
-      { id: 'density', title: 'Density' },
-      { id: 'layout', title: 'Layout & text' },
       { id: 'typography', title: 'Typography' },
-      { id: 'type-styles', title: 'Type styles' },
       { id: 'motion', title: 'Motion' },
     ],
   },
@@ -125,20 +147,6 @@ export const CHAPTERS: readonly ChapterDef[] = [
       { id: 'toasts', title: 'Toasts' },
       { id: 'tooltip', title: 'Tooltip' },
       { id: 'palette', title: 'Command palette' },
-    ],
-  },
-  {
-    id: 'layout',
-    title: 'Layout system',
-    note: 'Three levels: a panel holds sections, a section holds parts. A panel is a MetaBlock, the same on a page, in a dock or floating.',
-    components: ['Panel', 'Dock', 'MetaBlock', 'PanelBar', 'Tabs', 'Section', 'SectionGroup', 'Params', 'Field', 'PropertyRow', 'ItemList', 'ItemRow', 'StatStrip', 'Callout', 'Text'],
-    sections: [
-      { id: 'panel', title: 'Panel' },
-      { id: 'tabs', title: 'Tabs' },
-      { id: 'section', title: 'Section' },
-      { id: 'parts', title: 'Parts' },
-      { id: 'lists', title: 'Lists' },
-      { id: 'reference', title: 'Reference' },
     ],
   },
   {

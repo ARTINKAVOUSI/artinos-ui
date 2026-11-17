@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import type { TextFace, TextVariant, TypeCollection } from '../../../src';
-import { Badge, Button, Callout, ChipGroup, DENSITIES, Field, Inline, NumberField, Panel, Section, Segmented, Select, Slider, Stack, StatStrip, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
+import { Badge, Button, Callout, Field, Inline, NumberField, Panel, Section, Select, Slider, Stack, Switch, Text, TextField, THEMES, TYPE_COLLECTIONS, TYPE_META } from '../../../src';
 import { TokenTable } from '../app/foundations';
-import { ThemeTile, themeFamilies } from '../themes/ThemesPage';
+import { ThemeTile, galleryThemes } from '../themes/ThemesPage';
 import { Chapter, Spec } from '../shared';
 
 /* ---------- the theme gallery, on the bare backdrop ---------- */
@@ -41,20 +41,16 @@ function useOpenWindow(ref: RefObject<HTMLElement | null>) {
 function ThemeGallery({ theme, onPickTheme }: { theme: string; onPickTheme: (t: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useOpenWindow(ref);
-  const families = themeFamilies();
-  const [family, setFamily] = useState(families[0].name);
-  const shown = families.find((f) => f.name === family) ?? families[0];
+  const themes = galleryThemes();
   return (
     <div ref={ref} className="sc-window">
       <div className="sc-themes-inline__bar">
-        <ChipGroup label="Family" multiple={false} options={families.map((f) => ({ value: f.name, label: f.name }))} value={[family]} onChange={(v) => v[0] && setFamily(v[0])} />
         <Button size="sm" variant="primary" onClick={() => (location.hash = '#themes')}>
           Open the theme gallery
         </Button>
       </div>
-      <p className="sc-themes-inline__about">{shown.about}</p>
       <div className="sc-tiles">
-        {shown.themes.map((t) => (
+        {themes.map((t) => (
           <ThemeTile key={t} t={t} active={t === theme} onPick={() => onPickTheme(t)} />
         ))}
       </div>
@@ -220,23 +216,11 @@ function TypeLineup({ type, onPick }: { type: string; onPick: (t: TypeCollection
               }
               labelWidth={84}
             >
-              <StatStrip
-                items={[
-                  { label: 'Index', value: '1.52', unit: 'IOR' },
-                  { label: 'Frame', value: '16.4', unit: 'ms' },
-                ]}
-              />
               <Section title="Surface" count="3 changed">
                 <Slider label="Transmission" defaultValue={0.71} format="percent" decimals={0} />
                 <Field label="Finish">
                   <Select label="Finish" appearance="well" options={['Polished', 'Satin', 'Frosted']} defaultValue="Satin" />
                 </Field>
-                <Section title="Response">
-                  <Slider label="Gain" bipolar detents={[0]} min={-12} max={12} defaultValue={-4.5} format="db" />
-                  <Field label="Samples">
-                    <NumberField aria-label="Samples" defaultValue={2048} decimals={0} />
-                  </Field>
-                </Section>
               </Section>
             </Panel>
           </article>
@@ -340,136 +324,27 @@ function TypeStyles() {
         </div>
       </div>
 
-      <div>
-        <span className="sc-styles__label">put together</span>
-        <div className="sc-styles__recipes">
-          <div>
-            <Text variant="eyebrow">Release 2.4</Text>
-            <Text variant="display" as="p">
-              A sharper <em>edge</em>
-            </Text>
-            <Text variant="lead">The rim now follows the light, so glass reads as glass from any angle.</Text>
-          </div>
-          <div>
-            <div className="sc-step">
-              <Text variant="numeral" as="span">
-                1
-              </Text>
-              <Text variant="subheading" as="p">
-                Pick a preset
-              </Text>
-              <Text variant="note">Start from thick glass in Templates.</Text>
-            </div>
-            <div className="sc-step">
-              <Text variant="numeral" as="span">
-                2
-              </Text>
-              <Text variant="subheading" as="p">
-                Tune the roughness
-              </Text>
-              <Text variant="note">Lower it for a sharper image.</Text>
-            </div>
-            <div className="sc-step">
-              <Text variant="numeral" as="span">
-                3
-              </Text>
-              <Text variant="subheading" as="p">
-                Check the rim
-              </Text>
-              <Text variant="note">A value past 0.8 starts to glow.</Text>
-            </div>
-          </div>
-          <Panel>
-            <Stack gap={3}>
-              <Inline justify="between">
-                <Text variant="eyebrow">Inside a panel</Text>
-                <Text variant="tag">Live</Text>
-              </Inline>
-              <Text variant="statement" as="p">
-                The same styles, <em>a size down</em>.
-              </Text>
-              <Inline gap={5} align="baseline">
-                <Text variant="numeral" as="span">
-                  42
-                </Text>
-                <Text variant="meta">frames in the last second</Text>
-              </Inline>
-            </Stack>
-          </Panel>
-        </div>
-      </div>
     </div>
   );
 }
 
-/* ---------- layout & text ---------- */
+/* ---------- space ---------- */
 
 const STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
-function LayoutAndText() {
-  const [format, setFormat] = useState('glTF');
+/** The space scale: every gap and padding in the family is one of these steps. */
+function SpaceScale() {
   return (
-    <div className="sc-grid" style={{ alignItems: 'start' }}>
-      <Stack gap="group">
-        <Stack gap={2}>
-          <Text variant="kicker">Type roles</Text>
-          <Text as="h3" variant="title">One role per kind of text</Text>
-          <Text variant="caption">One role per kind of text; a name is quiet, its answer is loud.</Text>
-        </Stack>
-        <Stack gap={3}>
-          <Text variant="figure">60.0</Text>
-          <Text as="h4" variant="heading">Heading inside prose</Text>
-          <Text>
-            Body text is 14 px on a page and 13 px in a panel, on an open line. A paragraph keeps to about sixty characters a line and wraps evenly, so it reads as a block rather than a ragged edge.
-          </Text>
-          <Inline align="baseline" gap={3}>
-            <Text variant="value">16.4 ms</Text>
-            <Text variant="caption">frame time, a caption under or beside the figure it explains</Text>
-          </Inline>
-          <Inline gap={3} wrap>
-            <Text variant="caption" tone="signal">signal</Text>
-            <Text variant="caption" tone="warn">warn</Text>
-            <Text variant="caption" tone="fault">fault</Text>
-            <Text variant="caption" tone="faint">faint</Text>
-          </Inline>
-        </Stack>
-        <Stack gap={3}>
-          <Text variant="kicker">Space scale</Text>
-          <Inline align="end" gap={3}>
-            {STEPS.map((n) => (
-              <Stack key={n} gap={2} align="center">
-                <span className="sc-space" style={{ width: `var(--ar-space-${n})`, height: `var(--ar-space-${n})` }} />
-                <Text variant="caption" tone="faint">
-                  {n}
-                </Text>
-              </Stack>
-            ))}
-          </Inline>
-        </Stack>
-      </Stack>
-
-      <Panel title="Export" subtitle="Built from the primitives only" labelWidth={84}>
-        <Text>Every gap here comes from the scale and every label shares one column, so the panel lines up without a single hand-set margin.</Text>
-        <Section title="Output" count={3}>
-          <Field label="Name">
-            <TextField value="orb-studio" onChange={() => {}} />
-          </Field>
-          <Field label="Format">
-            <Segmented options={['glTF', 'USDZ', 'OBJ']} value={format} onChange={setFormat} />
-          </Field>
-          <Field label="Scale">
-            <NumberField defaultValue={1} decimals={2} unit="×" aria-label="Scale" />
-          </Field>
-        </Section>
-        <Section title="Size" count={2} columns={2}>
-          <NumberField label="W" defaultValue={2048} decimals={0} unit="px" />
-          <NumberField label="H" defaultValue={1365} decimals={0} unit="px" />
-        </Section>
-        <Inline justify="end" gap={3} style={{ marginTop: 'var(--ar-space-4)' }}>
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="primary">Export</Button>
-        </Inline>
-      </Panel>
+    <div className="sc-space-scale">
+      <span className="sc-subhead">Space · one scale for every gap and padding</span>
+      <Inline align="end" gap={5}>
+        {STEPS.map((n) => (
+          <Stack key={n} gap={2} align="center">
+            <span className="sc-space" style={{ width: `var(--ar-space-${n})`, height: `var(--ar-space-${n})` }} />
+            <code>{n}</code>
+          </Stack>
+        ))}
+      </Inline>
     </div>
   );
 }
@@ -545,50 +420,6 @@ function Materials() {
           <MaterialSpecimen id={m.id} />
         </figure>
       ))}
-    </div>
-  );
-}
-
-/* ---------- type ---------- */
-
-function TypeScale() {
-  const steps: Array<[string, string]> = [
-    ['xl', 'Panel titles'],
-    ['lg', 'Sheet titles, the palette query'],
-    ['md', 'Body: field labels, messages'],
-    ['sm', 'Secondary lines, tabs'],
-    ['xs', 'Hints, captions, port names'],
-  ];
-  return (
-    <div className="sc-voices">
-      <div className="sc-voice">
-        <span className="sc-subhead">Words · the reading face</span>
-        {steps.map(([k, use]) => (
-          <div key={k} className="sc-voice__row">
-            <span style={{ font: `var(--ar-weight-light) var(--ar-text-${k}) var(--ar-font-ui)`, color: 'var(--ar-text-hi)' }}>{use}</span>
-            <code>--ar-text-{k}</code>
-          </div>
-        ))}
-      </div>
-      <div className="sc-voice">
-        <span className="sc-subhead">Controls · the control face</span>
-        <div className="sc-voice__row">
-          <span className="ar-text" style={{ color: 'var(--ar-text-hi)' }}>
-            Control label
-          </span>
-          <code>--ar-label-*</code>
-        </div>
-        <div className="sc-voice__row">
-          <span className="ar-value" style={{ color: 'var(--ar-text-hi)' }}>
-            0.5200
-          </span>
-          <code>--ar-value-*</code>
-        </div>
-        <div className="sc-voice__row">
-          <span style={{ font: 'var(--ar-weight-title) var(--ar-text-3xl) / var(--ar-leading-none) var(--ar-font-display)', letterSpacing: 'var(--ar-track-display)', color: 'var(--ar-text-hi)' }}>Display</span>
-          <code>550 · page titles</code>
-        </div>
-      </div>
     </div>
   );
 }
@@ -681,7 +512,7 @@ export function FoundationsChapter({ theme, onPickTheme, type, onPickType }: { t
     <Chapter id="foundations">
       <Spec
         id="themes"
-        text={`A theme is the whole look: ground, ink, signal, panel glass and a control finish tuned for it. You pick one — nothing else. Solid themes paint their own ground; glass themes are panes over whatever is behind them (try the backdrops in the bar). There are ${THEMES.length}, in families. Pick a family and click a tile to apply it; each tile is its own data-ar-theme scope, so themes nest. The theme gallery shows every theme on the bare backdrop, with a stage that dresses a small working setup in the one you pick.`}
+        text={`A theme is the whole look: ground, ink, signal, panel glass and a control finish tuned for it. You pick one — nothing else. Solid themes paint their own ground; glass themes are panes over whatever is behind them (try the backdrops in the bar). There are ${THEMES.length}, side by side, the default first. Click a tile to apply it; each tile is its own data-ar-theme scope, so themes nest. The theme gallery shows every theme on the bare backdrop, with a stage that dresses a small working setup in the one you pick.`}
         code={`
 import { ArtinosTheme } from './artinos-ui';
 
@@ -705,10 +536,10 @@ import { ArtinosTheme } from './artinos-ui';
 
       <Spec
         id="tokens"
-        text="Components read tokens, never literal colours. These are the live values of the current theme. Words use the reading face on a five-step scale; labels, rows, buttons and values use the control face."
+        text="Components read tokens, never literal colours. These are the live values of the current theme. Space is one scale of nine steps (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px); density tunes three roles on it: rows in a group, groups in a panel, the panel's padding. The design guide (docs/design.md) has every rule on one page."
         code={`
 /* three layers */
---ar-ink-*, --ar-teal-*            primitives   tokens.css
+--ar-step-12 … --ar-step-48        the ladder   tokens.css
 --ar-bg-well, --ar-text-hi, …      roles        tokens.css + themes.css
 --ar-insert, --ar-seam, …          control      materials.css (each theme's finish)
 
@@ -720,7 +551,7 @@ import { ArtinosTheme } from './artinos-ui';
 --ar-type-note      12 / 400                 --ar-tone-note    66% solid`}
       >
         <TokenTable deps={[theme]} />
-        <TypeScale />
+        <SpaceScale />
       </Spec>
 
       <Spec
@@ -739,41 +570,6 @@ node artinos.mjs export --project . --themes onyx --components all --type produc
         <TypeLineup type={type} onPick={onPickType} />
       </Spec>
 
-      <Spec id="density" text="Three control heights: dense 24 · standard 26 · comfort 30. Type size, padding and radius follow. Set it per control or on any scope." code={`<Slider density="dense" />   <div data-ar-density="comfort"> … </div>`}>
-        <div className="sc-grid">
-          {DENSITIES.map((d) => (
-            <Slider key={d} density={d} label={d} defaultValue={0.34 + DENSITIES.indexOf(d) * 0.16} />
-          ))}
-        </div>
-        <div className="sc-grid">
-          {DENSITIES.map((d) => (
-            <Segmented key={d} density={d} options={['Low', 'Med', 'High']} defaultValue="MED" label={d} />
-          ))}
-        </div>
-      </Spec>
-
-      <Spec
-        id="layout"
-        text="The rules a panel is composed by. One space scale (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and three roles density tunes: rows in a group, groups in a panel, the panel's padding. Text plays one role per kind on a fixed ladder (16 panel name, 14 section, 13 value, 12 label), paragraphs kept to a comfortable measure. Stack and Inline space things only by the scale; labelWidth on a Panel or Section gives every Field one label column. The design guide (docs/design.md) has every rule on one page."
-        code={`<Panel title="Export" labelWidth={84}>
-  <Text>Every gap comes from the scale…</Text>
-  <Section title="Output">
-    <Field label="Name"><TextField … /></Field>
-    <Field label="Format"><Segmented … /></Field>
-  </Section>
-  <Section title="Size" columns={2}> <NumberField label="W" … /> <NumberField label="H" … /> </Section>
-  <Inline justify="end" gap={3}> <Button variant="ghost">Cancel</Button> <Button variant="primary">Export</Button> </Inline>
-</Panel>
-
-<Stack gap={2}>
-  <Text variant="kicker">Type roles</Text>
-  <Text variant="title">One role per kind of text</Text>
-  <Text variant="caption">One role per kind of text; a name is quiet, its answer is loud.</Text>
-</Stack>`}
-      >
-        <LayoutAndText />
-      </Spec>
-
       <Spec
         id="typography"
         wide
@@ -787,26 +583,13 @@ node artinos.mjs export --project . --themes onyx --components all --type produc
               <li>Titles balance their lines; paragraphs keep a comfortable measure and no lone last word.</li>
               <li>Inside a paragraph, strong, mark, code, key and link each have their own look.</li>
               <li>A Callout sets apart what must not be missed, after the text it qualifies.</li>
+              <li><b>Beyond the roles:</b> six more styles (hero, statement, numeral, eyebrow, tag, dropcap) and seven ways to bring the accent into any of them. The accent is blended toward the ink, so small words stay readable on glass in any accent.</li>
             </ul>
           </>
         }
-        code={"<Text variant=\"overline\">Material · 3 changed</Text>\n<Text variant=\"title\">How the shell catches light</Text>\n<Text variant=\"lead\">The shell is thick glass…</Text>\n<Text>Raise <strong>Transmission</strong>… <mark>past 0.8 it glows</mark>… <kbd>Alt</kbd>…</Text>\n<Text variant=\"subheading\">What changes it</Text>\n<Text as=\"ul\"><li>Transmission…</li></Text>\n<Text variant=\"quote\">Glass reads as glass when its edge is brighter than its face.</Text>\n<Callout tone=\"tip\" title=\"Start from a preset\">Pick <strong>Thick glass</strong>…</Callout>\n<Text variant=\"note\">Values are in the scene's units.</Text>"}
+        code={"<Text variant=\"overline\">Material · 3 changed</Text>\n<Text variant=\"title\">How the shell catches light</Text>\n<Text variant=\"lead\">The shell is thick glass…</Text>\n<Text>Raise <strong>Transmission</strong>… <mark>past 0.8 it glows</mark>… <kbd>Alt</kbd>…</Text>\n<Text variant=\"subheading\">What changes it</Text>\n<Text as=\"ul\"><li>Transmission…</li></Text>\n<Text variant=\"quote\">Glass reads as glass when its edge is brighter than its face.</Text>\n<Callout tone=\"tip\" title=\"Start from a preset\">Pick <strong>Thick glass</strong>…</Callout>\n<Text variant=\"note\">Values are in the scene's units.</Text>\n\n<Text variant=\"hero\">Light, <em>held</em> in glass</Text>\n<Text variant=\"statement\">Every surface is <em>one material</em>.</Text>\n<Text variant=\"title\" accent=\"marker\">Surface response</Text>\n<Text dropcap>Raise transmission…</Text>"}
       >
         <Typography />
-      </Spec>
-
-      <Spec
-        id="type-styles"
-        wide
-        text="Beyond the roles: one ladder of sizes from 12 to 48, six more styles, and seven ways to bring the accent into any of them. The accent is blended toward the ink, so small words stay readable on glass whichever accent you pick; change it in the bar and all of this follows."
-        code={`<Text variant="eyebrow">Live preview</Text>
-<Text variant="hero">Light, <em>held</em> in glass</Text>
-<Text variant="statement">Every surface is <em>one material</em>.</Text>
-<Text variant="numeral">07</Text>
-<Text variant="tag">3 changed</Text>
-<Text variant="title" accent="marker">Surface response</Text>
-<Text dropcap>Raise transmission…</Text>`}
-      >
         <TypeStyles />
       </Spec>
 

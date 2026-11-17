@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
+import { autoHideAttrs, useInterfaceVisibility } from '../core/autohide';
 import { RollingText } from '../core/RollingValue';
 import { FieldContext } from '../core/field';
 import { useSortable } from '../core/sortable';
@@ -44,6 +45,9 @@ export interface PanelProps {
   maxHeight?: number | string;
   /** One label column for every Field inside, so their labels line up (e.g. 96). */
   labelWidth?: number | string;
+  /** Fade out with the interface (a Dock's hideKey or idleHide, `useAutoHide`, `interfaceVisibility`):
+   *  for a panel floating over a canvas. A panel inside a Dock already hides with it. */
+  autoHide?: boolean;
   children?: ReactNode;
   as?: ElementType;
   className?: string;
@@ -61,7 +65,7 @@ const Chevron = ({ up }: { up: boolean }) => (
   </svg>
 );
 
-export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 'top', footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, labelWidth, children, as = 'section', className, style, id }: PanelProps) {
+export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 'top', footer, variant = 'glass', collapsible = false, open, defaultOpen = true, onOpenChange, maxHeight, labelWidth, autoHide = false, children, as = 'section', className, style, id }: PanelProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'section';
@@ -70,6 +74,8 @@ export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 't
   const inPane = useContext(PaneContext);
   const shown = !collapsible || isOpen;
   const bodyId = useId();
+  const ui = useInterfaceVisibility();
+  const hiding = autoHide && !inPane ? autoHideAttrs(ui) : undefined;
   const titles = (
     <div className="ar-panel__titles">
       {title && !inPane ? <div className="ar-panel__title">{title}</div> : null}
@@ -77,7 +83,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 't
     </div>
   );
   return (
-    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }}>
+    <Tag id={id} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }} {...hiding} inert={(hiding && !ui.visible) || undefined}>
       {(inPane ? subtitle || actions : title || subtitle || actions || icon) ? (
         <header className="ar-panel__head">
           {icon && !inPane ? <span className="ar-panel__icon">{icon}</span> : null}

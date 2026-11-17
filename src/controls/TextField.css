@@ -3,9 +3,9 @@
 .ar-textfield {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: calc(7px * var(--ar-k, 1));
   width: 100%;
-  padding: 0 calc(var(--ar-inset) + 2px) 0 var(--ar-pad-x);
+  padding: 0 calc(calc(var(--ar-inset) * var(--ar-k, 1)) + 2px) 0 var(--ar-pad-x);
   user-select: text;
   -webkit-user-select: text;
 }
@@ -25,8 +25,8 @@
   color: var(--ar-focus-ink);
 }
 .ar-textfield__icon svg {
-  width: 12px;
-  height: 12px;
+  width: calc(12px * var(--ar-k, 1));
+  height: max(calc(12px * var(--ar-k, 1)), 12px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
@@ -53,12 +53,12 @@
   background: var(--ar-selection);
 }
 .ar-textfield__clear {
-  --_tool: calc(var(--_h) - 2 * var(--ar-inset) - 4px);
+  --_tool: calc(var(--_h) - 2 * calc(var(--ar-inset) * var(--ar-k, 1)) - 4px);
   color: var(--ar-dim-ink);
 }
 .ar-textfield__clear svg {
-  width: 8px;
-  height: 8px;
+  width: calc(8px * var(--ar-k, 1));
+  height: max(calc(8px * var(--ar-k, 1)), 8px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -97,8 +97,8 @@
 .ar-textfield[data-multiline] {
   height: auto;
   align-items: flex-start;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: calc(6px * var(--ar-k, 1));
+  padding-bottom: calc(6px * var(--ar-k, 1));
 }
 .ar-textfield textarea {
   display: block;

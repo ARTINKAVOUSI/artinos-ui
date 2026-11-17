@@ -165,6 +165,7 @@ Every interface is three levels, built from the inside out: **parts** in a **sec
 
 - **A section is the one way to group.** A group of settings, a category and a fold are all a `Section`. Categories where one is open at a time are a `SectionGroup accordion`, not tabs of their own making.
 - A section holds one idea and about seven parts. Its title stands alone, with no icon; let `count` carry one small fact; add `enabled` when the whole group can be off, `modified` and `onReset` when it can be put back.
+- **A working tool is dense.** An editor or control surface with many parameters sets `<ArtinosTheme density="dense">` once, around everything. Every size and corner of the theme scales by 22/28, rows lose their hairlines, headings step down to 14 and 13; words stay 12. The same family set as an instrument; never one dense panel among standard ones.
 - **Sections move between panels.** `createDockSections` keeps one set of sections; put `<sections.Pane id="…" />` in any `Panel` or `DockPanel` and a section drags between all of them by its heading. In a workspace it also tears off into its own panel. `createParamPanes` builds the same panes from a schema of parameters.
 - Never skip a level: a control straight in a panel has no group to fold, reset or move.
 

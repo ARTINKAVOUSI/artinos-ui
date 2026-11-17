@@ -35,23 +35,6 @@ export function TokenTable({ deps }: { deps: unknown[] }) {
   );
 }
 
-/** Theme gallery rows: four looks each. */
-export const FAMILIES: Array<[string, string[]]> = [
-  ['Flat glass — the scene blurred under one flat veil, with at most one quiet touch of hairline or depth', ['scene']],
-  ['Blends — colourless glass and frost crossed with hairlines, neumorphism and skeuomorphism', ['blends']],
-  ['Materials — marble, slate, travertine, basalt, steel, porcelain, concrete and walnut, set into glass and frost', ['materials']],
-  ['Untinted glass — clear and colourless: hairlines, depth, lenses, bevels and cut facets', ['untinted-glass']],
-  ['Untinted frost — colourless frost: pressed, raised, lifted, brushed satin and glazed ceramic', ['untinted-frost']],
-  ['Atelier glass — smoke, sea glass, silver and garnet crystal', ['atelier-glass']],
-  ['Atelier frost — vellum, polar ice, lilac silk and smoked sand', ['atelier-frost']],
-  ['Studio & signature — solid grounds and the original ARTINOS looks', ['studio', 'signature']],
-  ['Glass — clean panes over imagery or a live canvas', ['glass']],
-  ['Frost — diffuse panes', ['frost']],
-  ['Optical glass — clear transmission, no tint: the colour is what is behind', ['clear']],
-  ['Optical frost — continuous frost, bright rims, translucent or pearl fills', ['clear-frost']],
-  ['Luxe glass — coloured premium panes: metallic hairlines, wider tracking', ['luxe']],
-  ['Luxe frost — coloured premium frost: satin and glazed controls, precious-metal accents', ['luxe-frost']],
-];
 
 
 /* ---------- custom theme builder ---------- */
@@ -62,7 +45,7 @@ export function ThemeBuilder() {
   const [well, setWell] = useState(0.42);
   // the mono face is the page's type collection unless a face is picked here
   const [font, setFont] = useState('Inherit');
-  const [base, setBase] = useState<ThemeName>('studio');
+  const [base, setBase] = useState<ThemeName>('pro-gray');
   const tokens = {
     signal,
     'signal-hi': signal,

@@ -534,10 +534,10 @@ export function Slider(props: SliderProps) {
     const seamed = integrated && enabled && (variant === 'material' || variant === 'gradient');
     const [over] = seamed ? seamsOverInk(trackRef.current, [[seamP, sd, hi - lo]], [labelRef.current, valRef.current]) : [false];
     rootRef.current?.toggleAttribute('data-parted', over);
-    /* a fill edge inside a word: the text keeps one ink and the fill steps back behind it */
+    /* a fill edge inside a word: marked for apps that style it; the package draws each letter in the ink of what is behind it */
     const crossing = integrated && enabled && variant === 'material' && edgeCrossesInk(trackRef.current, [lo, hi], [labelRef.current, valRef.current]);
     rootRef.current?.toggleAttribute('data-crossing', crossing);
-    /* stepped cells run behind the text with gaps that would cut through it, so they step back there */
+    /* stepped cells run behind the text: marked the same way, nothing is dimmed */
     const inked = integrated && variant === 'stepped';
     rootRef.current?.toggleAttribute('data-inked', inked);
     const track = trackRef.current;

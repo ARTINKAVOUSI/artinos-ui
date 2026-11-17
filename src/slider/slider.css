@@ -14,7 +14,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10px * var(--ar-k, 1));
   width: 100%;
   min-width: 0;
   outline: none;
@@ -22,9 +22,9 @@
 }
 
 .ar-slider__track {
-  --_w: calc(100% - 2 * var(--ar-inset));
-  --_x0: calc(var(--ar-inset) + var(--ar-lo) * var(--_w));
-  --_x1: calc(var(--ar-inset) + var(--ar-hi) * var(--_w));
+  --_w: calc(100% - 2 * calc(var(--ar-inset) * var(--ar-k, 1)));
+  --_x0: calc(calc(var(--ar-inset) * var(--ar-k, 1)) + var(--ar-lo) * var(--_w));
+  --_x1: calc(calc(var(--ar-inset) * var(--ar-k, 1)) + var(--ar-hi) * var(--_w));
   flex: 1;
   overflow: hidden;
   touch-action: pan-y;
@@ -78,8 +78,8 @@
 /* ---------- active insert ---------- */
 .ar-slider__fill {
   position: absolute;
-  top: var(--ar-inset);
-  bottom: var(--ar-inset);
+  top: calc(var(--ar-inset) * var(--ar-k, 1));
+  bottom: calc(var(--ar-inset) * var(--ar-k, 1));
   left: var(--_x0);
   width: calc(var(--_x1) - var(--_x0));
   transform-origin: 50% 50%;
@@ -126,13 +126,13 @@
 /* ---------- stepped cells ---------- */
 .ar-slider__cells {
   position: absolute;
-  inset: var(--ar-inset);
+  inset: calc(var(--ar-inset) * var(--ar-k, 1));
   display: flex;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
 }
 .ar-slider__cell {
   flex: 1;
-  border-radius: var(--ar-cell-radius, max(2px, calc(var(--_ir) - 1px)));
+  border-radius: calc(var(--ar-cell-radius, max(2px, calc(var(--_ir) - 1px))) * var(--ar-k, 1));
   background: var(--ar-cell);
   box-shadow: var(--ar-cell-shadow);
   transform-origin: 50% 50%;
@@ -154,9 +154,9 @@
 .ar-slider__mark {
   position: absolute;
   bottom: 3px;
-  left: calc(var(--ar-inset) + var(--_m) * var(--_w));
+  left: calc(calc(var(--ar-inset) * var(--ar-k, 1)) + var(--_m) * var(--_w));
   width: 1px;
-  height: 3px;
+  height: max(calc(3px * var(--ar-k, 1)), 3px);
   margin-left: -0.5px;
   background: rgba(128, 128, 128, 0.7);
   pointer-events: none;
@@ -176,10 +176,10 @@
   position: absolute;
   top: 50%;
   left: clamp(
-    calc(var(--ar-inset) + 3px),
+    calc(calc(var(--ar-inset) * var(--ar-k, 1)) + 3px),
     /* set in from the fill end by --ar-seam-offset, never past the middle of a short fill */
-    calc(var(--ar-inset) + var(--ar-p) * var(--_w) + var(--_sd, -1) * min(var(--ar-seam-offset), (var(--ar-hi) - var(--ar-lo)) * var(--_w) * 0.5)),
-    calc(100% - var(--ar-inset) - 3px)
+    calc(calc(var(--ar-inset) * var(--ar-k, 1)) + var(--ar-p) * var(--_w) + var(--_sd, -1) * min(var(--ar-seam-offset), (var(--ar-hi) - var(--ar-lo)) * var(--_w) * 0.5)),
+    calc(100% - calc(var(--ar-inset) * var(--ar-k, 1)) - 3px)
   );
   width: var(--ar-seam-w);
   height: calc(var(--_h) * var(--ar-seam-scale) - 1px);
@@ -209,7 +209,7 @@
 .ar-slider[data-flash='snap'] .ar-slider__seam { --_c: var(--ar-signal-hi); }
 .ar-slider[data-off] .ar-slider__seam {
   --_c: var(--ar-off-ink);
-  height: 6px;
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
   box-shadow: none;
   filter: none;
 }
@@ -247,19 +247,10 @@
 }
 .ar-slider[data-off] .ar-slider__content--base { clip-path: none; }
 .ar-slider[data-off] .ar-slider__content--over { opacity: 0; }
-/* a fill edge inside a label or readout would split a word into two inks: the text stays whole in
-   one ink and the fill steps back behind it, its edge still marking the value */
-.ar-slider[data-crossing]:not([data-off]) .ar-slider__fill { opacity: 0.26; }
-.ar-slider[data-crossing] .ar-slider__content--over { opacity: 0; }
-.ar-slider[data-crossing] .ar-slider__content--base { clip-path: none; }
-/* stepped: the cells' gaps would cut through the text, so the cells step back behind it and the text
-   stays in one ink; lit and unlit cells still read through */
-.ar-slider[data-inked]:not([data-off]) .ar-slider__cells {
-  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.26) var(--_ink-l, 0px), #000 calc(var(--_ink-l, 0px) + 8px), #000 calc(100% - var(--_ink-r, 0px) - 8px), rgba(0, 0, 0, 0.26) calc(100% - var(--_ink-r, 0px)));
-  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.26) var(--_ink-l, 0px), #000 calc(var(--_ink-l, 0px) + 8px), #000 calc(100% - var(--_ink-r, 0px) - 8px), rgba(0, 0, 0, 0.26) calc(100% - var(--_ink-r, 0px)));
-}
-.ar-slider[data-inked] .ar-slider__content--over { opacity: 0; }
-.ar-slider[data-inked] .ar-slider__content--base { clip-path: none; }
+/* the control never changes for its text: the fill and the stepped cells stay exactly as the theme
+   draws them, and the text changes instead. Each letter takes the ink of what is behind it: the
+   insert's ink over the fill, the well's ink over the well, even where the fill edge runs through
+   a word (the two layers above). */
 
 .ar-slider__label {
   flex: 0 1 auto;
@@ -286,7 +277,7 @@
 /* a narrow capsule (set by the slider when its name would be cut): the readout steps down to the
    name's size and the padding tightens, so the whole word shows; weight and ink still tell the two apart */
 .ar-slider[data-tight] .ar-slider__content {
-  gap: 4px;
+  gap: calc(4px * var(--ar-k, 1));
   padding-inline: min(var(--ar-pad-x), 6px);
 }
 .ar-slider[data-tight] .ar-slider__readout {
@@ -365,7 +356,7 @@
   flex: 1;
   min-width: 0;
   align-self: stretch;
-  margin: 0 4px;
+  margin: 0 calc(4px * var(--ar-k, 1));
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
   pointer-events: none;
@@ -424,8 +415,8 @@
 }
 .ar-ruler__foot {
   bottom: 2px;
-  width: 3px;
-  height: 3px;
+  width: calc(3px * var(--ar-k, 1));
+  height: max(calc(3px * var(--ar-k, 1)), 3px);
   margin-left: -1.5px;
   border-radius: 50%;
 }
@@ -480,7 +471,7 @@
 .ar-range[data-part-lo] .ar-slider__seam--lo,
 .ar-range[data-part-hi] .ar-slider__seam--hi {
   --_part: calc(max(var(--ar-label-size), var(--ar-value-size)) * 0.5 + 1px);
-  height: calc(var(--_h) - 2 * var(--ar-inset) - 2px);
+  height: calc(var(--_h) - 2 * calc(var(--ar-inset) * var(--ar-k, 1)) - 2px);
 }
 /* at rest the stubs read as a cut between letters; the fill edge and the ink change already
    mark the value, so a parted seam waits for the hand (hover, drag or focus) */
@@ -488,17 +479,6 @@
 .ar-range[data-part-lo]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--lo,
 .ar-range[data-part-hi]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--hi {
   opacity: 0;
-}
-/* with the fill stepped back the edge no longer marks the value on its own, so the parted seam
-   stays lit at rest: a small index above and below the text */
-.ar-slider[data-crossing][data-parted]:not(:hover, [data-hot], :focus-within) .ar-slider__seam,
-.ar-range[data-crossing][data-part-lo]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--lo,
-.ar-range[data-crossing][data-part-hi]:not(:hover, [data-hot], :focus-within) .ar-slider__seam--hi {
-  opacity: 0.85;
-}
-/* in the text's own ink, so the index reads on a light theme too, where the stepped-back fill all but vanishes */
-.ar-slider[data-crossing]:not([data-zone], [data-hot], [data-status]) .ar-slider__seam {
-  --_c: var(--ar-text-mid);
 }
 .ar-range__thumb {
   position: absolute;
@@ -533,9 +513,9 @@
   position: absolute;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 3px 7px;
-  border-radius: var(--ar-insert-radius, 5px);
+  gap: calc(8px * var(--ar-k, 1));
+  padding: calc(3px * var(--ar-k, 1)) calc(7px * var(--ar-k, 1));
+  border-radius: calc(var(--ar-insert-radius, 5px) * var(--ar-k, 1));
   white-space: nowrap;
   /* the frosted sheet every floating surface shares */
   background: var(--ar-sheet-bg, rgba(18, 18, 18, 0.8));
@@ -558,8 +538,8 @@
   display: block;
   width: 11ch;
   max-width: 100%;
-  height: calc(var(--ar-h) - 2 * var(--ar-inset) - 4px);
-  padding: 0 6px;
+  height: calc(var(--ar-h) - 2 * calc(var(--ar-inset) * var(--ar-k, 1)) - 4px);
+  padding: 0 calc(6px * var(--ar-k, 1));
   border-radius: max(3px, calc(var(--_ir) - 1px));
   background: var(--ar-float-bg);
   color: var(--ar-float-ink);

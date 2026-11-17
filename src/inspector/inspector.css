@@ -1,0 +1,372 @@
+/* Inspector — the pro parameter editor: one aligned label column, tight rows, nested folders.
+   The sizes, shapes, label column and row rules come from the density family (tokens/density.css);
+   this sheet only arranges
+   what is the Inspector's own. */
+.ar-inspector {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  font-family: var(--ar-font-ui);
+}
+.ar-inspector__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ar-space-2);
+  padding-bottom: var(--ar-space-4);
+}
+.ar-inspector__search,
+.ar-inspector__spacer {
+  flex: 1;
+  min-width: 0;
+}
+/* a row's menu wrapper (.ar-context) lays out as if it were not there, so rows are spaced by the
+   gap of whatever holds them: a folder's body, or this one for rows outside any folder */
+.ar-inspector__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-row-gap);
+  min-width: 0;
+}
+.ar-inspector__body > .ar-section:not(:first-child) {
+  margin-top: calc(var(--ar-section-apart) - var(--ar-row-gap)); /* the distance sections keep in any panel */
+}
+/* rows sit on the row gap alone, whatever wraps them */
+.ar-inspector .ar-context,
+.ar-inspector__row {
+  min-width: 0;
+}
+/* a nested folder steps its names in, never its controls: every control at every depth starts
+   and ends on the same two lines */
+.ar-inspector .ar-section .ar-section :is(.ar-prop__label, .ar-section__head) {
+  padding-left: var(--ar-space-5);
+}
+.ar-inspector .ar-section .ar-section .ar-section :is(.ar-prop__label, .ar-section__head) {
+  padding-left: var(--ar-space-8);
+}
+.ar-inspector .ar-section__body > .ar-section > .ar-section__head {
+  border-bottom: 0;
+}
+.ar-inspector__row[data-kind='action'] .ar-prop__label {
+  visibility: hidden;
+}
+
+/* the keyframe diamond: hollow under the hand, filled in the signal once the row is keyed */
+.ar-inspector__key {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
+  color: var(--ar-text-mid);
+  cursor: pointer;
+  transition:
+    color var(--ar-dur-state) var(--ar-ease),
+    background var(--ar-dur-state) var(--ar-ease);
+}
+/* a larger target than the mark it draws: 24px under the hand */
+.ar-inspector__key {
+  position: relative;
+}
+.ar-inspector__key::after {
+  content: '';
+  position: absolute;
+  inset: min(0px, calc((16px * var(--ar-k, 1) - 24px) / 2));
+}
+.ar-inspector__key svg {
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.ar-inspector__key[data-empty] {
+  pointer-events: none;
+}
+.ar-inspector__key:hover {
+  background: var(--ar-bg-hover);
+  color: var(--ar-text-hi);
+}
+.ar-inspector__key:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-inspector__key[aria-pressed='true'] {
+  color: var(--ar-signal);
+}
+.ar-inspector__key[aria-pressed='true'] svg {
+  fill: currentColor;
+}
+.ar-inspector__row[data-keyed] .ar-prop__actions {
+  opacity: 1;
+}
+
+/* a monitor: its name and figure on one line, its trace across the panel beneath */
+.ar-inspector__monitor {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: var(--ar-space-4);
+  min-height: var(--ar-h);
+}
+.ar-inspector__name {
+  overflow: hidden;
+  font: var(--ar-type-label);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-tone-label);
+}
+.ar-inspector__monitor > .ar-sparkline {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: max(calc(22px * var(--ar-k, 1)), 16px);
+  margin-bottom: var(--ar-space-3);
+}
+.ar-inspector__figure {
+  flex: none;
+  min-width: 5ch;
+  text-align: right;
+  font: var(--ar-type-value);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-value, var(--ar-text-hi));
+}
+.ar-inspector__figure em {
+  margin-left: calc(3px * var(--ar-k, 1));
+  font: var(--ar-type-label);
+  font-style: normal;
+  color: var(--ar-tone-label);
+}
+.ar-inspector__empty {
+  margin: var(--ar-space-5) 0;
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
+}
+
+/* ---------- rows: scrub, animated, linked, mixed ---------- */
+/* a number's name is a scrubber */
+.ar-inspector__row[data-kind='number'] .ar-prop__label {
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+/* a value with a track keeps its diamond in view: hollow between keyframes, filled on one */
+.ar-inspector__row[data-animated] .ar-prop__actions {
+  opacity: 1;
+}
+.ar-inspector__row[data-animated] .ar-inspector__key {
+  color: var(--ar-signal);
+}
+/* a multiple selection that disagrees says so in words beside the name ("mixed"); the control is
+   drawn as the theme draws it */
+.ar-inspector .ar-prop__message {
+  margin-left: calc(var(--ar-field-label-w) + var(--ar-space-3));
+  margin-bottom: var(--ar-space-2);
+}
+
+/* ---------- InspectorTimeline: the keyframes in time ---------- */
+.ar-timeline {
+  --_name: var(--ar-field-label-w);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--ar-font-ui);
+}
+.ar-timeline__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--ar-space-4);
+  padding-bottom: var(--ar-space-3);
+}
+.ar-timeline__spacer {
+  flex: 1;
+}
+.ar-timeline__time {
+  min-width: 6ch;
+  font: var(--ar-type-value);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-value, var(--ar-text-hi));
+}
+.ar-timeline__time em {
+  margin-left: calc(3px * var(--ar-k, 1));
+  font: var(--ar-type-label);
+  font-style: normal;
+  color: var(--ar-tone-label);
+}
+.ar-timeline__note,
+.ar-timeline__name {
+  overflow: hidden;
+  font: var(--ar-type-label);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-tone-label);
+}
+.ar-timeline__grid {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-row-gap);
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+.ar-timeline__track {
+  display: flex;
+  align-items: center;
+  gap: var(--ar-space-3);
+  min-height: var(--ar-h);
+}
+.ar-timeline__name {
+  flex: 0 0 var(--_name);
+  cursor: default;
+}
+/* a lane is a recessed strip; keys ride its centre line, inset so the first and last stay whole */
+.ar-timeline__lane {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: var(--ar-h);
+  margin-inline: calc(7px * var(--ar-k, 1));
+}
+.ar-timeline__track:not(.ar-timeline__ruler, .ar-timeline__over) > .ar-timeline__lane::before {
+  content: '';
+  position: absolute;
+  inset: 50% -7px auto;
+  height: 1px;
+  background: var(--ar-line-strong);
+}
+.ar-timeline__ruler {
+  min-height: max(calc(18px * var(--ar-k, 1)), 16px);
+}
+.ar-timeline__ruler > .ar-timeline__lane {
+  height: max(calc(18px * var(--ar-k, 1)), 16px);
+  border-bottom: 1px solid var(--ar-line);
+}
+.ar-timeline__tick {
+  position: absolute;
+  bottom: 3px;
+  transform: translateX(-50%);
+  font: var(--ar-type-note);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-note);
+}
+.ar-timeline__tick::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 1px;
+  height: max(calc(4px * var(--ar-k, 1)), 4px);
+  background: var(--ar-line-strong);
+}
+.ar-timeline__key {
+  all: unset;
+  position: absolute;
+  top: 50%;
+  width: calc(9px * var(--ar-k, 1));
+  height: max(calc(9px * var(--ar-k, 1)), 9px);
+  margin: calc(-4.5px * var(--ar-k, 1)) 0 0 calc(-4.5px * var(--ar-k, 1));
+  rotate: 45deg;
+  border-radius: 1.5px;
+  background: var(--ar-text-mid);
+  cursor: pointer;
+  transition:
+    background var(--ar-dur-state) var(--ar-ease),
+    scale var(--ar-dur-state) var(--ar-ease);
+}
+/* a taller target than the diamond it draws: the full height of its lane, turned back upright.
+   No wider, so two keys close in time never take each other's click. */
+.ar-timeline__key::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140%;
+  height: var(--ar-h);
+  translate: -50% -50%;
+  rotate: -45deg;
+}
+.ar-timeline__key:hover {
+  background: var(--ar-text-hi);
+  scale: 1.2;
+}
+.ar-timeline__key[aria-current] {
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+}
+.ar-timeline__key:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+/* the playhead: one line through every lane, drawn over them and never in the way of a click */
+.ar-timeline__over {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  align-items: stretch;
+  pointer-events: none;
+}
+.ar-timeline__over > .ar-timeline__lane {
+  height: auto;
+}
+.ar-timeline__head {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--ar-signal);
+  box-shadow: 0 0 6px var(--ar-signal-line);
+}
+.ar-timeline__head::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: calc(7px * var(--ar-k, 1));
+  height: max(calc(7px * var(--ar-k, 1)), 7px);
+  border-radius: 0 0 calc(2px * var(--ar-k, 1)) calc(2px * var(--ar-k, 1));
+  background: var(--ar-signal);
+}
+
+/* a pad in a row is named by the row */
+.ar-inspector .ar-xypad__label {
+  display: none;
+}
+
+/* ---------- one column in any density ----------
+   A folder is as wide as the panel and three numbers share a control's width, in every density,
+   so a vector row never pushes its folder wider than the others and every row ends on one line. */
+.ar-inspector .ar-section__fold {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ar-inspector .ar-section__body,
+.ar-inspector .ar-vec3,
+.ar-inspector .ar-vec3__cell {
+  min-width: 0;
+}
+.ar-inspector .ar-vec3 {
+  gap: calc(2px * var(--ar-k, 1));
+}
+.ar-inspector .ar-vec3__cell {
+  --ar-pad-x: 4px; /* three figures in one control: the cells give up padding before digits */
+  overflow: hidden;
+}
+
+/* a narrow inspector (a side dock, a small floating window) gives its label column up before its
+   figures: the names take a shorter column, still in the family's proportion */
+.ar-inspector {
+  container: ar-inspector / inline-size;
+}
+@container ar-inspector (max-width: 340px) {
+  .ar-inspector__body {
+    --ar-field-label-w: round(calc(80px * var(--ar-k, 1)), 1px);
+  }
+  /* three figures need the whole width: the name goes above them, as a two-line row */
+  .ar-inspector__row[data-kind='vector'] .ar-prop__main {
+    flex-wrap: wrap;
+    row-gap: var(--ar-space-2);
+  }
+  .ar-inspector__row[data-kind='vector'] .ar-prop__label {
+    flex: 1 0 100%;
+  }
+}

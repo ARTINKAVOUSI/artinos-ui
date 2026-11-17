@@ -390,7 +390,12 @@ export function MetaBlockWorkspaceView({
     if (group.lockedFullscreen || group.posture === 'fullscreen-locked' || group.posture === 'maximized') return rect(0, 0, size.width, size.height);
     if (group.posture === 'floating') {
       const f = workspace.floating.get(groupId);
-      return f ? rect(f.x, f.y, f.width, f.height) : null;
+      if (!f) return null;
+      // a window is always drawn on screen: a layout saved in a larger window, or a workspace that has
+      // since shrunk, never leaves it out of reach. The stored bounds stay as they were.
+      const w = Math.min(f.width, size.width),
+        h = Math.min(f.height, size.height);
+      return rect(clamp(f.x, 0, size.width - w), clamp(f.y, 0, size.height - h), w, h);
     }
     if (group.posture === 'pinned' || group.posture === 'auto-hide') {
       const e = workspace.edgeSurfaces.get(groupId);
@@ -1476,7 +1481,10 @@ export function MetaBlockWorkspaceView({
                     type="button"
                     className="mb-renderer-resize"
                     data-resize-edge={edge}
-                    aria-label={`Resize ${active?.title ?? group.id} from ${edge}`}
+                    /* a pointer affordance only: eight of these per panel would put dozens of stops
+                       that do nothing on a key press ahead of the first control */
+                    tabIndex={-1}
+                    aria-hidden="true"
                     onPointerDown={(e) => beginResize(e, group.id, edge)}
                     onPointerMove={moveResize}
                     onPointerUp={endResize}

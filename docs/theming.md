@@ -1,6 +1,6 @@
 # ARTINOS UI — theming
 
-Contents: picking a theme (all 108) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
+Contents: picking a theme (all 9) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
 
 `<artinos-ui>` below means the ARTINOS UI package folder.
 
@@ -14,151 +14,32 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 <div data-ar-theme="glass-dark">…</div>   {/* works without React too */}
 ```
 
-**The default is `nimbus`**, a variation of Haze: deep frost, gently carved wells, a bright value gradient and a little more room. `ArtinosTheme` sets it when no `theme` is given and every kit carries it (beside `studio`, the base every theme builds on). Its earlier id, `haze-carve-custom`, still works.
+**The default is `nimbus`**: deep frost, gently carved wells, a bright value gradient and a little more room. `ArtinosTheme` sets it when no `theme` is given and every kit carries it (beside `pro-gray`, the base of every kit). Its earlier id, `haze-carve-custom`, still works.
 
 - **See them all:** run `node <artinos-ui>/artinos.mjs list`, read the table below, or open the live gallery in `<artinos-ui>/showcase/artinos-ui-showcase.html`.
 - **In a project with a kit:** `THEMES` / `THEME_META` from the kit's `index.ts`, or the header of its `tokens/themes.css`, list exactly the themes that kit contains. An id that isn't there silently falls back to the studio look.
-- **Adding a theme to a kit:** re-export with it rather than hand-copying CSS blocks, because a theme lives in two files and shares rules. Run `node <artinos-ui>/artinos.mjs export --project . --themes satin,onyx --components <same list> --force`.
+- **Adding a theme to a kit:** re-export with it rather than hand-copying CSS blocks, because a theme lives in two files and shares rules. Run `node <artinos-ui>/artinos.mjs export --project . --themes pro-gray,onyx --components <same list> --force`.
 
-**Start here.** Eight hero themes cover the kinds of look; every other theme is a variation of one of them (`THEME_META[t].parent`; `HERO_THEMES` and `variationsOf(hero)` in code). Pick the hero for the job, then look through its variations only if you want a different finish.
-
-<!-- heroes:start -->
-| hero | kind | look | variations |
-|---|---|---|---|
-| `studio` | solid | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The base every kit carries. | `optical` `reference` |
-| `studio-light` | solid | The same instrument on a light neutral desk. White satin controls. | — |
-| `frost-deep` | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. | `slate` `steel` `concrete` `quartz` `shell` `matte` `pebble` `frost-etched` `frost-silk` `frost-mist` `frost-satin` `frost-ceramic` `frost` `frost-dark` `ice` |
-| `frost-light` | glass | Bright milky frost with dark ink. Daylight over imagery. | `mist` `chalk` `haze-day` `linen` `cloud` `groove-light` `inset-light` `carve-light` `marble` `travertine` `bisque` `vellum` `lumen` `argent` `ivory` `glacier` `wisteria` `glass-light` `pane-light` `pearl` `alabaster` `porcelain` `jade` |
-| `glass` | glass | Clean clear glass. A neutral veil, clear-rim controls, white ink. | `loupe` `engrave` `machined` `glaze` `clear-air` `clear-polished` `clear-lens` `clear-layered` `clear-bevel` `clear-cut` `glass-dark` `crystal` `pane` `lucid` `gallery` `platinum` `diamond` |
-| `haze` | glass | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. | `sheer` `veil` `smoke` `ink` `pressed` `hairline` `frosted` `haze-rim` `haze-lift` `haze-carve` `nimbus` `haze-glow` `haze-bevel` `haze-night` `lift` `edge` `inset` `halo` `tile` `groove` `drift` `shade` `carve` `groove-smoke` `inset-smoke` |
-| `satin` | glass | Continuous frost. The view melts into soft colour; glossy white pills. | `dune` `monolith` `opal` `graphite` `champagne` `moonstone` `cashmere` |
-| `onyx` | glass | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. | `basalt` `walnut` `nocturne` `lagoon` `garnet` `sapphire` `emerald` `rose-gold` `cognac` `amethyst` `velvet` |
-<!-- heroes:end -->
-
-**Choosing:**
-- **Dark app:** `studio` (solid) or `frost-deep` (the showcase default).
-- **Light app:** `studio-light` (solid) or `frost-light`; its variations hold the other light, dark-ink panes.
-- **UI over a 3D canvas, video or photo:** `frost-deep`, `glass`, `haze` or `satin`, or `onyx` for a coloured premium look, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page. Most glass themes have light ink drawn for dark scenes; over a light one their frost turns the colour of the ink and labels wash out.
-
-**Families:**
-- **Untinted:** achromatic panes with no tint, only blur. Accents are the ARTINOS set: teal signal, azure bind, amber warn, rose fault.
-- **Optical:** neutral panes with glossy pearl or translucent fills.
-- **Atelier:** coordinated full palettes, each with its own radii and finish.
-- **Luxe:** coloured premium panes with metallic hairlines and wider label tracking.
-- **Studio and signature:** solid grounds. `optical` and `reference` are the original prototype and the Figma source.
+**The themes.** Nine themes in one set, each a complete look of its own: pick the one for the job. `THEMES` lists them in this order, the default first.
 
 <!-- themes:start -->
-| family | id | name | kind | variation of | look |
-|---|---|---|---|---|---|
-| scene | `sheer` | Sheer | glass | `haze` | A light blur under a thin dark veil: the scene stays close. White ink, flat fills, nothing else. |
-|  | `veil` | Veil | glass | `haze` | The scene blurred under a thin white veil. Flat fills, no border, no highlight, no colour. |
-|  | `haze` | Haze | glass | **hero** | The deepest blur under a faint white veil: the scene becomes soft light. Flat white fills. |
-|  | `smoke` | Smoke | glass | `haze` | The scene blurred under a dark veil, for bright or busy imagery. Flat white fills. |
-|  | `ink` | Ink | glass | `haze` | A dense dark veil over the blur: nearly solid black glass, flat and quiet. |
-|  | `mist` | Mist | glass | `frost-light` | The scene blurred under a white veil, graphite ink and flat graphite fills. |
-|  | `chalk` | Chalk | glass | `frost-light` | A dense white veil over the blur: nearly solid white glass, graphite ink. |
-|  | `pressed` | Pressed | glass | `haze` | Flat glass with neumorphic controls: wells pressed in and values raised by soft neutral shadows. |
-|  | `hairline` | Hairline | glass | `haze` | Flat glass held by one 1px line around the pane and each track. No highlights, no colour. |
-|  | `frosted` | Frosted | glass | `haze` | A clearer pane with frosted controls: each track and value frosts the scene further. |
-|  | `haze-rim` | Haze Rim | glass | `haze` | Haze with a crisp hairline round the pane and a lit top edge; values held by a hairline. |
-|  | `haze-lift` | Haze Lift | glass | `haze` | Haze floating high: the pane rides a deep soft shadow and the values float over their tracks. |
-|  | `haze-carve` | Haze Carve | glass | `haze` | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
-|  | `nimbus` | Nimbus | glass | `haze` | The default. Haze Carve softened: deep frost, gently carved wells, a bright value gradient and a little more room. Calm over any scene. |
-|  | `haze-glow` | Haze Glow | glass | `haze` | Haze lit from within: a soft light inside the pane edge and inside each value, held by a hairline. |
-|  | `haze-bevel` | Haze Bevel | glass | `haze` | Haze with a quiet bevel: light along each top edge, shade along each bottom edge, on the pane and every value. |
-|  | `haze-night` | Haze Night | glass | `haze` | The same deep blur under a dark veil: moodier, with a hairline, a lit top edge and floating values. |
-|  | `haze-day` | Haze Day | glass | `frost-light` | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
-|  | `lift` | Lift | glass | `haze` | Flat glass with depth: values float a few pixels on a soft shadow, and the pane lifts off the scene. |
-|  | `edge` | Edge | glass | `haze` | Flat glass with one hairline round each value and a lit top edge on the pane. |
-|  | `inset` | Inset | glass | `haze` | Flat glass with tracks set a hair into the pane: a faint shade above, a faint light below. |
-|  | `halo` | Halo | glass | `haze` | Flat glass with volume: a soft light inside the pane edge and inside each value. |
-|  | `tile` | Tile | glass | `haze` | Flat glass with values as thin tiles: a light line along the top, a dark one along the bottom. |
-|  | `groove` | Groove | glass | `haze` | Flat glass with tracks drawn as fine grooves and values floating softly over them. |
-|  | `drift` | Drift | glass | `haze` | The flattest controls on the pane that floats highest: all the depth is in the pane. |
-|  | `shade` | Shade | glass | `haze` | A dense dark veil with a lit top edge; values carry the same thin light along their top. |
-|  | `linen` | Linen | glass | `frost-light` | Light flat glass: a white veil, a hairline pane and values lifted by a breath of shadow. Graphite ink. |
-|  | `cloud` | Cloud | glass | `frost-light` | Light flat glass over the deepest blur, values resting on soft shadows. Graphite ink. |
-|  | `groove-light` | Groove Light | glass | `frost-light` | Groove in white frost: fine grooved tracks, white values floating on a breath of shadow. Graphite ink. |
-|  | `inset-light` | Inset Light | glass | `frost-light` | Inset in white frost: tracks set a hair into the pane, white values. Graphite ink. |
-|  | `carve` | Carve | glass | `haze` | Groove and Inset together: tracks set into the pane and edged by a fine groove, values floating softly over them. |
-|  | `carve-light` | Carve Light | glass | `frost-light` | Carve in white frost: set-in, groove-edged tracks and white values floating softly. Graphite ink. |
-|  | `groove-smoke` | Groove Smoke | glass | `haze` | Groove on a dense dark veil for bright or busy scenes: deeper grooves, floating values. |
-|  | `inset-smoke` | Inset Smoke | glass | `haze` | Inset on a dense dark veil for bright or busy scenes: tracks sunk deeper into the pane. |
-| materials | `marble` | Marble Frost | glass | `frost-light` | Carrara marble values with soft grey veins, pressed into bright frost. |
-|  | `slate` | Slate Glass | glass | `frost-deep` | Matte slate tiles in smoked glass; a faint stone grain shows through the pane. |
-|  | `travertine` | Travertine | glass | `frost-light` | Warm porous stone values in pressed, sand-toned frost, with a terracotta signal. |
-|  | `basalt` | Basalt | glass | `onyx` | Black volcanic stone values with one polished edge, on smoked glass. An ember signal. |
-|  | `steel` | Brushed Steel | glass | `frost-deep` | Skeuomorphic brushed-aluminium values with a machined bevel, in machined tracks on cool frost. |
-|  | `bisque` | Bisque | glass | `frost-light` | Neumorphic unglazed porcelain: soft domed values raised out of milky frost. A sage signal. |
-|  | `concrete` | Concrete | glass | `frost-deep` | Raw speckled concrete values cut into grey frost. A safety-orange signal. |
-|  | `walnut` | Walnut Glass | glass | `onyx` | Oiled walnut values with a fine grain, set in smoked amber glass. A brass signal. |
-| blends | `quartz` | Quartz | glass | `frost-deep` | Frost, hairlines and neumorphism: pressed tracks, raised frosted values held by a hairline rim. |
-|  | `loupe` | Loupe | glass | `glass` | Clear glass and skeuomorphism: values are bevelled lenses that brighten the scene, in a barely blurred pane. |
-|  | `shell` | Shell | glass | `frost-deep` | Deep frost and neumorphism: pressed tracks and softly domed values. |
-|  | `engrave` | Engrave | glass | `glass` | Hairlines and skeuomorphism: tracks engraved into the glass as fine cut lines, values held by a hairline. |
-|  | `machined` | Machined | glass | `glass` | Glass and skeuomorphism: deep machined grooves and chamfered glass caps. |
-|  | `matte` | Matte | glass | `frost-deep` | Frost and depth: matte values float on soft shadows, with no highlights and no rims. |
-|  | `glaze` | Glaze | glass | `glass` | Double-glazed glass: every edge drawn as a white line over a dark one, like thick glass. |
-|  | `pebble` | Pebble | glass | `frost-deep` | Glass and neumorphism: raised pebble values in pressed tracks. |
-|  | `vellum` | Vellum | glass | `frost-light` | Light frost, hairlines and neumorphism: pressed tracks and raised white values, graphite ink. |
-|  | `lumen` | Lumen | glass | `frost-light` | Light glass and skeuomorphism: bevelled white glass values in finely cut tracks, graphite ink. |
-| untinted-glass | `clear-air` | Air Glass | glass | `glass` | Almost invisible glass drawn in hairlines: outlined tracks and values, a whisper of blur. |
-|  | `clear-polished` | Polished Glass | glass | `glass` | Clear glass with depth: values float on a soft shadow under one reflected line. |
-|  | `clear-lens` | Lens Glass | glass | `glass` | Optical clarity: lens values held by a hairline glass edge, the pane lifted off the scene. |
-|  | `clear-layered` | Layered Glass | glass | `glass` | Flat glass with neumorphic depth: tracks pressed in, luminous white values raised. |
-|  | `clear-bevel` | Bevel Glass | glass | `glass` | Clear glass with bevelled values: a lit top edge, a shaded lower edge, tracks cut into the glass. |
-|  | `clear-cut` | Cut Glass | glass | `glass` | Values faceted like crystal: one diagonal light across each, held by hairline rims. |
-| untinted-frost | `frost-etched` | Etched Frost | glass | `frost-deep` | Light frost with softly pressed tracks and flat frosted values. |
-|  | `frost-silk` | Silk Frost | glass | `frost-deep` | Neumorphic frost: pressed tracks, raised white silk values, dark lettering. |
-|  | `frost-mist` | Mist Frost | glass | `frost-deep` | Airy frost in hairlines, lifted off the scene on a soft shadow. |
-|  | `frost-deep` | Deep Frost | glass | **hero** | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
-|  | `frost-satin` | Satin Frost | glass | `frost-deep` | Brushed-satin values with a lit edge in machined tracks, on deep frost. Dark lettering. |
-|  | `frost-ceramic` | Ceramic Frost | glass | `frost-deep` | Glazed white values with a soft gloss band, set into pressed frost. |
-| atelier-glass | `nocturne` | Nocturne | glass | `onyx` | Architectural smoke glass. Black crystal controls and a fine champagne edge. |
-|  | `lagoon` | Lagoon | glass | `onyx` | Deep petrol crystal. Aquamarine lenses, luminous sea-glass edges and cool ivory ink. |
-|  | `argent` | Argent | glass | `frost-light` | Daylight silver glass. Polished silver inserts and precise ink-blue accents. |
-|  | `garnet` | Garnet | glass | `onyx` | Wine-dark cut glass. Faceted rose crystal controls, copper reflections and pale rose signals. |
-| atelier-frost | `ivory` | Ivory | glass | `frost-light` | Warm vellum frost. Soft ivory lenses, espresso lettering and restrained antique-brass details. |
-|  | `glacier` | Glacier | glass | `frost-light` | Dense polar frost. Sculpted ice-white inserts, cool blue bevels and deep alpine-blue signals. |
-|  | `wisteria` | Wisteria | glass | `frost-light` | Lilac silk frost. Opaline controls, plum lettering and muted violet accents. |
-|  | `dune` | Dune | glass | `satin` | Smoked taupe frost. Matte sand-glass inserts, quiet bronze edges and warm linen lettering. |
-| studio | `studio` | Studio | solid | **hero** | Studio-grade neutral dark. Satin controls, hairline edges, teal signal. The base every kit carries. |
-|  | `studio-light` | Studio Light | solid | **hero** | The same instrument on a light neutral desk. White satin controls. |
-| signature | `optical` | Optical | solid | `studio` | The original ARTINOS prototype: polished translucent insert on graphite. |
-|  | `reference` | Reference | glass | `studio` | The ARTINOS Figma source: polished bar, double-line handle, mono 700. |
-| glass | `glass` | Glass | glass | **hero** | Clean clear glass. A neutral veil, clear-rim controls, white ink. |
-|  | `glass-light` | Glass Light | glass | `frost-light` | Clear glass with a light veil. The view stays bright, the ink is dark. |
-|  | `glass-dark` | Glass Dark | glass | `glass` | Clean smoked glass. A deeper veil, the same clarity, cool blue signal. |
-|  | `crystal` | Crystal | glass | `glass` | The clearest pane: a whisper of tint, bright double hairline, all-rim controls. |
-| frost | `frost` | Frost | glass | `frost-deep` | Frosted glass. A soft diffuse pane, frosted-white controls, dark ink. |
-|  | `frost-light` | Frost Light | glass | **hero** | Bright milky frost with dark ink. Daylight over imagery. |
-|  | `frost-dark` | Frost Dark | glass | `frost-deep` | Dark frosted glass: heavy diffusion under a charcoal veil, frosted-grey controls. |
-|  | `ice` | Ice | glass | `frost-deep` | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
-| clear | `pane` | Pane | glass | `glass` | Clear glass with a soft light sweep and silver-pearl pills. No tint: the colour is whatever is behind. |
-|  | `pane-light` | Pane Light | glass | `frost-light` | The same clear glass under a light veil. White pills, dark ink. |
-|  | `lucid` | Lucid | glass | `glass` | The clearest pane. Clear glass fills with a bright lit edge, white ink. |
-|  | `gallery` | Gallery | glass | `glass` | Gallery glass: lightly blurred under a neutral shade, hairline rules, crisp frosted fills. |
-| clear-frost | `satin` | Satin | glass | **hero** | Continuous frost. The view melts into soft colour; glossy white pills. |
-|  | `monolith` | Monolith | glass | `satin` | Deep neutral frost that carries the warmth of what is behind; milky frosted fills. |
-|  | `opal` | Opal | glass | `satin` | A smoky column: frost under a deep neutral shade, bright rims, soft glass fills. |
-|  | `graphite` | Graphite | glass | `satin` | Grey frost with the colour drained, translucent grey-glass fills. |
-| luxe | `onyx` | Onyx | glass | **hero** | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. |
-|  | `sapphire` | Sapphire | glass | `onyx` | Deep-blue crystal, platinum hairlines, icy clear controls, silver-blue signal. |
-|  | `platinum` | Platinum | glass | `glass` | Colourless clear glass with a bright platinum double hairline, crystal-clear controls and white ink. |
-|  | `diamond` | Diamond | glass | `glass` | The clearest pane, with a faint prismatic fire in the sheen and the controls. Ice-white signal. |
-|  | `emerald` | Emerald | glass | `onyx` | Deep green crystal with pale-gold hairlines and seams, and a fresh emerald signal. |
-|  | `rose-gold` | Rose Gold | glass | `onyx` | Clear glass under a blush veil, with rose-gold hairlines, rims and seams. |
-|  | `cognac` | Cognac | glass | `onyx` | Warm amber smoked glass with brushed-brass hairlines and candle-lit ink. |
-|  | `amethyst` | Amethyst | glass | `onyx` | Deep violet crystal with silver hairlines, clear violet controls and a lavender signal. |
-| luxe-frost | `champagne` | Champagne | glass | `satin` | Warm gold-tinted frost, ivory controls with an antique-gold rim, espresso ink. |
-|  | `pearl` | Pearl | glass | `frost-light` | Nacreous white frost with a faint iridescent sheen, soft pearl controls, lilac signal. |
-|  | `alabaster` | Alabaster | glass | `frost-light` | Thick warm-cream frost, cream satin controls with a bronze hairline, umber ink. |
-|  | `porcelain` | Porcelain | glass | `frost-light` | Cool white glazed frost, glossy white controls, cobalt signal and ink-blue text. |
-|  | `jade` | Jade | glass | `frost-light` | Pale celadon frost with polished pale-green controls, a jade signal and forest ink. |
-|  | `moonstone` | Moonstone | glass | `satin` | Blue-grey milky frost with a cool glow, milk-white controls and white ink. |
-|  | `cashmere` | Cashmere | glass | `satin` | Soft taupe frost, oat-white controls with a caramel rim, cocoa ink on the controls. |
-|  | `velvet` | Velvet | glass | `onyx` | Deep bordeaux frost with silver hairlines, rosy frosted controls and a soft rose signal. |
+| id | name | kind | look |
+|---|---|---|---|
+| `nimbus` | Nimbus | glass | The default. Haze Carve softened: deep frost, gently carved wells, a bright value gradient and a little more room. Calm over any scene. |
+| `pro-gray` | Pro Gray | solid | The neutral grey of professional 3D and grading software: mid-grey desk, darker wells, lighter grey fills, an azure signal. |
+| `studio-light` | Studio Light | solid | The same instrument on a light neutral desk. White satin controls. |
+| `frost-deep` | Deep Frost | glass | The deepest frost, elevated: pressed tracks and raised dense values with charcoal numerals. |
+| `onyx` | Onyx | glass | Black smoked glass with fine gold hairlines, gold seams and ivory ink. A watch dial at night. |
+| `smoke` | Smoke | glass | The scene blurred under a dark veil, for bright or busy imagery. Flat white fills. |
+| `haze-carve` | Haze Carve | glass | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
+| `haze-day` | Haze Day | glass | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
+| `ice` | Ice | glass | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
 <!-- themes:end -->
+
+**Choosing:**
+- **Dark app:** `pro-gray` (solid): the neutral grey of professional 3D and grading software.
+- **Light app:** `studio-light` (solid).
+- **UI over a 3D canvas, video or photo:** `nimbus`, `frost-deep` or `ice`, or `onyx` for a dark premium look, and set `scene` to what is behind it: `<ArtinosTheme theme="frost-deep" scene="light">` over a light room, product shot or white page. Most glass themes have light ink drawn for dark scenes; over a light one their frost turns the colour of the ink and labels wash out.
 
 `THEMES`, `THEME_META` (label, family, kind, description and a three-colour swatch) and `GLASS_THEMES` are exported, so a theme picker is a few lines:
 
@@ -169,7 +50,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 ## Solid vs glass
 
 `THEME_META[id].kind` is `'solid'` or `'glass'`.
-- **Solid** themes paint their own ground. Use `<ArtinosTheme theme="studio" ground>` on the page or panel container.
+- **Solid** themes paint their own ground. Use `<ArtinosTheme theme="pro-gray" ground>` on the page or panel container.
 - **Glass** themes are panes: `Panel` uses `backdrop-filter` over whatever is behind it. They look right over imagery, video or a live canvas. Over a flat colour they look like a plain tinted card, which is expected. Don't add `ground` to a glass scope that should show the scene through it.
 - **Scene.** Glass ink is drawn for a scene that contrasts with it. `scene="light" | "dark"` on `ArtinosTheme` (`data-ar-scene`) sets `--ar-panel-floor`, a wash of the theme's `--ar-bg-app` at `--ar-floor-amount` (72%, more on the 23 themes whose ink needs it), under Panel, Dock panes and the floating Toolbar, and steps `--ar-text-low` and `--ar-text-faint` up to `--ar-text-mid`. Over a mismatched scene every text role then holds 4.5:1; over a scene that already contrasts the floor barely shows. Lower `--ar-floor-amount` for more glass (and less contrast), raise it for more ground. Without `scene`, glass has no floor: right over the scene a theme was drawn for, unreadable over the other kind.
 
@@ -177,7 +58,22 @@ For React Three Fiber, the controls are DOM. Put them in an HTML overlay above t
 
 ## Density
 
-`dense` (26px) · `standard` (28px, default) · `comfort` (32px). Per control: `density="dense"`. Per scope: `<ArtinosTheme density="comfort">` or `data-ar-density="comfort"`. Type size, padding and radii follow.
+Three families of the same instrument, chosen for a whole scope like a theme: `<ArtinosTheme density="dense">`, or `data-ar-density="dense"` on any element (also per control: `density="dense"`). `DENSITIES` lists them and `DENSITY_META` gives each one's label and scale. A family is a complete definition of its own, in `tokens/density.css`; every theme has its equivalent in each.
+
+| | dense | standard (default) | comfort |
+|---|---|---|---|
+| for | a working instrument: an editor, an inspector, forty parameters on one screen | the family as drawn: to read as much as to work | read at arm's length, or touched |
+| scale (`--ar-k`) | 22 / 28 | 1 | 32 / 28 |
+| a 28px theme's control | 22px | 28px | 32px |
+| labels · values | 12 · 12 | 12 · 13 | 13 · 14 |
+| a section's name · a panel's | 13 · 14 | 14 · 16 | 16 · 18 |
+| own row rules | no hairline between rows, a colour as a chip and its code, small buttons and fields the height of the row | | |
+
+**Proportional, not scaled down.** A theme draws itself at the standard size: its control height (`--ar-control-h`), side padding (`--ar-control-pad`), gap (`--ar-control-gap`), label column (`--ar-label-col`), every corner and inset. The family multiplies all of it by one scale, and every component multiplies its own padding, gaps, small boxes and corners by the same scale. Nimbus Dense is Nimbus, proportionally tighter: a 27px Nimbus capsule becomes 21, its 7px corner 5.5, its 16px shell 12.5 (corners land on half pixels). Words are the exception: 12px is the floor, so type steps along the scale (12 · 13 · 14 · 16 · 18) instead of shrinking, and each type collection keeps its own faces and weights (a heading is stepped by `--ar-title-step` and `--ar-section-step`, figures by `--ar-stat-scale`).
+
+**A theme's own settings per family.** Each family can carry its own version of a theme: what it changes in Dense is not applied in Standard or Comfort. In React: `<ArtinosTheme theme="nimbus" tokens={{ /* every family */ }} densityTokens={{ dense: { signal: '#ff4fa3' } }}>`. In CSS, a block per family after the theme's own: `[data-ar-theme='my-theme'][data-ar-density='dense'], [data-ar-density='dense'] [data-ar-theme='my-theme']:not([data-ar-density]) { … }`. The Theme Studio works this way: an edit lands in the family being previewed (the bar says which), and its CSS, JSON and TSX exports carry each family's settings.
+
+**Write sizes the same way.** In your own CSS inside a theme scope, multiply a fixed size by the scale (`padding: calc(12px * var(--ar-k, 1))`), or build it from the tokens (`var(--ar-h)`, `var(--ar-row-gap)`). A custom theme sets `control-h`, `control-pad` and `control-gap`, never `h`, so every family scales it. Use one family for a whole tool, never one dense panel among standard ones.
 
 ## Accents
 
@@ -276,10 +172,10 @@ The design language in one paragraph: every part is built from five materials. *
 
 Roles (theme level):
 - ground and surfaces: `--ar-bg-app`, `--ar-bg-surface`, `--ar-bg-raised`, `--ar-bg-well`, `--ar-bg-hover`, `--ar-bg-active`
-- ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint`, `--ar-text-ghost` — a theme sets `--ar-text-hi`; the quieter steps are derived from it at fixed strengths (90 · 74 · 58 · 40%), so titles, values, labels and notes keep the same distance in every theme and in its own hue. Override a step with an inline token (`tokens={{ 'text-low': … }}`) when you need to.
+- ink: `--ar-text-hi`, `--ar-text-mid`, `--ar-text-low`, `--ar-text-faint` — a theme sets `--ar-text-hi`; the quieter steps are derived from it at fixed strengths (90 · 74 · 58%), so titles, values, labels and notes keep the same distance in every theme and in its own hue. Override a step with an inline token (`tokens={{ 'text-low': … }}`) when you need to.
 - lines: `--ar-line-subtle`, `--ar-line`, `--ar-line-strong`, `--ar-tick`, `--ar-tick-major`
 - accents: `--ar-signal`, `--ar-signal-hi`, `--ar-signal-line`, `--ar-signal-wash`, `--ar-signal-ink`, `--ar-bind`, `--ar-warn`, `--ar-fault`, `--ar-focus-ring`
-- reading: `--ar-type-section`, `--ar-type-group`, `--ar-type-value`, `--ar-type-label`, `--ar-type-note`, `--ar-type-hero`, `--ar-type-quote` (each a whole `font`), `--ar-track-role` (the tracking of a group's capitals), `--ar-paper` (the bright ink the tones are cut from), and `--ar-tone-title`, `--ar-tone-value`, `--ar-tone-body`, `--ar-tone-note`, `--ar-tone-label`, `--ar-tone-hint` (the paper ink at fixed strengths, so the steps between roles are the same on every theme), and `--ar-tone-accent` (the accent as text: the signal half blended toward the ink, so small words stay readable on glass in any accent). A theme needs no values of its own for any of them.
+- reading: `--ar-type-section`, `--ar-type-group`, `--ar-type-value`, `--ar-type-label`, `--ar-type-note`, `--ar-type-hero`, `--ar-type-quote` (each a whole `font`), `--ar-paper` (the bright ink the tones are cut from), and `--ar-tone-title`, `--ar-tone-value`, `--ar-tone-body`, `--ar-tone-note`, `--ar-tone-label`, `--ar-tone-hint` (the paper ink at fixed strengths, so the steps between roles are the same on every theme), and `--ar-tone-accent` (the accent as text: the signal half blended toward the ink, so small words stay readable on glass in any accent). A theme needs no values of its own for any of them.
 - focus: `--ar-focus-ink` (the signal eased toward the ink), `--ar-focus-lift` (the light a recessed surface takes), `--ar-focus-raise` (the filter that lifts a polished part), `--ar-focus-ring` (the same light as a one-line box-shadow, for your own parts) and `--ar-selection` (selected text). They are worked out from the signal, so a theme or an accent needs no focus colour of its own.
 - panel glass: `--ar-edge-light` (the lit top edge of a Panel or dock pane, brightest in the middle; `transparent` turns it off), `--ar-panel-tint`, `--ar-panel-floor` (set by `scene`), `--ar-floor-amount`, `--ar-panel-blur` (a `backdrop-filter` value), `--ar-panel-sheen`, `--ar-panel-shadow`, `--ar-panel-text-shadow`
 - floating ink and the typed-entry field: `--ar-float-bg`, `--ar-float-ring`, `--ar-float-shadow`, `--ar-float-ink`, `--ar-float-ink-low`
@@ -310,9 +206,10 @@ Control finish (materials level):
 The default system is **Fine**: hairline **Inter** (300, in a bright ink) on every label and control, **Inter Tight** extra-bold for titles, **JetBrains Mono** for code only; figures are Inter with tabular digits. Levels are told by size, weight and ink, not by a second face. Every quiet ink is solid: the ink mixed toward `--ar-ink-mid` (a neutral mid grey with a breath of the theme accent), never see-through. Earlier type ids (`manrope`, `luxe`, `modern`…) still work through `TYPE_ALIASES`. **Every text size comes from one ladder: 12 · 13 · 14 · 16 · 18 · 20 · 24 · 28 · 36 · 48 px, the same in every type system.** Panels, dock panes and dialogs keep one fixed compact scale whichever type set surrounds them: a title of 16 and section names of 14 (both in the title face at the system's title weight: extra-bold in Fine), values of 13 (firm, full ink) and labels of 12 (500 at 76% ink; in Fine and the other hairline systems 300 at 90%). A type collection's multipliers snap back to it with `round()`, so no size lands between steps, and whole-pixel line heights follow. A set's scale never inverts the order: a `title` is 16, 20 or 24, a `heading` at least 14, a `lead` at least 14 and never lighter than regular, and a `note` keeps its own size in every set. Weight runs against size: display sizes (28 and up) are light, titles of 20 and under are semibold, and nothing below 28px is lighter than regular, so text holds on glass. There are no tracked capitals. Each panel role is a whole font and an ink: `--ar-type-panel`, `--ar-type-section`, `--ar-type-group`, `--ar-type-value`, `--ar-type-label`, `--ar-type-note` with `--ar-tone-title` (100%), `--ar-tone-value` (100%), `--ar-tone-body` (88%), `--ar-tone-label` (76%), `--ar-tone-note` (66%) and `--ar-tone-hint` (54%), each the theme's main ink mixed toward `--ar-ink-mid`. `--ar-name-strength` (86%) is how much of its ink a control's own label keeps beside its readout. `design.md` has the rules these serve. Everything uses the tokens below; no component sets a literal size, weight or tracking.
 
 - families: `--ar-font-ui` (the sans), `--ar-font-num` (figures: the sans with tabular digits), `--ar-font-mark` (section numbers, eyebrows, meta lines: Geist Mono in Sleek), `--ar-font-code` (code), `--ar-font-display` (titles: the sans by default; a collection may give it its sans, or a display or serif face), `--ar-font-heading` (a section's name on a pane: the title face, or the sans in the sets whose title face is a serif, so a 14px name stays crisp), `--ar-font-lead` (the opening sentence: the sans by default, used by `lead`, `statement` and `quote`), `--ar-font-serif` (Instrument Serif: large accent words, `numeral` and `face="serif"` titles). A [type collection](#type-collections) sets the sans, mono and title faces, and may set its own serif (`--ar-serif-adjust` evens out that serif's apparent size). It may also set `--ar-title-scale`, `--ar-title-case`, `--ar-title-stretch`, `--ar-weight-display`, `--ar-weight-title`, `--ar-track-heading`, `--ar-track-heading-sm`, `--ar-leading-heading`, `--ar-font-prose`, `--ar-prose-scale`, `--ar-leading-prose`, `--ar-lead-style`, `--ar-weight-lead`, `--ar-lead-scale`, `--ar-font-accent`, `--ar-accent-style`, `--ar-weight-accent`, `--ar-font-numeral`, `--ar-numeral-style`, `--ar-font-mark`, `--ar-mark-case`, `--ar-mark-track` and `--ar-weight-mark`. A theme's controls read `--ar-control-font` (the figures face; Roboto Mono in `reference`).
-- weights, the weights the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (300, a hero figure at 40px and up), `--ar-weight-regular` (400, prose, values, rows), `--ar-weight-medium` (500, labels, tabs, small marks), `--ar-weight-title` (800 in Fine, 600 in most systems: titles of 20px and under, section and panel names), `--ar-weight-bold` (600, strong text and small group names), `--ar-weight-black` (700, the one word that must win); `--ar-weight-light` resolves to regular and is kept for themes that read it. `--ar-weight-text` (regular) is small sans text, inputs, rows and menus. Control readouts use `--ar-value-weight` (`--ar-weight-readout`: 500 in Fine, 600 elsewhere; 700 in `reference`). `--ar-weight-name` (500; 300 in the hairline systems, Fine included) is a label beside a value; control words (buttons, chips, segments) are medium. `--ar-track-small` (+0.01em; +0.025em in Fine) opens 12px words.
+- weights, the weights the fonts are loaded at (`font-synthesis: none`, so nothing is faked): `--ar-weight-thin` (300, a hero figure at 40px and up), `--ar-weight-regular` (400, prose, values, rows), `--ar-weight-medium` (500, labels, tabs, small marks), `--ar-weight-title` (800 in Fine, 600 in most systems: titles of 20px and under, section and panel names), `--ar-weight-bold` (600, strong text and small group names); `--ar-weight-light` is `--ar-weight-regular` under another name and is kept for themes that read it. `--ar-weight-text` (regular) is small sans text, inputs, rows and menus. Control readouts use `--ar-value-weight` (`--ar-weight-readout`: 500 in Fine, 600 elsewhere; 700 in `reference`). `--ar-weight-name` (500; 300 in the hairline systems, Fine included) is a label beside a value; control words (buttons, chips, segments) are medium. `--ar-track-small` (+0.01em; +0.025em in Fine) opens 12px words.
 - space: `--ar-space-1` … `--ar-space-9` (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 px) and the roles density tunes — `--ar-row-gap` (rows in a group), `--ar-group-gap` (groups in a panel), `--ar-section-gap` (air around a section), `--ar-section-apart` (section to section: the gap + 8px, 26px at standard; the hairline is in each title row), `--ar-panel-pad-x` / `--ar-panel-pad-y` (a panel's padding) — plus `--ar-measure` (64ch, a paragraph's longest line). The catalogue's *Layout and text* chapter has the rules.
-- the control scale: `--ar-text-xs` (12px: hints and captions), `--ar-text-sm` (12px, secondary lines, tabs, menu rows), `--ar-text-md` (13px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (16px), `--ar-text-2xl` (20px), `--ar-text-3xl` (28px, display). Mono readouts that aren't caps use the same steps.
+- the ladder: `--ar-step-12` · `13` · `14` · `16` · `18` · `20` · `24` · `28` · `36` · `48`. Every size token below is one of these steps; change a step and every role set at it follows.
+- the control scale: `--ar-text-xs` (12px: hints and captions; the same step as `--ar-text-sm`), `--ar-text-sm` (12px, secondary lines, tabs, menu rows), `--ar-text-md` (13px, body), `--ar-text-lg` (14px, sheet titles), `--ar-text-xl` (16px), `--ar-text-2xl` (20px), `--ar-text-3xl` (28px, display). Mono readouts that aren't caps use the same steps.
 - small marks outside a control (foot lines, counts, badges, keycaps, port tags), weight 500: `--ar-caps-sm` (12px) and `--ar-caps-xs` (11px, the smallest mark). The caps switch sets them in tracked capitals: `--ar-caps-case` (`none`, or `uppercase`) and `--ar-caps-on` (0, or 1 to apply `--ar-track-caps` and the control-label tracking); a collection that turns it on steps the sizes down to 10 · 9.5px. Small headings (a section's title, a kicker) have their own: `--ar-head-case`, `--ar-head-tracking`, `--ar-head-bump`. Control labels are `--ar-label-size`, set by density: 12 · 12 · 13px for dense · standard · comfort. The `.ar-caps` class (and `.ar-caps--xs`) applies the whole recipe.
 - the reading scale, for the `Text` roles: `--ar-read-hero` (48px), `--ar-read-display` (36), `--ar-read-title` (24), `--ar-read-heading` (18), `--ar-read-subheading` (14), `--ar-read-lead` (16), `--ar-read-body` (14), `--ar-read-note` (13), plus `--ar-read-statement` (20), `--ar-read-numeral` (28), `--ar-read-quote` (16) and `--ar-read-figure` (28). The same in every system (`--ar-title-scale` is 1). A Panel, dock pane or Dialog uses a fixed compact scale (hero 24 · display 20 · title 16 · heading 14 · subheading 13 · lead 14 · body 13 · note 12).
 - control text is tuned by density and theme: `--ar-label-size` (12 · 12 · 13px for dense · standard · comfort) and `--ar-value-size` (13 · 13 · 14px: a readout is a size above its name), and the control-typography tokens under Control finish.

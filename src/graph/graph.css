@@ -100,7 +100,7 @@
   align-items: center;
   height: calc(var(--ar-h) - 4px);
   padding: 0 9px;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   color: var(--ar-text-low);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease), background var(--ar-dur-state) var(--ar-ease);
@@ -146,7 +146,7 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   /* a dot grid in graph space (--_gx/--_gy/--_gs come from the view): fine dots every
      cell, a slightly stronger one every fifth, so distance reads without lines */
   --_cell: var(--_gs, 20px);
@@ -216,7 +216,7 @@
 .ar-graph__group {
   position: absolute;
   border: 1px dashed var(--ar-line);
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-bg-hover);
 }
 .ar-graph__group header {
@@ -254,7 +254,7 @@
   --_ring: var(--ar-sheet-shadow);
   position: absolute;
   box-sizing: border-box;
-  border-radius: calc(var(--ar-radius-card) + 2px);
+  border-radius: calc(round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px) + 2px);
   /* a node floats over the canvas well, so it is the sheet (grain, a milky veil, the ground at
      half strength) rather than panel glass: panel glass over the dark well would come out dark */
   background: var(--ar-sheet-bg);
@@ -400,7 +400,7 @@
   display: block;
   width: 100%;
   height: 44px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
 }
@@ -421,7 +421,7 @@
   width: 340px;
   max-height: 300px;
   padding: 8px;
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-list-bg);
   -webkit-backdrop-filter: var(--ar-list-backdrop);
   backdrop-filter: var(--ar-list-backdrop);
@@ -433,7 +433,7 @@
   box-sizing: border-box;
   height: 26px;
   padding: 0 9px;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
   font: var(--ar-value-weight) calc(var(--ar-value-size) + var(--ar-value-bump)) var(--ar-control-font);
@@ -466,7 +466,7 @@
   align-items: center;
   height: max(20px, calc(var(--ar-h) - 6px));
   padding: 0 8px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   font-family: var(--ar-voice-font);
   font-size: var(--ar-voice-size);
   font-weight: var(--ar-voice-weight);
@@ -510,7 +510,7 @@
   min-width: 0;
   height: 24px;
   padding: 0 8px;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
   font: var(--ar-weight-text) var(--ar-text-md) var(--ar-font-ui);
@@ -560,7 +560,7 @@
 .ar-graph__diagnostics button {
   box-sizing: border-box;
   padding: 4px 7px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-bg-hover);
   font: var(--ar-weight-text) var(--ar-text-sm) var(--ar-font-ui);
   color: var(--ar-text-mid);
@@ -601,7 +601,7 @@
   margin-left: auto;
   padding: 0 9px;
   height: 20px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-insert-sheen), var(--ar-insert);
   box-shadow: var(--ar-insert-shadow);
   color: var(--ar-insert-ink);
@@ -685,7 +685,7 @@
   width: 100%;
   height: 42px;
   padding: 0 10px 0 12px;
-  border-radius: var(--ar-radius-card) var(--ar-radius-card) 0 0;
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px) round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px) 0 0;
   cursor: pointer;
 }
 .ar-live__head:hover {
@@ -737,7 +737,7 @@
   min-height: 0;
   margin: 0 10px 10px 12px;
   overflow: hidden;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
 }
@@ -761,7 +761,7 @@
   align-items: center;
   gap: 2px;
   padding: 3px;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   background: var(--ar-list-bg);
   -webkit-backdrop-filter: var(--ar-list-backdrop);
   backdrop-filter: var(--ar-list-backdrop);
@@ -772,7 +772,7 @@
   place-items: center;
   width: 20px;
   height: 20px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   font-size: var(--ar-text-md);
   color: var(--ar-text-low);
   cursor: pointer;
@@ -991,7 +991,7 @@
   display: block;
   width: 100%;
   height: 40px;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-trough);
   box-shadow: var(--ar-well);
 }

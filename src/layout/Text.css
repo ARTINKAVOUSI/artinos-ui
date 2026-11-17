@@ -194,7 +194,7 @@
 .ar-type[data-variant='code'],
 .ar-type :where(code) {
   padding: 0.08em 0.36em;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--ar-k, 1));
   background: color-mix(in srgb, var(--ar-text-hi) 8%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-text-hi) 10%, transparent);
   font-family: var(--ar-font-code);
@@ -236,8 +236,8 @@
 .ar-type[data-variant='eyebrow']::before {
   content: '';
   flex: none;
-  width: 6px;
-  height: 6px;
+  width: calc(6px * var(--ar-k, 1));
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
   border-radius: 50%;
   background: var(--ar-signal);
   box-shadow: 0 0 6px var(--ar-signal-line);
@@ -267,7 +267,7 @@
   align-items: center;
   width: fit-content;
   flex: none;
-  padding: 2px 9px;
+  padding: calc(2px * var(--ar-k, 1)) calc(9px * var(--ar-k, 1));
   border-radius: 999px;
   background: var(--ar-signal-wash);
   box-shadow: inset 0 0 0 1px var(--ar-signal-line);
@@ -328,8 +328,8 @@
 .ar-type[data-accent='bar']::before {
   content: '';
   display: block;
-  width: 24px;
-  height: 2px;
+  width: calc(24px * var(--ar-k, 1));
+  height: max(calc(2px * var(--ar-k, 1)), 2px);
   margin-bottom: 0.6em;
   border-radius: 1px;
   background: var(--ar-signal);
@@ -389,7 +389,7 @@
 }
 .ar-type :where(mark) {
   padding: 0 0.15em;
-  border-radius: 3px;
+  border-radius: calc(3px * var(--ar-k, 1));
   background: var(--ar-signal-wash);
   color: var(--ar-text-hi);
 }
@@ -407,7 +407,7 @@
 .ar-type :where(kbd) {
   font: var(--ar-weight-medium) var(--ar-caps-xs) / 1 var(--ar-font-num);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--ar-k, 1));
   box-shadow: inset 0 0 0 1px var(--ar-line-strong), 0 1px 0 var(--ar-line);
   color: var(--ar-text-hi);
 }

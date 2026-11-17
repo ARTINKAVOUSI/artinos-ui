@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border-radius: var(--ar-radius-shell);
+  border-radius: round(calc(var(--ar-radius-shell) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
@@ -58,9 +58,9 @@
 .ar-panel__titles::before {
   content: '';
   display: var(--ar-panel-mark, none);
-  width: 20px;
-  height: 2px;
-  margin-bottom: 8px;
+  width: calc(20px * var(--ar-k, 1));
+  height: max(calc(2px * var(--ar-k, 1)), 2px);
+  margin-bottom: calc(8px * var(--ar-k, 1));
   border-radius: 1px;
   background: var(--ar-signal);
 }
@@ -83,10 +83,10 @@
 }
 .ar-panel__actions {
   margin-left: auto;
-  min-height: 22px;
+  min-height: max(calc(22px * var(--ar-k, 1)), 16px);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--ar-k, 1));
   color: var(--ar-text-low);
 }
 /* more tabs than the width scroll within their strip, so they never widen the panel */
@@ -174,7 +174,7 @@
    the cards hold the width; the head keeps a little more, level with the cards' own content */
 .ar-panel__body > .ar-section[data-variant='card'] + :is(.ar-section[data-variant='card'], .ar-section-group, .ar-panel),
 .ar-panel__body > :is(.ar-section, .ar-section-group, .ar-panel) + .ar-section[data-variant='card'] {
-  margin-top: 4px;
+  margin-top: calc(4px * var(--ar-k, 1));
   padding-top: 0;
   border-top: 0;
 }
@@ -189,7 +189,7 @@
 }
 .ar-panel__body > .ar-stat-strip + *,
 .ar-panel__body > * + .ar-callout {
-  margin-top: 4px;
+  margin-top: calc(4px * var(--ar-k, 1));
 }
 /* a SectionGroup spaces its sections itself (a dock pane's sections, a sortable list): only the line
    and the air under it; cards carry their own edges and keep none */
@@ -200,7 +200,7 @@
   display: flex;
   align-items: center;
   gap: var(--ar-space-4);
-  padding: 9px var(--ar-panel-pad-x) 11px;
+  padding: calc(9px * var(--ar-k, 1)) var(--ar-panel-pad-x) calc(11px * var(--ar-k, 1));
   border-top: 1px solid var(--ar-line-subtle);
   font-family: var(--ar-voice-font);
   font-size: max(var(--ar-text-xs), calc(var(--ar-voice-size) - 1px));
@@ -222,8 +222,8 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 24px;
+  gap: calc(8px * var(--ar-k, 1));
+  min-height: max(calc(24px * var(--ar-k, 1)), 16px);
   padding: 0 0 var(--ar-space-4);
   color: var(--ar-text-mid);
 }
@@ -235,8 +235,8 @@
   display: flex;
   flex: 1;
   align-items: center;
-  min-height: 24px; /* the whole title row is the target */
-  gap: 7px;
+  min-height: max(calc(24px * var(--ar-k, 1)), 16px); /* the whole title row is the target */
+  gap: calc(7px * var(--ar-k, 1));
   min-width: 0;
 }
 button.ar-section__trigger,
@@ -244,7 +244,7 @@ button.ar-section__trigger,
   cursor: pointer;
 }
 button.ar-section__trigger:focus-visible {
-  border-radius: var(--ar-radius-control);
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-focus-lift);
 }
 .ar-section__chevron {
@@ -252,8 +252,8 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   place-items: center end;
   flex: none;
-  width: 14px;
-  height: 14px;
+  width: calc(14px * var(--ar-k, 1));
+  height: max(calc(14px * var(--ar-k, 1)), 14px);
   color: var(--ar-text-faint);
   transition: color var(--ar-dur-state) var(--ar-ease);
 }
@@ -271,11 +271,11 @@ button.ar-section__trigger:focus-visible {
   display: flex;
   flex: none;
   align-items: center;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
 }
 .ar-section__actions .ar-badge {
-  height: 16px;
-  padding: 0 6px;
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
+  padding: 0 calc(6px * var(--ar-k, 1));
 }
 .ar-section__actions .ar-icon-button {
   --_size: 18px;
@@ -330,7 +330,7 @@ button.ar-section__trigger:focus-visible {
   display: var(--ar-section-tick, none);
   flex: none;
   width: var(--ar-section-tick-w, 2px);
-  height: 14px;
+  height: max(calc(14px * var(--ar-k, 1)), 14px);
   border-radius: 1px;
   background: var(--ar-signal);
 }
@@ -347,16 +347,18 @@ button.ar-section__trigger:focus-visible {
   flex: 1;
   align-self: stretch;
   order: 1;
-  min-width: 12px;
-  /* air between the line and the words on either side: twice the title row's own gap */
-  margin-inline: 7px;
-  background: linear-gradient(var(--ar-line-strong) 0 0) center / 100% var(--ar-section-midrule, 1px) no-repeat;
+  /* the line is the first thing a narrow title row gives up: it closes to nothing before the
+     name or the count lose a letter */
+  min-width: 0;
+  /* air between the line and the words on either side: twice the title row's own gap, kept
+     inside the line's own box so it closes with it */
+  background: linear-gradient(var(--ar-line-strong) 0 0) center / max(0px, calc(100% - 14px * var(--ar-k, 1))) var(--ar-section-midrule, 1px) no-repeat;
 }
 .ar-section__body > .ar-section > .ar-section__head .ar-section__rule {
   background: none;
 }
 .ar-section__led {
-  height: 8px;
+  height: max(calc(8px * var(--ar-k, 1)), 8px);
 }
 .ar-section__count {
   /* a small fact at the end of the title row, set like a Tag; in a narrow column it gives way
@@ -390,6 +392,8 @@ button.ar-section__trigger:focus-visible {
    opening unrolls them. Closing is quicker and eases in; opening settles. */
 .ar-section__fold {
   display: grid;
+  /* a section is as wide as its panel, never as wide as its widest control would like to be */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--ar-dur-surface) var(--ar-ease-exit);
 }
@@ -400,6 +404,7 @@ button.ar-section__trigger:focus-visible {
 .ar-section__body {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: var(--ar-row-gap);
   min-height: 0;
   /* clipped top and bottom while it folds (a few px of margin keep focus rings whole);
@@ -423,7 +428,7 @@ button.ar-section__trigger:focus-visible {
 /* ---------- Field: label column + control(s) ---------- */
 .ar-field {
   display: grid;
-  grid-template-columns: var(--ar-field-label-w, 108px) minmax(0, 1fr);
+  grid-template-columns: min(var(--ar-field-label-w, 108px), 42%) minmax(0, 1fr);
   /* top-aligned, with the label as tall as one control row: it sits level with the control's
      first line, even beside a multiline field or a tall pad */
   align-items: start;
@@ -447,7 +452,7 @@ button.ar-section__trigger:focus-visible {
 .ar-field__control {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
   min-width: 0;
   min-height: var(--ar-h);
   /* a plain value (a readout, a state in words) reads as the row's answer: the panel's brightest
@@ -465,7 +470,7 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-field:not(:has(.ar-well, .ar-button, .ar-icon-button, .ar-chip, .ar-checkbox, .ar-tool, input, select, textarea, button)) > .ar-field__control {
   display: block;
-  min-height: 20px;
+  min-height: max(calc(20px * var(--ar-k, 1)), 16px);
   letter-spacing: -0.005em;
   text-wrap: pretty;
 }
@@ -542,19 +547,19 @@ button.ar-section__trigger:focus-visible {
   color: var(--ar-tone-body);
 }
 .ar-field__required {
-  margin-left: 3px;
+  margin-left: calc(3px * var(--ar-k, 1));
   color: var(--ar-text-faint);
 }
 .ar-field__message {
   grid-column: 2;
-  margin-top: -2px;
+  margin-top: calc(-2px * var(--ar-k, 1));
   font: var(--ar-type-note);
   color: var(--ar-tone-note);
   text-wrap: pretty;
 }
 .ar-field[data-layout='stacked'] .ar-field__message {
   grid-column: 1;
-  margin-top: -2px;
+  margin-top: calc(-2px * var(--ar-k, 1));
 }
 .ar-field[data-invalid] .ar-field__message {
   /* the fault colour lifted toward the theme's bright ink, so small text stays readable on glass */
@@ -571,17 +576,17 @@ button.ar-section__trigger:focus-visible {
 .ar-tabs {
   position: relative;
   display: flex;
-  gap: 18px;
+  gap: calc(18px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-tabs[data-orientation='vertical'] {
   flex-direction: column;
   align-items: stretch;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
 }
 .ar-tabs[data-variant='pill'],
 .ar-tabs[data-variant='icon'] {
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
 }
 .ar-tabs[data-fill] > * {
   flex: 1 1 0;
@@ -594,9 +599,9 @@ button.ar-section__trigger:focus-visible {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
   min-width: 0;
-  padding: 10px 0 11px;
+  padding: calc(10px * var(--ar-k, 1)) 0 calc(11px * var(--ar-k, 1));
   /* hairline capitals (the tab tokens); a hairline name is set in the body ink so it never goes faint */
   font: var(--ar-tab-weight, 300) var(--ar-tab-size, 12px) / 18px var(--ar-font-ui);
   text-transform: var(--ar-tab-case, uppercase);
@@ -636,12 +641,12 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
 }
 .ar-tabs__icon svg {
-  width: 16px;
-  height: 16px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
 }
 /* how many things are in a tab: a quiet figure after its name */
 .ar-tabs__count {
@@ -655,8 +660,8 @@ button.ar-section__trigger:focus-visible {
 /* something in the tab wants a look: a small light */
 .ar-tabs__dot {
   flex: none;
-  width: 5px;
-  height: 5px;
+  width: calc(5px * var(--ar-k, 1));
+  height: max(calc(5px * var(--ar-k, 1)), 5px);
   border-radius: 50%;
   background: var(--ar-signal);
   box-shadow: 0 0 5px var(--ar-signal-line);
@@ -696,47 +701,47 @@ button.ar-section__trigger:focus-visible {
 }
 .ar-tabs[data-variant='pill'] > .ar-tabs__bar,
 .ar-tabs[data-variant='icon'] > .ar-tabs__bar {
-  border-radius: var(--ar-radius-control);
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-bg-active);
   box-shadow: inset 0 0 0 1px var(--ar-line-subtle);
 }
 
 /* pill and icon tabs are small plates; a line rail's tabs are rows */
 .ar-tabs[data-variant='pill'] .ar-tabs__tab {
-  padding: 5px 10px;
-  border-radius: var(--ar-radius-control);
+  padding: calc(5px * var(--ar-k, 1)) calc(10px * var(--ar-k, 1));
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
 }
 .ar-tabs[data-variant='icon'] .ar-tabs__tab {
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: calc(30px * var(--ar-k, 1));
+  height: calc(30px * var(--ar-k, 1));
   padding: 0;
-  border-radius: var(--ar-radius-control);
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
 }
 /* vertical is the strip turned 90°: the names run down the rail, 18 apart, the bar on the side
    that faces the view, and no icons (the icon look keeps them) */
 .ar-tabs[data-orientation='vertical'][data-variant='line'] {
-  gap: 18px;
+  gap: calc(18px * var(--ar-k, 1));
 }
 .ar-tabs[data-orientation='vertical']:not([data-variant='icon']) :is(.ar-tabs__tab, .ar-tabs__item) {
   writing-mode: vertical-rl;
 }
 .ar-tabs[data-variant='line'][data-orientation='vertical'] .ar-tabs__tab {
-  padding: 0 11px 0 10px;
+  padding: 0 calc(11px * var(--ar-k, 1)) 0 calc(10px * var(--ar-k, 1));
 }
 /* tabs are names: an item's icon shows only in the icon look */
 .ar-tabs:not([data-variant='icon']) .ar-tabs__icon {
   display: none;
 }
 .ar-tabs[data-variant='pill'][data-orientation='vertical'] .ar-tabs__tab {
-  padding: 10px 5px;
+  padding: calc(10px * var(--ar-k, 1)) calc(5px * var(--ar-k, 1));
 }
 .ar-tabs[data-orientation='vertical'] .ar-tabs__tab,
 .ar-tabs[data-orientation='vertical'] .ar-tabs__item {
   justify-content: flex-start;
 }
 .ar-tabs[data-orientation='vertical'][data-variant='icon'] .ar-tabs__tab {
-  width: 30px;
+  width: calc(30px * var(--ar-k, 1));
 }
 .ar-tabs:is([data-variant='pill'], [data-variant='icon']) .ar-tabs__tab:hover:not([aria-selected='true']) {
   background: var(--ar-bg-hover);
@@ -755,7 +760,7 @@ button.ar-section__trigger:focus-visible {
   z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-tabs__close {
@@ -764,9 +769,9 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
+  border-radius: calc(4px * var(--ar-k, 1));
   color: var(--ar-text-faint);
   opacity: 0;
   cursor: pointer;
@@ -775,8 +780,8 @@ button.ar-section__trigger:focus-visible {
     color var(--ar-dur-state) var(--ar-ease);
 }
 .ar-tabs__close svg {
-  width: 10px;
-  height: 10px;
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
 }
 .ar-tabs__item:is(:hover, :focus-within, [data-selected]) .ar-tabs__close {
   opacity: 1;
@@ -786,10 +791,10 @@ button.ar-section__trigger:focus-visible {
   background: var(--ar-bg-hover);
 }
 .ar-tabs[data-variant='pill'] .ar-tabs__item .ar-tabs__tab {
-  padding-right: 4px;
+  padding-right: calc(4px * var(--ar-k, 1));
 }
 .ar-tabs[data-variant='pill'] .ar-tabs__close {
-  margin-right: 6px;
+  margin-right: calc(6px * var(--ar-k, 1));
 }
 
 /* ---------- Panel: tabs down the side ---------- */
@@ -828,13 +833,13 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center;
-  width: 18px;
-  height: 22px;
+  width: calc(18px * var(--ar-k, 1));
+  height: max(calc(22px * var(--ar-k, 1)), 16px);
   color: var(--ar-tone-title);
 }
 .ar-panel__icon svg {
-  width: 18px;
-  height: 18px;
+  width: calc(18px * var(--ar-k, 1));
+  height: max(calc(18px * var(--ar-k, 1)), 16px);
 }
 :where(.ar-panel__toggle, .ar-panel__chevron) {
   all: unset;
@@ -844,7 +849,7 @@ button.ar-section__trigger:focus-visible {
   flex: 1;
   min-width: 0;
   cursor: pointer;
-  border-radius: var(--ar-radius-control);
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
 }
 .ar-panel__toggle:focus-visible {
   background: var(--ar-focus-lift);
@@ -853,8 +858,8 @@ button.ar-section__trigger:focus-visible {
   display: grid;
   flex: none;
   place-items: center end;
-  width: 14px;
-  height: 22px;
+  width: calc(14px * var(--ar-k, 1));
+  height: max(calc(22px * var(--ar-k, 1)), 16px);
   color: var(--ar-text-faint);
   cursor: pointer;
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -880,7 +885,7 @@ button.ar-section__trigger:focus-visible {
   overflow-clip-margin: 4px;
 }
 .ar-panel:not([data-open]) .ar-panel__head {
-  padding-bottom: 16px;
+  padding-bottom: calc(16px * var(--ar-k, 1));
 }
 /* a long body scrolls under soft fades instead of being cut; its scrollbar sits in the gutter, so the
    rows keep the same right edge as the head above them */
@@ -898,7 +903,7 @@ button.ar-section__trigger:focus-visible {
 }
 /* inset: a quiet frame inside another panel — no glass of its own */
 .ar-panel[data-variant='inset'] {
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   background: color-mix(in srgb, var(--ar-text-hi) 3%, transparent);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -909,29 +914,29 @@ button.ar-section__trigger:focus-visible {
   display: none;
 }
 .ar-panel[data-variant='inset'] .ar-panel__head {
-  padding: 12px 14px 8px;
+  padding: calc(12px * var(--ar-k, 1)) calc(14px * var(--ar-k, 1)) calc(8px * var(--ar-k, 1));
 }
 .ar-panel[data-variant='inset'] .ar-panel__title {
   font: var(--ar-weight-bold) var(--ar-text-md) / 18px var(--ar-font-ui);
   letter-spacing: -0.006em;
 }
 .ar-panel[data-variant='inset'] .ar-panel__icon {
-  width: 16px;
-  height: 20px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(20px * var(--ar-k, 1)), 16px);
   color: var(--ar-tone-label);
 }
 .ar-panel[data-variant='inset'] .ar-panel__icon svg {
-  width: 16px;
-  height: 16px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
 }
 .ar-panel[data-variant='inset'] .ar-panel__chevron {
-  height: 20px;
+  height: max(calc(20px * var(--ar-k, 1)), 16px);
 }
 .ar-panel[data-variant='inset'] .ar-panel__actions {
-  min-height: 20px;
+  min-height: max(calc(20px * var(--ar-k, 1)), 16px);
 }
 .ar-panel[data-variant='inset'] .ar-panel__body {
-  padding: 8px 14px 12px;
+  padding: calc(8px * var(--ar-k, 1)) calc(14px * var(--ar-k, 1)) calc(12px * var(--ar-k, 1));
 }
 
 /* ---------- Section: reset, description, card, columns ---------- */
@@ -940,8 +945,8 @@ button.ar-section__trigger:focus-visible {
   animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring);
 }
 .ar-section__reset svg {
-  width: 11px;
-  height: 11px;
+  width: calc(11px * var(--ar-k, 1));
+  height: max(calc(11px * var(--ar-k, 1)), 11px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
@@ -971,16 +976,16 @@ button.ar-section__trigger:focus-visible {
 .ar-section[data-variant='card'] {
   --_card-pad: max(10px, calc(var(--ar-panel-pad-x) * 0.7));
   padding: var(--_card-pad);
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   background: color-mix(in srgb, var(--ar-text-hi) 5%, transparent);
   transition: background var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-section[data-variant='card']:not([data-open]) {
-  padding-bottom: 4px;
+  padding-bottom: calc(4px * var(--ar-k, 1));
 }
 /* a small name over a set of controls */
 .ar-section__body > .ar-type[data-variant='overline'] {
-  margin-top: 6px;
+  margin-top: calc(6px * var(--ar-k, 1));
 }
 .ar-section[data-variant='card'][data-off] {
   background: color-mix(in srgb, var(--ar-text-hi) 1.5%, transparent);
@@ -1001,14 +1006,14 @@ button.ar-section__trigger:focus-visible {
   display: flex;
   justify-content: flex-end;
   gap: var(--ar-space-1);
-  margin: 0 -7px calc(var(--ar-space-2) * -1) 0;
+  margin: 0 calc(-7px * var(--ar-k, 1)) calc(var(--ar-space-2) * -1) 0;
 }
 :where(.ar-section-group__all) {
   all: unset;
 }
 .ar-section-group__all {
-  padding: 4px 7px;
-  border-radius: var(--ar-radius-control);
+  padding: calc(4px * var(--ar-k, 1)) calc(7px * var(--ar-k, 1));
+  border-radius: round(calc(var(--ar-radius-control) * var(--ar-k, 1)), 0.5px);
   font: var(--ar-weight-medium) var(--ar-text-xs) / 16px var(--ar-font-ui);
   color: var(--ar-tone-label);
   cursor: pointer;
@@ -1028,17 +1033,17 @@ button.ar-section__trigger:focus-visible {
 /* a foldable heading answers the pointer with a faint rounded band, so it reads as clickable
    without any line across the panel; its text stays aligned with the rows below */
 .ar-section__head:has(> button.ar-section__trigger) {
-  margin-inline: -6px;
-  padding-inline: 6px;
-  border-radius: var(--ar-row-radius);
+  margin-inline: calc(-6px * var(--ar-k, 1));
+  padding-inline: calc(6px * var(--ar-k, 1));
+  border-radius: calc(var(--ar-row-radius) * var(--ar-k, 1));
   transition: background var(--ar-dur-state) var(--ar-ease);
 }
 .ar-section__head:has(> button.ar-section__trigger):hover {
   background: color-mix(in srgb, var(--ar-text-hi) 4%, transparent);
 }
 .ar-section[data-variant='card'] > .ar-section__head:has(> button.ar-section__trigger) {
-  margin-inline: -4px;
-  padding-inline: 4px;
+  margin-inline: calc(-4px * var(--ar-k, 1));
+  padding-inline: calc(4px * var(--ar-k, 1));
 }
 
 /* ---------- a Panel in a Dock pane is the pane ---------- */

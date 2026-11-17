@@ -1,7 +1,11 @@
-/* Layout system — three levels. A panel holds sections, a section holds parts. A panel is a
-   MetaBlock: the same thing on a page, in a dock or floating, with capabilities that say how it
-   may move; the workspace is only the place where panels are arranged. */
+/* Workspace — how a tool is built, from the outside in. A workspace arranges panels, a panel holds
+   sections, a section holds parts. A panel is a MetaBlock: the same thing on a page, in a dock or
+   floating, with capabilities that say how it may move. The Inspector, which builds a panel from a
+   description of its values, and lists have their sections here too: everything about panels is in
+   this one chapter. */
+import { Panel } from '../../../src';
 import { Chapter, Spec } from '../shared';
+import { Keyframes, Monitors, Parameters } from './inspector-demo';
 import { PanelDemo, PartsDemo, SectionDemo } from './layout-demo';
 import { ListsDemo } from './lists-demo';
 import { TabsDemo } from './tabs-demo';
@@ -85,13 +89,23 @@ function Reference() {
   );
 }
 
+const INSPECTOR_CODE = `const items: InspectItem[] = [
+  { key: 'angle', label: 'Angle', folder: 'transform', kind: 'number', default: 0, min: -180, max: 180, step: 1, face: 'degrees' },
+  { key: 'tint', label: 'Tint', folder: 'material', kind: 'color', default: '#4fd1ba' },
+  { key: 'fps', label: 'Frame rate', folder: 'monitor', kind: 'monitor', read: () => stats.fps, graph: true, unit: 'fps' },
+];
+const store = createInspectorStore(items, { target: scene });   // writes to scene; store.pull() reads it back
+
+<Panel title="Inspector"><Inspector items={items} folders={folders} store={store} /></Panel>
+<Panel title="Timeline"><InspectorTimeline items={items} store={store} /></Panel>`;
+
 export function LayoutChapter() {
   return (
     <Chapter id="layout">
       <Spec
         id="panel"
         wide
-        text="A panel is one thing wherever it sits, and every panel is a MetaBlock: a named frame that holds sections, which can be dragged, floated, docked, joined to another as a tab, split and maximized. Every panel on this page lives in a workspace, so try it on any of them. On a page it is a Panel; in a workspace it is a MetaBlock, and its capabilities say what it may do (float, dock, join another as a tab, split, maximize, pin, close). The workspace has no parts of its own: it is only where panels are arranged, around a canvas, and it remembers the arrangement. Every move is a MetaBlock call, so the toolbar over the canvas moves panels with the same calls a drag makes. The Inspector here is closable and floatable off: it stays docked and open, and the toolbar's Float is off for it."
+        text="A panel is one thing wherever it sits, and every panel is a MetaBlock: a named frame that holds sections, which can be dragged, floated, docked, joined to another as a tab, split and maximized. Every panel on this page lives in a workspace, so try it on any of them. On a page it is a Panel; in a workspace it is a MetaBlock, and its capabilities say what it may do (float, dock, join another as a tab, split, maximize, pin, close). The workspace has no parts of its own: it is only where panels are arranged, around a canvas, and it remembers the arrangement. Every move is a MetaBlock call, so the toolbar over the canvas moves panels with the same calls a drag makes. The Properties panel here is closable and floatable off: it stays docked and open, and the toolbar's Float is off for it."
         keys={[
           ['floatable', 'drag a tab out over the canvas'],
           ['dockable', 'drop it on an edge of the workspace'],
@@ -105,7 +119,7 @@ export function LayoutChapter() {
   viewport={<Canvas>…</Canvas>}
   storageKey="my-app.layout"
   panels={[
-    { id: 'inspector', title: 'Inspector', dock: 'left', content: <Inspector />,
+    { id: 'properties', title: 'Properties', dock: 'left', content: <Properties />,
       capabilities: { closable: false, floatable: false } },          // stays docked and open
     { id: 'layers', title: 'Layers', dock: 'right', content: <Layers /> },
     { id: 'console', title: 'Console', content: <Console />, footer: 'Ready' },
@@ -119,7 +133,7 @@ export function LayoutChapter() {
 />
 
 // the same panel on a page, outside a workspace
-<Panel title="Inspector" subtitle="Orb" footer="Ready"><Inspector /></Panel>`}
+<Panel title="Properties" subtitle="Orb" footer="Ready"><Properties /></Panel>`}
       >
         <PanelDemo />
       </Spec>
@@ -159,13 +173,13 @@ api.workspace.setGroupMeta('dock.right', { tabs: { placement: 'side', look: 'lin
 
       <Spec
         id="section"
-        text="A section is the one way to group. A group of settings, a category, a fold: all of them are a Section, under a heading with its count. It folds on a click, resets once something changed, and switches off as a whole when it has an LED. SectionGroup makes sections act together: as categories with one open at a time, or with Expand all and Collapse all. One set of sections can live in many panels at once: the Scene panel here holds a pane of the same set as the workspace above, so a section drags from here into the Inspector and back."
+        text="A section is the one way to group. A group of settings, a category, a fold: all of them are a Section, under a heading with its count. It folds on a click, resets once something changed, and switches off as a whole when it has an LED. SectionGroup makes sections act together: as categories with one open at a time, or with Expand all and Collapse all. One set of sections can live in many panels at once: the Scene panel here holds a pane of the same set as the workspace above, so a section drags from here into its Properties panel and back."
         code={`const sections = createDockSections({
   panes: { inspector: ['object', 'material'], page: ['exposure', 'post', 'transform'] },
   render: (id) => SECTIONS[id](),     // each returns a <Section>
 });
 <Panel title="Scene"><sections.Pane id="page" toolbar /></Panel>     // on the page
-{ id: 'inspector', content: <sections.Pane id="inspector" /> }        // in the workspace
+{ id: 'properties', content: <sections.Pane id="inspector" /> }       // in the workspace
 
 <Section title="Exposure" count={2} description="How bright the frame is."
          modified={changed} onReset={reset}> … </Section>
@@ -183,7 +197,7 @@ api.workspace.setGroupMeta('dock.right', { tabs: { placement: 'side', look: 'lin
       <Spec
         id="parts"
         wide
-        text="Everything else is a part, and a part always sits in a section. Rows give a value its name: a Field beside its controls, a PropertyRow that knows when it changed. Controls set one value each, in the shape the parameter takes. Readouts show what is: a StatStrip of the figures people look for first, then meters. Lists hold things, and have a section of their own below. Text explains: an overline names a sub-group, a note helps, a Callout must not be missed."
+        text="Everything else is a part, and a part always sits in a section. Rows give a value its name: a Field beside its controls, a PropertyRow that knows when it changed. Controls set one value each, in the shape the parameter takes. Readouts show what is: a StatStrip of the figures people look for first, then meters. The Inspector builds these rows from a schema, and lists hold things: each has a section of its own below. Text explains: an overline names a sub-group, a note helps, a Callout must not be missed."
         code={`<Section title="Rows">
   <Field label="Width"><NumberField … /><Select appearance="well" … /></Field>
   <Field label="Name">Orb <Tag>mesh</Tag></Field>
@@ -198,6 +212,35 @@ api.workspace.setGroupMeta('dock.right', { tabs: { placement: 'side', look: 'lin
 </Section>`}
       >
         <PartsDemo />
+      </Spec>
+
+      <Spec
+        id="inspector"
+        wide
+        text="The Inspector builds a whole panel from a description of its values: sections, rows and controls, with none written by hand. Describe each value once and bind the store to your own object: a change here is written to the object, and whatever the app changes in it shows here. These panels share the store of the instrument at the top of the page: change a value here and the prism there follows. Folders nest, a row resets, copies, pastes, follows another value and takes a keyframe; the Timeline lays the keyframes out in time; monitors trace what the scene reports."
+        keys={[
+          ['drag a value or its name', 'scrub; Alt fine, Shift coarse; click a number to type'],
+          ['right-click a row', 'reset, copy, paste, keyframe, follow another value'],
+          ['the diamond', 'keys the row at the playhead; it shows in the Timeline'],
+          ['Prism A · B · Both', 'on the instrument: both at once marks the rows that differ as mixed'],
+          ['Quality Ultra, Echoes 7', 'a check explains the value under its row'],
+          ['Presets', 'recall, or save the current state'],
+        ]}
+        code={INSPECTOR_CODE}
+      >
+        <div className="sc-inspector-demo">
+          <Panel title="Inspector" subtitle="The selected prism" maxHeight={620}>
+            <Parameters />
+          </Panel>
+          <div className="sc-inspector-demo__side">
+            <Panel title="Timeline" subtitle="Keyframes over a 4 s loop">
+              <Keyframes />
+            </Panel>
+            <Panel title="Monitor" subtitle="What the scene reports">
+              <Monitors />
+            </Panel>
+          </div>
+        </div>
       </Spec>
 
       <Spec

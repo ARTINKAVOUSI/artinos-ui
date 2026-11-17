@@ -5,9 +5,9 @@
 */
 
 // design system
-export { ArtinosTheme, themeStyle } from './core/Theme';
-export type { ArtinosThemeProps, TokenOverrides } from './core/Theme';
-export { THEMES, THEME_META, GLASS_THEMES, HERO_THEMES, variationsOf, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
+export { ArtinosTheme, themeStyle, densityTokensCss } from './core/Theme';
+export type { ArtinosThemeProps, DensityTokens, TokenOverrides } from './core/Theme';
+export { THEMES, THEME_META, GLASS_THEMES, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, DENSITY_META, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
 export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue, RollingText } from './core/RollingValue';
 export type { RollingValueProps } from './core/RollingValue';
@@ -110,6 +110,10 @@ export { Callout } from './layout/Callout';
 export type { CalloutProps, CalloutTone } from './layout/Callout';
 export type { ItemGroupProps, ItemListProps, ItemListSize, ItemListVariant, ItemRowProps, ItemStatus } from './layout/ItemRow';
 
+// auto-hide: one switch that hides every Dock, auto-hiding Panel and <AutoHide> for a clean view
+export { AutoHide, INTERFACE_EVENT, interfaceVisibility, useAutoHide, useInterfaceVisibility } from './core/autohide';
+export type { AutoHideOptions, AutoHideProps, HiddenReason, InterfaceVisibilityState } from './core/autohide';
+
 // overlays
 export { Menu, ContextMenu } from './overlays/Menu';
 export type { MenuEntry, MenuProps, ContextMenuProps } from './overlays/Menu';
@@ -121,6 +125,14 @@ export { Tooltip } from './overlays/Tooltip';
 export type { TooltipProps } from './overlays/Tooltip';
 export { CommandPalette } from './overlays/CommandPalette';
 export type { Command, CommandPaletteProps } from './overlays/CommandPalette';
+
+// inspector: the pro parameter editor, from a schema, bound both ways to the app's object
+export { Inspector } from './inspector/Inspector';
+export type { InspectorProps } from './inspector/Inspector';
+export { InspectorTimeline } from './inspector/Timeline';
+export type { InspectorTimelineProps } from './inspector/Timeline';
+export { createInspectorStore, mergeInspectorStores, isField, sameValue, keyAt, valueAt } from './inspector/store';
+export type { InspectAction, InspectChoice, InspectColor, InspectDiagnosis, InspectField, InspectFolder, InspectItem, InspectKey, InspectLink, InspectMonitor, InspectNumber, InspectPoint, InspectRange, InspectText, InspectToggle, InspectValue, InspectValues, InspectVector, InspectorState, InspectorStore, InspectorStoreOptions } from './inspector/store';
 
 // dock: the studio workspace, and the MetaBlock engine it is built on
 export { Dock, TEAR_PREFIX, useDock } from './dock/Dock';

@@ -1,6 +1,6 @@
 ---
 name: artinos-ui
-description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Spectrum, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemList/ItemGroup/ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace on the MetaBlock engine and a NodeGraph editor) with 108 glass, frost, studio and luxe themes and twelve type systems — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (nimbus, frost-deep, satin, onyx, pane…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
+description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Spectrum, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemList/ItemGroup/ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace on the MetaBlock engine and a NodeGraph editor) with 9 glass, frost and solid themes and twelve type systems — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (nimbus, pro-gray, studio-light, frost-deep, onyx…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
 ---
 
 # ARTINOS UI in a project
@@ -26,7 +26,7 @@ Each of these changes the steps below:
 - **Framework:** Vite, Next.js (App or Pages router), or webpack. The kit is `.tsx` source with CSS `@import`, which Vite and Next compile as-is. A plain-JS Next project will offer to add TypeScript the first time it sees `.tsx`; that's normal.
 - **Where the source lives** (`src/`, `app/`, `components/`) and any path alias (`@/…`).
 - **An existing kit** (an `artinos-ui` folder with `artinos.css` and `index.ts`). If there is one, this is an **update**: go to *Updating a kit* below. Never add a second copy.
-- **What the UI sits over.** A 3D canvas, video or photo suits glass and frost themes; a flat app suits solid themes (`studio`, `studio-light`).
+- **What the UI sits over.** A 3D canvas, video or photo suits glass and frost themes; a flat app suits the solid themes (`pro-gray`, `studio-light`).
 
 ### 2. Choose themes, type and components
 
@@ -35,16 +35,19 @@ node "{{PACKAGE}}/artinos.mjs" list
 ```
 
 **Theme.** Use what the user named. If they named none, use the default, **`nimbus`** (soft carved Haze glass; `ArtinosTheme` uses it when `theme` is omitted, and every kit carries it), and say so. Choose another only when the host calls for it:
-- a flat dark app with nothing behind the panels → `studio` or `frost-deep`
-- a light app → `studio-light` or `frost-light`
-- over imagery or a canvas → `nimbus`, `frost-deep`, `glass`, `haze`, `satin` or `onyx`, and set `scene` to what is behind it: `<ArtinosTheme scene="light">` over a light room, product shot or white page (without it, light-ink glass over a light scene is unreadable)
-- start from the eight hero themes (`list` shows them first); reach for a variation only when the user wants a different finish, and name the hero it comes from.
+- a flat dark app with nothing behind the panels → `pro-gray`, the neutral grey of 3D and grading software
+- a light app → `studio-light`
+- over imagery or a canvas → `nimbus`, `frost-deep`, `ice` or `onyx`, and set `scene` to what is behind it: `<ArtinosTheme scene="light">` over a light room, product shot or white page (without it, light-ink glass over a light scene is unreadable)
+- every theme is a complete look of its own, in one set (`list` shows them, the default first); pick one, never mix two in one tool.
+
+**Density.** `standard` is the default. For a tool people work in all day (an editor, a control surface, an inspector with many parameters) set the whole scope to `dense`: `<ArtinosTheme density="dense">`; `comfort` for a panel read at arm's length or touched. A family scales every size and corner of the theme proportionally (Nimbus Dense is Nimbus, tighter), with type stepped on the 12px floor. One family per tool. In your own CSS multiply a fixed size by `var(--ar-k, 1)`.
 
 **Type system.** `fine` is the default and always included: hairline Inter controls under extra-bold Inter Tight titles, made for control panels and pro tools. Add another only for a different kind of product, one per product (`references/design.md` → The type systems): `sleek`, `product` or `instrument` for tools; `mass` or `round` for hardware and devices; `grotesk` technical; `wide` a strong brand; `salon` a premium product page; `editorial` long text; `native` a desktop feel; `legible` public or assistive use.
 
-**Components.** Decide what each parameter *is* before deciding which component shows it (`references/catalogue.md` has the table; the short version is in step 5). Pick only what the UI uses; each brings the files it imports. `ArtinosTheme`, the `studio` base and `nimbus` are always included.
+**Components.** Decide what each parameter *is* before deciding which component shows it (`references/catalogue.md` has the table; the short version is in step 5). Pick only what the UI uses; each brings the files it imports. `ArtinosTheme`, the `pro-gray` base and `nimbus` are always included.
 - **Grouped controls:** `Panel` (it brings `Section`, `SectionGroup`, `Field`).
 - **Inspector rows** with reset, binding and status: `PropertyRow`.
+- **A pro parameter editor** (many values bound both ways to an object, with keyframes, links, presets, monitors and multiple selection): `Inspector` (brings `createInspectorStore`), and `InspectorTimeline` for its keyframes. It is made for the dense family (below).
 - **Lists of things** (layers, renders, materials, files): `ItemRow` (brings `ItemList`, `ItemGroup`).
 - **A studio or editor around a canvas:** `Dock`. It brings the MetaBlock engine, its menu, the command palette and `PanelBar`. Add `DockSections` (`createDockSections`: sections that move between panes) and `Params` (`createParamPanes`: settings from a schema) when the UI uses them.
 - **Overlays:** `Menu`, `Dialog`, `Toast`, `Tooltip`, `CommandPalette`.
@@ -171,7 +174,8 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 ```
 
 - `--force` rewrites the kit and removes files it no longer needs; anything the app changed inside the kit is lost, which is why restyling lives in tokens.
-- Then run the type-check: an update can rename or remove a prop. Fix the app's code to the guides, never the kit. Recent changes worth checking: `Tabs` takes `orientation`, `variant` (`line` · `pill` · `icon`), `fill`, `onClose` and per-item `count` / `dot`; `Panel` takes `tabsPlacement`; `DockPanel` takes `dock: 'center'` and `icon`, `Dock` takes `tabs`, and a `Panel` inside a Dock pane now drops its own glass and title; `Section` and `createParamPanes` groups no longer take `icon` (a section title stands alone); `DockPanel` takes `capabilities`; `ItemList` takes `variant`, `size`, `tileWidth` and `empty`, and `ItemRow` takes `thumbnail`, `icon`, `description`, `value`, `status`, `progress`, `checked` and a tree (`depth`, `expanded`).
+- Then run the type-check: an update can rename or remove a prop. Fix the app's code to the guides, never the kit. Recent changes worth checking: `Tabs` takes `orientation`, `variant` (`line` · `pill` · `icon`), `fill`, `onClose` and per-item `count` / `dot`; `Panel` takes `tabsPlacement`; `DockPanel` takes `dock: 'center'` and `icon`, `Dock` takes `tabs`, and a `Panel` inside a Dock pane now drops its own glass and title; `Section` and `createParamPanes` groups no longer take `icon` (a section title stands alone); `DockPanel` takes `capabilities`; `ItemList` takes `variant`, `size`, `tileWidth` and `empty`, and `ItemRow` takes `thumbnail`, `icon`, `description`, `value`, `status`, `progress`, `checked` and a tree (`depth`, `expanded`). The themes are one flat set: `HERO_THEMES`, `variationsOf` and `THEME_META[id].parent` are gone, use `THEMES` (the default first). `ArtinosTheme` has no `mode` and there is no `data-ar-mode`: the pro look is the `dense` density.
+- Tokens removed from the package: `--ar-text-ghost` (use `--ar-text-faint`), `--ar-weight-black` (use `--ar-weight-bold`), `--ar-track-role`, and the unused colour primitives `--ar-ink-*`, `--ar-paper-*`, `--ar-chalk-*`, `--ar-slate-*`, `--ar-teal-*`. Search the app and any custom theme for them after an update: a `var()` of a removed token falls back to nothing. Sizes now come from one ladder, `--ar-step-12` … `--ar-step-48`; the size tokens keep their names and values.
 - Re-read `references/design.md` after an update: the rules move with the package.
 - The skill itself is refreshed by `setup`; `node "{{PACKAGE}}/artinos.mjs" skill --user` refreshes it for every project.
 

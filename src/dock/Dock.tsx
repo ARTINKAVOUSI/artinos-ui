@@ -3,6 +3,7 @@ import { Component, createContext, useCallback, useContext, useEffect, useMemo, 
 import type { CSSProperties, ReactElement, ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { Kbd } from '../actions/Kbd';
+import { interfaceVisibility, useAutoHide } from '../core/autohide';
 import { cx } from '../core/utils';
 import { PaneContext } from '../core/pane';
 import { CommandPalette } from '../overlays/CommandPalette';
@@ -62,9 +63,11 @@ export interface DockApi {
   /** Forget the saved arrangement and start from the panels' defaults. */
   resetLayout: () => void;
   openPalette: () => void;
-  /** Interface shown (false when hidden with the hide key). */
+  /** Interface shown: false while hidden by the hide key, idle, `interfaceVisibility` or the
+   *  `artinos:interface` event. It is the one switch every Dock and auto-hiding Panel shares. */
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  toggleVisible: () => void;
   /** Add a panel while the workspace runs, floating: at `at` (a point on screen, the panel's
    *  top-left) or at the float bounds. Ids starting with TEAR_PREFIX are not kept in the saved layout. */
   addPanel: (panel: DockPanel, place?: { at?: { x: number; y: number }; width?: number; height?: number }) => void;
@@ -98,8 +101,14 @@ export interface DockProps {
    *  or { placement, look } (look: 'line' · 'pill' · 'icon'). It seeds the group's MetaBlock meta;
    *  the tab's right-click menu changes it at run time, and the layout keeps it. */
   tabs?: Partial<Record<DockEdge | 'center' | 'float', 'top' | 'side' | Partial<DockTabStyle>>>;
-  /** Key that hides / shows the docks (the viewport stays). Off by default; e.g. 'h'. */
+  /** Key that hides / shows the interface (the viewport stays): 'h', 'tab', 'mod+.'… Off by default.
+   *  It is the shared switch, so auto-hiding Panels and other Docks hide with it. */
   hideKey?: string | null;
+  /** Hide the interface after this many ms with no input; any input brings it back. Off by default. */
+  idleHide?: number;
+  /** What brings an idle-hidden interface back: 'move' (any input, default) · 'near' (a key, or the
+   *  pointer near an edge or over a hidden panel's place, so working the canvas keeps the view clean). */
+  idleReveal?: 'move' | 'near';
   /** Engine tuning passed to the workspace view: padding, gap, snapping, motion… */
   viewProps?: Omit<
     Partial<MetaBlockWorkspaceViewProps>,
@@ -118,6 +127,8 @@ const VIEWPORT = 'viewport.canvas';
 const PERSIST_DELAY_MS = 300;
 /** Workspace events that do not change the saved arrangement. */
 const TRANSIENT_EVENTS = new Set(['focus', 'selection']);
+/** How long the panes take to arrive when the interface comes back, stagger included. */
+const REVEAL_MS = 700;
 
 const DockContext = createContext<DockApi | null>(null);
 
@@ -132,13 +143,6 @@ export function useDock(): DockApi {
 export function useDockOptional(): DockApi | null {
   return useContext(DockContext);
 }
-
-/** Keys typed into a field, list or slider are for that control, not the dock. */
-const typingTarget = (target: EventTarget | null) =>
-  target instanceof Element &&
-  !!target.closest(
-    'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="combobox"], [role="listbox"], [role="menu"], [role="slider"], [role="spinbutton"], [role="textbox"]',
-  );
 
 /**
  * The MetaBlock workspace for a set of panels: a locked fullscreen viewport (when
@@ -220,6 +224,8 @@ export function Dock({
   brand,
   tabs: tabPlacement,
   hideKey = null,
+  idleHide = 0,
+  idleReveal = 'move',
   viewProps,
   onReady,
   className,
@@ -246,7 +252,31 @@ export function Dock({
   const rootRef = useRef<HTMLDivElement>(null);
   const byId = new Map([...panels, ...extras].map((p) => [p.id, p]));
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const ui = useAutoHide({ hotkey: hideKey, idle: idleHide, reveal: idleReveal });
+  const visible = ui.visible;
+  // for a moment after it comes back the panes arrive (a longer, staggered settle); the rest of the
+  // time their fades stay the engine's quick ones, so drags and docking never lag
+  const [revealing, setRevealing] = useState(false);
+  const wasHidden = useRef(false);
+  useEffect(() => {
+    if (!visible) {
+      wasHidden.current = true;
+      setRevealing(false);
+      return;
+    }
+    if (!wasHidden.current) return;
+    wasHidden.current = false;
+    setRevealing(true);
+    const t = setTimeout(() => setRevealing(false), REVEAL_MS);
+    return () => clearTimeout(t);
+  }, [visible]);
+  // the floating rectangle by its numbers: an inline `floatBounds={{ … }}` is a new object every render,
+  // and the callbacks below (and the api handed to onReady) must not change with it
+  const float = useMemo(
+    () => floatBounds ?? DEFAULT_FLOAT,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [floatBounds?.x, floatBounds?.y, floatBounds?.width, floatBounds?.height],
+  );
 
   // persist the arrangement once a change settles; drags, resizes and focus clicks stay off storage
   useEffect(() => {
@@ -285,13 +315,13 @@ export function Dock({
         // back into its dock if there is one, else the first dock, else a floating window
         const home = [`dock.${panel.dock ?? 'bottom'}`, 'dock.bottom', ...workspace.groups.keys()].find((g) => workspace.groups.get(g)?.role === 'dock');
         workspace.createMetaBlock({ id, title: panel.title, role: 'panel', capabilities: panel.capabilities as MetaBlockCapabilities }, { groupId: home });
-        if (!home) workspace.floatBlock(id, floatBounds ?? DEFAULT_FLOAT);
+        if (!home) workspace.floatBlock(id, float);
       }
       workspace.activateBlock(id);
     },
     // byId is rebuilt each render from panels; the shape key tracks what matters here
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [workspace, shape, floatBounds],
+    [workspace, shape, float],
   );
 
   const resetLayout = useCallback(() => {
@@ -310,14 +340,14 @@ export function Dock({
       setExtras((e) => [...e.filter((p) => p.id !== panel.id), panel]);
       if (!workspace.blocks.has(panel.id)) {
         workspace.createMetaBlock({ id: panel.id, title: panel.title, role: 'panel', capabilities: panel.capabilities as MetaBlockCapabilities, meta: { description: panel.description ?? null } });
-        const base = floatBounds ?? DEFAULT_FLOAT;
+        const base = float;
         const box = rootRef.current?.getBoundingClientRect();
         const at = place?.at && box ? { x: Math.max(8, place.at.x - box.left), y: Math.max(8, place.at.y - box.top) } : { x: base.x, y: base.y };
         workspace.floatBlock(panel.id, { ...at, width: place?.width ?? 300, height: place?.height ?? 260 });
       }
       workspace.activateBlock(panel.id);
     },
-    [workspace, floatBounds],
+    [workspace, float],
   );
   const removePanel = useCallback<DockApi['removePanel']>(
     (id) => {
@@ -328,23 +358,12 @@ export function Dock({
   );
 
   const api = useMemo<DockApi>(
-    () => ({ workspace, openPanel, resetLayout, openPalette: () => setPaletteOpen(true), visible, setVisible, addPanel, removePanel }),
+    () => ({ workspace, openPanel, resetLayout, openPalette: () => setPaletteOpen(true), visible, setVisible: interfaceVisibility.set, toggleVisible: interfaceVisibility.toggle, addPanel, removePanel }),
     [workspace, openPanel, resetLayout, visible, addPanel, removePanel],
   );
   const ready = useRef(onReady);
   ready.current = onReady;
   useEffect(() => ready.current?.(api), [api]);
-
-  // the hide key toggles the docks; the viewport stays
-  useEffect(() => {
-    if (!hideKey) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || e.isComposing || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || typingTarget(e.target)) return;
-      if (e.key.toLowerCase() === hideKey.toLowerCase()) setVisible((v) => !v);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [hideKey]);
 
   const allCommands = useMemo<Command[]>(
     () => [
@@ -358,9 +377,7 @@ export function Dock({
       { id: 'layout.undo', label: 'Undo layout change', group: 'Layout', run: () => workspace.undo() },
       { id: 'layout.redo', label: 'Redo layout change', group: 'Layout', run: () => workspace.redo() },
       { id: 'layout.reset', label: 'Reset dock layout', group: 'Layout', run: resetLayout },
-      ...(hideKey
-        ? [{ id: 'ui.toggle', label: 'Hide / show interface', group: 'View', shortcut: hideKey.toUpperCase(), run: () => setVisible((v) => !v) }]
-        : []),
+      { id: 'ui.toggle', label: 'Hide interface (clean view)', group: 'View', shortcut: hideKey ? hideKey.toUpperCase() : undefined, run: interfaceVisibility.hide },
       ...commands,
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -399,13 +416,31 @@ export function Dock({
 
   // in a narrow dock the tabs scroll; a newly active tab is brought into view once
   const shownTab = useRef(new Map<string, string>());
-  const revealTab = (groupId: string, blockId: string, element: HTMLElement | null) => {
-    const strip = element?.parentElement;
-    if (!element || !strip || shownTab.current.get(groupId) === blockId) return;
-    shownTab.current.set(groupId, blockId);
+  const bringTab = (strip: HTMLElement, element: HTMLElement) => {
+    if (!strip.clientWidth) return; // not laid out yet: the strip's observer calls again when it is
     const left = element.offsetLeft - strip.offsetLeft;
     if (left < strip.scrollLeft) strip.scrollLeft = left - 8;
     else if (left + element.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollLeft = left + element.offsetWidth - strip.clientWidth + 8;
+  };
+  // a strip that changes width (a pane being laid out, narrowed or split) keeps its current tab whole
+  const stripWatch = useRef<ResizeObserver | null>(null);
+  useEffect(() => () => stripWatch.current?.disconnect(), []);
+  const revealTab = (groupId: string, blockId: string, element: HTMLElement | null) => {
+    const strip = element?.parentElement;
+    if (!element || !strip) return;
+    if (typeof ResizeObserver !== 'undefined') {
+      stripWatch.current ??= new ResizeObserver((entries) => {
+        for (const e of entries) {
+          const s = e.target as HTMLElement;
+          const on = s.querySelector<HTMLElement>(':scope > .is-active');
+          if (on) bringTab(s, on);
+        }
+      });
+      stripWatch.current.observe(strip); // observing a strip twice is a no-op
+    }
+    if (shownTab.current.get(groupId) === blockId) return;
+    shownTab.current.set(groupId, blockId);
+    bringTab(strip, element);
   };
 
   /** The edge a docked group belongs to, from its id (dock.left · dock.right · dock.bottom · dock.center). */
@@ -538,7 +573,7 @@ export function Dock({
   };
 
   return (
-    <div ref={rootRef} className={cx('ar-dock', className)} style={style} data-ui-hidden={!visible || undefined}>
+    <div ref={rootRef} className={cx('ar-dock', className)} style={style} data-ui-hidden={ui.hiddenBy ?? undefined} data-ui-revealing={revealing || undefined}>
       <MetaBlockWorkspaceView
         padding={10}
         gap={8}
@@ -559,7 +594,24 @@ export function Dock({
         }}
       />
       {brand ? <div className="ar-dock__brand">{brand}</div> : null}
-      {!visible && hideKey ? <div className="ar-dock__hint">Press {hideKey.toUpperCase()} to show the interface</div> : null}
+      {/* the way back: a small mark at the foot (a frame, its panes waiting at the sides) and the key.
+          Always mounted so it can arrive and leave. */}
+      <div className="ar-dock__reveal" data-shown={ui.hiddenBy === 'manual' || undefined} inert={ui.hiddenBy !== 'manual' || undefined}>
+        <button
+          type="button"
+          className="ar-dock__reveal-pill"
+          onClick={interfaceVisibility.show}
+          aria-label={hideKey ? `Show the interface (${hideKey.toUpperCase()})` : 'Show the interface'}
+          title={hideKey ? `Show the interface · ${hideKey.toUpperCase()}` : 'Show the interface'}
+        >
+          <svg className="ar-dock__reveal-mark" viewBox="0 0 22 16" aria-hidden="true">
+            <rect className="ar-dock__reveal-frame" x="0.75" y="0.75" width="20.5" height="14.5" rx="3.25" />
+            <rect className="ar-dock__reveal-side" data-side="l" x="3.25" y="3.25" width="3.5" height="9.5" rx="1.25" />
+            <rect className="ar-dock__reveal-side" data-side="r" x="15.25" y="3.25" width="3.5" height="9.5" rx="1.25" />
+          </svg>
+          {hideKey ? <Kbd keys={hideKey.split('+')} /> : null}
+        </button>
+      </div>
       {palette ? <CommandPalette commands={allCommands} open={paletteOpen} onOpenChange={setPaletteOpen} /> : null}
     </div>
   );

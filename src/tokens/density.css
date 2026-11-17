@@ -1,0 +1,155 @@
+/* ARTINOS UI — density: three families of the same instrument.
+
+     dense      a working instrument: an editor's inspector, a control surface with forty parameters
+                on one screen. 22px controls.
+     standard   the family as drawn: a panel to read as much as to work. 28px controls. The default.
+     comfort    a panel read at arm's length, or touched. 32px controls.
+
+   Chosen for a whole scope like a theme: <ArtinosTheme density="dense">, or data-ar-density on any
+   element. A family is not the standard set scaled down: each is a complete definition of its own
+   (scale, spacing, corners, type steps, row rules), and every theme has its equivalent in each.
+
+   How a theme keeps its character in every family: the theme draws at the standard size (its own
+   control height, side padding, gap, every corner and inset), and the family multiplies all of it
+   by one scale, --ar-k (22/28 · 1 · 32/28). Nimbus Dense is Nimbus, proportionally tighter: a 27px
+   Nimbus capsule becomes 21, its 7px corner 5.5, its 16px shell 12.5 (corners land on half pixels), its 1.5px inset 1.2. Corners
+   and insets are multiplied where a component uses them, so a theme or a Theme Studio token that sets
+   one is scaled with the rest. Words are the exception: 12px is the floor, so type steps along the
+   scale (12 · 13 · 14 · 16 · 18) instead of shrinking.
+
+   Imported last, after every component, so a family has the final say over a component's own rules. */
+
+/* ---------- the three families ---------- */
+:root,
+[data-ar-density='standard'] {
+  --ar-k: 1;
+  /* type: labels 12, values 13, a section's name 14, a panel's 16, the collection's own figures */
+  --ar-label-size: 12px;
+  --ar-value-size: 13px; /* a readout is a size above its name */
+  --ar-title-step: 0px;
+  --ar-section-step: 0px;
+  --ar-stat-scale: 1;
+}
+[data-ar-density='dense'] {
+  --ar-k: calc(22 / 28); /* exact, so a 7px corner is 5.5 and never 5.4999 */
+  /* type: the floor holds, so labels and values are 12; headings one step down the scale (a panel
+     14, a section 13); figures follow the scale (28 becomes 22) */
+  --ar-label-size: 12px;
+  --ar-value-size: 12px;
+  --ar-title-step: 2px;
+  --ar-section-step: 1px;
+  --ar-stat-scale: calc(22 / 28);
+}
+[data-ar-density='comfort'] {
+  --ar-k: calc(32 / 28);
+  /* type: a step up everywhere: labels 13, values 14, a section 16, a panel 18 */
+  --ar-label-size: 13px;
+  --ar-value-size: 14px;
+  --ar-title-step: -2px;
+  --ar-section-step: -2px;
+  --ar-stat-scale: calc(32 / 28);
+}
+
+/* ---------- the theme's own sizes, at the standard size ----------
+   A theme (or a Theme Studio export) sets these to draw itself; the family scales them. */
+:root {
+  --ar-control-h: 28px;
+  --ar-control-pad: 10px;
+  --ar-control-gap: 7px;
+  --ar-label-col: 108px;
+}
+
+/* ---------- every size, from the theme's size and the family's scale ----------
+   Recomputed on every scope that can change either: a theme, a material, a density. */
+:root,
+[data-ar-theme],
+[data-ar-material],
+[data-ar-density] {
+  --ar-h: round(calc(var(--ar-control-h) * var(--ar-k)), 1px);
+  --ar-pad-x: calc(var(--ar-control-pad) * var(--ar-k));
+  --ar-gap: calc(var(--ar-control-gap) * var(--ar-k));
+  --ar-row-gap: round(calc(var(--ar-space-4) * var(--ar-k)), 1px);
+  --ar-group-gap: round(calc(var(--ar-space-6) * var(--ar-k)), 1px);
+  --ar-section-gap: round(calc(18px * var(--ar-k)), 1px); /* air around a section: over twice a row gap */
+  --ar-section-apart: calc(var(--ar-section-gap) + round(calc(var(--ar-space-4) * var(--ar-k)), 1px));
+  --ar-panel-pad-x: round(calc(var(--ar-space-7) * var(--ar-k)), 1px);
+  --ar-panel-pad-y: round(calc(var(--ar-space-6) * var(--ar-k)), 1px);
+  --ar-field-label-w: round(calc(var(--ar-label-col) * var(--ar-k)), 1px);
+}
+
+/* ---------- dense: its own row rules ----------
+   What makes Dense an instrument and not a smaller Standard. */
+/* rows sit on the row gap alone: no hairline between them, so a long column stays calm */
+[data-ar-density='dense'] .ar-section__body:not([data-columns]) > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
+[data-ar-density='dense'] .ar-panel__body > .ar-field:not([data-variant]) + .ar-field:not([data-variant]),
+[data-ar-density='dense'] .ar-prop:not([data-density='default']) + .ar-prop:not([data-density='default']) {
+  padding-top: 0;
+  border-top: 0;
+}
+/* a label column is tight to its control */
+[data-ar-density='dense'] .ar-prop__main {
+  gap: var(--ar-space-3);
+}
+[data-ar-density='dense'] .ar-prop__label {
+  box-sizing: border-box;
+}
+/* a section is as wide as its panel, never as wide as its widest control would like to be */
+[data-ar-density='dense'] .ar-section__fold {
+  grid-template-columns: minmax(0, 1fr);
+}
+[data-ar-density='dense'] .ar-section__body {
+  min-width: 0;
+}
+/* a colour in a label-column row is a chip and its code in the well, not a block of paint */
+[data-ar-density='dense'] .ar-prop__control > .ar-color:not([data-labelled]) .ar-color__swatch[data-ink] {
+  padding-left: calc(var(--ar-h) + 6px);
+  box-shadow: none;
+  color: var(--ar-tone-value, var(--ar-text-hi)); /* the code reads as a value on the well, in the theme's value ink */
+}
+[data-ar-density='dense'] .ar-prop__control > .ar-color:not([data-labelled]) :is(.ar-color__paint, .ar-color__swatch::before) {
+  inset: 2px auto 2px 2px;
+  width: calc(var(--ar-h) - 4px);
+  border-radius: calc(var(--_ir) - 1px);
+}
+[data-ar-density='dense'] .ar-prop__control > .ar-color:not([data-labelled]) .ar-color__paint {
+  box-shadow: var(--ar-swatch-rim);
+}
+/* three numbers share a control's width: their cells close up and never push the row wider */
+[data-ar-density='dense'] .ar-vec3 {
+  gap: 2px;
+  min-width: 0;
+}
+[data-ar-density='dense'] .ar-vec3__cell {
+  --ar-pad-x: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+/* a compact switch sits at the start of its column, like every other control's left edge */
+[data-ar-density='dense'] .ar-prop__control > .ar-switch--compact {
+  margin-right: auto;
+}
+/* "small" has no room left to be smaller: a small button or field is the height of the row it sits
+   in, so a Find field, a Reset and a slider share one line */
+[data-ar-density='dense'] :is(.ar-button, .ar-textfield)[data-size='sm'] {
+  --_h: var(--ar-h);
+}
+[data-ar-density='dense'] .ar-button:not([data-variant])[data-size='sm'] {
+  height: var(--ar-h);
+}
+/* a choice of three fits a narrow column: the options give up padding before they give up letters */
+[data-ar-density='dense'] .ar-segmented__opt {
+  padding-inline: var(--ar-space-2);
+}
+/* a section's name stands a row high over its rows; a group nested in a section parts from its
+   neighbours by a small step, not a paragraph's worth of air */
+[data-ar-density='dense'] .ar-section__head {
+  min-height: var(--ar-h);
+}
+[data-ar-density='dense'] .ar-section[data-open] > .ar-section__head {
+  padding-bottom: var(--ar-space-3);
+}
+[data-ar-density='dense'] .ar-section__body > .ar-section:not([data-variant='card']),
+[data-ar-density='dense'] .ar-section__body > .ar-section:not([data-variant='card']) + .ar-section:not([data-variant='card']),
+[data-ar-density='dense'] .ar-section__body > .ar-section:not([data-variant='card']) + :not(.ar-section) {
+  margin-top: var(--ar-space-3);
+}

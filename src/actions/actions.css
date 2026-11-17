@@ -11,7 +11,7 @@
   box-sizing: border-box;
   display: inline-flex;
   min-width: calc(var(--ar-h) * 3);
-  padding: var(--ar-inset);
+  padding: calc(var(--ar-inset) * var(--ar-k, 1));
   vertical-align: middle;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: calc(7px * var(--ar-k, 1));
   min-width: 0;
   padding: 0 calc(var(--ar-pad-x) + 2px);
   /* the release springs back; the press itself is quick (below) */
@@ -84,13 +84,13 @@
   color: var(--ar-insert-ink);
 }
 .ar-button__icon svg {
-  width: 13px;
-  height: 13px;
+  width: calc(13px * var(--ar-k, 1));
+  height: max(calc(13px * var(--ar-k, 1)), 13px);
 }
 .ar-button__trailing {
   display: inline-flex;
   margin-left: auto;
-  padding-left: 4px;
+  padding-left: calc(4px * var(--ar-k, 1));
   color: var(--ar-insert-unit-ink);
 }
 .ar-button__trailing .ar-keycap {
@@ -107,7 +107,7 @@
 .ar-button[data-variant='ghost'] {
   height: var(--ar-h);
   padding: 0;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   transition: background var(--ar-dur-state) var(--ar-ease);
 }
 .ar-button[data-variant='ghost'][data-size='sm'] {
@@ -132,7 +132,7 @@
 .ar-button:not([data-variant]) {
   height: var(--ar-h);
   padding: 0;
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   /* a raised face lit from above: a faint wash, a hairline, a brighter top edge */
   background: linear-gradient(180deg, color-mix(in srgb, var(--ar-text-hi) 5%, transparent), transparent 70%), var(--ar-bg-raised);
   box-shadow:
@@ -189,7 +189,7 @@
   flex: none;
   width: var(--_size);
   height: var(--_size);
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   color: var(--ar-label-ink);
   text-shadow: var(--ar-base-text-shadow);
   cursor: pointer;
@@ -207,7 +207,7 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   background: var(--ar-insert-sheen), var(--ar-insert);
   -webkit-backdrop-filter: var(--ar-insert-backdrop);
   backdrop-filter: var(--ar-insert-backdrop);
@@ -229,12 +229,12 @@
   --_size: calc(var(--ar-h) - 4px);
 }
 .ar-icon-button svg {
-  width: 13px;
-  height: 13px;
+  width: calc(13px * var(--ar-k, 1));
+  height: max(calc(13px * var(--ar-k, 1)), 13px);
 }
 .ar-icon-button[data-size='sm'] svg {
-  width: 12px;
-  height: 12px;
+  width: calc(12px * var(--ar-k, 1));
+  height: max(calc(12px * var(--ar-k, 1)), 12px);
 }
 /* filled: a well at rest, for toolbars over a bright scene */
 .ar-icon-button[data-filled] {
@@ -272,7 +272,7 @@
   width: auto;
   min-width: var(--_size);
   padding: 0 calc((var(--_size) - 13px) / 2);
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
 }
 .ar-icon-button__label {
   color: inherit;
@@ -280,7 +280,7 @@
 }
 .ar-icon-button[data-labelled='active'] .ar-icon-button__label {
   max-width: 0;
-  margin-left: -6px;
+  margin-left: calc(-6px * var(--ar-k, 1));
   opacity: 0;
   transition:
     max-width var(--ar-dur-surface) var(--ar-ease),
@@ -297,9 +297,9 @@
 .ar-toolbar__group {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px;
-  border-radius: calc(var(--ar-radius) + 2px);
+  gap: calc(2px * var(--ar-k, 1));
+  padding: calc(2px * var(--ar-k, 1));
+  border-radius: calc(calc(var(--ar-radius) * var(--ar-k, 1)) + 2px);
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
@@ -313,7 +313,7 @@
 .ar-toolbar {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: calc(3px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-toolbar[aria-orientation='vertical'] {
@@ -322,8 +322,8 @@
 }
 /* floating: a small pane of the theme's glass, for use over a canvas */
 .ar-toolbar[data-floating] {
-  padding: 4px;
-  border-radius: var(--ar-radius-card);
+  padding: calc(4px * var(--ar-k, 1));
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
   -webkit-backdrop-filter: var(--ar-panel-blur);
   backdrop-filter: var(--ar-panel-blur);
@@ -333,13 +333,13 @@
   flex: none;
   align-self: stretch;
   width: 1px;
-  margin: 5px 4px;
+  margin: calc(5px * var(--ar-k, 1)) calc(4px * var(--ar-k, 1));
   background: var(--ar-line-subtle);
 }
 .ar-toolbar[aria-orientation='vertical'] .ar-toolbar__separator {
   width: auto;
   height: 1px;
-  margin: 4px 5px;
+  margin: calc(4px * var(--ar-k, 1)) calc(5px * var(--ar-k, 1));
 }
 .ar-toolbar__spacer {
   flex: 1;
@@ -348,7 +348,7 @@
 /* ---------- Kbd: key caps as tiny wells ---------- */
 .ar-kbd {
   display: inline-flex;
-  gap: 3px;
+  gap: calc(3px * var(--ar-k, 1));
 }
 
 /* ---------- Badge: a small status plate ---------- */
@@ -357,8 +357,8 @@
 /* a small fact beside a value: quiet and neutral, no LED */
 .ar-tag {
   display: inline-block;
-  padding: 2px 6px;
-  border-radius: 5px;
+  padding: calc(2px * var(--ar-k, 1)) calc(6px * var(--ar-k, 1));
+  border-radius: calc(5px * var(--ar-k, 1));
   background: color-mix(in srgb, var(--ar-text-hi) 9%, transparent);
   font: var(--ar-weight-text) var(--ar-caps-sm) / 1.2 var(--ar-font-num);
   white-space: nowrap;
@@ -369,10 +369,10 @@
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 6px;
+  gap: calc(6px * var(--ar-k, 1));
+  height: max(calc(20px * var(--ar-k, 1)), 16px);
+  padding: 0 calc(8px * var(--ar-k, 1));
+  border-radius: calc(6px * var(--ar-k, 1));
   background: var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
@@ -399,8 +399,8 @@
 /* the LED: a short lit bar, the family's mark of something live */
 .ar-badge__dot {
   flex: none;
-  width: 3px;
-  height: 8px;
+  width: calc(3px * var(--ar-k, 1));
+  height: max(calc(8px * var(--ar-k, 1)), 8px);
   border-radius: 1px;
   background: var(--_tone);
   box-shadow: 0 0 6px color-mix(in srgb, var(--_tone) 70%, transparent);

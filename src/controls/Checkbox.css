@@ -5,7 +5,7 @@
   position: relative;
   display: inline-flex;
   align-items: flex-start;
-  gap: 9px;
+  gap: calc(9px * var(--ar-k, 1));
   min-width: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -18,8 +18,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 16px;
-  height: 16px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
   margin: 0;
   opacity: 0;
   cursor: inherit;
@@ -28,10 +28,10 @@
   display: grid;
   flex: none;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  width: calc(16px * var(--ar-k, 1));
+  height: max(calc(16px * var(--ar-k, 1)), 16px);
   margin-top: 1px;
-  border-radius: 4px;
+  border-radius: calc(4px * var(--ar-k, 1));
   background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
   -webkit-backdrop-filter: var(--ar-trough-backdrop);
   backdrop-filter: var(--ar-trough-backdrop);
@@ -46,7 +46,7 @@
 }
 /* the box's own well comes after the shared insert, so checked has to ask for the insert's face */
 .ar-checkbox__box.ar-insert {
-  border-radius: 4px;
+  border-radius: calc(4px * var(--ar-k, 1));
   background: var(--ar-insert-sheen), var(--ar-insert);
   -webkit-backdrop-filter: var(--ar-insert-backdrop);
   backdrop-filter: var(--ar-insert-backdrop);
@@ -65,8 +65,8 @@
   filter: var(--ar-focus-raise);
 }
 .ar-checkbox__box svg {
-  width: 11px;
-  height: 11px;
+  width: calc(11px * var(--ar-k, 1));
+  height: max(calc(11px * var(--ar-k, 1)), 11px);
   overflow: visible;
 }
 .ar-checkbox__mark {
@@ -86,7 +86,7 @@
 .ar-checkbox__text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
   min-width: 0;
 }
 .ar-checkbox__label {

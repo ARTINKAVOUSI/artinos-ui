@@ -1,9 +1,9 @@
 /* ARTINOS UI — full showcase. Every control on this page is live and comes from
    ../src (the package) exactly as a consuming app would import it.
    The app shell: theme / density / backdrop state, view routing (page · #studio · #themes),
-   the top bar, the page (hero, index, chapters) and the Export kit dialog (#export). */
+   the top bar, the hero and the instrument under it, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
-import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS, variationsOf } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, DENSITY_META, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { ComponentChapters } from '../chapters';
 import { FoundationsChapter } from '../chapters/Foundations';
@@ -11,9 +11,10 @@ import { MakeItYoursChapter } from '../chapters/MakeItYours';
 import { CHAPTERS, SECTIONS, chapterAnchor, chapterNumber, sectionAnchor } from '../chapters/registry';
 import { ExportKit } from '../export/ExportKit';
 import { KIT_COMPONENTS } from '../export/kit';
-import { BACKDROPS, BACKDROP_OPTIONS, HERO_OPTIONS, LIGHT_BACKDROPS, Swatch, TYPE_OPTIONS } from '../shared';
+import { BACKDROPS, BACKDROP_OPTIONS, LIGHT_BACKDROPS, Swatch, THEME_OPTIONS, TYPE_OPTIONS } from '../shared';
 import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
+import { InstrumentStage } from './live';
 import { ThemesPage } from '../themes/ThemesPage';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
@@ -50,10 +51,7 @@ export function App() {
   };
   const custom = theme.startsWith('c:') ? customs.find((c) => c.id === theme.slice(2)) : undefined;
   const baseTheme: ThemeName = custom ? custom.base : (THEMES as readonly string[]).includes(theme) ? (theme as ThemeName) : 'frost-deep';
-  const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...HERO_OPTIONS];
-  // the bar picks a hero, then one of its variations; a custom theme has neither
-  const hero = custom ? undefined : (THEME_META[baseTheme].parent ?? baseTheme);
-  const variationOptions = hero ? [hero, ...variationsOf(hero)].map((t) => ({ value: t, label: t === hero ? 'Base' : THEME_META[t].label, icon: <Swatch t={t} /> })) : [];
+  const themeOptions = [...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })), ...THEME_OPTIONS];
 
   // A link straight to a chapter or section (#c-sliders, #s-meters): the browser tries to scroll
   // before the page has rendered, so scroll once the anchor exists.
@@ -94,6 +92,7 @@ export function App() {
         onBg={setBg}
         type={type}
         density={density}
+        onDensity={setDensity}
         onUse={(t) => {
           setTheme(t);
           go('showcase');
@@ -103,7 +102,7 @@ export function App() {
     );
 
   return (
-    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} density={density} type={type} accent={accent === 'theme' ? undefined : (accent as (typeof ACCENTS)[number])} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
+    <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} densityTokens={custom?.layers} density={density} type={type} accent={accent === 'theme' ? undefined : (accent as (typeof ACCENTS)[number])} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
 
       <header className="sc-bar">
@@ -115,14 +114,8 @@ export function App() {
         </a>
         <label className="sc-pick sc-pick--theme">
           <span>Theme</span>
-          <Select options={themeOptions} value={hero ?? theme} onChange={setTheme} appearance="well" label="Theme" />
+          <Select options={themeOptions} value={theme} onChange={setTheme} appearance="well" label="Theme" />
         </label>
-        {variationOptions.length > 1 ? (
-          <label className="sc-pick sc-pick--theme">
-            <span>Variation</span>
-            <Select options={variationOptions} value={baseTheme} onChange={setTheme} appearance="well" label={`Variation of ${THEME_META[hero!].label}`} />
-          </label>
-        ) : null}
         <label className="sc-pick">
           <span>Type</span>
           <Select options={TYPE_OPTIONS} value={type} onChange={setType} appearance="well" label="Type collection" />
@@ -133,7 +126,7 @@ export function App() {
         </label>
         <label className="sc-pick">
           <span>Density</span>
-          <Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" />
+          <Segmented options={DENSITIES.map((d) => ({ value: d, label: DENSITY_META[d].label }))} value={density} onChange={setDensity} label="Density" />
         </label>
         <label className="sc-pick sc-pick--backdrop">
           <span>Backdrop</span>
@@ -154,19 +147,19 @@ export function App() {
 
       <main className="sc-sheet" id="top">
         <Hero onStudio={() => go('studio')} onExport={() => setExporting(true)} />
+        <InstrumentStage bg={bg} density={density} onDensity={setDensity} />
 
         <div className="sc-layout">
           <PageIndex />
           <div className="sc-content">
-            <FoundationsChapter theme={theme} onPickTheme={setTheme} type={type} onPickType={setType} />
-            <ComponentChapters />
+            <ComponentChapters afterDensity={<FoundationsChapter theme={theme} onPickTheme={setTheme} type={type} onPickType={setType} />} />
             <MakeItYoursChapter customs={customs.length} onStudio={() => go('studio')} onExport={() => setExporting(true)} />
           </div>
         </div>
 
         <footer className="sc-foot">
           <span>
-            ARTINOS UI · {custom ? custom.name : THEME_META[baseTheme].label} · {THEME_META[baseTheme].kind} · {density}
+            ARTINOS UI · {custom ? custom.name : THEME_META[baseTheme].label} · {THEME_META[baseTheme].kind} · {DENSITY_META[density].label}
           </span>
           <span>copy → paste → import → use</span>
         </footer>
@@ -180,10 +173,12 @@ export function App() {
 /* ---------- hero ---------- */
 
 /** The chapter a kit group is shown in, so the index counts the same parts as the Components stat. */
-const chapterOfGroup = (group: string) => (group === 'Dock' ? 'layout' : group.toLowerCase());
+
+const chapterOf = (c: { id: string; group: string }) => (c.id.startsWith('Inspector') || c.group === 'Dock' ? 'layout' : c.group.toLowerCase());
 
 function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => void }) {
-  const componentChapters = CHAPTERS.filter((c) => !c.meta);
+  // every chapter up to the components' last, Foundations included, so the numbers run unbroken
+  const componentChapters = CHAPTERS.filter((c) => c.id !== 'make');
   return (
     <section className="sc-hero">
       <div className="sc-hero__lede">
@@ -193,15 +188,15 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
         </h1>
         <p>
           One compact surface per parameter: the capsule is the control, the seam is the handle, the readout is the precision zone. Every component is made of the same five materials and
-          follows any of {THEMES.length} themes. Everything on this page is live — switch the theme in the bar, or build your own.
+          follows any of {THEMES.length} themes at three densities. Everything on this page is live: the instrument below is a working tool; switch the theme or the density in the bar, or build your own theme.
         </p>
         <div className="sc-hero__actions">
           <Button variant="primary" onClick={onStudio}>
             Open Theme Studio
           </Button>
           <Button onClick={onExport}>Export a kit</Button>
-          <a className="sc-hero__link" href={'#' + chapterAnchor('foundations')}>
-            Start with the foundations
+          <a className="sc-hero__link" href={'#' + chapterAnchor('layout')}>
+            Start with the workspace
           </a>
         </div>
       </div>
@@ -231,7 +226,7 @@ function Hero({ onStudio, onExport }: { onStudio: () => void; onExport: () => vo
             <a key={c.id} href={'#' + chapterAnchor(c.id)}>
               <span className="sc-num">{chapterNumber(c.id)}</span>
               <b>{c.title}</b>
-              <span className="sc-hero__count">{KIT_COMPONENTS.filter((k) => chapterOfGroup(k.group) === c.id).length}</span>
+              <span className="sc-hero__count">{c.meta ? '' : KIT_COMPONENTS.filter((k) => chapterOf(k) === c.id).length}</span>
             </a>
           ))}
         </nav>

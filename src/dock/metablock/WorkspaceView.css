@@ -13,11 +13,11 @@
   overflow: hidden;
   isolation: isolate;
   --mb-surface-bg: rgba(18, 21, 22, 0.58);
-  --mb-surface-line: rgba(255, 255, 255, 0.075);
+  --mb-surface-line: color-mix(in srgb, var(--au-text, #fff) 7.5%, transparent);
   --mb-surface-sheen: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.045),
-    rgba(255, 255, 255, 0.008) 34%,
+    color-mix(in srgb, var(--au-text, #fff) 4.5%, transparent),
+    color-mix(in srgb, var(--au-text, #fff) 0.8%, transparent) 34%,
     transparent
   );
 }
@@ -30,7 +30,7 @@
   flex-direction: column;
   background: var(--mb-surface-sheen), var(--mb-surface-bg);
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.035),
+    inset 0 1px color-mix(in srgb, var(--au-text, #fff) 3.5%, transparent),
     inset 0 0 0 1px var(--mb-surface-line),
     0 28px 76px -40px rgba(0, 0, 0, 0.72);
   contain: layout style;
@@ -103,12 +103,15 @@
 }
 .mb-panel-split > .mb-panel-host {
   flex: 1 1 0;
+  /* a split share is its share of the group, never its content's height: a long panel scrolls inside */
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   border-radius: calc(var(--mb-radius) - 5px);
   box-shadow: inset 0 0 0 1px
     color-mix(
       in srgb,
-      var(--au-line, rgba(255, 255, 255, 0.08)) 48%,
+      var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 48%,
       transparent
     );
 }
@@ -245,12 +248,12 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.48);
+  color: color-mix(in srgb, var(--au-text, #fff) 48%, transparent);
   cursor: pointer;
 }
 .mb-native-tab.active {
-  background: rgba(255, 255, 255, 0.07);
-  color: #fff;
+  background: color-mix(in srgb, var(--au-text, #fff) 7%, transparent);
+  color: var(--au-text, #fff);
 }
 .mb-maximized {
   border-radius: 0 !important;
@@ -307,14 +310,14 @@
   background: color-mix(
     in srgb,
     var(--mb-signal, #2fb39c) 10%,
-    rgba(255, 255, 255, 0.035)
+    color-mix(in srgb, var(--au-text, #fff) 3.5%, transparent)
   );
   box-shadow:
     inset 0 0 0 1px
       color-mix(
         in srgb,
         var(--mb-signal, #2fb39c) 38%,
-        rgba(255, 255, 255, 0.12)
+        color-mix(in srgb, var(--au-text, #fff) 12%, transparent)
       ),
     0 18px 60px -36px var(--mb-signal, #2fb39c);
   backdrop-filter: blur(8px);
@@ -345,7 +348,7 @@
 .mb-group[data-focused="true"] {
   --mb-surface-line: color-mix(
     in srgb,
-    var(--au-line, rgba(255, 255, 255, 0.08)) 82%,
+    var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 82%,
     var(--mb-signal, #2fb39c) 18%
   );
 }
@@ -376,7 +379,7 @@
   );
   box-shadow:
     inset 0 0 0 1px
-      color-mix(in srgb, var(--mb-signal) 28%, rgba(255, 255, 255, 0.08)),
+      color-mix(in srgb, var(--mb-signal) 28%, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)),
     0 26px 76px -34px rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(16px) saturate(103%);
   display: flex;
@@ -402,11 +405,11 @@
   background: color-mix(
     in srgb,
     var(--mb-signal) 12%,
-    rgba(255, 255, 255, 0.04)
+    color-mix(in srgb, var(--au-text, #fff) 4%, transparent)
   );
   box-shadow:
     inset 0 0 0 1px
-      color-mix(in srgb, var(--mb-signal) 52%, rgba(255, 255, 255, 0.12)),
+      color-mix(in srgb, var(--mb-signal) 52%, color-mix(in srgb, var(--au-text, #fff) 12%, transparent)),
     0 22px 80px -42px var(--mb-signal);
 }
 .mb-dock-compass {
@@ -429,10 +432,10 @@
     color-mix(
       in srgb,
       var(--mb-signal) 24%,
-      var(--au-line, rgba(255, 255, 255, 0.08))
+      var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent))
     );
   backdrop-filter: blur(9px);
-  color: var(--au-faint, rgba(255, 255, 255, 0.4));
+  color: var(--au-faint, color-mix(in srgb, var(--au-text, #fff) 40%, transparent));
   font: var(--ar-weight-medium) var(--ar-caps-xs)/var(--ar-leading-none) var(--ar-font-num);
   opacity: 0.68;
   transition:
@@ -562,7 +565,7 @@
 }
 .mb-group[data-focused="true"]:not([data-fullscreen-locked="true"]) {
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.045),
+    inset 0 1px color-mix(in srgb, var(--au-text, #fff) 4.5%, transparent),
     inset 0 0 0 1px
       color-mix(in srgb, var(--mb-signal) 13%, var(--mb-surface-line)),
     0 28px 76px -40px rgba(0, 0, 0, 0.74);
@@ -573,9 +576,9 @@
     filter 90ms ease;
   background:
     var(--mb-surface-sheen),
-    color-mix(in srgb, var(--mb-surface-bg) 96%, rgba(255, 255, 255, 0.03));
+    color-mix(in srgb, var(--mb-surface-bg) 96%, color-mix(in srgb, var(--au-text, #fff) 3%, transparent));
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.07),
+    inset 0 1px color-mix(in srgb, var(--au-text, #fff) 7%, transparent),
     inset 0 0 0 1px
       color-mix(
         in srgb,
@@ -664,7 +667,7 @@
       color-mix(
         in srgb,
         var(--mb-signal) calc(28% + var(--mb-preview-strength, 0) * 28%),
-        rgba(255, 255, 255, 0.1)
+        color-mix(in srgb, var(--au-text, #fff) 10%, transparent)
       ),
     0 20px 64px -36px
       color-mix(
@@ -690,7 +693,7 @@
   background: color-mix(
     in srgb,
     var(--mb-signal) 7%,
-    rgba(255, 255, 255, 0.035)
+    color-mix(in srgb, var(--au-text, #fff) 3.5%, transparent)
   );
 }
 
@@ -711,7 +714,7 @@
   height: 8px;
   border-top: 1px solid currentColor;
   border-right: 1px solid currentColor;
-  color: var(--au-faint, rgba(255, 255, 255, 0.4));
+  color: var(--au-faint, color-mix(in srgb, var(--au-text, #fff) 40%, transparent));
 }
 .mb-dock-compass .north::before {
   transform: rotate(-45deg) translate(-1px, 1px);
@@ -836,7 +839,9 @@
     box-shadow 140ms ease,
     filter 120ms ease,
     background 140ms ease,
-    opacity 110ms ease;
+    opacity var(--mb-fade-ms, 110ms) var(--mb-fade-ease, ease) var(--mb-fade-delay, 0ms),
+    translate var(--mb-fade-ms, 110ms) var(--mb-fade-ease, ease) var(--mb-fade-delay, 0ms),
+    scale var(--mb-fade-ms, 110ms) var(--mb-fade-ease, ease) var(--mb-fade-delay, 0ms);
 }
 .mb-group[data-grabbed="true"] {
   transition:
@@ -845,7 +850,7 @@
     filter 90ms ease;
   will-change: left, top, transform;
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.055),
+    inset 0 1px color-mix(in srgb, var(--au-text, #fff) 5.5%, transparent),
     inset 0 0 0 1px
       color-mix(
         in srgb,
@@ -877,14 +882,14 @@
   background: color-mix(
     in srgb,
     var(--mb-signal) calc(3% + var(--mb-preview-strength, 0) * 3%),
-    rgba(255, 255, 255, 0.022)
+    color-mix(in srgb, var(--au-text, #fff) 2.2%, transparent)
   );
   box-shadow:
     inset 0 0 0 1px
       color-mix(
         in srgb,
         var(--mb-signal) calc(20% + var(--mb-preview-strength, 0) * 18%),
-        rgba(255, 255, 255, 0.08)
+        color-mix(in srgb, var(--au-text, #fff) 8%, transparent)
       ),
     0 12px 36px -28px rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(3px);
@@ -910,7 +915,7 @@
   border-radius: var(--mb-radius);
   background:
     var(--mb-surface-sheen),
-    color-mix(in srgb, var(--mb-surface-bg) 90%, rgba(255, 255, 255, 0.018));
+    color-mix(in srgb, var(--mb-surface-bg) 90%, color-mix(in srgb, var(--au-text, #fff) 1.8%, transparent));
   backdrop-filter: blur(16px) saturate(102%);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--mb-surface-line) 90%, transparent),
@@ -938,7 +943,7 @@
   box-shadow: inset 0 0 0 1px
     color-mix(
       in srgb,
-      var(--au-line, rgba(255, 255, 255, 0.08)) 88%,
+      var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 88%,
       transparent
     );
   opacity: 0.52;
@@ -976,7 +981,7 @@
     inset 0 0 0 1px
       color-mix(
         in srgb,
-        var(--au-line, rgba(255, 255, 255, 0.08)) 94%,
+        var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 94%,
         transparent
       ),
     0 10px 28px -18px #000;
@@ -1010,7 +1015,7 @@
     inset 0 0 0 1px
       color-mix(
         in srgb,
-        var(--au-line, rgba(255, 255, 255, 0.08)) 100%,
+        var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 100%,
         transparent
       ),
     0 24px 72px -26px rgba(0, 0, 0, 0.9);
@@ -1059,7 +1064,7 @@
   outline: none;
   background: color-mix(
     in srgb,
-    var(--au-active, rgba(255, 255, 255, 0.08)) 78%,
+    var(--au-active, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 78%,
     transparent
   );
   color: var(--au-text, #fff);
@@ -1135,7 +1140,7 @@
   opacity: 0.96;
   box-shadow:
     inset 0 0 0 1px
-      color-mix(in srgb, var(--mb-signal) 48%, rgba(255, 255, 255, 0.1)),
+      color-mix(in srgb, var(--mb-signal) 48%, color-mix(in srgb, var(--au-text, #fff) 10%, transparent)),
     0 12px 38px -28px rgba(0, 0, 0, 0.76);
 }
 .mb-dock-preview[data-armed="false"] > span {
@@ -1156,7 +1161,7 @@
       color-mix(
         in srgb,
         var(--mb-signal) 34%,
-        var(--au-line, rgba(255, 255, 255, 0.08))
+        var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent))
       ),
     0 10px 28px -18px #000;
 }
@@ -1290,7 +1295,7 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.026),
+    color-mix(in srgb, var(--au-text, #fff) 2.6%, transparent),
     transparent 26%
   );
   opacity: 0.7;
@@ -1307,11 +1312,11 @@
   background: color-mix(
     in srgb,
     var(--mb-signal) 5%,
-    rgba(255, 255, 255, 0.02)
+    color-mix(in srgb, var(--au-text, #fff) 2%, transparent)
   );
   box-shadow:
     inset 0 0 0 1px
-      color-mix(in srgb, var(--mb-signal) 52%, rgba(255, 255, 255, 0.08)),
+      color-mix(in srgb, var(--mb-signal) 52%, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)),
     inset 0 0 28px color-mix(in srgb, var(--mb-signal) 4%, transparent);
 }
 .mb-dock-intent[data-armed="true"] {
@@ -1346,7 +1351,7 @@
   border-bottom: 1px solid
     color-mix(
       in srgb,
-      var(--au-line, rgba(255, 255, 255, 0.08)) 46%,
+      var(--au-line, color-mix(in srgb, var(--au-text, #fff) 8%, transparent)) 46%,
       transparent
     );
 }

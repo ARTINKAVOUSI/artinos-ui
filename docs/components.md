@@ -14,7 +14,7 @@ Contents:
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
 - Display: RollingValue · RollingText · Stat · Meter · Spectrum · Progress · Sparkline
 - Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
-- Dock and graph: Dock · PanelBar · MetaBlock · createDockSections · createParamPanes · NodeGraph · LiveGraphView · graph/gpu
+- Dock and graph: Dock · PanelBar · AutoHide · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · NodeGraph · LiveGraphView · graph/gpu
 - Rig: ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`)
 - Also: Motion · ArtinosTheme · shared types · recipes · requirements
 
@@ -130,6 +130,8 @@ One of n; the insert travels. Props: `label` (accessible name), `options`, `valu
 <Segmented options={['LOW', 'MED', 'HIGH']} defaultValue="MED" label="Quality" />
 ```
 
+Cells are equal while every word fits. In a narrow column where an equal cell would cut a word, each cell takes its own word's width and shares the spare room, so short and long options sit whole side by side. A property row's label column is never more than 42% of the row, so the control keeps the larger share in a narrow pane.
+
 ## ColorField
 
 The colour as the insert, ink follows luminance. Click the swatch for the native picker, or the hex to type.
@@ -159,7 +161,7 @@ Props: `label` (accessible name), `options` (strings, or `{ value, label, icon, 
 
 ## Panel · Section · Field
 
-- **Panel** — glass card. Props: `title`, `subtitle`, `icon` (a mark before the title, the glyph alone, on the title's line), `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `variant` (`'glass'` default · `'solid'` opaque, for busy or bright scenes · `'inset'` a quiet hairline frame with no glass, for a panel inside a panel), `collapsible` with `open` / `defaultOpen` / `onOpenChange` (folds to its header; click the title or chevron), `maxHeight` (the body scrolls past it under soft fades), `labelWidth` (one label column for every Field inside), `as` (default `section`), `children`.
+- **Panel** — glass card. Props: `title`, `subtitle`, `icon` (a mark before the title, the glyph alone, on the title's line), `actions` (header right), `tabs` (slot between header and body, e.g. `<Tabs>`), `footer` (foot status line), `variant` (`'glass'` default · `'solid'` opaque, for busy or bright scenes · `'inset'` a quiet hairline frame with no glass, for a panel inside a panel), `collapsible` with `open` / `defaultOpen` / `onOpenChange` (folds to its header; click the title or chevron), `maxHeight` (the body scrolls past it under soft fades), `labelWidth` (one label column for every Field inside), `autoHide` (fades with the interface: for a panel floating over a canvas; a panel in a Dock already does), `as` (default `section`), `children`.
 - **Text** — one role per kind of text. Props: `variant` (`'hero' | 'display' | 'title' | 'heading' | 'subheading' | 'statement' | 'overline' | 'kicker' | 'eyebrow' | 'lead' | 'body'` (default) `| 'note' | 'caption' | 'label' | 'value' | 'figure' | 'numeral' | 'meta' | 'tag' | 'quote' | 'code'`), `accent` (`'ink' | 'underline' | 'marker' | 'rule' | 'bar' | 'gradient' | 'outline'`: brings the accent into any role; `outline` needs a heading's size or larger), `dropcap` (a paragraph's first letter three lines tall, in the serif and the accent), `face` (`'sans' | 'serif' | 'mono'`: overrides the role's face, e.g. an editorial serif title), `tone` (`'hi' | 'mid' | 'low' | 'faint' | 'signal' | 'warn' | 'fault'`; default the role's own), `align` (`'start' | 'center' | 'end'`), `truncate` (one line with an ellipsis), `lines` (clamp to n lines), `measure` (keep to `--ar-measure`, 64ch; on by default for lead, body, note, caption and quote), `as` (default: h1 display · h2 title · h3 heading · h4 subheading · p lead, body, note and caption · blockquote quote · code code · span the rest; `as="ul"` / `"ol"` gives a list with accent bullets). Inside a body, `strong`, `em`, `mark` (an accent wash), `code` (a mono chip), `kbd` (a key cap) and `a` (an accent underline) are styled for you.
 - **StatStrip** — the few figures that say how a thing is right now, side by side at the top of a Panel: each large and thin with a small name under it. `items`: `{ label, value, unit? }[]`, two to four. Its digits roll. For one figure with a change and a trend, use `Stat`.
 - **Callout** — a note set apart from the text around it by its ground alone: a soft fill and an icon in its tone, with no frame and no rule down the edge. `note` is neutral. Props: `tone` (`'note'` (default, neutral) `| 'tip'` (the signal) `| 'warn' | 'fault'`; warn and fault are announced as alerts), `title`, `icon` (replaces the tone's icon; `null` leaves it out), `children` (a line or two; `strong` and `code` are styled).
@@ -459,13 +461,14 @@ Props:
 - `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip, which always stays one row; in a strip 520px wide or less search folds to a magnifier;
 - `toolbar`: the right end of every strip;
 - `brand`: a corner chip;
-- `hideKey`: e.g. `'h'` hides the docks;
+- `hideKey`: e.g. `'h'`, `'tab'` or `'mod+.'` hides the interface for a clean view of the viewport, and the same key brings it back (a small glass pill at the foot, a mark and the key, shows it on a click). It is the shared auto-hide switch (see *Auto-hide* below), so every Dock and every Panel with `autoHide` hides with it;
+- `idleHide`: ms with no input before the interface fades on its own (off by default); any input brings it back. `idleReveal`: `'move'` (default, any pointer move, wheel, touch or key) · `'near'` (a key, or the pointer near an edge or over a hidden panel's place, so orbiting the canvas keeps the view clean). It never hides while a button is held, a field has focus, a menu or dialog is open, or the pointer rests on a panel;
 - `viewProps`: engine tuning such as padding, gap and snapping;
 - `onReady(api)`;
 - `className`, `style`.
 
 Inside a panel:
-- `useDock()` returns the `DockApi`: `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible, addPanel(panel, place?), removePanel(id) }`. `addPanel` adds a floating panel while the workspace runs, at `place.at` (its top-left on screen) or at the float bounds, `place.width` / `place.height` optional; `removePanel` takes it away again. Panels whose id starts with `TEAR_PREFIX` (`'ar-tear:'`) are left out of the saved layout, so a reload starts without them.
+- `useDock()` returns the `DockApi`: `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible(visible), toggleVisible(), addPanel(panel, place?), removePanel(id) }` (`visible` and its setters are the shared auto-hide switch). `addPanel` adds a floating panel while the workspace runs, at `place.at` (its top-left on screen) or at the float bounds, `place.width` / `place.height` optional; `removePanel` takes it away again. Panels whose id starts with `TEAR_PREFIX` (`'ar-tear:'`) are left out of the saved layout, so a reload starts without them.
 - `<PanelBar>` holds a panel's toolbar. It rises into the dock's tab strip when there is room, and otherwise stays at the top of the panel.
 - The panel body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content.
 - A panel that throws shows a Retry card instead of taking the dock down.
@@ -506,6 +509,70 @@ The Dock fills its parent, so give the parent a height.
 
 **MetaBlock** is the framework-free docking engine underneath. Use it directly when you need your own chrome: `new MetaBlockWorkspace(...)` with `<MetaBlockWorkspaceView workspace renderBlock renderGroupChrome …>`, `useWorkspaceRevision(workspace)`, `defaultCapabilities` and the `types` exports. Its stylesheet is `dock/metablock/WorkspaceView.css`. Its `--mb-*` / `--au-*` variables are bound to the theme only under `.ar-dock`, so set them yourself on a custom host.
 
+### Auto-hide: one switch for a clean view
+
+Every Dock, every `Panel autoHide` and every `<AutoHide>` fades together and the viewport stays. Hidden by hand (a key, a call, an event) it stays hidden until switched back; hidden when idle, any input brings it back. While hidden a part takes no pointer and (Panel, AutoHide) no focus.
+
+- `useAutoHide({ hotkey?, idle?, reveal? })` turns the behaviours on while the calling component is mounted (a Dock does it from `hideKey` / `idleHide` / `idleReveal`); returns `{ visible, hiddenBy: 'manual' | 'idle' | null }`. Several parts may bind the same key: it toggles once. A key is ignored while typing in a field or working a slider.
+- `useInterfaceVisibility()` reads it; `interfaceVisibility` (`get`, `subscribe`, `show`, `hide`, `toggle`, `set(visible)`) switches it from anywhere, React or not.
+- Outside React (a three.js loop, a gamepad, a socket): `window.dispatchEvent(new CustomEvent('artinos:interface', { detail: 'toggle' }))` (`'show'` · `'hide'`), the name exported as `INTERFACE_EVENT`.
+- `<AutoHide as?>` wraps anything else (a toolbar or HUD over the canvas). Your own element can spread `data-ar-autohide={state.hiddenBy ?? 'shown'}`.
+
+```tsx
+<Dock panels={panels} viewport={<Canvas />} hideKey="h" idleHide={6000} idleReveal="near" />
+<Panel title="Light" autoHide>…</Panel>           // a floating panel over the canvas
+<AutoHide><Toolbar floating>…</Toolbar></AutoHide>
+```
+
+## Inspector · InspectorTimeline · createInspectorStore
+
+The parameter editor for the dense family: describe each value once, bind the store to your own object, and the panel is built. It is content, so put it in a `Panel` or as a `DockPanel`'s `content`. It is made for the dense family: wrap the tool in `<ArtinosTheme density="dense">` (see theming.md → Density); in Standard or Comfort it is the same panel at that family's sizes.
+
+```tsx
+const items: InspectItem[] = [
+  { key: 'angle', label: 'Angle', folder: 'transform', kind: 'number', default: 0, min: -180, max: 180, step: 1, face: 'degrees' },
+  { key: 'tint', label: 'Tint', folder: 'material', kind: 'color', default: '#4fd1ba' },
+  { key: 'fps', label: 'Frame rate', folder: 'monitor', kind: 'monitor', read: () => stats.fps, graph: true, unit: 'fps' },
+];
+const folders: InspectFolder[] = [{ id: 'transform', title: 'Transform' }, { id: 'material', title: 'Material' }, { id: 'rim', title: 'Rim', parent: 'material', switch: 'rim' }];
+const store = createInspectorStore(items, { target: scene });   // called once, outside your components
+
+<Inspector items={items} folders={folders} store={store} presets={PRESETS} />
+<InspectorTimeline items={items} store={store} />
+```
+
+**Items** (`InspectItem`): every item has `key`, `label`, `folder?`, `help?` (tooltip), `when?(values)` (shown only while true) and `check?(value, values)` returning `{ status: 'warn' | 'fault', message }` to explain a bad value under its row.
+
+| `kind` | value | control | extra fields |
+|---|---|---|---|
+| `number` | number | `Slider` with `min` and `max`, else a scrub `NumberField`; its label scrubs it too | `min`, `max`, `step`, `unit`, `face` (`plain` · `percent` · `bipolar` · `count` · `log` · `degrees`) |
+| `toggle` | boolean | compact `Switch` | |
+| `choice` | string | `Segmented` up to three options, else `Select` | `options: { value, label }[]` |
+| `color` | hex string | `ColorField` as a chip and its code | `alpha` |
+| `vector` | `[x, y, z]` | `Vector3Field` | `min`, `max`, `step`, `unit` |
+| `range` | `[lo, hi]` | `RangeSlider` | `min`, `max`, `step`, `unit`, `minSpan` |
+| `point` | `[x, y]` | `XYPad` | `xRange`, `yRange`, `height` |
+| `text` | string | `TextField` | `placeholder` |
+| `monitor` | none: `read()` returns a number | a figure, and a trace with `graph` | `min`, `max`, `unit`, `decimals`, `interval` (ms, default 120) |
+| `action` | none | a `Button` that calls `run()` | |
+
+**Folders** (`InspectFolder`): `{ id, title, parent?, open?, switch? }`. `parent` nests a folder: its names step in, its controls stay on the panel's one column. `switch` names a toggle item that becomes the folder's on/off LED instead of a row.
+
+**Inspector props:** `items`, `folders`, `store`, `only` (top folder ids: one schema across several panels), `presets` (`{ name: values }`; the panel adds Save current as preset), `bar` (Find · Presets · Reset; default true), `search`, `toolbar`, `labelWidth` (inherits the density family's label column), `storageKey` (folder folds).
+
+**A row:** drag the value, or a number's label, to scrub (Alt fine, Shift coarse); click a number to type. The dot in the gutter resets. The diamond adds or removes a keyframe at the playhead. Right-click: Reset, Copy, Paste, keyframe, and for a number Follow (another number of its folder, in the proportion they have now) and Unlink.
+
+**The store:** `createInspectorStore(items, { target?, onChange?, duration?, tracks?, follow?, storageKey? })`.
+- `target` is your own object. Every change in the panel is written to it; its own values win at the start.
+- `store.pull()` reads the object back after your app changes it (a frame loop, a gizmo, a load). Call it every frame if you like: the panel follows at `follow` ms (default 50). `pull(true)` reads at once.
+- `set(key, value)`, `apply(values)`, `reset(keys?)`, `get()`, `state()`, `subscribe(fn)`, `defaults`.
+- Timeline: `toggleKey(key)`, `setTime(seconds)`, `play(on)`; `duration` (default 4, loops) and starting `tracks: { key: [{ t, v }] }`. Numbers, vectors, ranges, points and hex colours glide between keyframes; toggles and choices hold. A value set on an animated key lands as a keyframe at the playhead.
+- Links: `link(key, from | null)`: target = source × the ratio they had when linked.
+- Presets saved from the panel live in localStorage under `storageKey`.
+- `mergeInspectorStores([a, b])` is one store for a multiple selection: the panel shows the first one's values, marks rows that differ as mixed, and writes each change to all.
+
+**InspectorTimeline props:** `items`, `store`, `labelWidth` (inherits, like the Inspector's). One lane per animated value: drag to move the playhead (it settles on a keyframe it comes near), click a keyframe to go to it, double-click to remove it.
+
 ## NodeGraph · LiveGraphView · graph/gpu
 
 - **NodeGraph**: a node editor on a canvas well with a dot grid. Nodes are the frosted sheet (the material every list and menu floats on), each with an LED before its title in its family's colour and the fold chevron at the end of the title row; fields are wells. Wired ports light like LEDs and wires glow in the signal colour.
@@ -531,6 +598,10 @@ const [graph, setGraph] = useState<GraphDefinition>({ domain: 'signal', nodes: [
 
 Optional scope wrapper — sets `data-ar-theme`, `data-ar-density`, `data-ar-material`, `data-ar-type`, `data-ar-accent`, `data-ar-scene` and inline tokens on one element. Props: `theme` (a built-in id **or any custom theme name** you have CSS for; default `nimbus`, `DEFAULT_THEME`; the old id `haze-carve-custom` still works), `density`, `material`, `type` (a type system, see `TYPE_COLLECTIONS`; inherits when omitted; `fine` at the root), `accent` (one of `ACCENTS`: teal · azure · violet · rose · coral · amber · lime · mono; replaces the theme's signal, so live edges, LEDs, focus and selection take it; each accent has a dark and a light value, picked by the theme), `scene` (`'light' | 'dark'`: what the glass sits over; a wash of the theme's own ground goes under every glass surface so its ink keeps contrast over a scene of the other kind, e.g. frost-deep over a light room; omit over a scene the theme was drawn for), `tokens` (overrides: `{ signal: '#ff4fa3' }` or full `--ar-*` names), `ground` (paint the theme's background and text colour — use for solid themes / full-page scopes), `as` (default `div`), plus any HTML attributes. Scopes nest. Without React: `<div data-ar-theme="frost-deep">`.
 
+`densityTokens` (`{ dense?, standard?, comfort? }`, each a token map like `tokens`) changes the theme in one family only, on top of `tokens`; it follows whichever family is in force on the scope, and `densityTokensCss(id, tokens, layers)` gives the same rule for your own markup.
+
+`density` (one of `DENSITIES`: `dense` · `standard` · `comfort`) is the density family for the whole scope: every size and corner of the theme scaled to it, and Dense's own row rules. See theming.md → Density.
+
 `themeStyle(tokens)` returns the same inline style object without the wrapper.
 
 ## Motion
@@ -547,6 +618,7 @@ Every component moves with the same few durations and curves, all of them tokens
 - **Lists unroll.** The Select list opens out of its face with its rows cascading, and rolls back up into the face on close.
 - **Presses spring.** Buttons dip and spring back, and a toggled IconButton's insert grows in. The Knob cap and the XYPad puck settle with a small overshoot when moved by the wheel, keys, a click or a reset. They follow the hand directly while dragged.
 - **Things draw themselves.** Sparklines and graph wires draw in, a dragged wire flows towards the pointer, and a newly wired port pops.
+- **Clean view leaves and arrives.** Hidden, each pane slides a few pixels toward the edge it lives on and fades (quickly by hand, slowly when idle); shown, they settle back one after another on a soft curve. A Panel with `autoHide` or an `<AutoHide>` sinks and fades the same way (`--ar-autohide-shift` sets its direction). Reduced motion keeps only the fade.
 - **The Dock moves calmly.** The active tab's underline draws out from its centre, a panel shown by its tab settles in, and the drag feedback eases into place.
 - **Live states breathe.** A `live` Badge's dot and a FileDrop holding a file breathe softly.
 - **Changes are marked.** PropertyRow's modified dot springs in and shrinks away on reset. A search reveal pulses the row once.
@@ -563,7 +635,7 @@ The shared keyframes are `ar-rise-in`, `ar-drop-in`, `ar-fade-out`, `ar-fade-in`
 ## Shared types and constants
 
 - `OptionInput<V> = V | { value: V; label?: ReactNode; icon?: ReactNode; title?: string; disabled?: boolean }` — plain strings work for simple lists; icons replace text in ToggleGroup/Segmented.
-- `THEMES`, `THEME_META[id]` (`label`, `family`, `kind: 'solid' | 'glass'`, `description`, `swatch: [ground, control, signal]`, `parent` for a variation), `GLASS_THEMES`, `HERO_THEMES`, `variationsOf(hero)`, `DEFAULT_THEME`, `THEME_ALIASES`, `TYPE_COLLECTIONS`, `TYPE_ALIASES`, `TYPE_META[id]` (`label`, `ui`, `mono`, `display`, `serif`, `description`, `fonts`), `ACCENTS`, `ACCENT_META`, `DENSITIES`, `MATERIALS`, `GRADIENTS`, `MAPPINGS`, `CURVES`, `formatValue`.
+- `THEMES`, `THEME_META[id]` (`label`, `family`, `kind: 'solid' | 'glass'`, `description`, `swatch: [ground, control, signal]`), `GLASS_THEMES`, `DEFAULT_THEME`, `THEME_ALIASES`, `TYPE_COLLECTIONS`, `TYPE_ALIASES`, `TYPE_META[id]` (`label`, `ui`, `mono`, `display`, `serif`, `description`, `fonts`), `ACCENTS`, `ACCENT_META`, `DENSITIES`, `MATERIALS`, `GRADIENTS`, `MAPPINGS`, `CURVES`, `formatValue`.
 - Types: `ThemeName`, `Density`, `MaterialName`, `Format`, `Formatter`, `Mapping`, `Gradient`, `RangeValue`, `SliderVariant`, `SliderStatus`, `PrecisionLevels`, and every `…Props`.
 
 ## Recipes

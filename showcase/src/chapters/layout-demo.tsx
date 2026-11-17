@@ -5,8 +5,9 @@
    One set of sections runs through all of it, so a section moves between a panel on the page
    and the panels of the workspace. */
 import { useMemo, useState } from 'react';
-import type { ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import {
+  AutoHide,
   Badge,
   Button,
   Callout,
@@ -246,11 +247,13 @@ const T = {
   physics: glyph('M8 9.2a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4zM8 14c3.3 0 6-2.7 6-6S11.3 2 8 2 2 4.7 2 8M2.5 5.5c2 3.5 6 6.5 9.5 7M13.5 5.5c-2 3.5-6 6.5-9.5 7'),
   look: glyph('M1.5 8s2.5-4.5 6.5-4.5S14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8zM8 10a2 2 0 100-4 2 2 0 000 4z'),
   layers: glyph('M8 2l6 3.2-6 3.2-6-3.2zM2 8l6 3.2L14 8M2 10.8L8 14l6-3.2'),
+  clean: glyph('M2 2.5h3M2 2.5v3M14 2.5h-3M14 2.5v3M2 13.5h3M2 13.5v-3M14 13.5h-3M14 13.5v-3'),
+  idle: glyph('M8 14A6 6 0 108 2a6 6 0 000 12zM8 4.5V8l2.5 1.5'),
 };
 
 const ENGINE_PANELS = [
   { value: 'effects', label: 'Effects' },
-  { value: 'inspector', label: 'Inspector' },
+  { value: 'inspector', label: 'Properties' },
   { value: 'physics', label: 'Physics' },
   { value: 'layers', label: 'Layers' },
   { value: 'console', label: 'Console' },
@@ -258,7 +261,7 @@ const ENGINE_PANELS = [
 
 /** Moves panels through `api.workspace`, the MetaBlock engine, with the calls a drag makes. A
  *  button a panel's capabilities rule out is off for that panel. */
-function EngineBar({ api }: { api: DockApi }) {
+function EngineBar({ api, idle, onIdle }: { api: DockApi; idle: boolean; onIdle: (on: boolean) => void }) {
   const ws = api.workspace;
   useWorkspaceRevision(ws);
   const [id, setId] = useState('effects');
@@ -291,6 +294,9 @@ function EngineBar({ api }: { api: DockApi }) {
         {act('Undo', T.undo, () => ws.undo())}
         {act('Redo', T.redo, () => ws.redo())}
         {act('Reset layout', T.reset, () => api.resetLayout())}
+        <ToolbarSeparator />
+        {act('Clean view (H)', T.clean, () => api.setVisible(false))}
+        <IconButton size="sm" label={idle ? 'Hide when idle: on (4 s)' : 'Hide when idle: off'} icon={T.idle} active={idle} onClick={() => onIdle(!idle)} />
       </Toolbar>
       <span className="sc-engine__state">{where ? `${where.posture} · ${group?.title ?? where.groupId}` : 'closed'}</span>
     </div>
@@ -299,14 +305,15 @@ function EngineBar({ api }: { api: DockApi }) {
 
 export function PanelDemo() {
   const [api, setApi] = useState<DockApi | null>(null);
+  const [idle, setIdle] = useState(false);
   const panels = useMemo<DockPanel[]>(
     () => [
       {
         id: 'inspector',
-        title: 'Inspector',
+        title: 'Properties',
         description: 'Always docked and open',
         dock: 'left',
-        content: <sections.Pane id="inspector" label="Inspector sections" toolbar />,
+        content: <sections.Pane id="inspector" label="Properties sections" toolbar />,
         footer: 'closable · floatable: off',
         capabilities: { closable: false, floatable: false },
       },
@@ -326,13 +333,19 @@ export function PanelDemo() {
         viewport={
           <div className="sc-viewport">
             <img className="sc-workspace__view" src={BACKDROPS.garden} alt="" />
-            {api ? <EngineBar api={api} /> : null}
+            {api ? (
+              <AutoHide style={{ '--ar-autohide-shift': '0 -10px' } as CSSProperties}>
+                <EngineBar api={api} idle={idle} onIdle={setIdle} />
+              </AutoHide>
+            ) : null}
           </div>
         }
         storageKey="artinos-showcase.layout.v3"
         sizes={{ left: 0.25, right: 0.27, bottom: 0.27 }}
         floatBounds={{ x: 330, y: 104, width: 290, height: 300 }}
         viewProps={{ padding: 10, gap: 8 }}
+        hideKey="h"
+        idleHide={idle ? 4000 : 0}
         onReady={setApi}
       />
     </div>
@@ -348,7 +361,7 @@ function ScenePanel() {
         title="Scene"
         subtitle="A pane of the workspace’s sections"
         actions={<Badge tone="live" dot>Live</Badge>}
-        footer={<span>Drag a heading into the Inspector above</span>}
+        footer={<span>Drag a heading into Properties above</span>}
         labelWidth={84}
       >
         <sections.Pane id="page" label="Scene sections" toolbar />

@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ArtinosTheme, THEMES, THEME_META, DENSITIES, Slider, Segmented, Select, ColorField, Switch, Field, Section } from '../../../src';
+import { ArtinosTheme, THEMES, THEME_META, DENSITIES, DENSITY_META, Slider, Segmented, Select, ColorField, Switch, Field, Section } from '../../../src';
 import type { Density, ThemeName } from '../../../src';
 import { BACKDROPS, BACKDROP_OPTIONS, GalleryMode, Swatch } from '../shared';
 import type { Backdrop } from '../shared';
@@ -14,7 +14,7 @@ import {
   parseFilter, buildFilter, parseGradient, buildGradient, parseInsertShadow, buildInsertShadow, parseWell, buildWell,
   parsePanelShadow, buildPanelShadow, parseSheen, buildSheen, parseHalo, buildHalo, parseFocus, buildFocus,
 } from './values';
-import { download, fromJson, newId, slugify, toCss, toJson, toTsx } from './store';
+import { download, flatten, fromJson, layerKey, newId, resolveTheme, slugify, split, toCss, toJson, toTsx } from './store';
 import type { CustomTheme } from './store';
 import './studio.css';
 
@@ -106,7 +106,7 @@ export interface ThemeStudioProps {
 export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }: ThemeStudioProps) {
   const open = (sel: string | undefined): Draft => {
     const c = sel?.startsWith('c:') ? customs.find((t) => t.id === sel.slice(2)) : undefined;
-    if (c) return { id: c.id, name: c.name, base: c.base, tokens: { ...c.tokens } };
+    if (c) return { id: c.id, name: c.name, base: c.base, tokens: flatten(c) };
     const base = (THEMES as readonly string[]).includes(sel ?? '') ? (sel as ThemeName) : 'frost-deep';
     return { id: null, name: THEME_META[base].label + ' custom', base, tokens: {} };
   };
@@ -139,7 +139,6 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
   const previewRef = useRef<HTMLDivElement>(null);
   const tokenNames = useMemo(() => collectTokenNames(), []);
   const [live, setLive] = useState<Tokens>({});
-  const [scheme, setScheme] = useState('dark');
 
   /* read every resolved token from the preview after each change */
   useLayoutEffect(() => {
@@ -149,8 +148,8 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
     const next: Tokens = {};
     for (const n of tokenNames) next[n] = cs.getPropertyValue(n).trim();
     setLive(next);
-    setScheme(cs.colorScheme.includes('light') ? 'light' : 'dark');
-  }, [draft.tokens, draft.base, compare, tokenNames]);
+
+  }, [draft.tokens, draft.base, compare, tokenNames, density]);
 
   useLayoutEffect(() => {
     if (!picked) {
@@ -184,17 +183,26 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
     }
     lastEdit.current = { token, t: now };
     future.current = [];
+    // an edit is meant to be seen: comparing with the base stops, so the preview shows it
+    setCompare(false);
     setDraft((d) => ({ ...d, tokens: next }));
   }, []);
-  const setToken = (token: string, value: string) => commit({ ...draftRef.current.tokens, [token]: value }, token);
+  const densityRef = useRef<Density>('standard');
+  densityRef.current = density;
+  const setToken = (token: string, value: string) => commit({ ...draftRef.current.tokens, [layerKey(densityRef.current, token)]: value }, token);
   const resetToken = (token: string) => {
     const t = { ...draftRef.current.tokens };
-    delete t[token];
+    const own = layerKey(densityRef.current, token);
+    if (own in t) delete t[own];
+    else delete t[token];
     commit(t);
   };
   const resetGroup = (g: (typeof GROUPS)[number]) => {
     const t = { ...draft.tokens };
-    for (const p of g.params) delete t[p.token];
+    for (const p of g.params) {
+      delete t[layerKey(densityRef.current, p.token)];
+      delete t[p.token];
+    }
     commit(t);
   };
   const undo = () => {
@@ -261,7 +269,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
   const persist = (list: CustomTheme[]) => onCustomsChange(list);
   const save = () => {
     if (!draft.id) return saveAsNew();
-    persist(customs.map((c) => (c.id === draft.id ? { ...c, name: draft.name, base: draft.base, tokens: { ...draft.tokens }, updated: Date.now() } : c)));
+    persist(customs.map((c) => (c.id === draft.id ? { ...c, name: draft.name, base: draft.base, ...split(draft.tokens), updated: Date.now() } : c)));
     setSaved({ ...draft.tokens });
     flash('Saved');
   };
@@ -270,7 +278,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
     const taken = new Set(customs.map((c) => c.name));
     let name = draft.name || 'My theme';
     for (let i = 2; taken.has(name); i++) name = `${draft.name} ${i}`;
-    persist([...customs, { id, name, base: draft.base, tokens: { ...draft.tokens }, updated: Date.now() }]);
+    persist([...customs, { id, name, base: draft.base, ...split(draft.tokens), updated: Date.now() }]);
     setDraft((d) => ({ ...d, id, name }));
     setSaved({ ...draft.tokens });
     flash('Saved as “' + name + '”');
@@ -278,7 +286,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
   const duplicate = () => {
     const id = newId();
     const name = draft.name + ' copy';
-    persist([...customs, { id, name, base: draft.base, tokens: { ...draft.tokens }, updated: Date.now() }]);
+    persist([...customs, { id, name, base: draft.base, ...split(draft.tokens), updated: Date.now() }]);
     setDraft((d) => ({ ...d, id, name }));
     setSaved({ ...draft.tokens });
     flash('Duplicated');
@@ -300,9 +308,10 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
     try {
       const t = fromJson(importText);
       const id = newId();
-      persist([...customs, { id, name: t.name, base: t.base, tokens: t.tokens, updated: Date.now() }]);
-      setDraft({ id, name: t.name, base: t.base, tokens: { ...t.tokens } });
-      setSaved({ ...t.tokens });
+      persist([...customs, { id, name: t.name, base: t.base, tokens: t.tokens, layers: t.layers, updated: Date.now() }]);
+      const flat = flatten(t);
+      setDraft({ id, name: t.name, base: t.base, tokens: flat });
+      setSaved({ ...flat });
       past.current = [];
       future.current = [];
       setModal(null);
@@ -315,13 +324,15 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
   };
 
   /* ---------- export ---------- */
-  const overridesCount = Object.keys(draft.tokens).length;
+  const parts = useMemo(() => split(draft.tokens), [draft.tokens]);
+  const overridesCount = Object.keys(parts.tokens).length + Object.keys(parts.layers[density] ?? {}).length;
   const exportText = useMemo(() => {
     if (modal !== 'export') return '';
-    if (exportTab === 'json') return toJson(draft);
-    if (exportTab === 'tsx') return toTsx(draft.name, draft.base, draft.tokens);
-    return toCss(draft.name, draft.base, live, draft.tokens, scheme);
-  }, [modal, exportTab, draft, live, scheme]);
+    if (exportTab === 'json') return toJson({ name: draft.name, base: draft.base, ...parts });
+    if (exportTab === 'tsx') return toTsx(draft.name, draft.base, parts.tokens, parts.layers);
+    const shared = resolveTheme(draft.base, parts.tokens, tokenNames);
+    return toCss(draft.name, draft.base, shared.resolved, parts.tokens, shared.scheme, parts.layers);
+  }, [modal, exportTab, draft, parts, tokenNames]);
   const exportFile = () => {
     const slug = slugify(draft.name);
     if (exportTab === 'json') download(slug + '.theme.json', exportText, 'application/json');
@@ -331,7 +342,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
 
   /* ---------- parameter controls ---------- */
   const v = (token: string) => live[token] ?? '';
-  const changed = (token: string) => token in draft.tokens;
+  const changed = (token: string) => layerKey(density, token) in draft.tokens || token in draft.tokens;
   const q = search.trim().toLowerCase();
   const matches = (p: Param) => !q || p.label.toLowerCase().includes(q) || p.token.includes(q);
 
@@ -454,7 +465,8 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
     ...customs.map((c) => ({ value: 'c:' + c.id, label: c.name, icon: <Swatch t={c.base} /> })),
     ...THEMES.map((t) => ({ value: t, label: THEME_META[t].label + ' · built-in', icon: <Swatch t={t} /> })),
   ];
-  const tokensForPreview = compare ? undefined : draft.tokens;
+  const tokensForPreview = compare ? undefined : parts.tokens;
+  const layersForPreview = compare ? undefined : parts.layers;
 
   const previewRoot = () => previewRef.current?.parentElement ?? null;
   const onPickMove = (e: React.PointerEvent) => {
@@ -479,7 +491,7 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
   };
 
   return (
-    <ArtinosTheme theme="studio" density="dense" type={type} ground className="ed">
+    <ArtinosTheme theme="pro-gray" density="dense" type={type} ground className="ed">
       {/* ---------- header ---------- */}
       <header className="ed-head">
         <button type="button" className="ed-btn ed-btn--ghost" onClick={() => onExit()}>
@@ -625,15 +637,19 @@ export function ThemeStudio({ customs, onCustomsChange, onExit, initial, type }:
             <Field label="Backdrop" labelWidth={64}>
               <Select options={BACKDROP_OPTIONS} value={backdrop} onChange={(x) => setBackdrop(x as Backdrop)} label="Backdrop" appearance="well" />
             </Field>
-            <Segmented options={DENSITIES} value={density} onChange={setDensity} label="Density" />
+            <Segmented options={DENSITIES.map((d) => ({ value: d, label: DENSITY_META[d].label }))} value={density} onChange={setDensity} label="Density" />
+            <span className="ed-layer" title="Each density family keeps its own settings: what you change here applies only in this family">
+              Edits apply to {DENSITY_META[density].label} only
+            </span>
             <div className="ed-compare">
               <Switch variant="compact" label="Compare with base" value={compare} onChange={setCompare} />
-              <span>{compare ? 'showing ' + THEME_META[draft.base].label : 'compare with base'}</span>
+              <span data-on={compare || undefined}>{compare ? 'Showing ' + THEME_META[draft.base].label + ' as it ships: your edits are hidden' : 'Compare with base'}</span>
             </div>
           </div>
           <ArtinosTheme
             theme={draft.base}
             tokens={tokensForPreview}
+            densityTokens={layersForPreview}
             density={density}
             ground
             className="ed-preview"

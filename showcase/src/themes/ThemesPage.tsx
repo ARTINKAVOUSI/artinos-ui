@@ -2,28 +2,18 @@
    own scene. A stage dresses a small working setup in the chosen theme; below, the whole
    collection by family. The page wears the chosen theme, so the bar and the stage switch with
    each pick, and the bar and stage stay pinned while the collection scrolls under them.
-   ThemeTile and themeFamilies also serve the inline gallery on the main page. */
+   ThemeTile and galleryThemes also serve the inline gallery on the main page. */
 import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, HERO_THEMES, THEMES, THEME_META } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, THEMES, THEME_META, DENSITIES, DENSITY_META } from '../../../src';
 import type { Accent, Density, ThemeName } from '../../../src';
-import { FAMILIES } from '../app/foundations';
 import { IC, useLiveSeries } from '../chapters/demos';
 import { BACKDROPS, BACKDROP_OPTIONS, Swatch } from '../shared';
 import type { Backdrop } from '../shared';
 import './themes.css';
 
-const START = 'Start here';
-
-/** The gallery's families: a short name, what they share, and their themes. The heroes come first. */
-export function themeFamilies() {
-  const hero = { name: START, about: `The ${HERO_THEMES.length} hero themes, one per kind of look. Every other theme is a variation of one of them.`, themes: [...HERO_THEMES] };
-  const families = FAMILIES.map(([title, fams]) => {
-    const [name, about = ''] = title.split(' — ');
-    return { name, about: about.charAt(0).toUpperCase() + about.slice(1) + '.', themes: THEMES.filter((t) => fams.includes(THEME_META[t].family)) };
-  }).filter((f) => f.themes.length);
-  return [hero, ...families];
-}
+/** Every theme, side by side, in THEMES order (the default first). */
+export const galleryThemes = (): ThemeName[] => [...THEMES];
 
 /** One theme as a small live panel: click it to pick the theme. */
 export function ThemeTile({ t, active, accent, onPick }: { t: ThemeName; active: boolean; accent?: Accent; onPick: () => void }) {
@@ -66,8 +56,7 @@ function Stage({ t, onUse }: { t: ThemeName; onUse: () => void }) {
     <div className="sc-stage">
       <section className="sc-stage__intro">
         <span className="sc-stage__kicker">
-          <Swatch t={t} /> {themeFamilies().find((f) => f.name !== START && f.themes.includes(t))?.name ?? m.family} · {m.kind}
-          {m.parent ? ` · a variation of ${THEME_META[m.parent].label}` : ' · hero'}
+          <Swatch t={t} /> {m.kind}
         </span>
         <h1>{m.label}</h1>
         <p>{m.description}</p>
@@ -139,6 +128,7 @@ export function ThemesPage({
   onBg,
   type,
   density,
+  onDensity,
   onUse,
   onExit,
 }: {
@@ -149,14 +139,13 @@ export function ThemesPage({
   onBg: (b: Backdrop) => void;
   type: string;
   density: Density;
+  onDensity: (d: Density) => void;
   onUse: (t: ThemeName) => void;
   onExit: () => void;
 }) {
   const [sel, setSel] = useState<ThemeName>(initial);
-  const [family, setFamily] = useState('all');
-  const families = useMemo(themeFamilies, []);
+  const themes = useMemo(galleryThemes, []);
   const acc = accent === 'theme' ? undefined : (accent as Accent);
-  const shown = families.filter((f) => family === 'all' || f.name === family);
   return (
     <ArtinosTheme theme={sel} accent={acc} type={type} density={density} className="sc-themes" style={{ '--sc-scene': bg !== 'none' ? `url(${BACKDROPS[bg]})` : 'none' } as CSSProperties}>
       {/* the bar and the stage stay pinned; the collection scrolls under them */}
@@ -166,9 +155,9 @@ export function ThemesPage({
             ← Showcase
           </Button>
           <b className="sc-themes__title">Themes · {THEMES.length}</b>
-          <Select options={[{ value: 'all', label: 'Every family' }, ...families.map((f) => ({ value: f.name, label: f.name }))]} value={family} onChange={setFamily} appearance="well" label="Family" />
           <Select options={[{ value: 'theme', label: 'Theme accent' }, ...ACCENTS.map((a) => ({ value: a, label: ACCENT_META[a].label }))]} value={accent} onChange={onAccent} appearance="well" label="Accent" />
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => onBg(v as Backdrop)} appearance="well" label="Backdrop" />
+          <Segmented className="sc-themes__density" options={DENSITIES.map((d) => ({ value: d, label: DENSITY_META[d].label }))} value={density} onChange={onDensity} label="Density" />
           <span className="sc-stage__spacer" />
           <Button size="sm" variant="primary" onClick={() => onUse(sel)}>
             Use {THEME_META[sel].label}
@@ -178,20 +167,11 @@ export function ThemesPage({
       </div>
 
       <main className="sc-themes__main">
-        {shown.map((f) => (
-          <section key={f.name} className="sc-themes__family">
-            <header className="sc-themes__family-head">
-              <h2>{f.name}</h2>
-              <span>{f.themes.length}</span>
-              <p>{f.about}</p>
-            </header>
-            <div className="sc-tiles">
-              {f.themes.map((t) => (
-                <ThemeTile key={t} t={t} accent={acc} active={t === sel} onPick={() => setSel(t)} />
-              ))}
-            </div>
-          </section>
-        ))}
+        <div className="sc-tiles">
+          {themes.map((t) => (
+            <ThemeTile key={t} t={t} accent={acc} active={t === sel} onPick={() => setSel(t)} />
+          ))}
+        </div>
       </main>
     </ArtinosTheme>
   );

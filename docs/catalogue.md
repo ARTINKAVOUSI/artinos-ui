@@ -10,7 +10,7 @@ Contents:
 - [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
-- [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · NodeGraph · LiveGraphView · GraphGPU
+- [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · NodeGraph · LiveGraphView · GraphGPU
 - [Rig](#rig): ViewGizmo · Trackball · Vector3Field · TransformGizmo
 - [Scopes](#scopes): theme · density · material
 - [Layout and text](#layout-and-text): spacing · type roles · alignment · grouping
@@ -53,7 +53,7 @@ Read-only values go to [Display](#display): a figure that matters (with its chan
 
 ## Sliders
 
-Text inside the capsule never splits: if the insert would end inside a label or readout, that text stays in one ink, the insert steps back behind it, and a small index above and below the text marks the value. This is automatic, on Slider and RangeSlider alike. A stepped slider's cells likewise step back behind its text.
+The control never changes for its text: the insert, the fill and a stepped slider's cells are always drawn as the theme draws them. The text changes instead: each letter takes the ink of what is behind it (the insert's ink over the fill, the well's ink over the well), even where the fill edge runs through a word. This is automatic, on Slider and RangeSlider alike. Never dim, mask or tint a fill to make its text read; fix the inks (`--ar-insert-ink`, `--ar-label-ink`) instead.
 
 One capsule, six faces. The capsule is the control, the seam is the handle, the readout is the precision zone. Every face keeps the same gestures (press, grab, scrub, type, double-click off), so a panel can mix faces without teaching a second interaction.
 
@@ -424,11 +424,21 @@ What a user can do without any wiring:
 - drag a tab out to float it, onto an edge to dock it, onto another dock to merge, into a pane to split;
 - right-click a tab for every placement (snap, dock, pin, auto-hide, attach), maximize, send home or close;
 - search panels and commands with Ctrl/⌘ K (`palette`, default on; it folds to a magnifier in a narrow dock);
-- hide the docks with `hideKey` (e.g. `'h'`) while the viewport stays.
+- clean view: `hideKey` (e.g. `'h'`) hides the whole interface while the viewport stays; `idleHide` fades it after a quiet spell (`idleReveal: 'near'` keeps it hidden while the canvas is worked). Panels over the canvas join with `Panel autoHide`, anything else with `<AutoHide>`, and `interfaceVisibility` or the `artinos:interface` window event switch it from code.
 
 Dock props: `storageKey` (saves the arrangement; restored only while every saved id still exists), `sizes` (fractions per edge; default left .22, right .24, bottom .36), `floatBounds`, `commands` (extra palette entries), `toolbar` (the right end of every strip), `brand` (a corner chip), `viewProps` (padding, gap, snapping), `onReady(api)`.
 
 Inside a panel: `useDock()` gives `{ workspace, openPanel(id), resetLayout(), openPalette(), visible, setVisible, addPanel(panel, place?), removePanel(id) }`; `workspace` is the MetaBlock engine (`floatBlock`, `dockBlock`, `maximizeBlock`, `returnBlock`, `undo`, `redo`, `serialize`); `<PanelBar>` holds the panel's toolbar and rises into the tab strip when there is room; the body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content. A panel that throws shows a Retry card instead of taking the dock down. The Dock fills its parent, so give the parent a height.
+
+### Inspector
+
+The pro parameter editor, for an editor with more values than hand-written sections can carry. One schema (`InspectItem[]` and `InspectFolder[]`) and one store bound to your object.
+- **Use it when** a selection has many parameters, values change from both sides (the panel and the app), or you need keyframes, presets, links or a multiple selection. For a handful of app settings, `createParamPanes` is lighter.
+- **Kinds:** number (slider, or scrub field without a range) · toggle · choice · color · vector · range · point (a pad) · text · monitor (figure, with `graph` a trace) · action.
+- **Row states:** changed (dot, becomes reset) · keyed (filled diamond) · animated (the seam turns automated, the diamond stays in view) · linked (the source's name beside the label) · mixed (a multiple selection that disagrees) · warn / fault (a `check` explains it under the row).
+- **Folders** nest with `parent`; names step in, controls keep one column. A folder's `switch` is its on/off.
+- **Layout:** Inspector docked right, `InspectorTimeline` along the bottom, monitors as a second Inspector (`only={['monitor']} bar={false}`) docked left, all on one store.
+- **Never** give a nested folder its own label column, set a row's text by hand, or add a tint under the panel.
 
 ### MetaBlock
 
@@ -463,7 +473,7 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 ## Scopes
 
 Four axes, set on `<ArtinosTheme>` or as `data-ar-*` attributes, and nestable:
-- **theme**: the whole look (108; see `theming.md`). Glass and frost themes need something behind them; `studio` / `studio-light` paint their own ground.
+- **theme**: the whole look (9; see `theming.md`). Glass and frost themes need something behind them; `pro-gray` and `studio-light` paint their own ground.
 - **type**: the type system, one of twelve complete designs: one family (`sleek`, `product`, `native`, `legible`), a pairing of a display face with a text face (`instrument`, `salon`, `wide`, `grotesk`, `editorial`), or hairline control text under heavy titles (`fine`, the default, `mass`, `round`); see design.md.
 - **density**: `dense` (26px controls; docks and strips), `standard` (28px; default), `comfort` (32px; touch and presentation). Also a prop on the original controls.
 - **material** (advanced): force one control finish (`optical`, `frost`, `milk`, `clear`, `tint`, `smoked`, `metal`, `soft`, `reference`) on a scope or a control.
@@ -490,6 +500,8 @@ Every gap and padding comes from the space scale: `--ar-space-1` … `--ar-space
 Use the whole family, not bare panels:
 - a `Panel` with `icon`, `title`, `subtitle`, `actions` (Reset, a mode `Switch`) and a `footer` status line; `tabs` when it has modes;
 - settings described as data and set by `createParamPanes` (the right control per value, groups with count, reset and on/off, dockable panes); by hand only when there is no schema, as:
+- for an editor's selection (many parameters, changed by the app as well as the panel, keyed, linked or selected several at once): an `Inspector` on a `createInspectorStore` bound to the object;
+- a tool people work in all day (an editor, a control surface) is set in the dense family as a whole: `<ArtinosTheme density="dense">` around the `Dock`, never one dense panel among standard ones;
 - inside it, related settings in a `SectionGroup` (`accordion` or `toolbar` for Expand all · Collapse all); each `Section` with a `count`, a `description`, a reset in `actions`, and `enabled` when the whole group can be switched off; `variant="card"` for the one group that matters most;
 - live readouts as a `StatStrip` at the top of a Panel, never floating loose over the canvas;
 - lists as `ItemList` / `ItemRow` with a `swatch` or icon, `meta` and trailing badges, the current one `selected`;

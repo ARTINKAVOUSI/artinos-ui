@@ -1,7 +1,7 @@
 /* ARTINOS UI — token layer.
  *
  * Three layers, each reading only the one above it:
- *   1. primitives  raw values, private to this file         (--ar-ink-*, --ar-teal-*)
+ *   1. primitives  raw values, private to this file         (--ar-amber-500, --ar-frost-grain)
  *   2. roles       what a colour/size means                 (--ar-bg-well, --ar-text-hi, --ar-signal)
  *   3. control     what a capsule is made of (materials.css) (--ar-insert, --ar-seam, --ar-trough)
  *
@@ -13,31 +13,6 @@
 
 /* ---------- 1 · primitives ---------- */
 :root {
-  --ar-ink-void: #090909;
-  --ar-ink-stage: #0e0e0e;
-  --ar-ink-surface: #141414;
-  --ar-ink-raised: #191919;
-  --ar-ink-edge: #212121;
-
-  --ar-paper-void: #eeeeee;
-  --ar-paper-stage: #e0e0e0;
-  --ar-paper-surface: #f6f6f6;
-  --ar-paper-raised: #ffffff;
-
-  --ar-chalk-hi: #f4f4f4;
-  --ar-chalk-mid: #bfbfbf;
-  --ar-chalk-low: #919191;
-  --ar-chalk-faint: #686868;
-  --ar-chalk-ghost: #555555;
-
-  --ar-slate-hi: #131313;
-  --ar-slate-mid: #2e2e2e;
-  --ar-slate-low: #4d4d4d;
-  --ar-slate-faint: #616161;
-
-  --ar-teal-300: #7fe3d4;
-  --ar-teal-500: #2fb39c;
-  --ar-teal-700: #0b7a69;
   --ar-amber-500: #e0a34e;
   --ar-rose-500: #f2606f;
   --ar-azure-500: #8fb8d9;
@@ -59,12 +34,11 @@
   --ar-bg-active: rgba(255, 255, 255, 0.08);
   --ar-bg-well: rgba(0, 0, 0, 0.42);
 
-  /* text — five steps of recession */
+  /* text — four steps of recession */
   --ar-text-hi: #ededed;
   --ar-text-mid: #b4b4b4;
   --ar-text-low: #858585;
   --ar-text-faint: #5f5f5f;
-  --ar-text-ghost: #4a4a4a;
 
   /* hairlines */
   --ar-line-subtle: rgba(255, 255, 255, 0.055);
@@ -208,56 +182,69 @@
      title face is a serif keeps the sans here, so a 14px name stays crisp beside its controls */
   --ar-font-heading: var(--ar-font-display);
 
-  /* weights — four, each with one job. Nothing under 28px is ever lighter than regular: thin
+  /* weights — four, each with one job (thin, regular, medium, bold); a role below reads one of them
+     unless its type system sets it apart. Nothing under 28px is ever lighter than regular: thin
      strokes vanish on glass. Thin exists for the one big figure. */
   --ar-weight-thin: 300; /* a hero figure at 40px and up */
-  --ar-weight-light: 400; /* kept for themes that ask for it: resolves to regular */
+  --ar-weight-light: var(--ar-weight-regular); /* kept for themes that ask for it: resolves to regular */
   --ar-weight-regular: 400; /* prose, values, menu rows */
   --ar-weight-medium: 500; /* labels, tabs, small marks */
-  --ar-weight-name: 300; /* the name beside a value: hairline in a bright ink (--ar-label-strength) */
-  --ar-weight-note: 300;
+  --ar-weight-name: var(--ar-weight-thin); /* the name beside a value: hairline in a bright ink (--ar-label-strength) */
+  --ar-weight-note: var(--ar-weight-thin);
   --ar-weight-section: 800;
-  --ar-weight-readout: 500; /* a value's weight, in every finish */
-  --ar-weight-voice: 400; /* control words: buttons, chips, segments */
+  --ar-weight-readout: var(--ar-weight-medium); /* a value's weight, in every finish */
+  --ar-weight-voice: var(--ar-weight-regular); /* control words: buttons, chips, segments */
   --ar-label-strength: 90%;
   --ar-note-strength: 80%;
   --ar-panel-title-weight: 800;
   --ar-weight-title: 800; /* Fine: titles extra-bold over hairline controls */
   --ar-weight-bold: 600; /* section names, strong text */
-  --ar-weight-black: 700; /* the one word that must win: a figure's number, a primary button */
   --ar-weight-text: var(--ar-weight-regular);
+
+  /* the ladder: the ten sizes the family is set in. Every size token below is one of these steps,
+     so the scale is changed here and nowhere else. */
+  --ar-step-12: 12px;
+  --ar-step-13: 13px;
+  --ar-step-14: 14px;
+  --ar-step-16: 16px;
+  --ar-step-18: 18px;
+  --ar-step-20: 20px;
+  --ar-step-24: 24px;
+  --ar-step-28: 28px;
+  --ar-step-36: 36px;
+  --ar-step-48: 48px;
 
   /* every size on the page comes from one ladder: 12 13 14 16 18 20 24 28 36 48. A type
      collection's multipliers snap back to it with round(), so nothing lands between steps.
      the reading scale: a real jump at every step, so a role is told at a glance.
      Pages and prose (the Text roles) read from it; inside a Panel, Dock pane or Dialog,
      layout/Text.css sets it one step down. */
-  --ar-read-hero: 48px; /* the page's one big line */
-  --ar-read-statement: 20px;
-  --ar-read-numeral: 28px;
-  --ar-read-display: 36px; /* a chapter or page headline */
-  --ar-read-title: 24px; /* a section of a page */
-  --ar-read-heading: 18px; /* a group inside a section */
-  --ar-read-subheading: 14px; /* a step under a heading: the size of the text, told by weight */
-  --ar-read-lead: 16px; /* the one sentence that says what a section is for */
-  --ar-read-body: 14px; /* paragraphs, on a 22px line */
-  --ar-read-note: 13px; /* help and asides */
-  --ar-read-quote: 16px;
-  --ar-read-figure: 28px;
+  --ar-read-hero: var(--ar-step-48); /* the page's one big line */
+  --ar-read-statement: var(--ar-step-20);
+  --ar-read-numeral: var(--ar-step-28);
+  --ar-read-display: var(--ar-step-36); /* a chapter or page headline */
+  --ar-read-title: var(--ar-step-24); /* a section of a page */
+  --ar-read-heading: var(--ar-step-18); /* a group inside a section */
+  --ar-read-subheading: var(--ar-step-14); /* a step under a heading: the size of the text, told by weight */
+  --ar-read-lead: var(--ar-step-16); /* the one sentence that says what a section is for */
+  --ar-read-body: var(--ar-step-14); /* paragraphs, on a 22px line */
+  --ar-read-note: var(--ar-step-13); /* help and asides */
+  --ar-read-quote: var(--ar-step-16);
+  --ar-read-figure: var(--ar-step-28);
   /* the control scale: the sizes a control system needs. 12 is the floor; nothing is set smaller. */
-  --ar-text-xs: 12px; /* hints, captions, meta lines: the label size, told apart by tone, not by shrinking */
-  --ar-text-sm: 12px; /* secondary lines, tabs, menu rows */
-  --ar-text-md: 13px; /* body: field labels, rows of prose, messages */
-  --ar-text-lg: 14px; /* sheet titles, the palette's query */
-  --ar-text-xl: 16px; /* panel titles */
-  --ar-text-2xl: 20px; /* page section titles */
-  --ar-text-3xl: 28px; /* display: chapter titles, big readouts */
+  --ar-text-xs: var(--ar-text-sm); /* hints, captions, meta lines: the label size, told apart by tone, not by shrinking */
+  --ar-text-sm: var(--ar-step-12); /* secondary lines, tabs, menu rows */
+  --ar-text-md: var(--ar-step-13); /* body: field labels, rows of prose, messages */
+  --ar-text-lg: var(--ar-step-14); /* sheet titles, the palette's query */
+  --ar-text-xl: var(--ar-step-16); /* panel titles */
+  --ar-text-2xl: var(--ar-step-20); /* page section titles */
+  --ar-text-3xl: var(--ar-step-28); /* display: chapter titles, big readouts */
 
   /* small marks outside a control (keycaps, port tags, counts, badges, foot lines): weight 500,
      never under 11px. Sentence case by default; a collection that wants tracked capitals turns
      the caps switch on (--ar-caps-case: uppercase, --ar-caps-on: 1). */
   --ar-caps-xs: 11px; /* the smallest mark: keycaps, port tags, drop hints */
-  --ar-caps-sm: 12px; /* kickers, foot lines, counts, badges, section numbers: the label size */
+  --ar-caps-sm: var(--ar-step-12); /* kickers, foot lines, counts, badges, section numbers: the label size */
   --ar-caps-case: none;
   --ar-caps-on: 0; /* 1: marks and control labels take their tracking */
 
@@ -284,23 +271,25 @@
 /* ---------- reading: the text of a panel, in five roles ----------
    A role is a whole font (weight, size, leading), so a part cannot end up with one of them wrong.
    One fixed scale, the same everywhere: a role is one size in any panel, at any width, open or
-   folded. 11 for a group's capitals, 12.5 for labels and notes, 13.5 for values, 14 for a section's
-   name, 17 for a panel's, 32 for the one big statement. Firm and bright against small and quiet.
+   folded. 12 for a group's name, for labels and for notes, 13 for values, 14 for a section's name,
+   16 for a panel's, 28 for the one big statement. Firm and bright against small and quiet.
    They use the collection's faces and the theme's ink, so they hold on any theme with any type.
-   Declared on every scope that can change the faces. */
+   Declared on every scope that can change the faces or the density. A type collection tunes a role
+   through its parts (--ar-weight-section, --ar-section-size, --ar-section-line, --ar-panel-title-*),
+   never by redefining it, so a mode can step the size of whichever collection is in use. */
 :root,
 [data-ar-theme],
 [data-ar-material],
-[data-ar-type] {
-  --ar-type-panel: var(--ar-panel-title-weight, 600) var(--ar-panel-title-size, 16px) / 22px var(--ar-font-display); /* the panel's name: the title face, the largest line on the pane */
-  --ar-type-section: var(--ar-weight-section, 600) 14px / 20px var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
+[data-ar-type],
+[data-ar-density] {
+  --ar-type-panel: var(--ar-panel-title-weight, 600) calc(var(--ar-panel-title-size, 16px) - var(--ar-title-step, 0px)) / calc(22px - var(--ar-title-step, 0px)) var(--ar-font-display); /* the panel's name: the title face, the largest line on the pane */
+  --ar-type-section: var(--ar-weight-section, 600) calc(var(--ar-section-size, 14px) - var(--ar-section-step, 0px)) / calc(var(--ar-section-line, 20px) - 2 * var(--ar-section-step, 0px)) var(--ar-font-heading); /* a group's name: the small-title face in sentence case, the brightest line in its group */
   --ar-type-group: 600 12px / 18px var(--ar-font-ui); /* a group inside a section: sentence case, in the accent */
-  --ar-type-value: var(--ar-weight-readout, 600) 13px / 18px var(--ar-font-ui); /* the answer: a size up and firm, in the full ink */
-  --ar-type-label: var(--ar-weight-name, 500) 12px / 18px var(--ar-font-ui); /* the name: medium in a solid grey, so the answer beside it speaks */
-  --ar-type-note: var(--ar-weight-note, 400) 12px / 18px var(--ar-font-ui);
+  --ar-type-value: var(--ar-weight-readout, 600) var(--ar-value-size, 13px) / calc(var(--ar-value-size, 13px) + 5px) var(--ar-font-ui); /* the answer: a size up and firm, in the full ink */
+  --ar-type-label: var(--ar-weight-name, 500) var(--ar-label-size, 12px) / calc(var(--ar-label-size, 12px) + 6px) var(--ar-font-ui); /* the name: medium in a solid grey, so the answer beside it speaks */
+  --ar-type-note: var(--ar-weight-note, 400) var(--ar-label-size, 12px) / calc(var(--ar-label-size, 12px) + 6px) var(--ar-font-ui);
   --ar-type-hero: 400 28px / 32px var(--ar-font-ui);
   --ar-type-quote: italic 400 16px / 22px var(--ar-font-serif);
-  --ar-track-role: 0; /* no tracked capitals in a panel: names are set in sentence case */
 }
 
 /* ---------- space: one scale; every gap and padding in the family comes from it ----------
@@ -320,47 +309,7 @@
   --ar-measure: 64ch;
 }
 
-/* ---------- density ---------- */
-:root,
-[data-ar-density='standard'] {
-  --ar-h: 28px;
-  --ar-label-size: 12px;
-  --ar-value-size: 13px; /* a readout is a size above its name */
-  --ar-pad-x: 10px;
-  --ar-gap: 7px;
-  --ar-row-gap: var(--ar-space-4);
-  --ar-group-gap: var(--ar-space-6);
-  --ar-section-gap: 18px; /* air around a section: over twice a row gap, so groups part at a glance */
-  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4)); /* from one section to the next; the line is in each title row */
-  --ar-panel-pad-x: var(--ar-space-7);
-  --ar-panel-pad-y: var(--ar-space-6);
-}
-[data-ar-density='dense'] {
-  --ar-h: 26px;
-  --ar-label-size: 12px; /* dense is tighter rows, not smaller words */
-  --ar-value-size: 13px;
-  --ar-pad-x: 8px;
-  --ar-gap: 6px;
-  --ar-row-gap: var(--ar-space-3);
-  --ar-group-gap: var(--ar-space-5);
-  --ar-section-gap: var(--ar-space-6);
-  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4));
-  --ar-panel-pad-x: var(--ar-space-5);
-  --ar-panel-pad-y: var(--ar-space-5);
-}
-[data-ar-density='comfort'] {
-  --ar-h: 32px;
-  --ar-label-size: 13px;
-  --ar-value-size: 14px;
-  --ar-pad-x: 12px;
-  --ar-gap: 8px;
-  --ar-row-gap: 10px;
-  --ar-group-gap: var(--ar-space-7);
-  --ar-section-gap: var(--ar-space-8);
-  --ar-section-apart: calc(var(--ar-section-gap) + var(--ar-space-4));
-  --ar-panel-pad-x: var(--ar-space-8);
-  --ar-panel-pad-y: var(--ar-space-7);
-}
+
 
 /* ---------- scene: what the glass sits over ----------
    A glass theme's ink is drawn for a scene that contrasts with it: light ink over a dark scene,

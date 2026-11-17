@@ -67,7 +67,7 @@ export const GROUPS: Group[] = [
     id: 'ink',
     title: 'Ink',
     note: 'Five steps of text recession, hi to ghost.',
-    params: [c('text-hi', 'Hi'), c('text-mid', 'Mid'), c('text-low', 'Low'), c('text-faint', 'Faint'), c('text-ghost', 'Ghost')],
+    params: [c('text-hi', 'Hi'), c('text-mid', 'Mid'), c('text-low', 'Low'), c('text-faint', 'Faint')],
   },
   {
     id: 'lines',
@@ -178,11 +178,11 @@ export const GROUPS: Group[] = [
   {
     id: 'size',
     title: 'Size & motion',
-    note: 'Control height and spacing, and how long things take to move.',
+    note: 'The theme drawn at the standard density: its control height and spacing (Dense and Comfort scale them), and how long things take to move.',
     params: [
-      px('h', 'Control height', 18, 40),
-      px('pad-x', 'Side padding', 2, 18),
-      px('gap', 'Gap', 2, 14),
+      px('control-h', 'Control height', 18, 40),
+      px('control-pad', 'Side padding', 2, 18),
+      px('control-gap', 'Gap', 2, 14),
       { kind: 'length', token: '--ar-dur-state', label: 'State speed', min: 0, max: 400, step: 10, unit: 'ms' },
       { kind: 'length', token: '--ar-dur-surface', label: 'Surface speed', min: 0, max: 600, step: 10, unit: 'ms' },
       { kind: 'length', token: '--ar-dur-layout', label: 'Layout speed', min: 0, max: 800, step: 10, unit: 'ms' },

@@ -9,7 +9,7 @@ import { createPortal } from 'react-dom';
    material attributes and any inline --ar-* tokens from where it is mounted, and puts
    them on a display: contents wrapper around the portalled content. */
 
-const SCOPE_ATTRS = ['data-ar-theme', 'data-ar-density', 'data-ar-material', 'data-ar-type'] as const;
+const SCOPE_ATTRS = ['data-ar-theme', 'data-ar-density', 'data-ar-material', 'data-ar-type', 'data-ar-layers'] as const;
 
 export interface ThemeScope {
   attrs: Record<string, string>;

@@ -1,10 +1,12 @@
 /* PropertyRow — the inspector row: a label column (the Field's), the control, and a reset
    and actions that appear on hover. The row never owns the value; it only arranges. */
 .ar-prop {
-  --_label-w: var(--ar-field-label-w, 108px);
+  /* the label column, never more than 42% of the row: in a narrow pane the control keeps the
+     larger share, so a Select or a NumberField shows its whole answer */
+  --_label-w: min(var(--ar-field-label-w, 108px), 42%);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: calc(3px * var(--ar-k, 1));
   min-width: 0;
   font-family: var(--ar-font-ui);
 }
@@ -12,7 +14,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(10px * var(--ar-k, 1));
   min-height: var(--ar-h);
 }
 .ar-prop__control {
@@ -20,7 +22,7 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
 }
 .ar-prop__control > * {
   flex: 1;
@@ -33,7 +35,7 @@
   flex: 0 0 var(--_label-w);
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: calc(6px * var(--ar-k, 1));
   min-width: 0;
   overflow: hidden;
   /* the same voice as a Field's label: a size smaller and a step quieter than the value */
@@ -49,7 +51,7 @@
 }
 .ar-prop[data-density='multiline'] .ar-prop__main {
   flex-wrap: wrap;
-  row-gap: 4px;
+  row-gap: calc(4px * var(--ar-k, 1));
 }
 .ar-prop[data-density='multiline'] .ar-prop__label {
   flex: 1 0 100%;
@@ -67,7 +69,7 @@
 .ar-prop__actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: calc(2px * var(--ar-k, 1));
   opacity: 0;
   transition: opacity var(--ar-dur-state) var(--ar-ease);
 }
@@ -91,7 +93,7 @@
   color: var(--ar-warn);
 }
 .ar-prop[data-highlighted] {
-  border-radius: var(--ar-radius);
+  border-radius: calc(var(--ar-radius) * var(--ar-k, 1));
   outline: 1px solid var(--ar-signal-line);
   outline-offset: 3px;
   animation: ar-prop-reveal 900ms var(--ar-ease-roll);
@@ -132,9 +134,9 @@
   left: -14px;
   display: grid;
   place-items: center;
-  width: 12px;
-  height: 12px;
-  margin-top: -6px;
+  width: calc(12px * var(--ar-k, 1));
+  height: max(calc(12px * var(--ar-k, 1)), 12px);
+  margin-top: calc(-6px * var(--ar-k, 1));
   border-radius: 50%;
   color: var(--ar-text-mid);
   animation: ar-pop-in var(--ar-dur-surface) var(--ar-ease-spring) backwards;
@@ -151,9 +153,15 @@ button.ar-prop__mark {
 .ar-prop__mark > * {
   grid-area: 1 / 1;
 }
+/* a larger target than the mark it draws: 24px under the hand */
+button.ar-prop__mark::after {
+  content: '';
+  position: absolute;
+  inset: min(0px, calc((12px * var(--ar-k, 1) - 24px) / 2));
+}
 .ar-prop__dot {
-  width: 4px;
-  height: 4px;
+  width: calc(4px * var(--ar-k, 1));
+  height: max(calc(4px * var(--ar-k, 1)), 4px);
   border-radius: 50%;
   background: var(--ar-signal);
   box-shadow: 0 0 5px var(--ar-signal-line);
@@ -162,8 +170,8 @@ button.ar-prop__mark {
     transform var(--ar-dur-surface) var(--ar-ease-spring);
 }
 .ar-prop__mark svg {
-  width: 10px;
-  height: 10px;
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;

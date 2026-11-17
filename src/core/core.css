@@ -42,8 +42,8 @@
    Chromium and WebKit take the pseudo-elements; Firefox takes the standard properties. */
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar,
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
 }
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-track,
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-track,
@@ -60,7 +60,7 @@
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list) ::-webkit-scrollbar-thumb,
 :where(.ar-theme, [data-ar-theme], .ar-portal, .ar-list)::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
-  border-radius: 10px;
+  border-radius: calc(10px * var(--ar-k, 1));
   background: color-mix(in srgb, currentColor 30%, transparent);
   background-clip: padding-box;
 }
@@ -97,8 +97,8 @@
 }
 .ar-well {
   --_h: var(--ar-h);
-  --_r: var(--ar-radius, calc(var(--_h) * 0.31));
-  --_ir: var(--ar-insert-radius, calc(var(--_r) - var(--ar-inset)));
+  --_r: calc(var(--ar-radius, calc(var(--_h) * 0.31)) * var(--ar-k, 1));
+  --_ir: calc(var(--ar-insert-radius, calc(var(--_r) - var(--ar-inset))) * var(--ar-k, 1));
   position: relative;
   box-sizing: border-box;
   height: var(--_h);
@@ -154,8 +154,8 @@
 /* ---------- the LED: a switch's seam ---------- */
 .ar-led {
   flex: none;
-  width: 3px;
-  height: 7px;
+  width: calc(3px * var(--ar-k, 1));
+  height: max(calc(7px * var(--ar-k, 1)), 7px);
   border-radius: 1px;
   background: var(--ar-led-off);
   box-shadow: 0 0 0 0.5px #757575;
@@ -169,8 +169,8 @@
 /* the round enable indicator in front of a label */
 .ar-dot {
   flex: none;
-  width: 4px;
-  height: 4px;
+  width: calc(4px * var(--ar-k, 1));
+  height: max(calc(4px * var(--ar-k, 1)), 4px);
   border-radius: 50%;
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--ar-off-ink);
@@ -282,8 +282,8 @@
 /* ---------- chevron ---------- */
 .ar-chevron {
   flex: none;
-  width: 10px;
-  height: 6px;
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
   transition: transform var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-chevron[data-up] {
@@ -348,10 +348,10 @@
   box-sizing: border-box;
   display: inline-grid;
   place-items: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 5px;
+  min-width: calc(18px * var(--ar-k, 1));
+  height: max(calc(18px * var(--ar-k, 1)), 16px);
+  padding: 0 calc(5px * var(--ar-k, 1));
+  border-radius: calc(5px * var(--ar-k, 1));
   background: linear-gradient(180deg, color-mix(in srgb, var(--ar-text-hi) 9%, transparent), color-mix(in srgb, var(--ar-text-hi) 3%, transparent)), var(--ar-trough);
   box-shadow:
     inset 0 0 0 1px var(--ar-line-subtle),
@@ -375,7 +375,7 @@
   flex: none;
   width: var(--_tool);
   height: var(--_tool);
-  border-radius: var(--ar-insert-radius);
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
   color: var(--ar-text-low);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -397,8 +397,8 @@
   color: var(--ar-text-hi);
 }
 .ar-tool svg {
-  width: 10px;
-  height: 10px;
+  width: calc(10px * var(--ar-k, 1));
+  height: max(calc(10px * var(--ar-k, 1)), 10px);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
@@ -430,7 +430,7 @@
   opacity: 0.9;
   box-shadow: var(--ar-float-depth, 0 10px 28px -12px rgba(0, 0, 0, 0.4));
   background: color-mix(in srgb, var(--ar-bg-active) 80%, transparent);
-  border-radius: var(--ar-radius-card);
+  border-radius: round(calc(var(--ar-radius-card) * var(--ar-k, 1)), 0.5px);
   pointer-events: none;
   transition: none !important;
 }
@@ -438,7 +438,7 @@
 .ar-sort-line {
   position: fixed;
   z-index: 2147482500;
-  height: 2px;
+  height: max(calc(2px * var(--ar-k, 1)), 2px);
   border-radius: 1px;
   background: var(--ar-signal, #4fd1ba);
   box-shadow: 0 0 8px var(--ar-signal-line, rgba(79, 209, 186, 0.55));
@@ -467,7 +467,7 @@ html[data-ar-sorting] * {
   -webkit-backdrop-filter: var(--ar-panel-blur, blur(20px));
   backdrop-filter: var(--ar-panel-blur, blur(20px));
   box-shadow: var(--ar-panel-shadow, none), var(--ar-float-depth, 0 10px 28px -12px rgba(0, 0, 0, 0.4)), 0 0 0 1px var(--ar-signal-line, rgba(79, 209, 186, 0.55));
-  border-radius: var(--ar-radius-panel, 12px);
+  border-radius: calc(var(--ar-radius-panel, 12px) * var(--ar-k, 1));
 }
 
 /* ---------- the reader's settings: scene, contrast, transparency, forced colours ----------
@@ -492,6 +492,12 @@ html[data-ar-sorting] * {
     --ar-text-faint: var(--ar-text-hi);
     --ar-name-strength: 100%;
     --ar-panel-floor: color-mix(in srgb, var(--ar-bg-app) 92%, transparent);
+  }
+  /* focus is lift by default; someone who asks for more contrast also gets a line */
+  [data-ar-theme] :focus-visible,
+  .ar-well:has(:focus-visible) {
+    outline: 2px solid var(--ar-focus-ink);
+    outline-offset: 1px;
   }
 }
 
@@ -547,5 +553,34 @@ html[data-ar-sorting] * {
   .ar-led[data-on] {
     forced-color-adjust: none;
     background: Highlight;
+  }
+}
+
+/* auto-hide: a part marked data-ar-autohide (Panel autoHide, <AutoHide>) leaves with the interface,
+   sinking a few pixels and a little smaller, quickly when hidden by hand and slowly when idle, and
+   settles back on a soft curve. --ar-autohide-shift sets where it goes (e.g. 0 -8px for a top bar). */
+[data-ar-autohide] {
+  transition:
+    opacity 440ms var(--ar-ease-roll),
+    translate 480ms var(--ar-ease-roll),
+    scale 480ms var(--ar-ease-roll);
+}
+[data-ar-autohide='manual'],
+[data-ar-autohide='idle'] {
+  opacity: 0;
+  translate: var(--ar-autohide-shift, 0 8px);
+  scale: 0.98;
+  pointer-events: none;
+  transition-duration: var(--ar-autohide-out, 240ms);
+  transition-timing-function: var(--ar-ease-exit);
+}
+[data-ar-autohide='idle'] {
+  --ar-autohide-out: 700ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ar-autohide] {
+    translate: none !important;
+    scale: none !important;
   }
 }

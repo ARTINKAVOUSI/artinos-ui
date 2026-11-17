@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 49 kit components on a token-based design system with **108 themes** (glass, frost, studio, atelier and luxe) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 51 kit components on a token-based design system with **108 themes** (glass, frost, studio, atelier and luxe) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 
@@ -72,7 +72,7 @@ Read them in this order. Every kit carries all four in its own `docs/`, so a pro
 1. [`docs/design.md`](docs/design.md): the look and the feel, the three layout levels, the type systems and scale, what never to do, and the check to run on a screenshot. Read it first.
 2. [`docs/catalogue.md`](docs/catalogue.md): every kind of every component (the slider faces, the control shapes, list looks, row states) and which to pick for a parameter.
 3. [`docs/components.md`](docs/components.md): every prop, default and example, requirements and performance.
-4. [`docs/theming.md`](docs/theming.md): the 108 themes, solid vs glass, scenes, density, token overrides, custom themes and every key token.
+4. [`docs/theming.md`](docs/theming.md): the 9 themes, solid vs glass, scenes, density, token overrides, custom themes and every key token.
 
 ## Showcase
 

@@ -449,3 +449,15 @@
 }
 .ed-picked .ed-row[data-picked] .ed-row__control,
 .ed-picked .ed-sub[data-picked] .ed-sub__head span { outline: none; }
+
+/* where an edit lands: the density family being previewed */
+.ed-layer {
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
+  white-space: nowrap;
+}
+
+/* while comparing, the preview hides every edit: say so where the eye is */
+.ed-compare span[data-on] {
+  color: var(--ar-warn, #e0a33a);
+}

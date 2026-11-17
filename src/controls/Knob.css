@@ -4,7 +4,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: calc(5px * var(--ar-k, 1));
 }
 .ar-knob__dial {
   position: relative;
@@ -61,7 +61,7 @@
 /* the cap turns with a little weight: it settles past the mark and back */
 .ar-knob__cap {
   position: absolute;
-  inset: calc(21% + var(--ar-inset));
+  inset: calc(21% + calc(var(--ar-inset) * var(--ar-k, 1)));
   border-radius: 50%;
   transition:
     transform var(--ar-dur-surface) var(--ar-ease-spring),
@@ -83,7 +83,7 @@
   position: absolute;
   top: 12%;
   left: 50%;
-  width: 2px;
+  width: calc(2px * var(--ar-k, 1));
   height: 30%;
   margin-left: -1px;
   border-radius: 1px;

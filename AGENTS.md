@@ -1,6 +1,6 @@
 # ARTINOS UI — instructions for AI agents
 
-This folder is the whole ARTINOS UI package: a copy-paste React control system (49 kit components, from sliders to a dockable workspace and a node editor) with 108 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
+This folder is the whole ARTINOS UI package: a copy-paste React control system (51 kit components, from sliders to a dockable workspace and a node editor) with 9 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
 
 ## Bringing ARTINOS UI into another project
 
@@ -15,8 +15,8 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - whether a kit already exists there. If so, this is an update: follow *Updating a kit* in `skill/SKILL.md` (name everything the kit should hold, `--dry-run`, then `--force`, then fix the app to any renamed props). Never add a second kit.
 
 3. **Choose themes and components.** List them with `node <this folder>/artinos.mjs list`. Use what the user named. If they named no theme, use the default, `nimbus` (soft carved Haze glass; `ArtinosTheme` sets it when `theme` is omitted), and say so. Otherwise:
-   - flat dark app → `studio` or `frost-deep`
-   - light app → `studio-light` or `frost-light`
+   - flat dark app → `pro-gray`, a neutral software grey
+   - light app → `studio-light`
    - over a 3D canvas, video or photo → any glass or frost theme, with `scene="light"` on `ArtinosTheme` when what is behind is light
 
    Pick the components the UI uses, plus `Panel` for grouped controls (it brings `Section`) and `ItemRow` for lists. Use `Dock` for an editor layout around a canvas, with `DockSections` and `Params` when sections move between panes or come from a schema. `GraphGPU` needs `three` and is only included when named.

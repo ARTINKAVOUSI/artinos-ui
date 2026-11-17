@@ -29,7 +29,7 @@ export function seamsOverInk(track: HTMLElement | null, seams: [number, number, 
 }
 
 /** Whether a fill edge at these 0..1 positions ends inside label or readout ink, which would split
- *  a word into two inks. The caller then keeps the text in one ink and lets the fill step back. */
+ *  a word into two inks. Each letter then takes the ink of what is behind it; the fill is never dimmed. */
 export function edgeCrossesInk(track: HTMLElement | null, edges: number[], ink: (HTMLElement | null)[]) {
   return seamsOverInk(track, edges.map((p) => [p, 0, 0]), ink).some(Boolean);
 }

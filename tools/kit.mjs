@@ -5,7 +5,7 @@
    file they import, only the picked themes in the token CSS, and an index.ts,
    artinos.css and README.md to match (plus docs/ when given). */
 
-export const BASE_THEME = 'studio';
+export const BASE_THEME = 'pro-gray';
 /** ArtinosTheme's default theme: every kit carries it beside the base. */
 export const DEFAULT_THEME = 'nimbus';
 /** Earlier theme ids, still accepted on the command line. */
@@ -57,6 +57,8 @@ export const COMPONENTS = [
   { group: 'Dock', id: 'Dock', label: 'Dock', file: 'dock/Dock.tsx', note: 'studio workspace: docks, tabs, floating panels' },
   { group: 'Dock', id: 'DockSections', label: 'createDockSections', file: 'dock/sections.tsx', note: 'sections that move between panes and tear off into panels' },
   { group: 'Dock', id: 'Params', label: 'createParamPanes · ParamSection · ParamControl', file: 'dock/params.tsx', note: 'settings from a schema: the right control per value, groups, dockable panes' },
+  { group: 'Dock', id: 'Inspector', label: 'Inspector · createInspectorStore', file: 'inspector/Inspector.tsx', note: 'the pro parameter editor: a schema bound both ways to your object, with keyframes, links, presets, monitors' },
+  { group: 'Dock', id: 'InspectorTimeline', label: 'InspectorTimeline', file: 'inspector/Timeline.tsx', note: 'the keyframes of an Inspector in time: lanes, playhead, play' },
   { group: 'Dock', id: 'MetaBlock', label: 'MetaBlock engine', file: 'dock/metablock/WorkspaceView.tsx', note: 'the docking engine alone' },
   { group: 'Graph', id: 'NodeGraph', label: 'NodeGraph', file: 'graph/NodeGraph.tsx', note: 'node editor' },
   { group: 'Graph', id: 'LiveGraphView', label: 'LiveGraphView', file: 'graph/LiveGraphView.tsx', note: 'read-only live graph' },
@@ -77,12 +79,9 @@ export function readRegistry(sources) {
   const meta = {};
   for (const line of utils.split('\n')) {
     const m = line.match(META_RE);
-    if (m) meta[m[1] ?? m[2]] = { label: m[3], family: m[4], kind: m[5], description: m[6].replace(/\\'/g, "'"), parent: line.match(/, parent: '([^']+)'/)?.[1] };
+    if (m) meta[m[1] ?? m[2]] = { label: m[3], family: m[4], kind: m[5], description: m[6].replace(/\\'/g, "'") };
   }
-  // the heroes (no parent), in HERO_RANK order, as HERO_THEMES has them
-  const rank = Object.fromEntries([...(utils.match(/const HERO_RANK[^{]*\{([^}]*)\}/)?.[1] ?? '').matchAll(/'?([\w-]+)'?: (\d+)/g)].map((r) => [r[1], +r[2]]));
-  const heroes = themes.filter((t) => meta[t] && !meta[t].parent).sort((a, b) => (rank[a] ?? 99) - (rank[b] ?? 99));
-  return { themes, meta, heroes };
+  return { themes, meta };
 }
 
 /* ---------- type collections (read from core/utils.ts, one entry per line) ---------- */
@@ -253,8 +252,6 @@ function trimUtils(src, ordered, materials) {
       const m = line.match(/^ {2}(?:'([^']+)'|([\w-]+)): \{ label:/);
       return !m || ordered.includes(m[1] ?? m[2]);
     })
-    // a variation whose hero is not in the kit becomes a hero there
-    .map((line) => line.replace(/, parent: '([^']+)'/, (p, hero) => (ordered.includes(hero) ? p : '')))
     .join('\n');
   s = s.slice(0, start) + block + s.slice(end);
   if (!materials) s = s.replace(/export const MATERIALS = \[[^\]]*\] as const;/, 'export const MATERIALS = [] as const; // finish overrides were left out of this kit');
@@ -290,6 +287,7 @@ function buildCssEntry(o, cssFiles) {
     './tokens/type.css',
     o.customs.length ? './tokens/custom-themes.css' : null,
     ...cssFiles.map((f) => './' + f),
+    './tokens/density.css',
   ].filter(Boolean);
   return `/* ARTINOS UI — single stylesheet entry. Import once, at the app root:
      import './${o.folder}/artinos.css';
@@ -416,6 +414,7 @@ export function buildKit(sources, o) {
   files['index.ts'] = buildIndex(sources, new Set(tsFiles));
   if (o.googleFonts) files['tokens/fonts.css'] = buildFontsCss(types, tmeta);
   files['tokens/tokens.css'] = sources['tokens/tokens.css'];
+  files['tokens/density.css'] = sources['tokens/density.css'];
   files['tokens/themes.css'] = trimCss(
     sources['tokens/themes.css'],
     themeOk,

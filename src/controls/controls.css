@@ -21,8 +21,8 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 14px;
-  height: 14px;
+  width: calc(14px * var(--ar-k, 1));
+  height: max(calc(14px * var(--ar-k, 1)), 14px);
 }
 .ar-icon > svg {
   width: 100%;
@@ -56,13 +56,13 @@
 }
 .ar-switch__shutter {
   position: absolute;
-  top: var(--ar-inset);
-  bottom: var(--ar-inset);
-  left: var(--ar-inset);
-  width: calc(50% - var(--ar-inset) - 1px);
+  top: calc(var(--ar-inset) * var(--ar-k, 1));
+  bottom: calc(var(--ar-inset) * var(--ar-k, 1));
+  left: calc(var(--ar-inset) * var(--ar-k, 1));
+  width: calc(50% - calc(var(--ar-inset) * var(--ar-k, 1)) - 1px);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--ar-k, 1));
   padding: 0 var(--ar-pad-x);
   transition:
     left 280ms var(--ar-ease),
@@ -93,15 +93,15 @@
 
 /* ---------- Switch: compact knob ---------- */
 .ar-switch--compact {
-  --_kw: calc(var(--_h) - 2 * var(--ar-inset) + 4px);
+  --_kw: calc(var(--_h) - 2 * calc(var(--ar-inset) * var(--ar-k, 1)) + 4px);
   width: calc(var(--ar-h) * 1.9);
   flex: none;
 }
 .ar-switch__knob {
   position: absolute;
-  top: var(--ar-inset);
-  bottom: var(--ar-inset);
-  left: var(--ar-inset);
+  top: calc(var(--ar-inset) * var(--ar-k, 1));
+  bottom: calc(var(--ar-inset) * var(--ar-k, 1));
+  left: calc(var(--ar-inset) * var(--ar-k, 1));
   width: var(--_kw);
   display: grid;
   place-items: center;
@@ -110,11 +110,11 @@
     filter var(--ar-dur-surface) var(--ar-ease);
 }
 .ar-switch[data-on] .ar-switch__knob {
-  left: calc(100% - var(--ar-inset) - var(--_kw));
+  left: calc(100% - calc(var(--ar-inset) * var(--ar-k, 1)) - var(--_kw));
 }
 /* on: a vertical signal seam · off: a small ring */
 .ar-switch__mark {
-  width: 2px;
+  width: calc(2px * var(--ar-k, 1));
   height: 42%;
   border-radius: 1px;
   background: var(--ar-seam);
@@ -125,8 +125,8 @@
   box-shadow: 0 0 5px var(--ar-signal-line);
 }
 .ar-switch:not([data-on]) .ar-switch__mark {
-  width: 6px;
-  height: 6px;
+  width: calc(6px * var(--ar-k, 1));
+  height: max(calc(6px * var(--ar-k, 1)), 6px);
   border-radius: 50%;
   background: transparent;
   box-shadow: inset 0 0 0 1.2px var(--ar-seam);
@@ -136,8 +136,8 @@
 .ar-toggles {
   display: flex;
   align-items: stretch;
-  gap: 3px;
-  padding: var(--ar-inset);
+  gap: calc(3px * var(--ar-k, 1));
+  padding: calc(var(--ar-inset) * var(--ar-k, 1));
 }
 .ar-toggles[data-labelled] {
   padding-left: var(--ar-pad-x);
@@ -147,12 +147,12 @@
   flex: 0 1 auto;
   min-width: 0;
   align-self: center;
-  padding-right: 8px;
+  padding-right: calc(8px * var(--ar-k, 1));
 }
 .ar-toggles__chip {
   flex: 1;
-  gap: 7px;
-  padding: 0 10px;
+  gap: calc(7px * var(--ar-k, 1));
+  padding: 0 calc(10px * var(--ar-k, 1));
 }
 .ar-toggles[data-labelled] .ar-toggles__chip {
   flex: none;
@@ -187,11 +187,11 @@
   cursor: pointer;
 }
 .ar-segmented__insert {
-  --_cw: calc((100% - 2 * var(--ar-inset)) / var(--_n));
+  --_cw: calc((100% - 2 * calc(var(--ar-inset) * var(--ar-k, 1))) / var(--_n));
   position: absolute;
-  top: var(--ar-inset);
-  bottom: var(--ar-inset);
-  left: calc(var(--ar-inset) + var(--_i) * var(--_cw));
+  top: calc(var(--ar-inset) * var(--ar-k, 1));
+  bottom: calc(var(--ar-inset) * var(--ar-k, 1));
+  left: calc(calc(var(--ar-inset) * var(--ar-k, 1)) + var(--_i) * var(--_cw));
   width: var(--_cw);
   transition:
     left 300ms var(--ar-ease),
@@ -199,13 +199,13 @@
 }
 .ar-segmented__row {
   position: absolute;
-  inset: var(--ar-inset);
+  inset: calc(var(--ar-inset) * var(--ar-k, 1));
   display: flex;
 }
 .ar-segmented__opt {
   flex: 1;
-  gap: 6px;
-  padding: 0 6px;
+  gap: calc(6px * var(--ar-k, 1));
+  padding: 0 calc(6px * var(--ar-k, 1));
   color: var(--ar-dim-ink);
   transition: color var(--ar-dur-surface) var(--ar-ease) 60ms;
 }
@@ -217,6 +217,26 @@
 }
 .ar-segmented__opt .ar-text {
   transition: color var(--ar-dur-surface) var(--ar-ease) 60ms;
+}
+/* fit: equal cells would cut a word, so each cell takes the width of its own word and the spare
+   room is shared. Segmented sets data-fit and the insert's place (--_x, --_w) when it measures. */
+.ar-segmented[data-fit] .ar-segmented__opt {
+  flex: 1 1 auto;
+  padding-inline: calc(4px * var(--ar-k, 1));
+}
+.ar-segmented[data-fit='tight'] .ar-segmented__opt {
+  padding-inline: calc(2px * var(--ar-k, 1));
+}
+.ar-segmented[data-fit] .ar-segmented__insert {
+  left: var(--_x);
+  width: var(--_w);
+  transition:
+    left 300ms var(--ar-ease),
+    width 300ms var(--ar-ease),
+    filter var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-segmented[data-settling] .ar-segmented__insert {
+  transition: none;
 }
 
 /* ---------- ColorField ---------- */
@@ -231,16 +251,16 @@
   flex: 1 1 auto;
   min-width: 0;
   align-self: center;
-  padding-right: 8px;
+  padding-right: calc(8px * var(--ar-k, 1));
 }
 .ar-color__swatch {
   position: relative;
   flex: 0 0 48%;
-  margin: var(--ar-inset);
+  margin: calc(var(--ar-inset) * var(--ar-k, 1));
   display: flex;
   align-items: center;
-  padding: 0 8px;
-  gap: 6px;
+  padding: 0 calc(8px * var(--ar-k, 1));
+  gap: calc(6px * var(--ar-k, 1));
   border-radius: var(--_ir);
   overflow: hidden;
   cursor: pointer;
@@ -293,8 +313,8 @@
   box-sizing: content-box;
   width: calc(7ch + 0.5em); /* room for six caps at --ar-track-caps */
   margin: 0 auto;
-  padding: 1px 2px;
-  border-radius: 3px;
+  padding: 1px calc(2px * var(--ar-k, 1));
+  border-radius: calc(3px * var(--ar-k, 1));
   text-align: center;
   font-family: var(--ar-control-font);
   font-size: calc(var(--ar-label-size) + var(--ar-label-bump));
@@ -310,8 +330,8 @@
   flex: none;
   cursor: ew-resize;
   outline: none;
-  border-radius: 3px;
-  padding: 1px 2px;
+  border-radius: calc(3px * var(--ar-k, 1));
+  padding: 1px calc(2px * var(--ar-k, 1));
   font-variant-numeric: tabular-nums;
 }
 .ar-color__alpha:focus-visible {
@@ -333,10 +353,10 @@
 }
 .ar-select__face {
   position: absolute;
-  inset: var(--ar-inset);
+  inset: calc(var(--ar-inset) * var(--ar-k, 1));
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--ar-k, 1));
   padding: 0 var(--ar-pad-x);
   color: var(--ar-insert-ink);
   transition:
@@ -368,11 +388,11 @@
 /* list panel — portalled, carries its tokens inline */
 .ar-list {
   --_h: var(--ar-h, 26px);
-  --_r: var(--ar-radius, calc(var(--_h) * 0.31));
+  --_r: calc(var(--ar-radius, calc(var(--_h) * 0.31)) * var(--ar-k, 1));
   position: fixed;
   z-index: 2147482000;
   box-sizing: border-box;
-  padding: var(--_head) 0 6px;
+  padding: var(--_head) 0 calc(6px * var(--ar-k, 1));
   border-radius: var(--_r);
   background: var(--ar-list-bg);
   -webkit-backdrop-filter: var(--ar-list-backdrop);
@@ -383,7 +403,7 @@
 .ar-list__insert {
   position: absolute;
   inset: 1px;
-  border-radius: var(--ar-insert-radius, calc(var(--_r) - 1px));
+  border-radius: calc(var(--ar-insert-radius, calc(var(--_r) - 1px)) * var(--ar-k, 1));
   background: var(--ar-list-insert);
   mix-blend-mode: var(--ar-list-insert-blend);
   box-shadow: var(--ar-list-insert-shadow);
@@ -397,8 +417,8 @@
   height: var(--_head);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 11px;
+  gap: calc(8px * var(--ar-k, 1));
+  padding: 0 calc(11px * var(--ar-k, 1));
   color: var(--ar-list-ink);
   cursor: pointer;
 }
@@ -413,9 +433,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: calc(9px * var(--ar-k, 1));
   height: max(20px, calc(var(--_h) - 6px));
-  padding: 0 11px;
+  padding: 0 calc(11px * var(--ar-k, 1));
   cursor: pointer;
   color: var(--ar-list-ink);
   transition: color var(--ar-dur-state) var(--ar-ease);
@@ -425,9 +445,9 @@
 }
 /* rows sit inset from the list's edges under a rounded highlight, like a menu's */
 .ar-list__row {
-  margin: 0 4px;
-  padding: 0 7px;
-  border-radius: var(--ar-row-radius);
+  margin: 0 calc(4px * var(--ar-k, 1));
+  padding: 0 calc(7px * var(--ar-k, 1));
+  border-radius: calc(var(--ar-row-radius) * var(--ar-k, 1));
 }
 /* one highlight glides between rows (core/motion.ts useGlide) */
 .ar-list__glide {
@@ -436,7 +456,7 @@
   left: 0;
   background: var(--ar-list-hover);
   opacity: 0;
-  border-radius: var(--ar-row-radius);
+  border-radius: calc(var(--ar-row-radius) * var(--ar-k, 1));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ar-float-ink, #fff) 7%, transparent);
   pointer-events: none;
   transition:
@@ -461,7 +481,7 @@
 }
 .ar-list__led {
   display: flex;
-  width: 3px;
+  width: calc(3px * var(--ar-k, 1));
 }
 .ar-list__text {
   flex: 1;
@@ -474,7 +494,7 @@
 .ar-number {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--ar-k, 1));
   padding: 0 var(--ar-pad-x);
   cursor: ew-resize;
   touch-action: pan-y;
@@ -485,8 +505,8 @@
 }
 /* a cell of a Section's columns can be narrow: the figure keeps the room */
 .ar-section__body[data-columns] .ar-number {
-  gap: 3px;
-  padding-inline: 5px;
+  gap: calc(3px * var(--ar-k, 1));
+  padding-inline: calc(5px * var(--ar-k, 1));
 }
 .ar-number__label {
   flex: none;
