@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { RollingValue } from '../core/RollingValue';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { clamp, cx, joinFormatted, pxToken, runFormat, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { Format, Formatter, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, extraDigits, makeScale, modifierRatio, nextDetent, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
@@ -25,6 +26,8 @@ type Mode = 'scrub' | 'seam' | 'jump' | 'span';
 
 export interface RangeSliderProps extends ScopeProps {
   label?: string;
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<RangeValue>;
   value?: RangeValue;
   defaultValue?: RangeValue;
   onChange?: (value: RangeValue) => void;
@@ -74,7 +77,7 @@ interface Drag {
 
 export function RangeSlider(props: RangeSliderProps) {
   const {
-    label, value: valueProp, defaultValue, onChange, onCommit, min = 0, max = 1, step, steps, detents, mapping, minSpan = 0,
+    label, signal, value: valueProp, defaultValue, onChange, onCommit, min = 0, max = 1, step, steps, detents, mapping, minSpan = 0,
     format = 'number', decimals = 2, unit, formatter, layout = 'integrated', labelWidth = 106,
     enabled: enabledProp, defaultEnabled = true, onEnabledChange, toggleable: toggleableProp, indicator, precision = 3,
     material, density, className, style, id,
@@ -82,7 +85,7 @@ export function RangeSlider(props: RangeSliderProps) {
   const quant = steps && steps > 1 ? steps : 0;
   const { toT, fromT, legal } = makeScale(min, max, mapping, quant);
 
-  const [value, setValue] = useControllable<RangeValue>(valueProp, defaultValue ?? [min + (max - min) * 0.25, min + (max - min) * 0.75], onChange);
+  const [value, setValue] = useControllable<RangeValue>(valueProp, defaultValue ?? [min + (max - min) * 0.25, min + (max - min) * 0.75], onChange, signal);
   const [enabled, setEnabled] = useControllable(enabledProp, defaultEnabled, onEnabledChange);
   const toggleable = toggleableProp ?? true;
   const [active, setActive] = useState<End>('hi');
@@ -282,8 +285,10 @@ export function RangeSlider(props: RangeSliderProps) {
       // "lo – hi" (en dash, em dash, ';', ' to ' or a spaced hyphen), or one number for the active end
       const parts = text.split(/\s*[\u2013\u2014;]\s*|\s+-\s+|\s+to\s+/i).filter(Boolean);
       const lim = (n: number) => (Number.isFinite(n) ? n : n < 0 ? Math.min(min, max) : Math.max(min, max));
-      const a = parts[0] !== undefined ? parseTyped(parts[0], format) : null;
-      const b = parts[1] !== undefined ? parseTyped(parts[1], format) : null;
+      // a sum works on the end it lands on: one number is the active end's, a pair is lo then hi
+      const [lo, hi] = live.current;
+      const a = parts[0] !== undefined ? parseTyped(parts[0], format, parts.length > 1 || active === 'lo' ? lo : hi) : null;
+      const b = parts[1] !== undefined ? parseTyped(parts[1], format, hi) : null;
       if (a !== null && b !== null) emit([Math.min(lim(a), lim(b)), Math.max(lim(a), lim(b))]);
       else if (a !== null) setEnd(active, lim(a));
       if (a !== null) onCommit?.(live.current); // text that did not parse changes nothing, so commits nothing
@@ -320,7 +325,8 @@ export function RangeSlider(props: RangeSliderProps) {
     const el = rootRef.current;
     if (!el) return;
     const h = (e: WheelEvent) => {
-      const which: End | null = document.activeElement === thumbs.lo.current ? 'lo' : document.activeElement === thumbs.hi.current ? 'hi' : null;
+      const focused = el.ownerDocument.activeElement;
+      const which: End | null = focused === thumbs.lo.current ? 'lo' : focused === thumbs.hi.current ? 'hi' : null;
       if (!which || !wheelRef.current.enabled) return;
       const dv = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? -e.deltaY : e.deltaX;
       if (!dv) return;

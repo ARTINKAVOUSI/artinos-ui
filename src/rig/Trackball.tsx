@@ -1,17 +1,21 @@
 'use client';
 import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useControllable } from '../core/hooks';
 import { RollingValue } from '../core/RollingValue';
+import type { Signal } from '../core/signal';
 import { cx } from '../core/utils';
 import { useQuatGlide } from './glide';
 import { AXES, AXIS_VEC, DEG, QUAT_IDENTITY, eulerFromQuat, qAxisAngle, qConjugate, qMul, qNormalize, qRotate, vCross, vNormalize, type Axis, type Quat, type Vec3 } from './math';
 
 export interface TrackballProps {
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<Quat>;
   /** The object's orientation, [x, y, z, w]: goes straight into `object.quaternion.fromArray()`. */
-  value: Quat;
-  onChange: (value: Quat) => void;
+  value?: Quat;
+  onChange?: (value: Quat) => void;
   /** Once, when a drag ends. */
   onCommit?: (value: Quat) => void;
-  /** Double-click, or Home, returns here. Default: no rotation. */
+  /** Where it starts when nothing else holds the value; double-click, or Home, returns here. Default: no rotation. */
   defaultValue?: Quat;
   /** The viewport camera's orientation. Given, the ball shows the object as that camera sees it, and a drag turns it the way it turns on screen. */
   view?: Quat;
@@ -42,7 +46,8 @@ const n = (v: number) => v.toFixed(2);
  * turn it, double-click returns it to rest. The value is a quaternion, so it never gimbal-locks;
  * the Euler angles are shown underneath.
  */
-export function Trackball({ value, onChange, onCommit, defaultValue = QUAT_IDENTITY, view, label = 'Rotation', size = 120, snap = 15, readout = true, className, style }: TrackballProps) {
+export function Trackball({ signal, value: valueProp, onChange, onCommit, defaultValue = QUAT_IDENTITY, view, label = 'Rotation', size = 120, snap = 15, readout = true, className, style }: TrackballProps) {
+  const [value, setValue] = useControllable<Quat>(valueProp, defaultValue, onChange, signal);
   const ball = useRef<HTMLDivElement>(null);
   const live = useRef(value);
   const drag = useRef<{ grip: Grip; q0: Quat; axis: Vec3; linear: [number, number] | null; total: number; x: number; y: number; angle: number; moved: boolean } | null>(null);
@@ -58,7 +63,7 @@ export function Trackball({ value, onChange, onCommit, defaultValue = QUAT_IDENT
   const emit = (q: Quat) => {
     const next = qNormalize(q);
     live.current = next;
-    onChange(next);
+    setValue(next);
   };
 
   const radius = size / 2 - 10;

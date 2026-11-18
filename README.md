@@ -29,9 +29,22 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 | Live values | signal / computed / effect · useControls / ControlsPanel · createPane · registerControl · createMidiMap |
 | Graph | NodeGraph · LiveGraphView · GraphGPU (needs `three`) |
 
+## One pipeline
+
+Every parameter takes the same path, and you can enter at any layer.
+
+```
+value      signal                 one value, outside React
+schema     InspectItem            what a value is; useControls, createPane and createParamPanes all write it
+store      createInspectorStore   values, undo, files, links, presets, keyframes, randomize
+control    registerControl        how a kind of value is drawn
+row        Inspector              name, control, reset, keyframe, menu
+panel      Dock · MetaBlock       docks, floats, tabs, opens in its own window
+```
+
 ## Three ways to a panel
 
-All three end in the same dockable panel, on the same values.
+All three write the same schema into the same store, and end in the same dockable panel.
 
 ```tsx
 // a few values in a component
@@ -171,11 +184,11 @@ pnpm build   # a publishable package in dist/npm, and what each import costs
 
 | import | minified | gzip |
 |---|---|---|
-| `artinos-ui/signals` | 5.3 kB | 2.7 kB |
-| `Slider` | 31.7 kB | 13.0 kB |
-| `useControls` | 101.6 kB | 36.7 kB |
-| `createPane` | 204.1 kB | 67.8 kB |
-| everything | 324.4 kB | 108.5 kB |
+| `artinos-ui/signals` | 6.0 kB | 3.0 kB |
+| `Slider` | 31.8 kB | 13.1 kB |
+| `useControls` | 105.3 kB | 38.2 kB |
+| `createPane` | 208.1 kB | 69.5 kB |
+| everything | 330.6 kB | 110.9 kB |
 | `artinos.css` | 304.4 kB | 47.9 kB |
 
 Keep the guides in step with the code, in the same change (see `AGENTS.md`). After changing `skill/` or `docs/`, run `node artinos.mjs skill --user` to refresh installed copies. After adding or editing themes in `src/core/utils.ts`, run `node artinos.mjs sync`.

@@ -2,6 +2,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx, normalizeOptions, revealClipped, scopeAttrs } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
@@ -12,6 +13,8 @@ export interface SegmentedProps<V extends string = string> extends ScopeProps {
   /** Accessible name. */
   label?: string;
   options: readonly OptionInput<V>[];
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<V>;
   value?: V;
   defaultValue?: V;
   onChange?: (value: V) => void;
@@ -20,9 +23,9 @@ export interface SegmentedProps<V extends string = string> extends ScopeProps {
   id?: string;
 }
 
-export function Segmented<V extends string = string>({ label, options, value, defaultValue, onChange, material, density, className, style, id }: SegmentedProps<V>) {
+export function Segmented<V extends string = string>({ label, options, signal, value, defaultValue, onChange, material, density, className, style, id }: SegmentedProps<V>) {
   const opts = normalizeOptions(options);
-  const [cur, pick] = useControllable<V>(value, defaultValue ?? opts[0]?.value, onChange);
+  const [cur, pick] = useControllable<V>(value, defaultValue ?? opts[0]?.value, onChange, signal);
   const n = Math.max(1, opts.length);
   const idx = Math.max(0, opts.findIndex((o) => o.value === cur));
   const onKeyDown = (e: ReactKeyboardEvent) => {

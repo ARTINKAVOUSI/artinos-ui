@@ -1,6 +1,5 @@
 import type { MetaBlockMotionConfig, Rect } from './types';
-
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+import { clamp } from '../../core/utils';
 
 export interface MetaBlockKineticPose {
   translateX: number;

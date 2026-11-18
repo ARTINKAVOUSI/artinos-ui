@@ -2,7 +2,7 @@
 
 The original controls (Slider through Select) are **controlled** (`value` + `onChange`) or **uncontrolled** (`defaultValue`). They accept `className`, `style`, `id` and two scope props: `density` (`'dense' | 'standard' | 'comfort'`) and `material` (an advanced finish override).
 
-The newer components (Knob, XYPad, TextField, the overlays, the Dock and the graph) are controlled only, and most accept `className`.
+Every value control can be controlled (`value`), uncontrolled (`defaultValue`) or bound to a `signal`. The overlays, the Dock and the graph are controlled, and most components accept `className`.
 
 Everything is a named export of the kit's `index.ts`.
 
@@ -20,7 +20,7 @@ Contents:
 
 ## Typing a number
 
-`Slider` readouts and `NumberField` take arithmetic in the units they show: `2*3+1`, `pi/2`, `2^8`, `1.5k`, `sin(pi/2)`, `min(3, 8)`. `x` is the value now; `*2` and `/2` work on it directly and `+=10` and `-=10` step it. `evaluate(text, x)` is the same parser. Dragging a number, a slider's readout or an Inspector label locks the pointer once the drag is under way, so the hand can keep going past the edge of the screen.
+`Slider` readouts and `NumberField` take arithmetic in the units they show: `2*3+1`, `pi/2`, `2^8`, `1.5k`, `sin(pi/2)`, `min(3, 8)`. `x` is the value now; `*2` and `/2` work on it directly and `+=10` and `-=10` step it. `evaluateExpression(text, x)` is the same parser. Dragging a number, a slider's readout or an Inspector label locks the pointer once the drag is under way, so the hand can keep going past the edge of the screen.
 
 ## Slider
 
@@ -98,7 +98,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
 
 ## NumberField
 
-A recessed numeric cell. Drag to scrub (Alt 0.1×, Shift 10×), click/type to edit, arrows and wheel step.
+A recessed numeric cell. Drag to scrub (Alt 0.1×, Shift 0.01×), click/type to edit, arrows and wheel step.
 
 Props: `label`, `signal` (the value itself, in place of `value`), `value` / `defaultValue` / `onChange` / `onCommit`, `min`, `max`, `step`, `decimals`, `format`, `unit`, `formatter`, `pixelsPerStep` (default 4), `align` (`'center' | 'end'`), `disabled`, `aria-label`.
 
@@ -234,7 +234,7 @@ Props:
 
 ## Knob · XYPad
 
-- **Knob**: a rotary control. A tick arc and a signal arc circle a round well, the insert is the cap and a lit seam is its pointer. Drag vertically (Shift is fine), use the wheel or the arrows, and double-click to reset. Props: `label` (required), `value` / `onChange` / `onCommit`, `min` / `max` (0 / 1), `step` (0.01), `defaultValue` (the double-click target), `size` (px, default 40), `showLabel` (default true).
+- **Knob**: a rotary control. A tick arc and a signal arc circle a round well, the insert is the cap and a lit seam is its pointer. Drag vertically (Alt 0.1×, Shift 0.01×), use the wheel or the arrows, and double-click to reset. Props: `label` (required), `value` / `onChange` / `onCommit`, `min` / `max` (0 / 1), `step` (0.01), `defaultValue` (the double-click target), `size` (px, default 40), `showLabel` (default true).
 - **XYPad**: two values in one well, with a hairline quarter grid, a tick crosshair and an insert puck. Props: `label` (required, drawn in the corner), `value` / `onChange` / `onCommit` as `[x, y]`, `xRange` / `yRange` (default `[-1, 1]`), `height` (default 110; width follows the container). Arrow keys nudge the puck.
 
 ```tsx
@@ -478,7 +478,7 @@ Inside a panel:
 - The panel body exposes `data-layout="portrait | landscape"` and `--ar-dock-panel-h` for responsive content.
 - A panel that throws shows a Retry card instead of taking the dock down.
 
-**Settings from a schema.** `createParamPanes({ params, groups, panes, store, storageKey?, hide? })`, called once outside your components, sets an app's settings the family's way. `params`: `{ key, label, group, kind: 'number' | 'choice' | 'toggle', default, options (choice: `{ value, label }[]`), min, max, step, unit?, face?: 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees', help?, advanced?, when? }`; `groups`: `{ id, title, description?, switch? (a toggle key that turns the group on or off), open? }`; `panes`: which groups start in which pane; `store`: `{ get, subscribe, set }` over your own state. Put `<settings.Pane id="…" toolbar={…} />` in a Dock panel or a Panel: it draws the pane bar (Advanced, Reset n, your toolbar first) and the groups as dockable sections. `ParamSection` (one group) and `ParamControl` (one value, the control its kind calls for) are exported for use on their own, and `paramShown(param, values)` applies `when`.
+**Settings from a schema.** `createParamPanes({ params, groups, panes, store, storageKey?, hide? })`, called once outside your components, sets an app's settings the family's way. `params`: `{ key, label, group, kind: 'number' | 'choice' | 'toggle', default, options (choice: `{ value, label }[]`), min, max, step, unit?, face?: 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees', help?, advanced?, when? }`; `groups`: `{ id, title, description?, switch? (a toggle key that turns the group on or off), open? }`; `panes`: which groups start in which pane; `store` (optional): `{ get, subscribe, set }` over your own state. Put `<settings.Pane id="…" toolbar={…} />` in a Dock panel or a Panel: it draws the pane bar (Advanced, Undo, Redo, Reset n, your toolbar first) and the groups as dockable sections. A parameter is an Inspector item with a group, so settings share the Inspector's controls, rows and store: `settings.store` is that store, with undo, files, presets and signals. Leave `store` out and the panes keep the values themselves.
 
 **Sections across panes.** `createDockSections({ panes, render, title?, group? })`, called once outside your components, keeps where every section is. Put its `<Pane id="…" />` in a Dock panel's content or in a plain `Panel` on a page (`toolbar` adds Expand all · Collapse all); sections drag between every pane of the set, and tear off into their own panel only inside a Dock; `panes` says which section ids start in which pane, and `render(id)` draws a section (a `<Section>`).
 - Drag a section by its heading into another pane to move it there.
@@ -568,7 +568,7 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 
 **Inspector props:** `items`, `folders`, `store`, `only` (top folder ids: one schema across several panels), `presets` (`{ name: values }`; the panel adds Save current as preset), `bar` (Find · Presets · Reset; default true), `search`, `toolbar`, `labelWidth` (inherits the density family's label column), `storageKey` (folder folds), `midi` (a `createMidiMap`: rows learn a hardware controller). The bar also holds Undo and Redo; Presets holds Randomize, Export values, Import values and Copy link.
 
-**A row:** drag the value, or a number's label, to scrub (Alt fine, Shift coarse); click a number to type. The dot in the gutter resets. The diamond adds or removes a keyframe at the playhead. Right-click: Reset, Copy, Paste, keyframe, Randomize, and for a number Follow (another number of its folder, in the proportion they have now) and Unlink. With `midi`, Learn MIDI controller.
+**A row:** drag the value, or a number's label, to scrub (Alt 0.1×, Shift 0.01×); click a number to type. The dot in the gutter resets. The diamond adds or removes a keyframe at the playhead. Right-click: Reset, Copy, Paste, keyframe, Randomize, and for a number Follow (another number of its folder, in the proportion they have now) and Unlink. With `midi`, Learn MIDI controller.
 
 **The store:** `createInspectorStore(items, { target?, onChange?, duration?, tracks?, follow?, storageKey? })`.
 - `target` is your own object. Every change in the panel is written to it; its own values win at the start.
@@ -589,7 +589,24 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 
 ## Signals · useControls · createPane
 
-Three ways to reach the same panel, on one value core.
+Everything that holds a parameter runs through one pipeline. Each layer is used by the one above it, and you can enter at any of them.
+
+```
+value      signal                 one value, outside React
+schema     InspectItem            what a value is; useControls, createPane and createParamPanes all write it
+store      createInspectorStore   values, undo, files, links, presets, keyframes, randomize
+control    registerControl        how a kind of value is drawn
+row        Inspector              name, control, reset, keyframe, menu
+panel      Dock · MetaBlock       docks, floats, tabs, opens in its own window
+```
+
+**Every value control takes `signal`**: `Slider`, `RangeSlider`, `Knob`, `XYPad`, `NumberField`, `TextField`, `Switch`, `Checkbox`, `ToggleGroup`, `ChipGroup`, `Segmented`, `Select`, `ColorField`, `Vector3Field`, `Trackball` and `ViewGizmo`; `Stat` and `Progress` follow one. A signal is a function, so `Meter` and `Spectrum` read one directly: `<Meter source={level} />`. `SignalDigits` is a rolling readout on a signal. A custom control gets the same behaviour from `useControllable(value, defaultValue, onChange, signal)`.
+
+**One rule for fine control** on everything that drags: Alt is 0.1×, Shift is 0.01×.
+
+**One undo gesture.** Ctrl/⌘ Z undoes what the focus is on: values in an Inspector, nodes in a NodeGraph, and the layout anywhere else in a Dock. All three use `createHistory`.
+
+**One command palette.** An Inspector in a Dock adds its undo, randomize, reset, files and presets to the Dock's palette, under its panel's name. Add your own from inside a panel with `useCommands(() => commands, key)`.
 
 **Signals** hold a value outside React. `signal(v)`, `computed(fn)`, `effect(fn)`, `batch(fn)`, `untrack(fn)`; read with `s()` (subscribes inside `computed` and `effect`) or `s.peek()`, write with `s.set(v)`, listen with `s.subscribe(fn)`. `tweened(v, { duration, ease })` glides to `.target(next)`, through OKLab for `#rrggbb` colours. In a component, `useSignal(initial)` keeps one and `useSignalValue(s)` renders on change. `artinos-ui/signals` is the core alone, with no React.
 

@@ -1,16 +1,23 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState, useSyncExternalStore } from 'react';
 import type { RefObject } from 'react';
+import type { Signal } from './signal';
+
+const noSubscription = () => () => {};
+const nothing = () => undefined;
 
 /**
- * Controlled/uncontrolled value in one hook: pass `value` to control it, or leave
- * it undefined and the hook keeps its own state seeded from `defaultValue`.
+ * Where every control's value comes from, in one hook. Pass a `signal` and the signal is the value;
+ * pass `value` to control it; or leave both out and the hook keeps its own state, seeded from
+ * `defaultValue`. `onChange` is told in all three cases.
  */
-export function useControllable<T>(value: T | undefined, defaultValue: T, onChange?: (v: T) => void) {
+export function useControllable<T>(value: T | undefined, defaultValue: T, onChange?: (v: T) => void, signal?: Signal<T>) {
   const [inner, setInner] = useState<T>(defaultValue);
+  const held = useSyncExternalStore<T | undefined>(signal?.subscribe ?? noSubscription, signal?.peek ?? nothing, signal?.peek ?? nothing);
   const controlled = value !== undefined;
-  const current = controlled ? value : inner;
+  const current = signal ? (held as T) : controlled ? value : inner;
   const set = (v: T) => {
-    if (!controlled) setInner(v);
+    if (signal) signal.set(() => v);
+    else if (!controlled) setInner(v);
     onChange?.(v);
   };
   return [current, set] as const;

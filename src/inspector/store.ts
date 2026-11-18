@@ -8,9 +8,15 @@
    Every value is also a signal (`store.signal(key)`): a control on it writes with `scrub`, which
    reaches the object and the signal at once and tells the panel only when the hand settles. That
    settling (`commit`) is one undo step, one save to storage and one update of the address. */
+import type { ReactNode } from 'react';
+import { createHistory } from '../core/history';
 import { batch, signal } from '../core/signal';
 import type { ReadSignal, Signal } from '../core/signal';
-import type { NumberFace } from '../dock/params';
+import { mixTween } from '../core/tween';
+import { readStored, snapToStep, writeStored } from '../core/utils';
+
+/** How a number reads: plain, a share shown in %, signed around 0, a count, a rate over decades, an angle. */
+export type NumberFace = 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees';
 
 export type InspectValue = number | string | boolean | readonly number[];
 export type InspectValues = Record<string, InspectValue>;
@@ -34,6 +40,8 @@ interface ItemBase {
   check?: (value: InspectValue, values: InspectValues) => InspectDiagnosis | null | undefined;
   /** Randomize leaves it alone. */
   locked?: boolean;
+  /** Shown only while the panel's `advanced` is on. */
+  advanced?: boolean;
 }
 /** A number: with min and max a slider, without them a scrub field. Its label scrubs it too. */
 export type InspectNumber = ItemBase & { kind: 'number'; default: number; min?: number; max?: number; step?: number; unit?: string; face?: NumberFace };
@@ -64,6 +72,10 @@ export interface InspectFolder {
   open?: boolean;
   /** A toggle item that turns the whole folder on or off: it becomes the folder's LED, not a row. */
   switch?: string;
+  /** A quiet line at the top of the folder: what it does. */
+  description?: ReactNode;
+  /** Show how many rows it holds beside its title. */
+  count?: boolean;
 }
 
 export const isField = (item: InspectItem): item is InspectField => item.kind !== 'monitor' && item.kind !== 'action';
@@ -207,16 +219,8 @@ export const KEY_SNAP = 0.02;
 /** The keyframe of a track at a time, if there is one. */
 export const keyAt = (track: readonly InspectKey[] | undefined, time: number) => track?.find((k) => Math.abs(k.t - time) <= KEY_SNAP);
 
-const hex = (n: number) => Math.round(Math.min(255, Math.max(0, n))).toString(16).padStart(2, '0');
-const mix = (a: InspectValue, b: InspectValue, u: number): InspectValue => {
-  if (typeof a === 'number' && typeof b === 'number') return a + (b - a) * u;
-  if (Array.isArray(a) && Array.isArray(b)) return a.map((x, i) => x + ((b[i] ?? x) - x) * u);
-  if (typeof a === 'string' && typeof b === 'string' && /^#[0-9a-f]{6}$/i.test(a) && /^#[0-9a-f]{6}$/i.test(b)) {
-    const ch = (s: string, i: number) => parseInt(s.slice(1 + i * 2, 3 + i * 2), 16);
-    return '#' + [0, 1, 2].map((i) => hex(ch(a, i) + (ch(b, i) - ch(a, i)) * u)).join('');
-  }
-  return a; // a toggle, a choice, a text: held until the next keyframe
-};
+/** Numbers, vectors and colours blend; a toggle, a choice or a text holds until the next keyframe. */
+const mix = (a: InspectValue, b: InspectValue, u: number): InspectValue => (typeof a === 'boolean' || typeof b === 'boolean' ? a : mixTween(a, b, u));
 
 /** A track's value at a time: numbers, vectors and colours glide between keyframes, the rest hold. */
 export function valueAt(track: readonly InspectKey[], time: number): InspectValue {
@@ -242,7 +246,7 @@ export function seededRandom(seed: number) {
   };
 }
 
-const snapTo = (v: number, step?: number) => (step ? Number((Math.round(v / step) * step).toFixed(6)) : Number(v.toFixed(6)));
+const snapTo = (v: number, step?: number) => (step ? snapToStep(v, step) : Number(v.toFixed(6)));
 
 /** A random value for a row, or undefined when it takes none. */
 function roll(f: InspectField, random: () => number, current: InspectValue, named: boolean): InspectValue | undefined {
@@ -291,26 +295,11 @@ interface Moment {
   tracks: InspectorState['tracks'];
   links: InspectorState['links'];
 }
-interface Step {
-  before: Moment;
-  after: Moment;
-  key: string;
-  at: number;
-}
-
 export function createInspectorStore(items: readonly InspectItem[], { target, onChange, duration = 4, tracks = {}, storageKey, follow = 50, persist: persistKey, url, version = 1, migrate, history = 100 }: InspectorStoreOptions = {}): InspectorStore {
   const fields = items.filter(isField);
   const defaults: InspectValues = Object.fromEntries(fields.map((f) => [f.key, f.default]));
   const urlParam = url === true ? 'p' : url || null;
-  const readSaved = (): Record<string, InspectValues> => {
-    if (!storageKey || typeof localStorage === 'undefined') return {};
-    try {
-      return JSON.parse(localStorage.getItem(storageKey) ?? '{}');
-    } catch {
-      return {};
-    }
-  };
-  let st: InspectorState = { values: { ...defaults }, time: 0, duration, playing: false, tracks, links: {}, mixed: [], saved: readSaved(), undoable: 0, redoable: 0 };
+  let st: InspectorState = { values: { ...defaults }, time: 0, duration, playing: false, tracks, links: {}, mixed: [], saved: storageKey ? readStored<Record<string, InspectValues>>(storageKey, {}) : {}, undoable: 0, redoable: 0 };
   const listeners = new Set<() => void>();
   let waiting: ReturnType<typeof setTimeout> | undefined;
   let settling: ReturnType<typeof setTimeout> | undefined;
@@ -338,13 +327,8 @@ export function createInspectorStore(items: readonly InspectItem[], { target, on
   };
   // what was saved comes next, the address last: a shared link shows what was shared
   const boot: InspectValues[] = [];
-  if (persistKey && typeof localStorage !== 'undefined')
-    try {
-      const doc = JSON.parse(localStorage.getItem(persistKey) ?? 'null');
-      if (doc?.values) boot.push(incoming(doc.values, doc.version ?? version, true));
-    } catch {
-      /* a corrupt save falls back to the defaults */
-    }
+  const kept = persistKey ? readStored<Partial<InspectDocument> | null>(persistKey, null) : null;
+  if (kept?.values) boot.push(incoming(kept.values, kept.version ?? version, true));
   if (urlParam && typeof location !== 'undefined')
     try {
       const text = new URL(location.href).searchParams.get(urlParam);
@@ -373,27 +357,18 @@ export function createInspectorStore(items: readonly InspectItem[], { target, on
   /* history: what the store looked like at each settled moment */
   const moment = (): Moment => ({ values: st.values, tracks: st.tracks, links: st.links });
   let base = moment();
-  let past: Step[] = [];
-  let future: Step[] = [];
+  const steps = createHistory<Moment>({ limit: history, mergeWithin: SAME_GESTURE_MS });
   let unsettled = false;
   const counted = () => {
-    st = { ...st, undoable: past.length, redoable: future.length };
+    st = { ...st, undoable: steps.undoable, redoable: steps.redoable };
   };
   const record = () => {
     const now = moment();
     const keys = Object.keys(defaults).filter((k) => !sameValue(base.values[k], now.values[k]));
     if (!keys.length && now.tracks === base.tracks && now.links === base.links) return;
     const key = keys.join();
-    const at = Date.now();
-    const last = past[past.length - 1];
     const glides = keys.length === 1 && (typeof now.values[key] === 'number' || Array.isArray(now.values[key]));
-    if (glides && last && last.key === key && last.after === base && at - last.at < SAME_GESTURE_MS) {
-      last.after = now;
-      last.at = at;
-    } else if (history > 0) {
-      past = [...past.slice(Math.max(0, past.length - history + 1)), { before: base, after: now, key, at }];
-    }
-    future = [];
+    steps.record(base, now, { label: key, merge: glides ? key : undefined });
     base = now;
     counted();
   };
@@ -413,12 +388,7 @@ export function createInspectorStore(items: readonly InspectItem[], { target, on
     return u.href;
   };
   const save = () => {
-    if (persistKey && typeof localStorage !== 'undefined')
-      try {
-        localStorage.setItem(persistKey, JSON.stringify(toDocument()));
-      } catch {
-        /* storage is best-effort */
-      }
+    if (persistKey) writeStored(persistKey, toDocument());
     if (urlParam && typeof location !== 'undefined') replaceAddress(toURL(location.href));
   };
   const replaceAddress = (href: string) => {
@@ -521,12 +491,7 @@ export function createInspectorStore(items: readonly InspectItem[], { target, on
     commit();
   };
   const persist = () => {
-    if (!storageKey || typeof localStorage === 'undefined') return;
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(st.saved));
-    } catch {
-      /* storage is best-effort */
-    }
+    if (storageKey) writeStored(storageKey, st.saved);
   };
 
   return {
@@ -559,19 +524,13 @@ export function createInspectorStore(items: readonly InspectItem[], { target, on
     },
     undo() {
       commit();
-      const step = past[past.length - 1];
-      if (!step) return;
-      past = past.slice(0, -1);
-      future = [...future, step];
-      restore(step.before);
+      const step = steps.undo();
+      if (step) restore(step.before);
     },
     redo() {
       commit();
-      const step = future[future.length - 1];
-      if (!step) return;
-      future = future.slice(0, -1);
-      past = [...past, step];
-      restore(step.after);
+      const step = steps.redo();
+      if (step) restore(step.after);
     },
     randomize({ keys, seed = Math.floor(Math.random() * 0x100000000), amount = 1 } = {}) {
       const random = seededRandom(seed);

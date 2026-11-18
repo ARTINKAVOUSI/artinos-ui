@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useControllable } from '../core/hooks';
 import { RollingValue } from '../core/RollingValue';
+import type { Signal } from '../core/signal';
 import { clamp, cx, luminance, scopeAttrs } from '../core/utils';
 import type { ScopeProps } from '../core/utils';
 
@@ -14,6 +15,8 @@ import type { ScopeProps } from '../core/utils';
 export interface ColorFieldProps extends ScopeProps {
   /** Omit for a full-width swatch. */
   label?: string;
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<string>;
   /** #RRGGBB, or #RRGGBBAA when `alpha` is on. */
   value?: string;
   defaultValue?: string;
@@ -32,8 +35,8 @@ function parse(v: string) {
 }
 const alphaHex = (a: number) => Math.round(clamp(a, 0, 1) * 255).toString(16).padStart(2, '0').toUpperCase();
 
-export function ColorField({ label, value, defaultValue = '#00C8B3', onChange, alpha = false, material, density, className, style, id }: ColorFieldProps) {
-  const [raw, setRaw] = useControllable(value, defaultValue, onChange);
+export function ColorField({ label, signal, value, defaultValue = '#00C8B3', onChange, alpha = false, material, density, className, style, id }: ColorFieldProps) {
+  const [raw, setRaw] = useControllable(value, defaultValue, onChange, signal);
   const parsed = parse(raw) ?? { rgb: '#000000', a: 1 };
   const { rgb, a } = parsed;
   const [draft, setDraft] = useState<string | null>(null);

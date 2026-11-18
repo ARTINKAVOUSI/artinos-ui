@@ -1,3 +1,5 @@
+import { createHistory } from '../../core/history';
+import type { History } from '../../core/history';
 import type {
   DockArea,
   EdgeSurface,
@@ -100,14 +102,14 @@ export class MetaBlockWorkspace {
   focusedGroup: string | null = null;
   selectedGroups = new Set<string>();
   private listeners = new Map<string, Set<Listener>>();
-  private undoStack: Array<{ label: string; before: WorkspaceSnapshot; after: WorkspaceSnapshot }> = [];
-  private redoStack: Array<{ label: string; before: WorkspaceSnapshot; after: WorkspaceSnapshot }> = [];
+  private history: History<WorkspaceSnapshot>;
   readonly historyLimit: number;
   revision = 0;
 
   constructor({ id = uid('workspace'), historyLimit = 160 }: { id?: string; historyLimit?: number } = {}) {
     this.id = id;
     this.historyLimit = historyLimit;
+    this.history = createHistory<WorkspaceSnapshot>({ limit: historyLimit });
   }
   /** Compatibility view. Panels are just non-container MetaBlocks. */
   get panels() {
@@ -130,9 +132,7 @@ export class MetaBlockWorkspace {
     return clone(this.serialize());
   }
   private record(label: string, before: WorkspaceSnapshot, after: WorkspaceSnapshot) {
-    this.undoStack.push({ label, before, after });
-    if (this.undoStack.length > this.historyLimit) this.undoStack.shift();
-    this.redoStack.length = 0;
+    this.history.record(before, after, { label });
     this.emit('history', { label });
   }
   transact<T>(label: string, fn: () => T) {
@@ -943,17 +943,15 @@ export class MetaBlockWorkspace {
   }
 
   undo() {
-    const entry = this.undoStack.pop();
+    const entry = this.history.undo();
     if (!entry) return false;
-    this.redoStack.push(entry);
     this.restore(entry.before, { preserveHistory: true });
     this.emit('history:undo', { label: entry.label });
     return true;
   }
   redo() {
-    const entry = this.redoStack.pop();
+    const entry = this.history.redo();
     if (!entry) return false;
-    this.undoStack.push(entry);
     this.restore(entry.after, { preserveHistory: true });
     this.emit('history:redo', { label: entry.label });
     return true;
@@ -999,8 +997,7 @@ export class MetaBlockWorkspace {
     this.focusedGroup = snapshot.focusedGroup ?? null;
     this.selectedGroups = new Set(snapshot.selectedGroups ?? []);
     if (!preserveHistory) {
-      this.undoStack.length = 0;
-      this.redoStack.length = 0;
+      this.history.clear();
     }
     this.repairSpatialState();
     this.emit('restore', { snapshot });

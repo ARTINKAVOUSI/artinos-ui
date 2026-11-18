@@ -3,6 +3,9 @@
    mouse locks, only after the drag has begun (a click never does), and where the browser refuses
    the drag simply carries on from the pointer's position. */
 
+/** The one rule for fine control, on every control that drags: Alt is 0.1×, Shift is 0.01×. */
+export const precisionOf = (e: { altKey: boolean; shiftKey: boolean }) => (e.shiftKey ? 0.01 : e.altKey ? 0.1 : 1);
+
 /** Lock the pointer to this element for the rest of a drag. */
 export function lockPointer(el: Element | null, pointerType: string) {
   if (!el || pointerType !== 'mouse' || !el.requestPointerLock) return;

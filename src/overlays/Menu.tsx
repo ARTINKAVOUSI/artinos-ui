@@ -261,7 +261,7 @@ export function ContextMenu({ items, children, disabled = false }: ContextMenuPr
     const keyboard = event.clientX === 0 && event.clientY === 0;
     const rect = target.getBoundingClientRect();
     const anchor: Anchor = keyboard ? { x: rect.left, y: rect.bottom + 4 } : { x: event.clientX, y: event.clientY };
-    setOpen({ anchor, items: items(), from: document.activeElement as HTMLElement | null });
+    setOpen({ anchor, items: items(), from: target.ownerDocument.activeElement as HTMLElement | null });
   };
 
   const { shown, leaving } = usePresence(open, 140);

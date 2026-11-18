@@ -86,7 +86,7 @@ export function ControlsChapter() {
     <Chapter id="controls">
       <Spec
         id="number-field"
-        text="A recessed numeric cell that is also a scrubber. Drag sideways to scrub (Alt 0.1×, Shift 10×); click to type — Enter commits, Escape cancels; typing a digit starts fresh. Arrows and wheel step while focused."
+        text="A recessed numeric cell that is also a scrubber. Drag sideways to scrub (Alt 0.1×, Shift 0.01×); click to type — Enter commits, Escape cancels; typing a digit starts fresh. Arrows and wheel step while focused."
         code={`
 <NumberField value={w} onChange={setW} min={0} step={1} aria-label="Width" />
 <NumberField label="X" decimals={2} step={0.01} unit="m" />

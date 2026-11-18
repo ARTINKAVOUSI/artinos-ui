@@ -10,17 +10,24 @@ export type { Signal, ReadSignal, SignalOptions } from './core/signal';
 export { tweened, mixTween } from './core/tween';
 export type { Tweened, TweenOptions, Tweenable } from './core/tween';
 export { useSignal, useSignalValue } from './core/useSignal';
-export { evaluate } from './core/expression';
+export { evaluate as evaluateExpression } from './core/expression';
+export { createHistory } from './core/history';
+export type { History, HistoryStep } from './core/history';
+export { useCommands } from './core/commands';
+export type { Command } from './core/commands';
+export { useControllable } from './core/hooks';
+export { windowOf } from './core/realm';
+export { lockPointer, unlockPointer, isPointerLocked, precisionOf } from './core/scrub';
 
 // design system
 export { ArtinosTheme, themeStyle, densityTokensCss } from './core/Theme';
 export type { ArtinosThemeProps, DensityTokens, TokenOverrides } from './core/Theme';
 export { THEMES, THEME_META, GLASS_THEMES, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, DENSITY_META, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
 export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
-export { RollingValue, RollingText } from './core/RollingValue';
-export type { RollingValueProps } from './core/RollingValue';
-export { ThemedPortal, themeScopeOf } from './core/portal';
-export { usePresence, useGlide, useFlip } from './core/motion';
+export { RollingValue, RollingText, SignalDigits } from './core/RollingValue';
+export type { RollingValueProps, SignalDigitsProps } from './core/RollingValue';
+export { ThemedPortal, themeScopeOf, PortalTargetContext } from './core/portal';
+export { usePresence, useGlide, useFlip, useFrames } from './core/motion';
 export { useFollower } from './core/reactive';
 export type { MotionProfile, MotionTuning, ReactiveMotion } from './core/reactive';
 export type { ThemeScope } from './core/portal';
@@ -93,7 +100,7 @@ export type { MeterProps } from './display/Meter';
 export { Spectrum } from './display/Spectrum';
 export type { SpectrumProps } from './display/Spectrum';
 export type { InstrumentTone, Zone } from './display/zones';
-export { Graph, GraphTrace, FrameGraph } from './display/Graph';
+export { Graph, GraphTrace, FrameGraph, useLiveFigure } from './display/Graph';
 export type { GraphProps, GraphTraceProps, GraphSeries, FrameGraphProps } from './display/Graph';
 export { Sparkline } from './display/Sparkline';
 export type { SparklineProps } from './display/Sparkline';
@@ -134,10 +141,10 @@ export type { ToastOptions } from './overlays/Toast';
 export { Tooltip } from './overlays/Tooltip';
 export type { TooltipProps } from './overlays/Tooltip';
 export { CommandPalette } from './overlays/CommandPalette';
-export type { Command, CommandPaletteProps } from './overlays/CommandPalette';
+export type { CommandPaletteProps } from './overlays/CommandPalette';
 
 // inspector: the pro parameter editor, from a schema, bound both ways to the app's object
-export { Inspector } from './inspector/Inspector';
+export { Inspector, InspectorFolder, ValueHistory } from './inspector/Inspector';
 export type { InspectorProps } from './inspector/Inspector';
 export { InspectorTimeline } from './inspector/Timeline';
 export type { InspectorTimelineProps } from './inspector/Timeline';
@@ -157,13 +164,13 @@ export { createPane } from './pane/createPane';
 export type { BindingOptions, Pane, PaneBinding, PaneFolder, PaneOptions } from './pane/createPane';
 
 // dock: the studio workspace, and the MetaBlock engine it is built on
-export { Dock, TEAR_PREFIX, useDock } from './dock/Dock';
+export { Dock, TEAR_PREFIX, useDock, useDockOptional } from './dock/Dock';
 export { createDockSections } from './dock/sections';
 export type { DockSections, DockSectionsOptions } from './dock/sections';
 export type { DockProps, DockPanel, DockApi, DockEdge, DockTabStyle } from './dock/Dock';
 export { PanelBar } from './dock/PanelBar';
-export { createParamPanes, ParamControl, ParamSection, paramShown } from './dock/params';
-export type { ChoiceParam, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamSectionProps, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';
+export { createParamPanes } from './dock/params';
+export type { ChoiceParam, NumberFace, NumberParam, Param, ParamGroup, ParamPanes, ParamPanesOptions, ParamStore, ParamValue, ParamValues, ToggleParam } from './dock/params';
 export { DockMenu } from './dock/DockMenu';
 export { MetaBlockWorkspace, defaultCapabilities } from './dock/metablock/workspace';
 export { MetaBlockWorkspaceView } from './dock/metablock/WorkspaceView';
@@ -176,6 +183,8 @@ export * from './dock/metablock/types';
 // graph: the node editor and the live graph view
 export { NodeGraph } from './graph/NodeGraph';
 export type { NodeGraphProps } from './graph/NodeGraph';
+export type { GraphSources } from './graph/NodeFields';
+export type { PreviewFrame } from './graph/NodePreview';
 export { LiveGraphView } from './graph/LiveGraphView';
 export type { LiveGraphViewProps, LiveGraph, LiveNode, LiveEdge, LiveKind, LiveControl } from './graph/LiveGraphView';
 export { useGraphEditor } from './graph/editor';

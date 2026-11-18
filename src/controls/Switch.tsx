@@ -1,6 +1,7 @@
 'use client';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx, scopeAttrs } from '../core/utils';
 import type { ScopeProps } from '../core/utils';
 
@@ -15,6 +16,8 @@ export interface SwitchProps extends ScopeProps {
   label?: string;
   labelOn?: string;
   labelOff?: string;
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<boolean>;
   value?: boolean;
   defaultValue?: boolean;
   onChange?: (on: boolean) => void;
@@ -26,8 +29,8 @@ export interface SwitchProps extends ScopeProps {
   'aria-label'?: string;
 }
 
-export function Switch({ label, labelOn, labelOff, value, defaultValue = false, onChange, variant = 'shutter', disabled, material, density, className, style, id, ...rest }: SwitchProps) {
-  const [on, setOn] = useControllable(value, defaultValue, onChange);
+export function Switch({ label, labelOn, labelOff, signal, value, defaultValue = false, onChange, variant = 'shutter', disabled, material, density, className, style, id, ...rest }: SwitchProps) {
+  const [on, setOn] = useControllable(value, defaultValue, onChange, signal);
   const toggle = () => {
     if (!disabled) setOn(!on);
   };

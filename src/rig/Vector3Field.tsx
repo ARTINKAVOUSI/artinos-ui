@@ -1,14 +1,20 @@
 'use client';
 import type { CSSProperties } from 'react';
 import { NumberField } from '../controls/NumberField';
+import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx } from '../core/utils';
 import type { Format, ScopeProps } from '../core/utils';
 import { AXES, type Vec3 } from './math';
 
 export interface Vector3FieldProps extends ScopeProps {
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<Vec3>;
   /** [x, y, z] */
-  value: Vec3;
-  onChange: (value: Vec3) => void;
+  value?: Vec3;
+  /** Where it starts when nothing else holds the value. Default: [0, 0, 0]. */
+  defaultValue?: Vec3;
+  onChange?: (value: Vec3) => void;
   onCommit?: (value: Vec3) => void;
   /** Names the group for assistive tech: "Position", "Scale"… */
   label: string;
@@ -31,7 +37,8 @@ export interface Vector3FieldProps extends ScopeProps {
  * Vector3Field — X · Y · Z in one row, each a NumberField in its axis colour: scrub sideways,
  * click to type, arrows or the wheel to step. `linked` keeps the three in proportion.
  */
-export function Vector3Field({ value, onChange, onCommit, label, min, max, step = 0.1, decimals = 2, format, unit, linked, onLinkedChange, disabled, material, density, className, style }: Vector3FieldProps) {
+export function Vector3Field({ signal, value: valueProp, defaultValue, onChange, onCommit, label, min, max, step = 0.1, decimals = 2, format, unit, linked, onLinkedChange, disabled, material, density, className, style }: Vector3FieldProps) {
+  const [value, setValue] = useControllable<Vec3>(valueProp, defaultValue ?? [0, 0, 0], onChange, signal);
   const next = (i: number, n: number): Vec3 => {
     const out: Vec3 = [...value];
     if (linked) {
@@ -50,7 +57,7 @@ export function Vector3Field({ value, onChange, onCommit, label, min, max, step 
           label={axis.toUpperCase()}
           aria-label={`${label} ${axis.toUpperCase()}`}
           value={value[i]}
-          onChange={(n) => onChange(next(i, n))}
+          onChange={(n) => setValue(next(i, n))}
           onCommit={onCommit ? (n) => onCommit(next(i, n)) : undefined}
           {...{ min, max, step, decimals, format, unit, disabled, material, density }}
           align="end"

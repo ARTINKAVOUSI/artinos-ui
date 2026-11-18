@@ -4,6 +4,7 @@ import { NumberField } from '../controls/NumberField';
 import { Select } from '../controls/Select';
 import { Switch } from '../controls/Switch';
 import { TextField } from '../controls/TextField';
+import { decimalsOfStep } from '../core/utils';
 import { Field } from '../layout/Panel';
 import { Slider } from '../slider/Slider';
 import type { GraphField } from './graph';
@@ -18,9 +19,6 @@ export interface GraphSources {
 
 /** Rows a field takes in the node body: a vector is a labelled row of three cells. */
 export const fieldRows = (field: GraphField) => (field.kind === 'vector3' ? 2 : 1);
-
-/** Decimals that show one step: 0.01 → 2, 1 → 0. */
-const decimalsFor = (step: number) => (step >= 1 ? 0 : Math.min(4, (String(step).split('.')[1] ?? '').length || 2));
 
 /** The node's label column: short, so the control keeps most of the width. */
 const LABEL_W = 58;
@@ -67,7 +65,7 @@ export function NodeField({
           min={field.min}
           max={field.max}
           step={step}
-          decimals={decimalsFor(step)}
+          decimals={decimalsOfStep(step)}
           toggleable={false}
           onChange={(next) => onChange(next)}
         />
@@ -81,7 +79,7 @@ export function NodeField({
         min={field.min}
         max={field.max}
         step={step}
-        decimals={decimalsFor(step)}
+        decimals={decimalsOfStep(step)}
         align="end"
         onChange={(next) => onChange(next)}
       />

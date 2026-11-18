@@ -126,7 +126,7 @@ export function Spectrum({ label, values, source, bars = 32, min = 0, max = 1, s
       }
     }
     return (Boolean(source) && seen.current) || moving;
-  });
+  }, rootRef);
   const seen = useOnScreen(rootRef, kick);
 
   useLayoutEffect(() => {

@@ -1,6 +1,7 @@
 'use client';
 import { usePresence } from '../core/motion';
 import { ThemedPortal } from '../core/portal';
+import { windowOf } from '../core/realm';
 import { Kbd } from '../actions/Kbd';
 import { cloneElement, useEffect, useId, useLayoutEffect, useRef, useState, type ReactElement, type ReactNode } from 'react';
 
@@ -44,8 +45,9 @@ export function Tooltip({ content, children, side = 'top', delay = 450, shortcut
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => event.key === 'Escape' && hide();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const view = windowOf(anchor.current);
+    view.addEventListener('keydown', onKey);
+    return () => view.removeEventListener('keydown', onKey);
   }, [open]);
 
   useLayoutEffect(() => {
@@ -65,7 +67,7 @@ export function Tooltip({ content, children, side = 'top', delay = 450, shortcut
       top = a.top + a.height / 2 - t.height / 2;
     }
     if (side === 'top' && top < 4) top = a.bottom + gap;
-    const view = tip.current.ownerDocument.defaultView ?? window;
+    const view = windowOf(tip.current);
     left = Math.min(view.innerWidth - t.width - 4, Math.max(4, left));
     top = Math.min(view.innerHeight - t.height - 4, Math.max(4, top));
     setPosition({ left, top });

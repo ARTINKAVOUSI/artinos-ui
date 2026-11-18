@@ -23,7 +23,7 @@ export interface Tweened<T extends Tweenable> extends ReadSignal<T> {
 }
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-const HEX = /^#[0-9a-f]{6}$/i;
+const HEX = /^#[0-9a-f]{6}(?:[0-9a-f]{2})?$/i;
 
 const toLinear = (c: number) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
 const toGamma = (c: number) => (c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
@@ -51,7 +51,10 @@ export function mixTween<T extends Tweenable>(a: T, b: T, u: number): T {
   if (typeof a === 'string' && typeof b === 'string' && HEX.test(a) && HEX.test(b)) {
     const from = hexToOklab(a);
     const to = hexToOklab(b);
-    return oklabToHex(from.map((x, i) => x + (to[i] - x) * u)) as T;
+    const colour = oklabToHex(from.map((x, i) => x + (to[i] - x) * u));
+    if (a.length === 7 && b.length === 7) return colour as T;
+    const alpha = (h: string) => (h.length === 9 ? parseInt(h.slice(7), 16) : 255);
+    return (colour + Math.round(alpha(a) + (alpha(b) - alpha(a)) * u).toString(16).padStart(2, '0')) as T;
   }
   return (u < 1 ? a : b) as T;
 }

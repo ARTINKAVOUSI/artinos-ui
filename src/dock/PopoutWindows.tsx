@@ -1,10 +1,11 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import type { ReactElement, RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { ReactElement, ReactNode, RefObject } from 'react';
 import { createPortal } from 'react-dom';
-import { PortalTargetContext, themeScopeOf } from '../core/portal';
+import { PortalTargetContext, themeScopeOf, type ThemeScope } from '../core/portal';
 import { DockIcons } from './icons';
-import type { MetaBlockInstance, PopoutRecord } from './metablock/types';
+import { PanelBarSlot } from './PanelBar';
+import type { MetaBlockGroup, MetaBlockInstance, PopoutRecord } from './metablock/types';
 import type { MetaBlockWorkspace } from './metablock/workspace';
 
 /* A popped-out panel in a real browser window: on a second monitor it is still the same panel, in
@@ -16,13 +17,33 @@ interface OpenWindow {
   groupId: string;
   win: Window;
   host: HTMLElement;
-  attrs: Record<string, string>;
-  style: Record<string, string>;
 }
 
-export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: MetaBlockWorkspace; renderBlock: (block: MetaBlockInstance) => ReactElement | null; anchor: RefObject<HTMLElement | null> }) {
+export interface PopoutWindowsProps {
+  workspace: MetaBlockWorkspace;
+  renderBlock: (block: MetaBlockInstance) => ReactElement | null;
+  /** Drawn under the panel's body, as a docked group draws its footer. */
+  renderFooter?: (group: MetaBlockGroup) => ReactNode;
+  anchor: RefObject<HTMLElement | null>;
+}
+
+export function PopoutWindows({ workspace, renderBlock, renderFooter, anchor }: PopoutWindowsProps) {
   const [windows, setWindows] = useState<readonly OpenWindow[]>([]);
+  const [scope, setScope] = useState<ThemeScope>(() => themeScopeOf(null));
   const open = useRef(new Map<string, OpenWindow>());
+
+  // read after every commit, not while rendering: only then does the page wear the theme this render brought
+  useLayoutEffect(() => {
+    const next = themeScopeOf(anchor.current);
+    setScope((was) => (was.key === next.key ? was : next));
+  });
+  useLayoutEffect(() => {
+    for (const w of windows) {
+      const body = w.win.document.body;
+      for (const { name } of [...body.attributes]) if (name.startsWith('data-ar-') && !(name in scope.attrs)) body.removeAttribute(name);
+      Object.entries(scope.attrs).forEach(([a, v]) => body.setAttribute(a, v));
+    }
+  }, [windows, scope]);
 
   useEffect(() => {
     const publish = () => setWindows([...open.current.values()]);
@@ -47,14 +68,12 @@ export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: M
       doc.body.className = 'ar-popout-body';
       const host = doc.createElement('div');
       doc.body.replaceChildren(host);
-      const scope = themeScopeOf(anchor.current);
-      Object.entries(scope.attrs).forEach(([a, v]) => doc.body.setAttribute(a, v));
       win.addEventListener('pagehide', () => {
         if (!open.current.delete(groupId)) return;
         publish();
         home(groupId, bounds);
       });
-      open.current.set(groupId, { groupId, win, host, attrs: scope.attrs, style: scope.style });
+      open.current.set(groupId, { groupId, win, host });
       publish();
     };
     for (const record of workspace.popouts.values()) launch(record);
@@ -81,7 +100,7 @@ export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: M
       });
       setWindows([]);
     };
-  }, [workspace, anchor]);
+  }, [workspace]);
 
   return (
     <>
@@ -92,7 +111,7 @@ export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: M
         const active = blocks.find((b) => b.id === group.activeChild) ?? blocks[0];
         return createPortal(
           <PortalTargetContext.Provider value={w.win.document.body}>
-            <div className="ar-dock ar-popout" {...w.attrs} style={w.style}>
+            <div className="ar-dock ar-popout" {...scope.attrs} style={scope.style}>
               <header className="ar-dock__strip ar-dock__strip--window">
                 <div className="ar-dock__tabs" data-look="line" role="tablist" aria-label="Panels in this window">
                   {blocks.map((b) => (
@@ -101,6 +120,7 @@ export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: M
                     </button>
                   ))}
                 </div>
+                <PanelBarSlot panelId={active?.id ?? null} />
                 <div className="ar-dock__window-actions">
                   <button type="button" className="ar-tool" title="Return to the workspace" onClick={() => w.win.close()}>
                     {DockIcons.returnHome}
@@ -108,6 +128,7 @@ export function PopoutWindows({ workspace, renderBlock, anchor }: { workspace: M
                 </div>
               </header>
               <div className="ar-popout__body">{active ? renderBlock(active) : null}</div>
+              {renderFooter?.(group)}
             </div>
           </PortalTargetContext.Provider>,
           w.host,

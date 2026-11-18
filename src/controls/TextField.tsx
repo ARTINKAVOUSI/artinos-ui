@@ -1,12 +1,17 @@
 'use client';
 import { forwardRef, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react';
 import { useField } from '../core/field';
+import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 
-export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement>, 'onChange' | 'onKeyDown' | 'size' | 'value'> {
-  value: string;
+export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement & HTMLTextAreaElement>, 'onChange' | 'onKeyDown' | 'size' | 'value' | 'defaultValue'> {
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<string>;
+  value?: string;
+  defaultValue?: string;
   /** A key on the field: the event is the input's, or the textarea's when `multiline`. */
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   /** Accessible name when no visible label is associated (a Field's label is associated for you). */
   label?: string;
   /** Leading icon. `type="search"` gets a magnifier by default. */
@@ -31,9 +36,10 @@ const SearchIcon = (
 /** TextField — text cut into the well; `type="search"` makes it a search box (Escape clears it),
  *  `multiline` a growing textarea. Inside a Field it takes the label, message and invalid state. */
 export const TextField = forwardRef<HTMLInputElement & HTMLTextAreaElement, TextFieldProps>(function TextField(
-  { value, onChange, label, icon, clearable, size = 'md', type = 'text', invalid, multiline = false, rows = 3, className, onKeyDown, id, required, ...rest },
+  { signal, value: valueProp, defaultValue = '', onChange, label, icon, clearable, size = 'md', type = 'text', invalid, multiline = false, rows = 3, className, onKeyDown, id, required, ...rest },
   ref,
 ) {
+  const [value, setValue] = useControllable(valueProp, defaultValue, onChange, signal);
   const field = useField();
   const search = type === 'search' && !multiline;
   const leading = icon ?? (search ? SearchIcon : null);
@@ -60,7 +66,7 @@ export const TextField = forwardRef<HTMLInputElement & HTMLTextAreaElement, Text
           ref={ref}
           rows={rows}
           {...shared}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => setValue(event.target.value)}
           onKeyDown={onKeyDown}
           {...rest}
         />
@@ -70,11 +76,11 @@ export const TextField = forwardRef<HTMLInputElement & HTMLTextAreaElement, Text
           type={search ? 'text' : type}
           role={search ? 'searchbox' : undefined}
           {...shared}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
             if (search && event.key === 'Escape' && value) {
               event.stopPropagation();
-              onChange('');
+              setValue('');
             }
             onKeyDown?.(event);
           }}
@@ -82,7 +88,7 @@ export const TextField = forwardRef<HTMLInputElement & HTMLTextAreaElement, Text
         />
       )}
       {showClear && (
-        <button type="button" className="ar-tool ar-textfield__clear" aria-label="Clear" onClick={() => onChange('')}>
+        <button type="button" className="ar-tool ar-textfield__clear" aria-label="Clear" onClick={() => setValue('')}>
           <svg viewBox="0 0 10 10" aria-hidden>
             <path d="M2.5 2.5l5 5M7.5 2.5l-5 5" />
           </svg>

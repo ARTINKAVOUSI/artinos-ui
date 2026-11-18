@@ -1,16 +1,20 @@
 'use client';
 import { useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx } from '../core/utils';
 import { useQuatGlide } from './glide';
-import { AXES, AXIS_VEC, DEG, VIEWS, orbitBy, qAngle, qConjugate, qRotate, type Axis, type Quat } from './math';
+import { AXES, AXIS_VEC, DEG, QUAT_IDENTITY, VIEWS, orbitBy, qAngle, qConjugate, qRotate, type Axis, type Quat } from './math';
 
 export interface ViewGizmoProps {
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<Quat>;
   /** The camera's orientation, [x, y, z, w]: what `camera.quaternion.toArray()` gives. */
-  value: Quat;
-  onChange: (value: Quat) => void;
+  value?: Quat;
+  onChange?: (value: Quat) => void;
   /** Once, when a drag ends or a snap lands. */
   onCommit?: (value: Quat) => void;
-  /** Double-click the ball, or press Home, to return here. */
+  /** Where it starts when nothing else holds the value; double-click the ball, or press Home, to return here. */
   defaultValue?: Quat;
   label?: string;
   /** Diameter in px. */
@@ -30,7 +34,8 @@ const OPPOSITE = (k: ViewKey): ViewKey => (k.startsWith('-') ? k.slice(1) : '-' 
  * down that axis; click the one already facing you to flip to the other side. Arrow keys orbit,
  * X / Y / Z snap (Shift for the far side), Home returns to the default view.
  */
-export function ViewGizmo({ value, onChange, onCommit, defaultValue, label = 'View', size = 84, speed = 0.012, className, style }: ViewGizmoProps) {
+export function ViewGizmo({ signal, value: valueProp, onChange, onCommit, defaultValue, label = 'View', size = 84, speed = 0.012, className, style }: ViewGizmoProps) {
+  const [value, setValue] = useControllable<Quat>(valueProp, defaultValue ?? QUAT_IDENTITY, onChange, signal);
   const live = useRef(value);
   const drag = useRef<{ x: number; y: number; moved: boolean; hit: ViewKey | null } | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -39,7 +44,7 @@ export function ViewGizmo({ value, onChange, onCommit, defaultValue, label = 'Vi
 
   const emit = (q: Quat) => {
     live.current = q;
-    onChange(q);
+    setValue(q);
   };
   const snapTo = (q: Quat) => glide(live.current, q, emit, onCommit);
 

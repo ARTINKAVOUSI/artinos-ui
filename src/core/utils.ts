@@ -3,6 +3,34 @@
 import type { ReactNode } from 'react';
 
 export const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+export const clamp01 = (v: number) => clamp(v, 0, 1);
+
+/** How many decimals a step needs to be read exactly: 1 → 0 · 0.5 → 1 · 0.25 → 2. At most 4. */
+export const decimalsOfStep = (step: number) => (step >= 1 ? 0 : Math.min(4, (String(step).split('.')[1] ?? '').length || 2));
+
+/** The nearest whole step, counted from `origin`, free of floating-point dust. */
+export const snapToStep = (v: number, step: number, origin = 0) => Number((origin + Math.round((v - origin) / step) * step).toFixed(Math.max(6, decimalsOfStep(step))));
+
+/** A value kept in localStorage, or `fallback` when there is none or it cannot be read. */
+export function readStored<T>(key: string, fallback: T): T {
+  if (typeof localStorage === 'undefined') return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw === null ? fallback : (JSON.parse(raw) as T);
+  } catch {
+    return fallback;
+  }
+}
+
+/** Keep a value in localStorage. Storage is best-effort: quota and private modes are ignored. */
+export function writeStored(key: string, value: unknown) {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* quota or private mode */
+  }
+}
 
 export const reducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -102,7 +130,14 @@ export const joinFormatted = (f: Formatted) => f.text + (f.unit ? (tightUnit(f.u
 
 export type Stop = [position: number, hex: string];
 
-const hexRgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+/** #abc and #abcd written out in full (#aabbcc, #aabbccdd). Null when it is not a hex colour. */
+export function fullHex(hex: string): string | null {
+  if (/^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/i.test(hex)) return hex;
+  return /^#[0-9a-f]{3,4}$/i.test(hex) ? '#' + [...hex.slice(1)].map((c) => c + c).join('') : null;
+}
+
+/** The red, green and blue of a #rrggbb colour, 0–255. */
+export const hexRgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const toHex = (a: number[]) =>
   '#' + a.map((x) => Math.round(clamp(x, 0, 255)).toString(16).padStart(2, '0')).join('').toUpperCase();
 

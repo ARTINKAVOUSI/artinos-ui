@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, 
 import { NumberField } from '../controls/NumberField';
 import { Switch } from '../controls/Switch';
 import { RollingText } from '../core/RollingValue';
+import { windowOf } from '../core/realm';
 import { Slider } from '../slider/Slider';
 import { wirePath } from './view';
 import { RenderPreview, ValuePreview, type PreviewFrame } from './NodePreview';
@@ -145,16 +146,17 @@ export function LiveGraphView({ graph, previews, onInspect, onControl, insetRigh
     const startX = event.clientX;
     const startY = event.clientY;
     const origin = { ...viewport };
+    const view = windowOf(target);
     const move = (next: PointerEvent) => setViewport({ ...origin, x: origin.x + next.clientX - startX, y: origin.y + next.clientY - startY });
     const up = () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
-      window.removeEventListener('pointercancel', up);
+      view.removeEventListener('pointermove', move);
+      view.removeEventListener('pointerup', up);
+      view.removeEventListener('pointercancel', up);
       if (stopPan.current === up) stopPan.current = null;
     };
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', up);
-    window.addEventListener('pointercancel', up);
+    view.addEventListener('pointermove', move);
+    view.addEventListener('pointerup', up);
+    view.addEventListener('pointercancel', up);
     stopPan.current = up;
   };
 

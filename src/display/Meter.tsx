@@ -1,6 +1,6 @@
 'use client';
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
-import { useFollower, type ReactiveMotion } from '../core/reactive';
+import { READOUT_MS, useFollower, type ReactiveMotion } from '../core/reactive';
 import { RollingValue } from '../core/RollingValue';
 import { cx, reducedMotion } from '../core/utils';
 import { toneAt, zoneGradient, type InstrumentTone, type Zone } from './zones';
@@ -46,7 +46,6 @@ export interface MeterProps {
 
 const PEAK_HOLD = 700;
 const PEAK_FALL = 2600;
-const READOUT_MS = 100;
 
 /**
  * Meter — a level bar for live values. It fits its motion to what it is fed: readings at frame

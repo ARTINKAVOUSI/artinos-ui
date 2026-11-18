@@ -97,7 +97,7 @@ The same capsule holding an interval. Props are the Slider's (format, mapping, s
 
 ### Knob
 
-A rotary control for when a capsule is the wrong shape: a tick arc and a signal arc circle a round well, the cap is the insert, the lit seam is the pointer. Drag vertically (Shift for fine), wheel or arrows when focused, double-click to return to `defaultValue`. `size` (default 40) and `showLabel` (label and value under it). Controlled only: `value`, `onChange`, `label` are required.
+A rotary control for when a capsule is the wrong shape: a tick arc and a signal arc circle a round well, the cap is the insert, the lit seam is the pointer. Drag vertically (Alt 0.1×, Shift 0.01×), wheel or arrows when focused, double-click to return to `defaultValue`. `size` (default 40) and `showLabel` (label and value under it). Controlled only: `value`, `onChange`, `label` are required.
 
 ```tsx
 <Knob label="Mix" value={mix} onChange={setMix} defaultValue={0.5} />
@@ -136,14 +136,14 @@ These apply to `Slider` and `RangeSlider` whatever the `variant`, and most to `N
 | `detents` | ● | ● | | | |
 | `steps` | ● | ● | `step` | `step` | |
 | `origin` / `bipolar` | ● | | | | |
-| precision scrub from the readout | ● | ● | drag the cell (Alt 0.1×, Shift 10×) | | |
+| precision scrub from the readout | ● | ● | drag the cell (Alt 0.1×, Shift 0.01×) | Alt 0.1×, Shift 0.01× | |
 | typed entry, with sums (`2*3`, `pi/2`, `*2`, `+=10`) | ● | ● | ● | | |
-| `signal` (a drag renders nothing above the control) | ● | | ● | | |
+| `signal` (the value lives outside React) | ● | ● | ● | ● | ● |
 | endless drag past the screen's edge | readout | | ● | | |
 | enable / off, `status` | ● | enable | | | |
 | `layout="paired"` | ● | ● | | | |
 | `onCommit` | ● | ● | ● | ● | ● |
-| uncontrolled (`defaultValue`) | ● | ● | ● | reset target only | |
+| uncontrolled (`defaultValue`) | ● | ● | ● | ● (also its reset target) | ● |
 | `density` / `material` scope props | ● | ● | ● | | |
 
 ## Controls
@@ -152,7 +152,7 @@ The same well, insert and LED seam in every shape a parameter takes.
 
 ### NumberField
 
-A recessed numeric cell that is also a scrubber: drag sideways to scrub (`pixelsPerStep`, default 4 px; Alt 0.1×, Shift 10×), click to type (Enter commits, Escape cancels, typing a digit starts fresh), arrows and wheel step while focused. `format`, `decimals`, `unit`, `formatter` as on the Slider; `align` `'center' | 'end'`; `disabled`. Use it where typing is as common as dragging, or in a `Field` beside a `Select` (`Width [268] [Fixed ˅]`).
+A recessed numeric cell that is also a scrubber: drag sideways to scrub (`pixelsPerStep`, default 4 px; Alt 0.1×, Shift 0.01×), click to type (Enter commits, Escape cancels, typing a digit starts fresh), arrows and wheel step while focused. `format`, `decimals`, `unit`, `formatter` as on the Slider; `align` `'center' | 'end'`; `disabled`. Use it where typing is as common as dragging, or in a `Field` beside a `Select` (`Width [268] [Fixed ˅]`).
 
 ### Checkbox
 
@@ -476,12 +476,15 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 
 ### Which way to a panel
 
+Every way below writes the same schema into the same store, and draws the same rows.
+
 | you have… | use | because |
 |---|---|---|
 | a tool with a designed layout | `Inspector` with `createInspectorStore` | folders, presets, keyframes, links and checks, bound to your object |
 | a component that needs a few tweakable values | `useControls` with `ControlsPanel` | one line, values back |
 | a value read every frame (a shader uniform, a speed) | `useControls(…, { transient: true })`, or `signal` with `<Slider signal>` | nothing renders while it moves |
 | a sketch or an app with no React | `createPane` | `pane.addBinding(object, key)` |
+| settings grouped into panes that trade sections | `createParamPanes` | groups drag between panes and tear off; `settings.store` is the same store |
 | a kind of value the package does not draw | `registerControl` | it joins every panel, with reset, undo and presets |
 
 A live reading is a `Graph` when its history matters and a `Meter` when only its level does. Give a frame time a `budget`.

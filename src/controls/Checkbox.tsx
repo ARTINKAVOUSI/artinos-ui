@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx, scopeAttrs } from '../core/utils';
 import type { ScopeProps } from '../core/utils';
 
@@ -13,6 +14,8 @@ export interface CheckboxProps extends ScopeProps {
   label?: ReactNode;
   /** A quieter second line under the label. */
   description?: ReactNode;
+  /** The value itself: read and written here. Takes the place of `checked`. */
+  signal?: Signal<boolean>;
   checked?: boolean;
   defaultChecked?: boolean;
   onChange?: (checked: boolean) => void;
@@ -26,8 +29,8 @@ export interface CheckboxProps extends ScopeProps {
   style?: CSSProperties;
 }
 
-export function Checkbox({ label, description, checked, defaultChecked = false, onChange, indeterminate = false, disabled, material, density, id, className, style, ...rest }: CheckboxProps) {
-  const [on, setOn] = useControllable(checked, defaultChecked, onChange);
+export function Checkbox({ label, description, signal, checked, defaultChecked = false, onChange, indeterminate = false, disabled, material, density, id, className, style, ...rest }: CheckboxProps) {
+  const [on, setOn] = useControllable(checked, defaultChecked, onChange, signal);
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (input.current) input.current.indeterminate = indeterminate;

@@ -1,5 +1,5 @@
 import type { DockCandidate, Rect, WorkspaceZone } from './types';
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+import { clamp } from '../../core/utils';
 export function dockFieldStrength(distance: number, radius = 72, power = 2) {
   if (radius <= 0 || distance >= radius) return 0;
   return Math.pow(1 - distance / radius, power);

@@ -1,5 +1,7 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { READOUT_MS } from '../core/reactive';
+import { windowOf } from '../core/realm';
 import { cx } from '../core/utils';
 import type { InstrumentTone } from './zones';
 
@@ -60,7 +62,9 @@ export function GraphTrace({ read, series, stacked, samples = 120, interval = 0,
     let raf = 0;
     let last = 0;
     let seen = true;
-    const watch = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([e]) => void (seen = e.isIntersecting));
+    // the trace's own window: its frames keep coming, and its observer can see it, when the panel is popped out
+    const view = windowOf(el);
+    const watch = typeof view.IntersectionObserver === 'undefined' ? null : new view.IntersectionObserver(([e]) => void (seen = e.isIntersecting));
     watch?.observe(el);
 
     const at = (s: number, i: number) => rings[s][(head - filled + i + samples) % samples];
@@ -103,7 +107,7 @@ export function GraphTrace({ read, series, stacked, samples = 120, interval = 0,
       }
     };
     const frame = (now: number) => {
-      raf = requestAnimationFrame(frame);
+      raf = view.requestAnimationFrame(frame);
       if (!seen || now - last < interval) return;
       last = now;
       let total = 0;
@@ -118,9 +122,9 @@ export function GraphTrace({ read, series, stacked, samples = 120, interval = 0,
       el.toggleAttribute('data-over', budget !== undefined && total > budget);
       told.current?.(total);
     };
-    raf = requestAnimationFrame(frame);
+    raf = view.requestAnimationFrame(frame);
     return () => {
-      cancelAnimationFrame(raf);
+      view.cancelAnimationFrame(raf);
       watch?.disconnect();
     };
   }, [count, samples, interval, min, max, budget, stacked]);
@@ -145,29 +149,35 @@ export interface GraphProps extends Omit<GraphTraceProps, 'onSample'> {
   format?: (value: number) => string;
 }
 
-/** How often a figure changes: fast enough to feel live, slow enough to read. */
-const FIGURE_MS = 120;
+/** A figure that changes without React: `ref` goes on its span, and `show(value)` writes the text
+ *  straight to the page, at most every READOUT_MS however often it is called. */
+export function useLiveFigure(format: (value: number) => string) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const shownAt = useRef(0);
+  const written = useRef(format);
+  written.current = format;
+  const show = useCallback((value: number) => {
+    const now = performance.now();
+    if (now - shownAt.current < READOUT_MS || !ref.current) return;
+    shownAt.current = now;
+    ref.current.textContent = written.current(value);
+  }, []);
+  return { ref, show };
+}
 
 /** A name, a figure and a live trace beneath them. */
 export function Graph({ label, unit, decimals = 1, format, series, className, ...trace }: GraphProps) {
-  const figure = useRef<HTMLSpanElement>(null);
-  const shownAt = useRef(0);
-  const show = (v: number) => {
-    const now = performance.now();
-    if (now - shownAt.current < FIGURE_MS || !figure.current) return;
-    shownAt.current = now;
-    figure.current.textContent = format ? format(v) : v.toFixed(decimals);
-  };
+  const figure = useLiveFigure(format ?? ((v) => v.toFixed(decimals)));
   return (
     <div className={cx('ar-graph', className)}>
       <div className="ar-graph__head">
         <span className="ar-graph__name">{label}</span>
         <span className="ar-graph__figure">
-          <span ref={figure}>—</span>
+          <span ref={figure.ref}>—</span>
           {unit ? <em>{unit}</em> : null}
         </span>
       </div>
-      <GraphTrace label={label} series={series} onSample={show} {...trace} />
+      <GraphTrace label={label} series={series} onSample={figure.show} {...trace} />
       {series && series.length > 1 ? (
         <div className="ar-graph__legend">
           {series.map((s) => (

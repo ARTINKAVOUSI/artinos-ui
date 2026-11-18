@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { approach, spring, useFrames, type Spring } from './motion';
+import { windowOf } from './realm';
 import { reducedMotion } from './utils';
 
 /* How a live value moves, decided by what the value is. Every instrument in the family (Meter,
@@ -29,6 +30,8 @@ export type ReactiveMotion = MotionProfile | MotionTuning;
 
 /** Readings this close together are a feed at frame rate: nothing to interpolate between. */
 export const FRAME_GAP = 34;
+/** How often a written figure changes: fast enough to feel live, slow enough to read. */
+export const READOUT_MS = 120;
 /** Past this silence the feed has stopped, and the next change is a lone event again. */
 const IDLE_GAP = 1500;
 /** The longest a digit rolls; with less time than the cut it changes without rolling. */
@@ -145,8 +148,11 @@ export function useOnScreen(host: RefObject<Element | null> | undefined, resume:
   const seen = useRef(true);
   useEffect(() => {
     const el = host?.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(([e]) => {
+    if (!el) return;
+    // an observer only sees the window it was made in
+    const view = windowOf(el);
+    if (typeof view.IntersectionObserver === 'undefined') return;
+    const io = new view.IntersectionObserver(([e]) => {
       seen.current = e.isIntersecting;
       if (e.isIntersecting) resume();
     });
@@ -180,7 +186,7 @@ export function useFollower(value: number, motion: ReactiveMotion, draw: (x: num
     const moving = step(s, m.current, dt);
     const more = draw(s.x, s.target, dt);
     return (Boolean(read) && seen.current) || moving || Boolean(more);
-  });
+  }, host);
   const seen = useOnScreen(host, kick);
   useLayoutEffect(() => {
     const s = f.current;

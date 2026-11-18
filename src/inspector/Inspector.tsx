@@ -1,15 +1,17 @@
 'use client';
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { IconButton } from '../actions/IconButton';
 import { TextField } from '../controls/TextField';
-import { isPointerLocked, lockPointer, unlockPointer } from '../core/scrub';
+import { useCommands, useCommandScope } from '../core/commands';
+import { READOUT_MS } from '../core/reactive';
+import { isPointerLocked, lockPointer, precisionOf, unlockPointer } from '../core/scrub';
 import { signal } from '../core/signal';
 import type { Signal } from '../core/signal';
 import { useSignalValue } from '../core/useSignal';
-import { cx } from '../core/utils';
-import { GraphTrace } from '../display/Graph';
+import { cx, snapToStep } from '../core/utils';
+import { GraphTrace, useLiveFigure } from '../display/Graph';
 import { Section } from '../layout/Panel';
 import { PropertyRow } from '../layout/PropertyRow';
 import { ContextMenu, Menu } from '../overlays/Menu';
@@ -55,6 +57,12 @@ export interface InspectorProps {
   storageKey?: string;
   /** Rows learn a hardware controller from their right-click menu: `createMidiMap(store, items)`. */
   midi?: MidiMap;
+  /** Show the rows marked `advanced`. */
+  advanced?: boolean;
+  /** Keys never drawn as rows (an app may keep one in its own toolbar). */
+  hide?: readonly string[];
+  /** Rows take keyframes. Default true; off for settings that are not animated. */
+  keyframes?: boolean;
   className?: string;
   style?: CSSProperties;
 }
@@ -88,35 +96,23 @@ const SEARCH = (
   </svg>
 );
 
-/** How often a monitor's figure changes: fast enough to feel live, slow enough to read. */
-const FIGURE_MS = 120;
-
 /** A monitor: what the app reports, sampled while on screen and written straight to the page. Its name
  *  and figure on one line, and with `graph` a trace across the panel beneath them. */
 function MonitorRow({ item: m }: { item: InspectMonitor }) {
-  const figure = useRef<HTMLSpanElement>(null);
-  const shownAt = useRef(0);
+  const { ref, show } = useLiveFigure((v) => (Number.isFinite(v) ? v.toFixed(m.decimals ?? 1) : '—'));
   const read = useRef(m.read);
   read.current = m.read;
-  const show = (v: number) => {
-    const now = performance.now();
-    if (now - shownAt.current < FIGURE_MS || !figure.current) return;
-    shownAt.current = now;
-    figure.current.textContent = Number.isFinite(v) ? v.toFixed(m.decimals ?? 1) : '—';
-  };
-  const showRef = useRef(show);
-  showRef.current = show;
   useEffect(() => {
     if (m.graph) return;
-    showRef.current(read.current());
-    const id = setInterval(() => showRef.current(read.current()), m.interval ?? FIGURE_MS);
+    show(read.current());
+    const id = setInterval(() => show(read.current()), m.interval ?? READOUT_MS);
     return () => clearInterval(id);
-  }, [m.graph, m.interval]);
+  }, [m.graph, m.interval, show]);
   return (
     <div className="ar-inspector__row ar-inspector__monitor" data-kind="monitor" data-control={m.key} title={m.help}>
       <span className="ar-inspector__name">{m.label}</span>
       <span className="ar-inspector__figure">
-        <span ref={figure}>—</span>
+        <span ref={ref}>—</span>
         {m.unit ? <em>{m.unit}</em> : null}
       </span>
       {m.graph ? <GraphTrace label={m.label} read={() => read.current()} min={m.min} max={m.max} budget={m.budget} samples={96} interval={m.interval ?? 50} onSample={show} /> : null}
@@ -155,14 +151,14 @@ function FollowingControl(props: LiveProps) {
   return <Component {...controlProps(props, value)} />;
 }
 
-function Row({ item: p, items, store, st, midi, midiState }: { item: InspectItem; items: readonly InspectItem[]; store: InspectorStore; st: InspectorState; midi?: MidiMap; midiState: MidiState }) {
+function Row({ item: p, items, store, st, midi, midiState, keyframes }: { item: InspectItem; items: readonly InspectItem[]; store: InspectorStore; st: InspectorState; midi?: MidiMap; midiState: MidiState; keyframes: boolean }) {
   const scrub = useRef<{ id: number; x: number; v: number; moved: boolean; el: HTMLElement } | null>(null);
   if (p.kind === 'monitor') return <MonitorRow item={p} />;
   const field = isField(p);
   const value: InspectValue = field ? (st.values[p.key] ?? p.default) : 0;
   const modified = field && !sameValue(value, p.default);
   const control = controlOf(p);
-  const canKey = field && (control?.animatable ?? false);
+  const canKey = keyframes && field && (control?.animatable ?? false);
   const track = st.tracks[p.key];
   const keyed = !!keyAt(track, st.time);
   const link = st.links[p.key];
@@ -231,8 +227,8 @@ function Row({ item: p, items, store, st, midi, midiState }: { item: InspectItem
     }
     const step = p.step ?? 0.01;
     const range = p.min !== undefined && p.max !== undefined ? p.max - p.min : step * 200;
-    s.v = Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, s.v + (dx / 200) * range * (e.altKey ? 0.1 : e.shiftKey ? 4 : 1)));
-    store.scrub(p.key, Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, Number((Math.round(s.v / step) * step).toFixed(6)))));
+    s.v = Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, s.v + (dx / 200) * range * precisionOf(e)));
+    store.scrub(p.key, Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, snapToStep(s.v, step))));
   };
   const onPointerUp = () => {
     if (!scrub.current) return;
@@ -272,10 +268,10 @@ function Row({ item: p, items, store, st, midi, midiState }: { item: InspectItem
               <button type="button" className="ar-inspector__key" aria-pressed={keyed} aria-label={`${keyed ? 'Remove' : 'Add'} keyframe: ${p.label}`} title={keyed ? 'Remove keyframe' : 'Add keyframe here'} onClick={() => store.toggleKey(p.key)}>
                 {KEY}
               </button>
-            ) : (
+            ) : keyframes ? (
               // every row keeps the diamond's place, so all controls end on one line
               <span className="ar-inspector__key" data-empty aria-hidden />
-            )
+            ) : undefined
           }
         >
           {liveProps ? control?.transient ? <TransientControl {...liveProps} /> : field ? <FollowingControl {...liveProps} /> : <TransientControl {...liveProps} /> : null}
@@ -298,11 +294,34 @@ function download(name: string, text: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, labelWidth, storageKey, midi, className, style }: InspectorProps) {
+/** Undo and redo for a store's values, for any bar. */
+export function ValueHistory({ store }: { store: InspectorStore }) {
+  const st = useSyncExternalStore(store.subscribe, store.state, store.state);
+  return (
+    <>
+      <IconButton size="sm" label="Undo" icon={UNDO} disabled={!st.undoable} onClick={() => store.undo()} />
+      <IconButton size="sm" label="Redo" icon={REDO} disabled={!st.redoable} onClick={() => store.redo()} />
+    </>
+  );
+}
+
+interface FolderViewProps {
+  items: readonly InspectItem[];
+  folders?: readonly InspectFolder[];
+  store: InspectorStore;
+  midi?: MidiMap;
+  storageKey?: string;
+  advanced?: boolean;
+  hide?: readonly string[];
+  keyframes?: boolean;
+  /** Only rows matching this search. */
+  query?: string;
+}
+
+/** Rows and folders from a schema: what an Inspector draws, and what a dockable section draws. */
+function useFolderView({ items, folders = [], store, midi, storageKey, advanced = false, hide = [], keyframes = true, query = '' }: FolderViewProps) {
   const st = useSyncExternalStore(store.subscribe, store.state, store.state);
   const midiState = useSignalValue(midi?.state ?? NO_MIDI);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
 
   const tree = useMemo(() => {
@@ -314,24 +333,33 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
   const owners = useMemo(() => new Set(folders.map((f) => f.switch).filter(Boolean)), [folders]);
 
   const shown = (p: InspectItem) =>
-    !owners.has(p.key) && (!p.when || p.when(st.values)) && (!q || p.label.toLowerCase().includes(q) || (p.folder ? (title.get(p.folder) ?? '').includes(q) : false));
+    !owners.has(p.key) && !hide.includes(p.key) && (advanced || !p.advanced) && (!p.when || p.when(st.values)) && (!q || p.label.toLowerCase().includes(q) || (p.folder ? (title.get(p.folder) ?? '').includes(q) : false));
   const rowsOf = (folder: string | undefined) => items.filter((p) => p.folder === folder && shown(p));
-  const fieldsUnder = (folder: InspectFolder): InspectItem[] => [...items.filter((p) => p.folder === folder.id), ...(tree.get(folder.id) ?? []).flatMap(fieldsUnder)];
+  const fieldsUnder = (folder: InspectFolder): InspectItem[] => [...items.filter((p) => p.folder === folder.id && !hide.includes(p.key)), ...(tree.get(folder.id) ?? []).flatMap(fieldsUnder)];
   const emptyUnder = (folder: InspectFolder): boolean => rowsOf(folder.id).length === 0 && (tree.get(folder.id) ?? []).every(emptyUnder);
 
-  const row = (p: InspectItem) => <Row key={p.key} item={p} items={items} store={store} st={st} midi={midi} midiState={midiState} />;
+  const row = (p: InspectItem) => <Row key={p.key} item={p} items={items} store={store} st={st} midi={midi} midiState={midiState} keyframes={keyframes} />;
 
-  const folder = (f: InspectFolder): ReactNode => {
-    if (emptyUnder(f)) return null;
+  /** One folder as a Section. `alone`: it stands outside an Inspector, as a dockable section. */
+  const folder = (f: InspectFolder, alone = false): ReactNode => {
+    if (!alone && emptyUnder(f)) return null;
     const rows = rowsOf(f.id);
     const changed = fieldsUnder(f).filter((p) => isField(p) && !sameValue(st.values[p.key], p.default));
     const owner = f.switch ? items.find((p) => p.key === f.switch) : undefined;
     const switchable = owner ? { enabled: Boolean(st.values[owner.key]), onEnabledChange: (on: boolean) => store.set(owner.key, on) } : {};
+    const body = (
+      <>
+        {rows.map(row)}
+        {(tree.get(f.id) ?? []).map((kid) => folder(kid))}
+      </>
+    );
     return (
       <Section
         key={f.id}
         id={f.id}
         title={f.title}
+        description={f.description}
+        count={f.count ? rows.length : undefined}
         modified={changed.length > 0}
         onReset={() => store.reset(changed.map((p) => p.key))}
         storageKey={storageKey ? `${storageKey}.${f.id}` : undefined}
@@ -339,11 +367,32 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
         open={q ? true : undefined}
         {...switchable}
       >
-        {rows.map(row)}
-        {(tree.get(f.id) ?? []).map(folder)}
+        {alone ? (
+          <div className="ar-inspector">
+            <div className="ar-inspector__body">{body}</div>
+          </div>
+        ) : (
+          body
+        )}
       </Section>
     );
   };
+  return { st, tree, rowsOf, row, folder };
+}
+
+/** One folder of a schema on its own, as a `Section`: for sections that move between panes (`createDockSections`). */
+export function InspectorFolder({ id, ...view }: FolderViewProps & { id: string }) {
+  const { folder } = useFolderView(view);
+  const f = view.folders?.find((x) => x.id === id);
+  return f ? <>{folder(f, true)}</> : null;
+}
+
+export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, labelWidth, storageKey, midi, advanced, hide, keyframes, className, style }: InspectorProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState('');
+  const { st, tree, rowsOf, row, folder } = useFolderView({ items, folders, store, midi, storageKey, advanced, hide, keyframes, query });
+  const commandId = useId();
+  const scope = useCommandScope();
 
   const top = (tree.get(undefined) ?? []).filter((f) => !only || only.includes(f.id));
   const loose = only ? [] : rowsOf(undefined);
@@ -364,11 +413,27 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
     { id: '+import', label: 'Import values', onSelect: () => fileRef.current?.click() },
     { id: '+link', label: 'Copy link to these values', onSelect: () => void navigator.clipboard?.writeText(store.toURL()) },
   ];
-  const body = [...loose.map(row), ...top.map(folder)].filter(Boolean);
+  const body = [...loose.map(row), ...top.map((f) => folder(f))].filter(Boolean);
+
+  // what the bar can do, the workspace's command palette can do too
+  useCommands(() => {
+    if (!bar) return [];
+    const group = scope ?? 'Values';
+    const entry = (id: string, label: string, run: () => void) => ({ id: `${commandId}.${id}`, label, group, keywords: 'values parameters', run });
+    return [
+      entry('undo', 'Undo value change', () => store.undo()),
+      entry('redo', 'Redo value change', () => store.redo()),
+      entry('roll', 'Randomize values', () => void store.randomize()),
+      entry('reset', 'Reset all values', () => store.reset()),
+      entry('export', 'Export values', () => download('values.json', JSON.stringify(store.toJSON(), null, 2))),
+      entry('link', 'Copy link to these values', () => void navigator.clipboard?.writeText(store.toURL())),
+      ...names.map((name) => entry(`preset.${name}`, `Preset: ${name}`, () => store.apply(st.saved[name] ?? presets[name]))),
+    ];
+  }, `${bar}|${scope}|${names.join()}`);
 
   const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
     if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z' || (e.target as HTMLElement).matches('input, textarea')) return;
-    e.preventDefault();
+    e.preventDefault(); // values, not the layout around them: the Dock leaves a handled key alone
     if (e.shiftKey) store.redo();
     else store.undo();
   };
@@ -379,8 +444,7 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
         <div className="ar-inspector__bar">
           {toolbar}
           {search ? <TextField size="sm" className="ar-inspector__search" icon={SEARCH} clearable aria-label="Find a parameter" placeholder="Find" value={query} onChange={setQuery} /> : <span className="ar-inspector__spacer" />}
-          <IconButton size="sm" label="Undo" icon={UNDO} disabled={!st.undoable} onClick={store.undo} />
-          <IconButton size="sm" label="Redo" icon={REDO} disabled={!st.redoable} onClick={store.redo} />
+          <ValueHistory store={store} />
           <input
             ref={fileRef}
             type="file"

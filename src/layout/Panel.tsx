@@ -88,7 +88,7 @@ export function Panel({ title, subtitle, icon, actions, tabs, tabsPlacement = 't
   );
   return (
     <Tag ref={rootRef} id={id} data-ar-label-fit={fit ? '' : undefined} className={cx('ar-panel', className)} data-variant={variant === 'glass' ? undefined : variant} data-open={shown ? '' : undefined} data-tabs={tabs && tabsPlacement === 'side' ? 'side' : undefined} data-pane={inPane ? '' : undefined} aria-label={inPane && typeof title === 'string' ? title : undefined} style={{ ...labelColumn(labelWidth), ...style }} {...hiding} inert={(hiding && !ui.visible) || undefined}>
-      {(inPane ? subtitle || actions : title || subtitle || actions || icon) ? (
+      {(inPane ? subtitle || actions || collapsible : title || subtitle || actions || icon) ? (
         <header className="ar-panel__head">
           {icon && !inPane ? <span className="ar-panel__icon">{icon}</span> : null}
           {collapsible ? (

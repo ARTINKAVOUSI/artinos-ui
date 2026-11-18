@@ -28,9 +28,9 @@ import {
 import { resolveWorkspaceRects, resolveZoneRect } from './layout';
 import { useWorkspaceRevision } from './hooks';
 import { MetaBlockBody } from './BlockBody';
+import { clamp } from '../../core/utils';
 
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-const rect = (x: number, y: number, width: number, height: number): Rect => ({ x, y, width, height, left: x, top: y, right: x + width, bottom: y + height });
+const rect =(x: number, y: number, width: number, height: number): Rect => ({ x, y, width, height, left: x, top: y, right: x + width, bottom: y + height });
 /** Releasing a pointer the element never captured throws; a synthetic or cancelled gesture can get here. */
 /** Capturing a pointer that is no longer active throws (synthetic events, a gesture already ended). */
 const captureSafely = (event: PointerEvent<HTMLElement>) => {

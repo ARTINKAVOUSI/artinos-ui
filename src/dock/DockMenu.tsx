@@ -99,7 +99,7 @@ export function DockMenu({ model, close, tabs }: DockMenuProps) {
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const buttons = [...(root.current?.querySelectorAll<HTMLButtonElement>('[data-item]:not(:disabled)') ?? [])];
-    const at = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    const at = buttons.indexOf(event.currentTarget.ownerDocument.activeElement as HTMLButtonElement);
     let next = -1;
     if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (at + 1) % buttons.length;
     else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (at - 1 + buttons.length) % buttons.length;

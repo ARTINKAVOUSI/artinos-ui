@@ -164,7 +164,7 @@ export function Sparkline({ values, min, max, width = 120, height = 28, fill = t
     const ranging = Math.abs(s.lo.x - lo) + Math.abs(s.hi.x - hi) > 1e-6 || s.lo.v !== 0 || s.hi.v !== 0;
     return offset > 1e-3 || ranging || s.play.v !== 0 || now < last.t + delay + 50;
   };
-  const kick = useFrames(paint);
+  const kick = useFrames(paint, lineRef);
 
   useLayoutEffect(() => {
     const s = st.current;

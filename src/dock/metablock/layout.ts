@@ -1,6 +1,6 @@
 import type { MetaBlockWorkspace } from './workspace';
 import type { LayoutNode, Rect } from './types';
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+import { clamp } from '../../core/utils';
 const make = (x: number, y: number, width: number, height: number): Rect => ({ x, y, width, height, left: x, top: y, right: x + width, bottom: y + height });
 /* root docks: the narrowest a side column gets (px), and the most of the remaining space it may take */
 const MIN_SIDE = 220;

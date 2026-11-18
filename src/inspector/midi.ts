@@ -3,6 +3,7 @@
    MIDI access, asked for only when the first row learns. */
 import { signal } from '../core/signal';
 import type { ReadSignal } from '../core/signal';
+import { readStored, snapToStep, writeStored } from '../core/utils';
 import type { InspectItem, InspectorStore } from './store';
 
 export interface MidiBinding {
@@ -60,7 +61,7 @@ function played(item: InspectItem, u: number) {
     case 'number': {
       if (item.min === undefined || item.max === undefined) return undefined;
       const raw = item.face === 'log' && item.min > 0 ? item.min * Math.pow(item.max / item.min, u) : item.min + (item.max - item.min) * u;
-      return item.step ? Number((Math.round(raw / item.step) * item.step).toFixed(6)) : raw;
+      return item.step ? snapToStep(raw, item.step) : raw;
     }
     case 'toggle':
       return u >= 0.5;
@@ -75,25 +76,12 @@ function played(item: InspectItem, u: number) {
 export const midiPlayable = (item: InspectItem) => played(item, 0) !== undefined;
 
 export function createMidiMap(store: InspectorStore, items: readonly InspectItem[], { storageKey, access = webMidi() }: MidiMapOptions = {}): MidiMap {
-  const saved = (): MidiBinding[] => {
-    if (!storageKey || typeof localStorage === 'undefined') return [];
-    try {
-      return JSON.parse(localStorage.getItem(storageKey) ?? '[]');
-    } catch {
-      return [];
-    }
-  };
-  const state = signal<MidiState>({ supported: !!access, connected: false, learning: null, bindings: saved(), error: null });
+  const state = signal<MidiState>({ supported: !!access, connected: false, learning: null, bindings: storageKey ? readStored<MidiBinding[]>(storageKey, []) : [], error: null });
   let opened: MidiAccessLike | null = null;
   const patch = (next: Partial<MidiState>) => state.set({ ...state.peek(), ...next });
   const keep = (bindings: MidiBinding[]) => {
     patch({ bindings, learning: null });
-    if (storageKey && typeof localStorage !== 'undefined')
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(bindings));
-      } catch {
-        /* storage is best-effort */
-      }
+    if (storageKey) writeStored(storageKey, bindings);
   };
 
   const handle = (data: ArrayLike<number>) => {

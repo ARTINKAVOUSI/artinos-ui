@@ -2,6 +2,7 @@
 import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { windowOf } from '../core/realm';
 import { cx } from '../core/utils';
 
 /** Gap between bar items in the strip (Dock.css), and room kept free so the strip never feels jammed. */
@@ -48,7 +49,9 @@ export function PanelBar({ className, children }: { className?: string; children
   const need = useRef(0);
 
   useLayoutEffect(() => {
-    const slot = panelId ? document.querySelector<HTMLElement>(`[data-panel-slot="${CSS.escape(panelId)}"]`) : null;
+    // the slot is in the window the panel is in
+    const view = windowOf(bar.current);
+    const slot = panelId ? view.document.querySelector<HTMLElement>(`[data-panel-slot="${CSS.escape(panelId)}"]`) : null;
     const strip = slot?.parentElement;
     if (!slot || !strip) {
       setHost(null);
@@ -62,7 +65,7 @@ export function PanelBar({ className, children }: { className?: string; children
       setHost(need.current > 0 && room >= need.current + BREATHING ? slot : null);
     };
     measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new view.ResizeObserver(measure);
     observer.observe(strip);
     if (bar.current) observer.observe(bar.current);
     return () => observer.disconnect();

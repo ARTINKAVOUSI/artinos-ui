@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, type RefObject } from 'react';
+import { windowOf } from './realm';
 import { reducedMotion } from './utils';
 
 /* Drag to reorder, and to move between containers. One engine for ItemList rows and
@@ -56,6 +57,9 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
     if (!el) return;
     const me: Registered = { el, opts };
     containers.add(me);
+    // the window this container is in: a drag starts, moves and lands inside it
+    const view = windowOf(el);
+    const doc = el.ownerDocument;
 
     let drag: {
       item: HTMLElement;
@@ -76,14 +80,14 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
       for (let n: HTMLElement | null = t; n && n !== el; n = n.parentElement) if (items.includes(n)) return n;
       return null;
     };
-    const peers = () => [...containers].filter((c) => c === me || (opts.current.group && c.opts.current.group === opts.current.group && c.opts.current.enabled));
+    const peers = () => [...containers].filter((c) => c === me || (c.el.ownerDocument === doc && opts.current.group && c.opts.current.group === opts.current.group && c.opts.current.enabled));
 
     const place = (x: number, y: number) => {
       // the container under the pointer (the innermost one), then the gap nearest it. Only
       // containers on the surface that is on top there count: a floating panel over a pane
       // takes the drop, not the pane hidden beneath it.
       let pool = peers();
-      const top = document.elementsFromPoint(x, y).find((n) => !drag!.item.contains(n) && n !== drag!.line);
+      const top = doc.elementsFromPoint(x, y).find((n) => !drag!.item.contains(n) && n !== drag!.line);
       for (let n = top ?? null; n; n = n.parentElement) {
         const inside = pool.filter((c) => n!.contains(c.el));
         if (inside.length) {
@@ -112,9 +116,9 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
     const showLine = (t: NonNullable<ReturnType<typeof place>>) => {
       if (!drag) return;
       if (!drag.line) {
-        drag.line = document.createElement('div');
+        drag.line = doc.createElement('div');
         drag.line.className = 'ar-sort-line';
-        document.body.appendChild(drag.line);
+        doc.body.appendChild(drag.line);
       }
       const box = t.c.el.getBoundingClientRect();
       let y: number;
@@ -129,7 +133,7 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
       const d = drag;
       drag = null;
       d.line?.remove();
-      document.documentElement.removeAttribute('data-ar-sorting');
+      doc.documentElement.removeAttribute('data-ar-sorting');
       if (!d.live) return;
       d.item.removeAttribute('data-dragging');
       d.item.style.transform = '';
@@ -138,8 +142,8 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
         e.stopPropagation();
         e.preventDefault();
       };
-      window.addEventListener('click', swallow, { capture: true, once: true });
-      setTimeout(() => window.removeEventListener('click', swallow, { capture: true }), 0);
+      view.addEventListener('click', swallow, { capture: true, once: true });
+      setTimeout(() => view.removeEventListener('click', swallow, { capture: true }), 0);
       d.item.removeAttribute('data-tearing');
       if (commit && !d.target && opts.current.onTearOff) {
         opts.current.onTearOff({ list: opts.current.id, index: d.from }, { x: d.x, y: d.y });
@@ -172,7 +176,7 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
         if (Math.hypot(dx, dy) < 5) return;
         drag.live = true;
         drag.item.setAttribute('data-dragging', '');
-        document.documentElement.setAttribute('data-ar-sorting', '');
+        doc.documentElement.setAttribute('data-ar-sorting', '');
       }
       e.preventDefault();
       drag.x = e.clientX;
@@ -207,19 +211,19 @@ export function useSortable(ref: RefObject<HTMLElement | null>, options: Sortabl
 
     el.addEventListener('pointerdown', onDown);
     el.addEventListener('keydown', onKey);
-    window.addEventListener('pointermove', onMovePtr, { passive: false });
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onCancel);
-    window.addEventListener('keydown', onEsc);
+    view.addEventListener('pointermove', onMovePtr, { passive: false });
+    view.addEventListener('pointerup', onUp);
+    view.addEventListener('pointercancel', onCancel);
+    view.addEventListener('keydown', onEsc);
     return () => {
       end(false);
       containers.delete(me);
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('keydown', onKey);
-      window.removeEventListener('pointermove', onMovePtr);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onCancel);
-      window.removeEventListener('keydown', onEsc);
+      view.removeEventListener('pointermove', onMovePtr);
+      view.removeEventListener('pointerup', onUp);
+      view.removeEventListener('pointercancel', onCancel);
+      view.removeEventListener('keydown', onEsc);
     };
   }, [ref]);
 }

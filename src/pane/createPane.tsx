@@ -8,6 +8,7 @@ import type { ReadSignal, Signal } from '../core/signal';
 import { useSignalValue } from '../core/useSignal';
 import { Dock } from '../dock/Dock';
 import { Inspector } from '../inspector/Inspector';
+import type { InspectorProps } from '../inspector/Inspector';
 import { createInspectorStore } from '../inspector/store';
 import type { InspectDocument, InspectFolder, InspectItem, InspectorStore, InspectValue, RandomizeOptions } from '../inspector/store';
 import { itemFor, nameOf } from './schema';
@@ -37,6 +38,10 @@ export interface PaneOptions extends Pick<ArtinosThemeProps, 'theme' | 'density'
   persist?: string;
   /** Carry the changed values in the page's address. */
   url?: boolean | string;
+  /** Built-in presets by name. */
+  presets?: InspectorProps['presets'];
+  /** Keep presets saved from the panel in localStorage under this key. */
+  storageKey?: string;
 }
 
 export type BindingOptions = Omit<ControlOptions, 'value'>;
@@ -98,11 +103,11 @@ function codecFor(object: Record<string, unknown>, key: string): Codec {
   return { read: () => object[key] as InspectValue, write: (v) => void (object[key] = v) };
 }
 
-function PaneView({ items, folders, store, title, bounds, overlay }: { items: ReadSignal<readonly InspectItem[]>; folders: ReadSignal<readonly InspectFolder[]>; store: InspectorStore; title: string; bounds?: PaneOptions['bounds']; overlay: boolean }) {
+function PaneView({ items, folders, store, title, bounds, overlay, presets }: { items: ReadSignal<readonly InspectItem[]>; folders: ReadSignal<readonly InspectFolder[]>; store: InspectorStore; title: string; bounds?: PaneOptions['bounds']; overlay: boolean; presets?: InspectorProps['presets'] }) {
   const rows = useSignalValue(items);
   const groups = useSignalValue(folders);
   // the content changes as rows are added; the panel, and where the user put it, stays
-  const content = useMemo(() => <Inspector items={rows} folders={groups} store={store} />, [rows, groups, store]);
+  const content = useMemo(() => <Inspector items={rows} folders={groups} store={store} presets={presets} />, [rows, groups, store, presets]);
   return (
     <Dock
       className={overlay ? 'ar-pane-layer' : undefined}
@@ -113,12 +118,12 @@ function PaneView({ items, folders, store, title, bounds, overlay }: { items: Re
   );
 }
 
-export function createPane({ title = 'Controls', container, bounds, theme, density = 'dense', type, persist, url }: PaneOptions = {}): Pane {
+export function createPane({ title = 'Controls', container, bounds, theme, density = 'dense', type, persist, url, presets, storageKey }: PaneOptions = {}): Pane {
   const virtual: Record<string, unknown> = {};
   const items = signal<readonly InspectItem[]>([]);
   const folders = signal<readonly InspectFolder[]>([]);
   const listeners = new Set<(key: string, value: InspectValue) => void>();
-  const store = createInspectorStore([], { target: virtual, persist, url, onChange: (key, value) => listeners.forEach((l) => l(key, value)) });
+  const store = createInspectorStore([], { target: virtual, persist, url, storageKey, onChange: (key, value) => listeners.forEach((l) => l(key, value)) });
 
   // a root of its own inside the container: a pane can be replaced while the last one is still leaving
   const host = (container ?? document.body).appendChild(document.createElement('div'));
@@ -126,7 +131,7 @@ export function createPane({ title = 'Controls', container, bounds, theme, densi
   const root = createRoot(host);
   root.render(
     <ArtinosTheme theme={theme} density={density} type={type} style={{ display: 'contents' }}>
-      <PaneView items={items} folders={folders} store={store} title={title} bounds={bounds} overlay={!container} />
+      <PaneView items={items} folders={folders} store={store} title={title} bounds={bounds} overlay={!container} presets={presets} />
     </ArtinosTheme>,
   );
 

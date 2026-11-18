@@ -14,11 +14,11 @@
      reset: () => restart()                         a button
      Look: folder({ glow: 2 })                      a folder
 */
-import type { NumberFace } from '../dock/params';
+import { fullHex } from '../core/utils';
 import { controlMatching } from '../inspector/registry';
-import type { InspectFolder, InspectItem, InspectMonitor, InspectValue } from '../inspector/store';
+import type { InspectCustom, InspectFolder, InspectItem, InspectMonitor, InspectValue, NumberFace } from '../inspector/store';
 
-type Common = Partial<Pick<InspectItem, 'label' | 'help' | 'when' | 'locked'>>;
+type Common = Partial<Pick<InspectItem, 'label' | 'help' | 'when' | 'locked' | 'advanced'>>;
 
 export interface ControlOptions<V = unknown> extends Common {
   value: V;
@@ -35,6 +35,16 @@ export interface ControlOptions<V = unknown> extends Common {
   check?: InspectItem['check'];
   xRange?: [number, number];
   yRange?: [number, number];
+  /** A pad's height in px. */
+  height?: number;
+  /** A range's smallest width. */
+  minSpan?: number;
+  /** A colour takes an opacity. */
+  alpha?: boolean;
+  /** A text field's hint. */
+  placeholder?: string;
+  /** A random value for a registered control. */
+  randomize?: InspectCustom['randomize'];
 }
 
 const MONITOR = Symbol('artinos.monitor');
@@ -51,6 +61,8 @@ export interface FolderEntry<S extends ControlSchema = ControlSchema> {
   [FOLDER]: true;
   schema: S;
   open: boolean;
+  /** A toggle in this folder that turns the whole folder on or off. */
+  switch?: string;
 }
 
 export type ControlEntry = number | boolean | string | readonly number[] | (() => void) | ControlOptions | MonitorEntry | FolderEntry;
@@ -59,7 +71,7 @@ export type ControlSchema = { readonly [key: string]: ControlEntry };
 /** A read-out of something the app reports. */
 export const monitor = (read: () => number, options: MonitorOptions = {}): MonitorEntry => ({ [MONITOR]: true, read, options });
 /** A folder of rows. Its keys share the panel's values, flat. */
-export const folder = <S extends ControlSchema>(schema: S, { open = true }: { open?: boolean } = {}): FolderEntry<S> => ({ [FOLDER]: true, schema, open });
+export const folder = <S extends ControlSchema>(schema: S, { open = true, switch: owner }: { open?: boolean; switch?: string } = {}): FolderEntry<S> => ({ [FOLDER]: true, schema, open, switch: owner });
 
 type Widen<V> = V extends number ? number : V extends boolean ? boolean : V extends string ? string : V extends readonly number[] ? number[] : V;
 type UnionToIntersection<U> = (U extends unknown ? (x: U) => void : never) extends (x: infer I) => void ? I : never;
@@ -69,7 +81,6 @@ type FoldersOf<S> = { [K in keyof S]: S[K] extends FolderEntry<infer F> ? Values
 /** The values a schema holds, folders flattened. */
 export type ValuesOf<S> = Flat<Holding<S> & ([FoldersOf<S>] extends [never] ? unknown : UnionToIntersection<FoldersOf<S>>)>;
 
-const HEX = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 export const nameOf = (key: string) => key.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
 /** One entry as the row it describes. Bare values that nothing claims throw: a typo should say so. */
@@ -77,21 +88,24 @@ export function itemFor(key: string, entry: Exclude<ControlEntry, MonitorEntry |
   const base = { key, label: nameOf(key), folder: folderId };
   if (typeof entry === 'function') return { ...base, kind: 'action', run: entry };
   const given = (typeof entry === 'object' && !Array.isArray(entry) ? entry : { value: entry }) as unknown as ControlOptions;
-  const { value, min, max, step, unit, face, options, control, props, check, xRange, yRange, label, help, when, locked } = given;
-  const row = { ...base, ...(label ? { label } : null), help, when, locked, check };
+  const { value, min, max, step, unit, face, options, control, props, check, xRange, yRange, height, minSpan, alpha, placeholder, randomize, label, help, when, locked, advanced } = given;
+  const row = { ...base, ...(label ? { label } : null), help, when, locked, advanced, check };
   const claimed = control ?? controlMatching(value);
-  if (claimed) return { ...row, kind: 'custom', control: claimed, default: value as InspectValue, options: props };
+  if (claimed) return { ...row, kind: 'custom', control: claimed, default: value as InspectValue, options: props, randomize };
   if (options) {
     const list = options.map((o) => (typeof o === 'string' ? { value: o, label: nameOf(o) } : o));
     return { ...row, kind: 'choice', default: String(value), options: list };
   }
   if (typeof value === 'number') return { ...row, kind: 'number', default: value, min, max, step, unit, face };
   if (typeof value === 'boolean') return { ...row, kind: 'toggle', default: value };
-  if (typeof value === 'string') return HEX.test(value) ? { ...row, kind: 'color', default: value } : { ...row, kind: 'text', default: value };
+  if (typeof value === 'string') {
+    const colour = fullHex(value);
+    return colour ? { ...row, kind: 'color', default: colour, alpha } : { ...row, kind: 'text', default: value, placeholder };
+  }
   if (Array.isArray(value) && value.every((v) => typeof v === 'number')) {
     if (value.length === 3) return { ...row, kind: 'vector', default: value as [number, number, number], min, max, step, unit };
-    if (value.length === 2 && min !== undefined && max !== undefined) return { ...row, kind: 'range', default: value as [number, number], min, max, step, unit };
-    if (value.length === 2) return { ...row, kind: 'point', default: value as [number, number], xRange, yRange };
+    if (value.length === 2 && min !== undefined && max !== undefined) return { ...row, kind: 'range', default: value as [number, number], min, max, step, unit, minSpan };
+    if (value.length === 2) return { ...row, kind: 'point', default: value as [number, number], xRange, yRange, height };
   }
   throw new Error(`ARTINOS controls: no control for "${key}". Give it a value of a known shape, or name a registered control.`);
 }
@@ -103,7 +117,7 @@ export function readSchema(schema: ControlSchema, parent?: string, path = '') {
   for (const [key, entry] of Object.entries(schema)) {
     if (typeof entry === 'object' && entry !== null && FOLDER in entry) {
       const id = `${path}${key}`;
-      folders.push({ id, title: nameOf(key), parent, open: entry.open });
+      folders.push({ id, title: nameOf(key), parent, open: entry.open, switch: entry.switch });
       const inner = readSchema(entry.schema, id, `${id}/`);
       items.push(...inner.items);
       folders.push(...inner.folders);

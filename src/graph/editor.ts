@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { createHistory } from '../core/history';
 import { connectionError, createNode, edgesInto, topologicalOrder, type GraphDefinition, type GraphEdge, type GraphNode } from './graph';
 
 const HISTORY_LIMIT = 60;
@@ -13,7 +14,7 @@ let clipboard: { nodes: GraphNode[]; edges: GraphEdge[] } | null = null;
 
 export interface GraphEditor {
   graph: GraphDefinition;
-  apply(next: GraphDefinition, options?: { history?: boolean }): void;
+  apply(next: GraphDefinition, options?: { history?: boolean; merge?: string }): void;
   /** A drag is one undo entry: snapshot on the first move, push once on release. */
   beginGesture(): void;
   endGesture(): void;
@@ -49,17 +50,13 @@ export interface GraphEditor {
 export function useGraphEditor(graph: GraphDefinition, onChange: (next: GraphDefinition) => void): GraphEditor {
   const ref = useRef(graph);
   ref.current = graph;
-  const undoStack = useRef<GraphDefinition[]>([]);
-  const redoStack = useRef<GraphDefinition[]>([]);
+  const history = useRef(createHistory<GraphDefinition>({ limit: HISTORY_LIMIT })).current;
   const gesture = useRef<GraphDefinition | null>(null);
   const [, bump] = useState(0);
 
   const apply = useCallback(
-    (next: GraphDefinition, options: { history?: boolean } = {}) => {
-      if (options.history !== false && !gesture.current) {
-        undoStack.current = [...undoStack.current, clone(ref.current)].slice(-HISTORY_LIMIT);
-        redoStack.current = [];
-      }
+    (next: GraphDefinition, options: { history?: boolean; merge?: string } = {}) => {
+      if (options.history !== false && !gesture.current) history.record(clone(ref.current), next, { merge: options.merge });
       ref.current = next;
       onChange(next);
     },
@@ -77,26 +74,19 @@ export function useGraphEditor(graph: GraphDefinition, onChange: (next: GraphDef
         const baseline = gesture.current;
         gesture.current = null;
         if (!baseline || JSON.stringify(baseline) === JSON.stringify(ref.current)) return;
-        undoStack.current = [...undoStack.current, baseline].slice(-HISTORY_LIMIT);
-        redoStack.current = [];
+        history.record(baseline, clone(ref.current));
         bump((value) => value + 1);
       },
       undo() {
-        const previous = undoStack.current.at(-1);
-        if (!previous) return;
-        undoStack.current = undoStack.current.slice(0, -1);
-        redoStack.current = [...redoStack.current, clone(ref.current)].slice(-HISTORY_LIMIT);
-        apply(previous, { history: false });
+        const step = history.undo();
+        if (step) apply(step.before, { history: false });
       },
       redo() {
-        const next = redoStack.current.at(-1);
-        if (!next) return;
-        redoStack.current = redoStack.current.slice(0, -1);
-        undoStack.current = [...undoStack.current, clone(ref.current)].slice(-HISTORY_LIMIT);
-        apply(next, { history: false });
+        const step = history.redo();
+        if (step) apply(step.after, { history: false });
       },
-      canUndo: undoStack.current.length > 0,
-      canRedo: redoStack.current.length > 0,
+      canUndo: history.undoable > 0,
+      canRedo: history.redoable > 0,
 
       addNode(type, x, y) {
         const node = createNode(type, snap(x), snap(y));
@@ -187,10 +177,14 @@ export function useGraphEditor(graph: GraphDefinition, onChange: (next: GraphDef
         );
       },
       setField(nodeId, fieldId, value) {
-        apply({
-          ...ref.current,
-          nodes: ref.current.nodes.map((node) => (node.id === nodeId ? { ...node, data: { ...(node.data ?? {}), [fieldId]: value } } : node)),
-        });
+        // one drag on a field is one undo step
+        apply(
+          {
+            ...ref.current,
+            nodes: ref.current.nodes.map((node) => (node.id === nodeId ? { ...node, data: { ...(node.data ?? {}), [fieldId]: value } } : node)),
+          },
+          { merge: `${nodeId}.${fieldId}` },
+        );
       },
       rename(nodeId, label) {
         apply({ ...ref.current, nodes: ref.current.nodes.map((node) => (node.id === nodeId ? { ...node, label: label || undefined } : node)) });

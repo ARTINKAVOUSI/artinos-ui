@@ -4,6 +4,7 @@ import { signal } from '../core/signal';
 import type { Signal } from '../core/signal';
 import { useSignalValue } from '../core/useSignal';
 import { Inspector } from '../inspector/Inspector';
+import type { InspectorProps } from '../inspector/Inspector';
 import { createInspectorStore, isField } from '../inspector/store';
 import type { InspectFolder, InspectItem, InspectorStore, InspectorStoreOptions, InspectValue, InspectValues } from '../inspector/store';
 import { Section } from '../layout/Panel';
@@ -144,18 +145,23 @@ export interface ControlsPanelProps {
   only?: readonly string[];
   /** The Find, Presets and Reset bar. Default true. */
   bar?: boolean;
+  /** Built-in presets by name, for every panel shown. */
+  presets?: InspectorProps['presets'];
+  /** Remembers each folder open or closed under this key. */
+  storageKey?: string;
   className?: string;
 }
 
 /** Everything the app declared with useControls. It is content: put it in a Dock panel or a Panel. */
-export function ControlsPanel({ only, bar = true, className }: ControlsPanelProps) {
+export function ControlsPanel({ only, bar = true, presets, storageKey, className }: ControlsPanelProps) {
   const list = useSignalValue(entries).filter((e) => !only || only.includes(e.name));
-  if (list.length === 1) return <Inspector items={list[0].items} folders={list[0].folders} store={list[0].store} bar={bar} className={className} />;
+  const shared = { bar, presets };
+  if (list.length === 1) return <Inspector items={list[0].items} folders={list[0].folders} store={list[0].store} storageKey={storageKey && `${storageKey}.${list[0].name}`} className={className} {...shared} />;
   return (
     <div className={className}>
       {list.map((e) => (
         <Section key={e.name} id={`controls-${e.name}`} title={e.name}>
-          <Inspector items={e.items} folders={e.folders} store={e.store} bar={bar} />
+          <Inspector items={e.items} folders={e.folders} store={e.store} storageKey={storageKey && `${storageKey}.${e.name}`} {...shared} />
         </Section>
       ))}
     </div>

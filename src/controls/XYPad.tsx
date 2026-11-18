@@ -1,11 +1,18 @@
 'use client';
 import { useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useControllable } from '../core/hooks';
 import { RollingValue } from '../core/RollingValue';
+import type { Signal } from '../core/signal';
+import { clamp01 } from '../core/utils';
 
 export interface XYPadProps {
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<[number, number]>;
   /** [x, y], each within its range. */
-  value: [number, number];
-  onChange: (value: [number, number]) => void;
+  value?: [number, number];
+  /** Where it starts when nothing else holds the value. Default: the middle of both ranges. */
+  defaultValue?: [number, number];
+  onChange?: (value: [number, number]) => void;
   label: string;
   xRange?: [number, number];
   yRange?: [number, number];
@@ -16,13 +23,12 @@ export interface XYPadProps {
   style?: CSSProperties;
 }
 
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-
 /**
  * XYPad — drag a point across a 2D field (pan, direction, two linked
  * parameters). Arrow keys move it; Shift for fine steps. Y grows upward.
  */
-export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 1], height = 110, onCommit, className, style }: XYPadProps) {
+export function XYPad({ signal, value: valueProp, defaultValue, onChange, label, xRange = [-1, 1], yRange = [-1, 1], height = 110, onCommit, className, style }: XYPadProps) {
+  const [value, setValue] = useControllable<[number, number]>(valueProp, defaultValue ?? [(xRange[0] + xRange[1]) / 2, (yRange[0] + yRange[1]) / 2], onChange, signal);
   const pad = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const tx = clamp01((value[0] - xRange[0]) / (xRange[1] - xRange[0] || 1));
@@ -32,7 +38,7 @@ export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 
   const place = (event: PointerEvent) => {
     const rect = pad.current!.getBoundingClientRect();
     const next = from((event.clientX - rect.left) / rect.width, 1 - (event.clientY - rect.top) / rect.height);
-    onChange(next);
+    setValue(next);
     return next;
   };
 
@@ -46,7 +52,7 @@ export function XYPad({ value, onChange, label, xRange = [-1, 1], yRange = [-1, 
     else return;
     event.preventDefault();
     const next = from(u, v);
-    onChange(next);
+    setValue(next);
     onCommit?.(next);
   };
 

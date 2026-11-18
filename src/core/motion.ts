@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { windowOf } from './realm';
 import { reducedMotion } from './utils';
 
 /* Motion helpers shared by the family. Durations and curves live in the tokens
@@ -121,29 +122,34 @@ export function spring(s: Spring, target: number, dt: number, smoothTime: number
 /**
  * Runs `frame(dt)` on every animation frame for as long as it returns true; the returned
  * `kick()` starts it again (call it when the target changes). Nothing re-renders: the frame
- * writes styles directly. Stops when the component unmounts.
+ * writes styles directly. Stops when the component unmounts. The frames come from the window
+ * `host` is in, so a panel in a window of its own keeps moving while the opener is hidden.
  */
-export function useFrames(frame: (dt: number) => boolean) {
+export function useFrames(frame: (dt: number) => boolean, host?: RefObject<Element | null>) {
   const fn = useRef(frame);
   fn.current = frame;
   const raf = useRef(0);
+  const clock = useRef<Window | null>(null);
   useEffect(
     () => () => {
       // reset as well as cancel: a remount (React's StrictMode runs effects twice) must be able to start again
-      cancelAnimationFrame(raf.current);
+      clock.current?.cancelAnimationFrame(raf.current);
       raf.current = 0;
     },
     [],
   );
   return useCallback(() => {
     if (raf.current || typeof requestAnimationFrame === 'undefined') return;
-    let last = performance.now();
+    const view = windowOf(host?.current);
+    clock.current = view;
+    // each window counts time from its own start: the first reading comes from the clock the frames use
+    let last = view.performance.now();
     const tick = (now: number) => {
       // real time through a slow frame, or a level falls behind its reading; only a long stall is cut
       const dt = Math.min(250, Math.max(0, now - last));
       last = now;
-      raf.current = fn.current(dt) ? requestAnimationFrame(tick) : 0;
+      raf.current = fn.current(dt) ? view.requestAnimationFrame(tick) : 0;
     };
-    raf.current = requestAnimationFrame(tick);
-  }, []);
+    raf.current = view.requestAnimationFrame(tick);
+  }, [host]);
 }

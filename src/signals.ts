@@ -3,4 +3,6 @@ export { signal, computed, effect, batch, untrack } from './core/signal';
 export type { Signal, ReadSignal, SignalOptions } from './core/signal';
 export { tweened, mixTween } from './core/tween';
 export type { Tweened, TweenOptions, Tweenable } from './core/tween';
-export { evaluate } from './core/expression';
+export { evaluate as evaluateExpression } from './core/expression';
+export { createHistory } from './core/history';
+export type { History, HistoryStep } from './core/history';

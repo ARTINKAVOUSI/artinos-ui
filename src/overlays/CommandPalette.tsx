@@ -1,20 +1,10 @@
 'use client';
 import { useGlide, usePresence } from '../core/motion';
+import type { Command } from '../core/commands';
 import { ThemedPortal } from '../core/portal';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-export interface Command {
-  id: string;
-  label: string;
-  /** Heading the command is listed under. */
-  group?: string;
-  /** Extra words that should match. */
-  keywords?: string;
-  /** Shortcut hint, e.g. "H". Display only. */
-  shortcut?: string;
-  icon?: ReactNode;
-  run: () => void;
-}
+export type { Command };
 
 export interface CommandPaletteProps {
   commands: readonly Command[];

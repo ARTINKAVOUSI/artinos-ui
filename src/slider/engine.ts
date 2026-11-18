@@ -1,5 +1,6 @@
 /* Slider engine — the gesture rules shared by Slider and RangeSlider. No React. */
 import { evaluate } from '../core/expression';
+import { precisionOf } from '../core/scrub';
 import { clamp, resolveMapping } from '../core/utils';
 import type { Mapping } from '../core/utils';
 
@@ -20,9 +21,9 @@ interface ModKeys {
   metaKey: boolean;
 }
 
-/** Alt → fine (0.1×), Shift → ultra-fine (0.01×, or 0.1× with two levels). */
+/** Three levels are the one rule for fine control; with two, Alt and Shift are both 0.1×. */
 export const modifierRatio = (e: ModKeys, levels: PrecisionLevels) =>
-  e.shiftKey ? (levels >= 3 ? 0.01 : 0.1) : e.altKey ? 0.1 : 1;
+  levels >= 3 ? precisionOf(e) : e.shiftKey || e.altKey ? 0.1 : 1;
 
 /** Off-axis sensitivity: broad, predictable zones — 1× · 0.1× · 0.01×. */
 export const zoneRatio = (dy: number, levels: PrecisionLevels) => {

@@ -1,13 +1,17 @@
 'use client';
 import { useRef, type CSSProperties, type ReactNode } from 'react';
+import { useControllable } from '../core/hooks';
 import { useFollower, type ReactiveMotion } from '../core/reactive';
 import { RollingValue } from '../core/RollingValue';
+import type { Signal } from '../core/signal';
 import { cx } from '../core/utils';
 import type { InstrumentTone } from './zones';
 
 export interface ProgressProps {
   /** What is running, in the sans: "Baking lightmaps". */
   label?: string;
+  /** The amount itself, 0..1: the bar follows this signal. Takes the place of `value`. */
+  signal?: Signal<number>;
   /** 0..1. Leave it out while the length is unknown: the bar runs indeterminate. */
   value?: number;
   /** A second, quieter fill ahead of the first: what is buffered or queued. 0..1. */
@@ -38,7 +42,8 @@ export interface ProgressProps {
  * feed is drawn exactly. Without a value it runs indeterminate; when it ends it settles in the
  * signal colour, or the fault colour with the reason as its caption.
  */
-export function Progress({ label, value, buffer, valueText, status = 'running', caption, variant = 'bar', segments, sheen = true, motion = 'task', size = 'md', tone = 'live', className, style }: ProgressProps) {
+export function Progress({ label, signal, value: valueProp, buffer, valueText, status = 'running', caption, variant = 'bar', segments, sheen = true, motion = 'task', size = 'md', tone = 'live', className, style }: ProgressProps) {
+  const [value] = useControllable<number | undefined>(valueProp, undefined, undefined, signal as Signal<number | undefined> | undefined);
   const known = value !== undefined && Number.isFinite(value);
   const t = known ? Math.min(1, Math.max(0, value!)) : 0;
   const text = valueText === undefined ? (known ? String(Math.round(t * 100)) : null) : valueText;

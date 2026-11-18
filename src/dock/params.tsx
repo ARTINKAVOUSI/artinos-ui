@@ -1,33 +1,30 @@
 'use client';
-import { useSyncExternalStore } from 'react';
 import type { ReactElement, ReactNode } from 'react';
+import { useSyncExternalStore } from 'react';
 import { Button } from '../actions/Button';
-import { Segmented } from '../controls/Segmented';
-import { Select } from '../controls/Select';
-import { Switch } from '../controls/Switch';
-import { Section } from '../layout/Panel';
-import { PropertyRow } from '../layout/PropertyRow';
-import { Slider } from '../slider/Slider';
+import { signal } from '../core/signal';
+import { useSignalValue } from '../core/useSignal';
+import { InspectorFolder, ValueHistory } from '../inspector/Inspector';
+import { createInspectorStore, isField, sameValue } from '../inspector/store';
+import type { InspectFolder, InspectItem, InspectorStore, NumberFace } from '../inspector/store';
 import { PanelBar } from './PanelBar';
 import { createDockSections } from './sections';
 
-/* ARTINOS params — settings from a schema, set the way the family sets them. Give a list of
-   parameters (what each value is, its range, its group) and a store, and every value gets the
-   control its kind calls for, every group its count, reset and on/off, and the groups sit in
-   dock panes that trade sections and tear off. An app writes no control code of its own. */
+/* ARTINOS params — settings from a schema, in panes that trade sections. A parameter is an Inspector
+   item with a group, its values live in an Inspector store and each group is an Inspector folder, so
+   settings get the same controls, rows, undo and files as every other panel. What this adds is the
+   arrangement: groups sit in dock panes, drag between them and tear off, under one Advanced switch. */
 
 export type ParamValue = number | string | boolean;
 export type ParamValues = Record<string, ParamValue>;
-
-/** How a number reads: plain, a share shown in %, signed around 0, a count, a rate over decades, an angle. */
-export type NumberFace = 'plain' | 'percent' | 'bipolar' | 'count' | 'log' | 'degrees';
+export type { NumberFace };
 
 interface ParamBase {
   key: string;
   label: string;
   /** The id of the ParamGroup it belongs to. */
   group: string;
-  /** What changes, in a sentence: shown as the row's hint. */
+  /** What changes, in a sentence: the row's tooltip. */
   help?: string;
   /** Hidden until the pane's Advanced switch is on. */
   advanced?: boolean;
@@ -50,102 +47,11 @@ export interface ParamGroup {
   open?: boolean;
 }
 
-/** Where the values live: the app's own store, read by subscription. */
+/** Where the values live when the app keeps them itself. Leave it out and the panes keep them. */
 export interface ParamStore {
   get(): ParamValues;
   subscribe(listener: () => void): () => void;
   set(key: string, value: ParamValue): void;
-}
-
-/** Whether a parameter is shown for these values. */
-export function paramShown(p: Param, values: ParamValues): boolean {
-  const w = p.when;
-  if (!w) return true;
-  const x = values[w.key];
-  if (w.is !== undefined) return x === w.is;
-  if (w.in) return w.in.includes(x);
-  if (w.not !== undefined) return x !== w.not;
-  return true;
-}
-
-/** The control a value calls for: a rate on a log slider, a count stepped, a share in percent, a signed value
- *  bipolar, an angle in degrees, two to four choices as a Segmented, more as a Select, a toggle as a Switch. */
-export function ParamControl({ param: p, value, onChange }: { param: Param; value: ParamValue; onChange: (value: ParamValue) => void }) {
-  if (p.kind === 'toggle') return <Switch label={p.label} value={Boolean(value)} onChange={onChange} />;
-  if (p.kind === 'choice') {
-    const options = p.options.map((o) => ({ value: o.value, label: o.label }));
-    return options.length <= 4 ? (
-      <Segmented label={p.label} options={options} value={String(value)} onChange={(v) => onChange(String(v))} />
-    ) : (
-      <Select label={p.label} options={options} value={String(value)} onChange={(v) => onChange(String(v))} appearance="well" />
-    );
-  }
-  const face = p.face ?? 'plain';
-  const decimals = p.step >= 1 ? 0 : p.step >= 0.1 ? 1 : p.step >= 0.01 ? 2 : 3;
-  const span = (p.max - p.min) / p.step;
-  return (
-    <Slider
-      label={p.label}
-      value={Number(value)}
-      min={p.min}
-      max={p.max}
-      step={p.step}
-      unit={face === 'percent' ? undefined : p.unit}
-      decimals={face === 'percent' ? 0 : decimals}
-      format={face === 'percent' ? 'percent' : face === 'degrees' ? 'angle' : 'number'}
-      mapping={face === 'log' && p.min > 0 ? 'log' : 'linear'}
-      bipolar={face === 'bipolar'}
-      detents={face === 'bipolar' ? [0] : undefined}
-      variant={face === 'count' ? 'stepped' : 'material'}
-      steps={face === 'count' && span <= 12 ? Math.round(span) + 1 : undefined}
-      onChange={onChange}
-    />
-  );
-}
-
-export interface ParamSectionProps {
-  group: ParamGroup;
-  params: readonly Param[];
-  values: ParamValues;
-  onChange: (key: string, value: ParamValue) => void;
-  /** Show the parameters marked advanced. */
-  advanced?: boolean;
-  /** Keys never drawn as rows (an app may put one in its own toolbar, such as a pause). */
-  hide?: readonly string[];
-  /** Remembers the group open or closed across visits under this key + the group's id. */
-  storageKey?: string;
-}
-
-/** One group of parameters as a Section: count, reset while anything differs from its default, and the
- *  group's own on/off when a toggle owns it. */
-export function ParamSection({ group: g, params, values, onChange, advanced = false, hide = [], storageKey }: ParamSectionProps) {
-  const mine = params.filter((p) => p.group === g.id && !hide.includes(p.key));
-  const rows = mine.filter((p) => p.key !== g.switch && (advanced || !p.advanced) && paramShown(p, values));
-  const changed = mine.filter((p) => values[p.key] !== undefined && values[p.key] !== p.default);
-  const owner = g.switch ? params.find((p) => p.key === g.switch) : undefined;
-  const switchable = owner ? { enabled: Boolean(values[owner.key]), onEnabledChange: (on: boolean) => onChange(owner.key, on) } : {};
-  return (
-    <Section
-      id={g.id}
-      title={g.title}
-      description={g.description}
-      count={rows.length}
-      modified={changed.length > 0}
-      onReset={() => changed.forEach((p) => onChange(p.key, p.default))}
-      storageKey={storageKey ? `${storageKey}.${g.id}` : undefined}
-      defaultOpen={g.open ?? false}
-      {...switchable}
-    >
-      {rows.map((p) => {
-        const value = values[p.key] ?? p.default;
-        return (
-          <PropertyRow key={p.key} label={p.label} modified={value !== p.default} onReset={() => onChange(p.key, p.default)}>
-            <ParamControl param={p} value={value} onChange={(v) => onChange(p.key, v)} />
-          </PropertyRow>
-        );
-      })}
-    </Section>
-  );
 }
 
 export interface ParamPanesOptions {
@@ -153,15 +59,17 @@ export interface ParamPanesOptions {
   groups: readonly ParamGroup[];
   /** Which groups start in which pane: { physics: ['solver', 'matter'], look: ['optics'] }. */
   panes: Record<string, readonly string[]>;
-  store: ParamStore;
+  store?: ParamStore;
   /** Remembers each group open or closed. */
   storageKey?: string;
   hide?: readonly string[];
 }
 
 export interface ParamPanes {
-  /** A pane of groups with its bar (Advanced, Reset): put it in a Dock panel's content, or in a Panel. */
+  /** A pane of groups with its bar (Advanced, Undo, Reset): put it in a Dock panel's content, or in a Panel. */
   Pane: (props: { id: string; label?: string; toolbar?: ReactNode }) => ReactElement;
+  /** The values, with everything a store does: undo, files, presets, signals. */
+  store: InspectorStore;
 }
 
 const RESET = (
@@ -170,57 +78,78 @@ const RESET = (
   </svg>
 );
 
+/** A parameter as the Inspector item it is. */
+function itemOf({ group, when, ...param }: Param): InspectItem {
+  const shown = when
+    ? (values: Record<string, unknown>) => {
+        const x = values[when.key] as ParamValue;
+        if (when.is !== undefined) return x === when.is;
+        if (when.in) return when.in.includes(x);
+        return when.not === undefined || x !== when.not;
+      }
+    : undefined;
+  return { ...param, folder: group, when: shown } as InspectItem;
+}
+
 /**
  * Settings panes from a schema. Call once, outside your components. Each pane holds its groups as dockable sections:
  * drag a group into another pane, or out over open space to tear it off into its own panel. One Advanced switch serves
  * every pane; each pane's Reset puts back what it holds.
  */
 export function createParamPanes({ params, groups, panes, store, storageKey, hide = [] }: ParamPanesOptions): ParamPanes {
-  const byId = new Map(groups.map((g) => [g.id, g]));
-  let advanced = false;
-  const listeners = new Set<() => void>();
-  const setAdvanced = (on: boolean) => {
-    advanced = on;
-    for (const l of listeners) l();
-  };
-  const subscribeAdvanced = (l: () => void) => {
-    listeners.add(l);
-    return () => {
-      listeners.delete(l);
-    };
-  };
-  const useValues = () => useSyncExternalStore(store.subscribe, store.get, store.get);
-  const useAdvanced = () => useSyncExternalStore(subscribeAdvanced, () => advanced, () => false);
+  const items = params.map(itemOf);
+  const folders: InspectFolder[] = groups.map((g) => ({ id: g.id, title: g.title, description: g.description, switch: g.switch, open: g.open ?? false, count: true }));
+  const titles = new Map(groups.map((g) => [g.id, g.title]));
+  const advanced = signal(false);
+
+  // the app's own store is the object the values are bound to
+  let writing = false;
+  const target = store
+    ? (new Proxy(
+        {},
+        {
+          get: (_, key) => store.get()[key as string],
+          set(_, key, value) {
+            writing = true;
+            store.set(key as string, value);
+            writing = false;
+            return true;
+          },
+        },
+      ) as Record<string, unknown>)
+    : undefined;
+  const values = createInspectorStore(items, { target });
+  store?.subscribe(() => {
+    if (!writing) values.pull(true);
+  });
 
   function GroupBody({ id }: { id: string }) {
-    const values = useValues();
-    const on = useAdvanced();
-    const g = byId.get(id);
-    if (!g) return null;
-    return <ParamSection group={g} params={params} values={values} onChange={store.set} advanced={on} hide={hide} storageKey={storageKey} />;
+    const on = useSignalValue(advanced);
+    return <InspectorFolder id={id} items={items} folders={folders} store={values} advanced={on} hide={hide} keyframes={false} storageKey={storageKey} />;
   }
 
   const sections = createDockSections({
     panes: Object.fromEntries(Object.entries(panes).map(([k, v]) => [k, [...v]])),
     render: (id) => <GroupBody id={id} />,
-    title: (id) => byId.get(id)?.title ?? id,
+    title: (id) => titles.get(id) ?? id,
   });
 
   function Pane({ id, label, toolbar }: { id: string; label?: string; toolbar?: ReactNode }) {
-    const values = useValues();
-    const on = useAdvanced();
+    const st = useSyncExternalStore(values.subscribe, values.state, values.state);
+    const on = useSignalValue(advanced);
     const held = new Set(panes[id] ?? []);
-    const changed = params.filter((p) => held.has(p.group) && !hide.includes(p.key) && values[p.key] !== undefined && values[p.key] !== p.default);
+    const changed = items.filter((p) => isField(p) && held.has(p.folder ?? '') && !hide.includes(p.key) && !sameValue(st.values[p.key], p.default));
     return (
       <>
         <PanelBar>
           {toolbar}
-          <Button size="sm" variant="ghost" aria-pressed={on} icon={<i className="ar-led" data-on={on ? '' : undefined} />} onClick={() => setAdvanced(!on)}>
+          <Button size="sm" variant="ghost" aria-pressed={on} icon={<i className="ar-led" data-on={on ? '' : undefined} />} onClick={() => advanced.set(!on)}>
             Advanced
           </Button>
           <span className="ar-panel-bar__spacer" />
+          <ValueHistory store={values} />
           {changed.length ? (
-            <Button size="sm" variant="ghost" icon={RESET} onClick={() => changed.forEach((p) => store.set(p.key, p.default))}>
+            <Button size="sm" variant="ghost" icon={RESET} onClick={() => values.reset(changed.map((p) => p.key))}>
               {`Reset ${changed.length}`}
             </Button>
           ) : null}
@@ -230,5 +159,5 @@ export function createParamPanes({ params, groups, panes, store, storageKey, hid
     );
   }
 
-  return { Pane };
+  return { Pane, store: values };
 }

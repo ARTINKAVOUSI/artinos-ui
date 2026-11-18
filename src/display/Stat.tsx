@@ -1,7 +1,9 @@
 'use client';
 import type { CSSProperties, ReactNode } from 'react';
+import { useControllable } from '../core/hooks';
 import type { ReactiveMotion } from '../core/reactive';
 import { RollingText, RollingValue } from '../core/RollingValue';
+import type { Signal } from '../core/signal';
 import { cx } from '../core/utils';
 import { Meter } from './Meter';
 import { Sparkline } from './Sparkline';
@@ -10,8 +12,10 @@ import { toneAt, type InstrumentTone, type Zone } from './zones';
 export interface StatProps {
   /** What the number is, in the sans: "Frame time". */
   label: string;
+  /** The figure itself: the stat follows this signal. Takes the place of `value`. */
+  signal?: Signal<number>;
   /** The figure, already formatted ("16.4") or a number (shown with `decimals`). Its digits roll. */
-  value: string | number;
+  value?: string | number;
   decimals?: number;
   /** A quieter unit after the figure: "ms", "fps", "GB". */
   unit?: string;
@@ -47,7 +51,8 @@ export interface StatProps {
  * Stat — one figure that matters: a label, the number large in the mono with its unit, how it
  * moved, and its recent trend. For dashboards, status bars and the head of an inspector.
  */
-export function Stat({ label, value, decimals = 0, unit, delta, deltaText, better = 'up', trend, threshold, tone = 'live', prefix, zones, level, motion = 'auto', caption, framed = true, size = 'md', className, style }: StatProps) {
+export function Stat({ label, signal, value: valueProp, decimals = 0, unit, delta, deltaText, better = 'up', trend, threshold, tone = 'live', prefix, zones, level, motion = 'auto', caption, framed = true, size = 'md', className, style }: StatProps) {
+  const [value] = useControllable<string | number>(valueProp, 0, undefined, signal as Signal<string | number> | undefined);
   const text = typeof value === 'number' ? value.toFixed(decimals) : value;
   const figure = typeof value === 'number' ? value : parseFloat(value.replace(/−/g, '-'));
   const zoned = zones && !Number.isNaN(figure) ? toneAt(zones, figure, tone) : tone;

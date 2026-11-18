@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useGlide, usePresence } from '../core/motion';
 import { useControllable, useSafeId } from '../core/hooks';
 import { PortalTargetContext } from '../core/portal';
+import type { Signal } from '../core/signal';
 import { cx, normalizeOptions, reducedMotion, revealClipped, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
@@ -17,6 +18,8 @@ export interface SelectProps<V extends string = string> extends ScopeProps {
   /** Placeholder when nothing is chosen, and the accessible name. */
   label?: string;
   options: readonly OptionInput<V>[];
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<V>;
   value?: V;
   defaultValue?: V;
   onChange?: (value: V) => void;
@@ -41,9 +44,9 @@ const Chevron = ({ up }: { up?: boolean }) => (
   </svg>
 );
 
-export function Select<V extends string = string>({ label, options, value, defaultValue, onChange, appearance = 'insert', disabled, material, density, className, style, id }: SelectProps<V>) {
+export function Select<V extends string = string>({ label, options, signal, value, defaultValue, onChange, appearance = 'insert', disabled, material, density, className, style, id }: SelectProps<V>) {
   const opts = normalizeOptions(options);
-  const [cur, setCur] = useControllable<V | undefined>(value, defaultValue, onChange as ((v: V | undefined) => void) | undefined);
+  const [cur, setCur] = useControllable<V | undefined>(value, defaultValue, onChange as ((v: V | undefined) => void) | undefined, signal as Signal<V | undefined> | undefined);
   const [open, setOpen] = useState(false);
   const [hi, setHi] = useState(-1);
   const [rect, setRect] = useState<DOMRect | null>(null);

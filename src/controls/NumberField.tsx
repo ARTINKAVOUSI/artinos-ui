@@ -4,15 +4,15 @@ import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent a
 import { RollingValue, SignalDigits } from '../core/RollingValue';
 import { evaluate } from '../core/expression';
 import { useControllable } from '../core/hooks';
-import { isPointerLocked, lockPointer, unlockPointer } from '../core/scrub';
+import { isPointerLocked, lockPointer, precisionOf, unlockPointer } from '../core/scrub';
 import type { Signal } from '../core/signal';
 import { clamp, cx, joinFormatted, runFormat, scopeAttrs } from '../core/utils';
 import type { Format, Formatter, ScopeProps } from '../core/utils';
 
 /* ARTINOS NumberField — a recessed numeric cell. The cell is the scrubber:
- *   drag sideways   → scrub (Alt 0.1× · Shift 10×), readout rolls; the hand may run past the screen's edge
+ *   drag sideways   → scrub (Alt 0.1× · Shift 0.01×), readout rolls; the hand may run past the screen's edge
  *   click           → type a value or a sum (2*3 · pi/2 · *2 · +=10); Enter commits, Escape cancels
- *   arrows / wheel  → ±step while focused
+ *   arrows / wheel  → ±step while focused (Alt 0.1× · Shift 0.01×)
  * The label, when given, sits inside the well at the left. */
 
 export interface NumberFieldProps extends ScopeProps {
@@ -61,7 +61,7 @@ export function NumberField(props: NumberFieldProps) {
   const selectAll = useRef(true);
   const live = useRef(v);
   const dirRef = useRef({ v, d: 1 });
-  const drag = useRef<{ x: number; v0: number; acc: number; id: number; moved: boolean } | null>(null);
+  const drag = useRef<{ x: number; v0: number; acc: number; travel: number; id: number; moved: boolean } | null>(null);
   if (!drag.current) live.current = v;
   if (v !== dirRef.current.v) dirRef.current = { v, d: v > dirRef.current.v ? 1 : -1 };
 
@@ -75,14 +75,14 @@ export function NumberField(props: NumberFieldProps) {
   };
   useEffect(() => bound?.subscribe((x) => paint.current(x)), [bound]);
 
-  const q = (x: number, grain: number) => Number((Math.round(x / grain) * grain).toFixed(Math.max(decimals, 6)));
+  // enough digits to hold the grain, however fine the step and the keys make it
+  const q = (x: number, grain: number) => Number((Math.round(x / grain) * grain).toFixed(Math.max(decimals, 6, Math.min(12, Math.ceil(-Math.log10(grain)) + 1))));
   const emit = (x: number) => {
     x = clamp(x, min, max);
     if (x === live.current || !Number.isFinite(x)) return;
     live.current = x;
     setV(x);
   };
-  const ratio = (e: { altKey: boolean; shiftKey: boolean }) => (e.altKey ? 0.1 : e.shiftKey ? 10 : 1);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (disabled || editing !== null || e.button !== 0) return;
@@ -93,22 +93,23 @@ export function NumberField(props: NumberFieldProps) {
     } catch {
       /* capture is best-effort */
     }
-    drag.current = { x: e.clientX, v0: live.current, acc: 0, id: e.pointerId, moved: false };
+    drag.current = { x: e.clientX, v0: live.current, acc: 0, travel: 0, id: e.pointerId, moved: false };
   };
   const onPointerMove = (e: ReactPointerEvent) => {
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
     const dx = isPointerLocked(rootRef.current) ? e.movementX : e.clientX - d.x;
     d.x = e.clientX;
-    d.acc += dx * ratio(e);
-    if (!d.moved && Math.abs(d.acc) < DRAG_START) return;
+    d.acc += dx * precisionOf(e);
+    d.travel += dx;
+    // a drag begins with the hand's own travel: a fine key must not turn it back into a click
+    if (!d.moved && Math.abs(d.travel) < DRAG_START) return;
     if (!d.moved) {
       d.moved = true;
       setScrubbing(true);
       lockPointer(rootRef.current, e.pointerType);
     }
-    const grain = step * (e.altKey ? 0.1 : 1);
-    emit(q(d.v0 + (d.acc / pixelsPerStep) * step, grain));
+    emit(q(d.v0 + (d.acc / pixelsPerStep) * step, step * precisionOf(e)));
   };
   const onPointerUp = (e: ReactPointerEvent) => {
     const d = drag.current;
@@ -147,7 +148,8 @@ export function NumberField(props: NumberFieldProps) {
     if (refocus) rootRef.current?.focus({ preventScroll: true });
   };
   const nudge = (dir: number, e: { altKey: boolean; shiftKey: boolean }) => {
-    emit(q(live.current + dir * step * ratio(e), step * (e.altKey ? 0.1 : 1)));
+    const fine = precisionOf(e);
+    emit(q(live.current + dir * step * fine, step * fine));
   };
   const onKeyDown = (e: ReactKeyboardEvent) => {
     if (disabled || editing !== null) return;
@@ -176,9 +178,11 @@ export function NumberField(props: NumberFieldProps) {
     let commit: ReturnType<typeof setTimeout> | undefined;
     const h = (e: WheelEvent) => {
       const w = wheelRef.current;
-      if (el.ownerDocument.activeElement !== el || w.disabled || w.editing !== null || !e.deltaY) return;
+      // browsers turn a wheel held with Shift sideways
+      const turn = e.deltaY || (e.shiftKey ? e.deltaX : 0);
+      if (el.ownerDocument.activeElement !== el || w.disabled || w.editing !== null || !turn) return;
       e.preventDefault();
-      w.nudge(e.deltaY < 0 ? 1 : -1, e);
+      w.nudge(turn < 0 ? 1 : -1, e);
       clearTimeout(commit);
       commit = setTimeout(() => wheelRef.current.commitWheel(), 250);
     };

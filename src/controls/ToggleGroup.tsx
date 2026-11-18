@@ -1,6 +1,7 @@
 'use client';
 import type { CSSProperties } from 'react';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx, normalizeOptions, scopeAttrs } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
@@ -11,6 +12,8 @@ import type { OptionInput, ScopeProps } from '../core/utils';
 export interface ToggleGroupProps<V extends string = string> extends ScopeProps {
   label?: string;
   options: readonly OptionInput<V>[];
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<V[]>;
   value?: V[];
   defaultValue?: V[];
   onChange?: (value: V[]) => void;
@@ -22,8 +25,8 @@ export interface ToggleGroupProps<V extends string = string> extends ScopeProps 
   id?: string;
 }
 
-export function ToggleGroup<V extends string = string>({ label, options, value, defaultValue = [], onChange, multiple = true, led = true, material, density, className, style, id }: ToggleGroupProps<V>) {
-  const [sel, setSel] = useControllable<V[]>(value, defaultValue, onChange);
+export function ToggleGroup<V extends string = string>({ label, options, signal, value, defaultValue = [], onChange, multiple = true, led = true, material, density, className, style, id }: ToggleGroupProps<V>) {
+  const [sel, setSel] = useControllable<V[]>(value, defaultValue, onChange, signal);
   const opts = normalizeOptions(options);
   const flip = (v: V) => {
     const has = sel.includes(v);

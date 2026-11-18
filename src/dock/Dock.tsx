@@ -1,14 +1,15 @@
 'use client';
 import { Component, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, ReactElement, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, ReactElement, ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { Kbd } from '../actions/Kbd';
 import { interfaceVisibility, useAutoHide } from '../core/autohide';
-import { cx } from '../core/utils';
+import { CommandScopeContext, CommandsContext } from '../core/commands';
+import type { Command } from '../core/commands';
+import { cx, readStored, writeStored } from '../core/utils';
 import { PaneContext } from '../core/pane';
 import { useLabelColumn } from '../core/hooks';
 import { CommandPalette } from '../overlays/CommandPalette';
-import type { Command } from '../overlays/CommandPalette';
 import { DockMenu } from './DockMenu';
 import { DockIcons } from './icons';
 import { PanelBarSlot, PanelIdContext } from './PanelBar';
@@ -183,8 +184,7 @@ function buildWorkspace(
 
   if (o.storageKey) {
     try {
-      const raw = localStorage.getItem(o.storageKey);
-      const snapshot = raw ? JSON.parse(raw) : null;
+      const snapshot = readStored<any>(o.storageKey, null);
       const known = new Set(panels.map((p) => p.id).concat(o.viewport ? [VIEWPORT] : []));
       const saved: string[] = (snapshot?.blocks ?? []).map((b: MetaBlockInstance) => b.id).filter((id: string) => !id.startsWith(TEAR_PREFIX));
       // a removed panel must not come back as an empty tab: restore only if every saved tab still exists
@@ -288,11 +288,7 @@ export function Dock({
     const save = () => {
       timer = undefined;
       if (resetting.current) return;
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(workspace.serialize()));
-      } catch {
-        /* quota or private mode */
-      }
+      writeStored(storageKey, workspace.serialize());
     };
     const off = workspace.on('*', (event: { type?: string }) => {
       if (TRANSIENT_EVENTS.has(event?.type ?? '')) return;
@@ -365,7 +361,14 @@ export function Dock({
   );
   const ready = useRef(onReady);
   ready.current = onReady;
-  useEffect(() => ready.current?.(api), [api]);
+  useEffect(() => void ready.current?.(api), [api]);
+
+  // what the panels on screen offer: an Inspector's undo, presets and files
+  const [offered, setOffered] = useState<readonly (readonly Command[])[]>([]);
+  const addCommands = useCallback((list: readonly Command[]) => {
+    setOffered((now) => [...now, list]);
+    return () => setOffered((now) => now.filter((l) => l !== list));
+  }, []);
 
   const allCommands = useMemo<Command[]>(
     () => [
@@ -380,10 +383,11 @@ export function Dock({
       { id: 'layout.redo', label: 'Redo layout change', group: 'Layout', run: () => workspace.redo() },
       { id: 'layout.reset', label: 'Reset dock layout', group: 'Layout', run: resetLayout },
       { id: 'ui.toggle', label: 'Hide interface (clean view)', group: 'View', shortcut: hideKey ? hideKey.toUpperCase() : undefined, run: interfaceVisibility.hide },
+      ...offered.flat(),
       ...commands,
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [shape, openPanel, workspace, resetLayout, hideKey, commands],
+    [shape, openPanel, workspace, resetLayout, hideKey, commands, offered],
   );
 
   // One element per panel, reused while its content is unchanged: the workspace re-renders on
@@ -406,7 +410,11 @@ export function Dock({
     const el = (
       <PanelIdContext.Provider key={panel.id} value={panel.id}>
         <DockContext.Provider value={api}>
-          <PanelBody title={panel.title}>{panel.content}</PanelBody>
+          <CommandsContext.Provider value={addCommands}>
+            <CommandScopeContext.Provider value={panel.title}>
+              <PanelBody title={panel.title}>{panel.content}</PanelBody>
+            </CommandScopeContext.Provider>
+          </CommandsContext.Provider>
         </DockContext.Provider>
       </PanelIdContext.Provider>
     );
@@ -579,8 +587,17 @@ export function Dock({
     return footer ? <div className="ar-dock__footer">{footer}</div> : null;
   };
 
+  // Ctrl/⌘ Z undoes what the focus is on: a panel that handles it (values, a node graph) keeps it,
+  // anywhere else it is the layout
+  const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.defaultPrevented || !(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z' || (e.target as HTMLElement).matches('input, textarea, [contenteditable]')) return;
+    e.preventDefault();
+    if (e.shiftKey) workspace.redo();
+    else workspace.undo();
+  };
+
   return (
-    <div ref={rootRef} className={cx('ar-dock', className)} style={style} data-ui-hidden={ui.hiddenBy ?? undefined} data-ui-revealing={revealing || undefined}>
+    <div ref={rootRef} className={cx('ar-dock', className)} style={style} onKeyDown={onKeyDown} data-ui-hidden={ui.hiddenBy ?? undefined} data-ui-revealing={revealing || undefined}>
       <MetaBlockWorkspaceView
         padding={10}
         gap={8}
@@ -601,7 +618,7 @@ export function Dock({
           );
         }}
       />
-      <PopoutWindows workspace={workspace} renderBlock={renderBlock} anchor={rootRef} />
+      <PopoutWindows workspace={workspace} renderBlock={renderBlock} renderFooter={renderGroupFooter} anchor={rootRef} />
       {brand ? <div className="ar-dock__brand">{brand}</div> : null}
       {/* the way back: a small mark at the foot (a frame, its panes waiting at the sides) and the key.
           Always mounted so it can arrive and leave. */}

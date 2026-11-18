@@ -1,6 +1,7 @@
 'use client';
 import type { CSSProperties, ReactNode } from 'react';
 import { useControllable } from '../core/hooks';
+import type { Signal } from '../core/signal';
 import { cx, normalizeOptions, revealClipped, scopeAttrs } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
@@ -16,6 +17,8 @@ export interface ChipGroupProps<V extends string = string> extends ScopeProps {
   /** The group's accessible name, e.g. "Mood". */
   label?: string;
   options: readonly ChipOption<V>[];
+  /** The value itself: read and written here. Takes the place of `value`. */
+  signal?: Signal<V[]>;
   value?: V[];
   defaultValue?: V[];
   onChange?: (value: V[]) => void;
@@ -26,8 +29,8 @@ export interface ChipGroupProps<V extends string = string> extends ScopeProps {
   id?: string;
 }
 
-export function ChipGroup<V extends string = string>({ label, options, value, defaultValue = [], onChange, multiple = true, material, density, className, style, id }: ChipGroupProps<V>) {
-  const [sel, setSel] = useControllable<V[]>(value, defaultValue, onChange);
+export function ChipGroup<V extends string = string>({ label, options, signal, value, defaultValue = [], onChange, multiple = true, material, density, className, style, id }: ChipGroupProps<V>) {
+  const [sel, setSel] = useControllable<V[]>(value, defaultValue, onChange, signal);
   const counts = new Map(options.flatMap((o) => (typeof o === 'object' && 'count' in o && o.count != null ? [[o.value, o.count] as const] : [])));
   const opts = normalizeOptions(options as readonly OptionInput<V>[]);
   const flip = (v: V) => {
