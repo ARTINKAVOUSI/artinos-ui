@@ -66,25 +66,26 @@ function MenuList({
   useLayoutEffect(() => {
     if (!list.current) return;
     const m = list.current.getBoundingClientRect();
+    const view = list.current.ownerDocument.defaultView ?? window; // a popped-out panel's menu stays on its own window
     let left: number;
     let top: number;
     let above = false;
     if ('rect' in anchor) {
       left = anchor.align === 'end' ? anchor.rect.right - m.width : anchor.rect.left;
       top = anchor.rect.bottom + 4;
-      if (top + m.height > window.innerHeight - 4) {
+      if (top + m.height > view.innerHeight - 4) {
         top = Math.max(4, anchor.rect.top - m.height - 4);
         above = true;
       }
     } else {
       left = anchor.x;
       top = anchor.y;
-      if (top + m.height > window.innerHeight - 4) {
+      if (top + m.height > view.innerHeight - 4) {
         top = Math.max(4, anchor.y - m.height);
         above = true;
       }
     }
-    left = Math.min(window.innerWidth - m.width - 4, Math.max(4, left));
+    left = Math.min(view.innerWidth - m.width - 4, Math.max(4, left));
     setPosition({ left, top, above });
     list.current.focus();
   }, [anchor]);
@@ -107,13 +108,14 @@ function MenuList({
     const onWheel = (event: WheelEvent) => {
       if (!list.current?.contains(event.target as Node)) close();
     };
-    window.addEventListener('pointerdown', onPointer, true);
-    window.addEventListener('blur', close);
-    window.addEventListener('wheel', onWheel, { passive: true });
+    const view = list.current?.ownerDocument.defaultView ?? window;
+    view.addEventListener('pointerdown', onPointer, true);
+    view.addEventListener('blur', close);
+    view.addEventListener('wheel', onWheel, { passive: true });
     return () => {
-      window.removeEventListener('pointerdown', onPointer, true);
-      window.removeEventListener('blur', close);
-      window.removeEventListener('wheel', onWheel);
+      view.removeEventListener('pointerdown', onPointer, true);
+      view.removeEventListener('blur', close);
+      view.removeEventListener('wheel', onWheel);
     };
   }, [owner]);
 

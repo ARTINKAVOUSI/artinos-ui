@@ -157,6 +157,23 @@ export const CHAPTERS: readonly ChapterDef[] = [
     sections: [{ id: 'node-graph', title: 'Node graph' }],
   },
   {
+    id: 'live',
+    title: 'Live values',
+    note: 'A signal is the value. On it rest two short ways to a panel, your own controls, undo and files, monitors, MIDI and windows of their own.',
+    components: ['useControls', 'createPane', 'Graph', 'FrameGraph', 'registerControl', 'createMidiMap'],
+    sections: [
+      { id: 'live-signal', title: 'Signals' },
+      { id: 'live-hook', title: 'useControls' },
+      { id: 'live-pane', title: 'createPane' },
+      { id: 'live-custom', title: 'Your own controls' },
+      { id: 'live-kept', title: 'Undo, files & links' },
+      { id: 'live-monitors', title: 'Monitors' },
+      { id: 'live-typing', title: 'Sums & endless drag' },
+      { id: 'live-midi', title: 'MIDI learn' },
+      { id: 'live-window', title: 'Own window' },
+    ],
+  },
+  {
     id: 'make',
     title: 'Make it yours',
     note: 'Edit any theme live, override tokens in code, and take a trimmed kit home.',

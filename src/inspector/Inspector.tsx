@@ -1,35 +1,37 @@
 'use client';
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
+import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
 import { Button } from '../actions/Button';
-import { ColorField } from '../controls/ColorField';
-import { NumberField } from '../controls/NumberField';
-import { Segmented } from '../controls/Segmented';
-import { Select } from '../controls/Select';
-import { Switch } from '../controls/Switch';
+import { IconButton } from '../actions/IconButton';
 import { TextField } from '../controls/TextField';
-import { XYPad } from '../controls/XYPad';
+import { isPointerLocked, lockPointer, unlockPointer } from '../core/scrub';
+import { signal } from '../core/signal';
+import type { Signal } from '../core/signal';
+import { useSignalValue } from '../core/useSignal';
 import { cx } from '../core/utils';
-import { Sparkline } from '../display/Sparkline';
+import { GraphTrace } from '../display/Graph';
 import { Section } from '../layout/Panel';
 import { PropertyRow } from '../layout/PropertyRow';
 import { ContextMenu, Menu } from '../overlays/Menu';
 import type { MenuEntry } from '../overlays/Menu';
-import { Vector3Field } from '../rig/Vector3Field';
-import type { Vec3 } from '../rig/math';
-import { RangeSlider } from '../slider/RangeSlider';
-import { Slider } from '../slider/Slider';
+import { BUILT_IN_CONTROLS } from './controls';
+import { midiPlayable } from './midi';
+import type { MidiMap, MidiState } from './midi';
+import { registeredControl } from './registry';
+import type { InspectControl } from './registry';
 import { isField, keyAt, sameValue } from './store';
-import type { InspectFolder, InspectItem, InspectMonitor, InspectNumber, InspectValue, InspectValues, InspectorState, InspectorStore } from './store';
+import type { InspectFolder, InspectItem, InspectMonitor, InspectValue, InspectValues, InspectorState, InspectorStore } from './store';
 
 /* ARTINOS Inspector — the pro parameter editor. A schema of items and folders, and a store bound
    to the app's own object: every value gets the control its kind calls for in one aligned label
    column, folders nest, a row resets, copies, pastes, links to another and takes a keyframe, a
    number scrubs by its name, a check explains a bad value under its row, monitors trace what the
-   app reports, presets recall a whole state and a search finds a row. Several objects selected at
-   once show as one, their differences marked. It is content: put it in a Panel or a Dock panel,
-   so it floats, docks, tabs and resizes like any other. It is made for the dense family
-   (<ArtinosTheme density="dense">) and takes its sizes from whichever family the scope is in. */
+   app reports, presets recall a whole state and a search finds a row. Dragging a value reaches the
+   app at frame rate and renders nothing but that control; the panel catches up when the hand
+   settles, as one step of undo (Ctrl/⌘ Z). Several objects selected at once show as one, their
+   differences marked. It is content: put it in a Panel or a Dock panel, so it floats, docks, tabs
+   and resizes like any other. It is made for the dense family (<ArtinosTheme density="dense">) and
+   takes its sizes from whichever family the scope is in. */
 
 export interface InspectorProps {
   items: readonly InspectItem[];
@@ -51,12 +53,28 @@ export interface InspectorProps {
   labelWidth?: number | string;
   /** Remembers each folder open or closed under this key. */
   storageKey?: string;
+  /** Rows learn a hardware controller from their right-click menu: `createMidiMap(store, items)`. */
+  midi?: MidiMap;
   className?: string;
   style?: CSSProperties;
 }
 
-const decimalsOf = (step: number) => (step >= 1 ? 0 : step >= 0.1 ? 1 : step >= 0.01 ? 2 : 3);
-const ANIMATABLE = new Set(['number', 'toggle', 'color', 'vector', 'range', 'point']);
+const NO_MIDI = signal<MidiState>({ supported: false, connected: false, learning: null, bindings: [], error: null });
+
+const controlOf = (item: InspectItem): InspectControl | undefined => registeredControl(item) ?? BUILT_IN_CONTROLS[item.kind];
+
+const UNDO = (
+  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M5 3L2.5 5.5 5 8" />
+    <path d="M2.5 5.5H8.5a3 3 0 010 6H6" />
+  </svg>
+);
+const REDO = (
+  <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M9 3l2.5 2.5L9 8" />
+    <path d="M11.5 5.5H5.5a3 3 0 000 6H8" />
+  </svg>
+);
 
 const KEY = (
   <svg viewBox="0 0 12 12" aria-hidden>
@@ -70,105 +88,90 @@ const SEARCH = (
   </svg>
 );
 
-function NumberControl({ item: p, value, status, onChange }: { item: InspectNumber; value: number; status?: 'automated' | 'bound' | 'warn' | 'fault'; onChange: (v: number) => void }) {
-  const step = p.step ?? 0.01;
-  const face = p.face ?? 'plain';
-  const decimals = face === 'percent' ? 0 : decimalsOf(step);
-  if (p.min === undefined || p.max === undefined)
-    return <NumberField aria-label={p.label} value={value} min={p.min} max={p.max} step={step} decimals={decimals} unit={p.unit} align="end" onChange={onChange} />;
-  const span = (p.max - p.min) / step;
-  return (
-    <Slider
-      aria-label={p.label}
-      value={value}
-      min={p.min}
-      max={p.max}
-      step={step}
-      unit={face === 'percent' ? undefined : p.unit}
-      decimals={decimals}
-      format={face === 'percent' ? 'percent' : face === 'degrees' ? 'angle' : 'number'}
-      mapping={face === 'log' && p.min > 0 ? 'log' : 'linear'}
-      bipolar={face === 'bipolar'}
-      detents={face === 'bipolar' ? [0] : undefined}
-      variant={face === 'count' ? 'stepped' : 'material'}
-      steps={face === 'count' && span <= 12 ? Math.round(span) + 1 : undefined}
-      status={status}
-      toggleable={false}
-      onChange={onChange}
-    />
-  );
-}
+/** How often a monitor's figure changes: fast enough to feel live, slow enough to read. */
+const FIGURE_MS = 120;
 
-/** A monitor: what the app reports, sampled while mounted. Its name and figure on one line, and with
- *  `graph` a trace across the panel beneath them. */
+/** A monitor: what the app reports, sampled while on screen and written straight to the page. Its name
+ *  and figure on one line, and with `graph` a trace across the panel beneath them. */
 function MonitorRow({ item: m }: { item: InspectMonitor }) {
-  const [series, setSeries] = useState<number[]>(() => [m.read()]);
+  const figure = useRef<HTMLSpanElement>(null);
+  const shownAt = useRef(0);
   const read = useRef(m.read);
   read.current = m.read;
+  const show = (v: number) => {
+    const now = performance.now();
+    if (now - shownAt.current < FIGURE_MS || !figure.current) return;
+    shownAt.current = now;
+    figure.current.textContent = Number.isFinite(v) ? v.toFixed(m.decimals ?? 1) : '—';
+  };
+  const showRef = useRef(show);
+  showRef.current = show;
   useEffect(() => {
-    const id = setInterval(() => setSeries((s) => [...s.slice(-47), read.current()]), m.interval ?? 120);
+    if (m.graph) return;
+    showRef.current(read.current());
+    const id = setInterval(() => showRef.current(read.current()), m.interval ?? FIGURE_MS);
     return () => clearInterval(id);
-  }, [m.interval]);
-  const last = series[series.length - 1];
+  }, [m.graph, m.interval]);
   return (
     <div className="ar-inspector__row ar-inspector__monitor" data-kind="monitor" data-control={m.key} title={m.help}>
       <span className="ar-inspector__name">{m.label}</span>
       <span className="ar-inspector__figure">
-        {Number.isFinite(last) ? last.toFixed(m.decimals ?? 1) : '—'}
+        <span ref={figure}>—</span>
         {m.unit ? <em>{m.unit}</em> : null}
       </span>
-      {m.graph ? <Sparkline label={m.label} values={series} min={m.min} max={m.max} width={240} height={22} /> : null}
+      {m.graph ? <GraphTrace label={m.label} read={() => read.current()} min={m.min} max={m.max} budget={m.budget} samples={96} interval={m.interval ?? 50} onSample={show} /> : null}
     </div>
   );
 }
 
-function Control({ item: p, value, status, set }: { item: InspectItem; value: InspectValue; status?: 'automated' | 'bound' | 'warn' | 'fault'; set: (v: InspectValue) => void }) {
-  switch (p.kind) {
-    case 'number':
-      return <NumberControl item={p} value={Number(value)} status={status} onChange={set} />;
-    case 'toggle':
-      return <Switch variant="compact" aria-label={p.label} value={Boolean(value)} onChange={set} />;
-    case 'choice':
-      return p.options.length <= 3 ? (
-        <Segmented label={p.label} options={p.options.map((o) => ({ ...o }))} value={String(value)} onChange={set} />
-      ) : (
-        <Select label={p.label} options={p.options.map((o) => ({ ...o }))} value={String(value)} onChange={set} appearance="well" />
-      );
-    case 'color':
-      return <ColorField value={String(value)} alpha={p.alpha} onChange={set} />;
-    case 'vector':
-      return <Vector3Field label={p.label} value={value as unknown as Vec3} min={p.min} max={p.max} step={p.step ?? 0.01} decimals={decimalsOf(p.step ?? 0.01)} unit={p.unit} onChange={set} />;
-    case 'range':
-      return <RangeSlider aria-label={p.label} value={value as unknown as [number, number]} min={p.min} max={p.max} step={p.step ?? 0.01} decimals={decimalsOf(p.step ?? 0.01)} unit={p.unit} minSpan={p.minSpan} toggleable={false} onChange={set} />;
-    case 'point':
-      return <XYPad label={p.label} value={value as unknown as [number, number]} xRange={p.xRange} yRange={p.yRange} height={p.height ?? 64} onChange={set} />;
-    case 'text':
-      return <TextField size="sm" aria-label={p.label} value={String(value)} placeholder={p.placeholder} onChange={set} />;
-    case 'monitor':
-      return null;
-    case 'action':
-      return (
-        <Button size="sm" block onClick={p.run}>
-          {p.label}
-        </Button>
-      );
-  }
+interface LiveProps {
+  control: InspectControl;
+  item: InspectItem;
+  store: InspectorStore;
+  live: Signal<InspectValue>;
+  status?: 'automated' | 'bound' | 'warn' | 'fault';
 }
 
-function Row({ item: p, items, store, st }: { item: InspectItem; items: readonly InspectItem[]; store: InspectorStore; st: InspectorState }) {
-  const scrub = useRef<{ id: number; x: number; v: number } | null>(null);
+/** A control's props, on the row's store. */
+const controlProps = ({ control, item, store, live, status }: LiveProps, value: InspectValue) => ({
+  item,
+  value,
+  signal: live,
+  status,
+  set: (v: InspectValue) => (control.continuous === false ? store.set(item.key, v) : store.scrub(item.key, v)),
+  commit: store.commit,
+  options: item.kind === 'custom' ? (item.options ?? {}) : {},
+});
+
+/** A control that follows the signal by itself: this never renders while the value moves. */
+function TransientControl(props: LiveProps) {
+  const Component = props.control.component;
+  return <Component {...controlProps(props, props.live.peek())} />;
+}
+/** Any other control renders alone when its value moves; the rest of the panel does not. */
+function FollowingControl(props: LiveProps) {
+  const value = useSignalValue(props.live);
+  const Component = props.control.component;
+  return <Component {...controlProps(props, value)} />;
+}
+
+function Row({ item: p, items, store, st, midi, midiState }: { item: InspectItem; items: readonly InspectItem[]; store: InspectorStore; st: InspectorState; midi?: MidiMap; midiState: MidiState }) {
+  const scrub = useRef<{ id: number; x: number; v: number; moved: boolean; el: HTMLElement } | null>(null);
   if (p.kind === 'monitor') return <MonitorRow item={p} />;
   const field = isField(p);
   const value: InspectValue = field ? (st.values[p.key] ?? p.default) : 0;
   const modified = field && !sameValue(value, p.default);
-  const canKey = ANIMATABLE.has(p.kind);
+  const control = controlOf(p);
+  const canKey = field && (control?.animatable ?? false);
   const track = st.tracks[p.key];
   const keyed = !!keyAt(track, st.time);
   const link = st.links[p.key];
   const mixed = st.mixed.includes(p.key);
   const diagnosis = field ? p.check?.(value, st.values) : undefined;
   const source = link ? items.find((x) => x.key === link.from) : undefined;
-  const status = diagnosis?.status ?? (track ? 'automated' : link ? 'bound' : undefined);
+  const status: LiveProps['status'] = diagnosis?.status ?? (track ? 'automated' : link ? 'bound' : undefined);
+  const learning = midiState.learning === p.key;
+  const cc = midiState.bindings.find((b) => b.key === p.key);
 
   const menu = (): MenuEntry[] => {
     if (!field) return [];
@@ -176,6 +179,7 @@ function Row({ item: p, items, store, st }: { item: InspectItem; items: readonly
     const peers = p.kind === 'number' ? items.filter((x) => x.kind === 'number' && x.key !== p.key && x.folder === p.folder && st.links[x.key]?.from !== p.key).slice(0, 6) : [];
     return [
       { id: 'reset', label: 'Reset to default', disabled: !modified, onSelect: () => store.reset([p.key]) },
+      { id: 'roll', label: 'Randomize', disabled: p.kind === 'text', onSelect: () => void store.randomize({ keys: [p.key] }) },
       { type: 'separator' },
       { id: 'copy', label: 'Copy value', onSelect: () => void navigator.clipboard?.writeText(JSON.stringify(value)) },
       {
@@ -196,29 +200,49 @@ function Row({ item: p, items, store, st }: { item: InspectItem; items: readonly
       ...(peers.length || link ? ([{ type: 'separator' }, { type: 'label', label: 'Follow' }] as MenuEntry[]) : []),
       ...peers.map((x): MenuEntry => ({ id: 'link-' + x.key, label: x.label, checked: link?.from === x.key, onSelect: () => store.link(p.key, link?.from === x.key ? null : x.key) })),
       ...(link ? ([{ id: 'unlink', label: 'Unlink', onSelect: () => store.link(p.key, null) }] as MenuEntry[]) : []),
+      ...(midi && midiPlayable(p)
+        ? ([
+            { type: 'separator' },
+            learning
+              ? { id: 'midi-cancel', label: 'Stop listening', onSelect: midi.cancel }
+              : { id: 'midi-learn', label: cc ? `Relearn controller (CC ${cc.cc})` : 'Learn MIDI controller', disabled: !midiState.supported, onSelect: () => void midi.learn(p.key) },
+            ...(cc ? [{ id: 'midi-forget', label: 'Forget controller', onSelect: () => midi.forget(p.key) }] : []),
+          ] as MenuEntry[])
+        : []),
     ];
   };
 
-  /* a number's name is a scrubber too: drag it sideways (Alt fine, Shift coarse) */
+  /* a number's name is a scrubber too: drag it sideways (Alt fine, Shift coarse), as far as the hand likes */
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (p.kind !== 'number' || e.button !== 0 || !(e.target as HTMLElement).closest('.ar-prop__label')) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
-    scrub.current = { id: e.pointerId, x: e.clientX, v: Number(value) };
+    scrub.current = { id: e.pointerId, x: e.clientX, v: Number(store.signal<number>(p.key).peek()), moved: false, el: e.currentTarget };
   };
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const s = scrub.current;
     if (!s || s.id !== e.pointerId || p.kind !== 'number') return;
+    const dx = isPointerLocked(s.el) ? e.movementX : e.clientX - s.x;
+    s.x = e.clientX;
+    if (!dx) return;
+    if (!s.moved) {
+      s.moved = true;
+      lockPointer(s.el, e.pointerType);
+    }
     const step = p.step ?? 0.01;
     const range = p.min !== undefined && p.max !== undefined ? p.max - p.min : step * 200;
-    s.v += ((e.clientX - s.x) / 200) * range * (e.altKey ? 0.1 : e.shiftKey ? 4 : 1);
-    s.x = e.clientX;
-    const snapped = Number((Math.round(s.v / step) * step).toFixed(6));
-    store.set(p.key, Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, snapped)));
+    s.v = Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, s.v + (dx / 200) * range * (e.altKey ? 0.1 : e.shiftKey ? 4 : 1)));
+    store.scrub(p.key, Math.min(p.max ?? Infinity, Math.max(p.min ?? -Infinity, Number((Math.round(s.v / step) * step).toFixed(6)))));
   };
   const onPointerUp = () => {
+    if (!scrub.current) return;
+    unlockPointer(scrub.current.el);
     scrub.current = null;
+    store.commit();
   };
+
+  const live = field ? store.signal(p.key) : NO_VALUE;
+  const liveProps = control ? { control, item: p, store, live, status } : null;
 
   return (
     <ContextMenu items={menu} disabled={!field}>
@@ -240,7 +264,7 @@ function Row({ item: p, items, store, st }: { item: InspectItem; items: readonly
           dataControl={p.key}
           modified={modified}
           onReset={field ? () => store.reset([p.key]) : undefined}
-          binding={mixed ? 'mixed' : source?.label}
+          binding={learning ? 'move a control' : mixed ? 'mixed' : (source?.label ?? (cc ? `CC ${cc.cc}` : undefined))}
           status={diagnosis?.status ?? (link ? 'bound' : undefined)}
           message={diagnosis?.message}
           actions={
@@ -254,15 +278,30 @@ function Row({ item: p, items, store, st }: { item: InspectItem; items: readonly
             )
           }
         >
-          <Control item={p} value={value} status={status} set={(v) => store.set(p.key, v)} />
+          {liveProps ? control?.transient ? <TransientControl {...liveProps} /> : field ? <FollowingControl {...liveProps} /> : <TransientControl {...liveProps} /> : null}
         </PropertyRow>
       </div>
     </ContextMenu>
   );
 }
 
-export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, labelWidth, storageKey, className, style }: InspectorProps) {
+/** An action row holds no value: its control is handed this. */
+const NO_VALUE = signal<InspectValue>(0);
+
+/** Hand the visitor a file. */
+function download(name: string, text: string) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, labelWidth, storageKey, midi, className, style }: InspectorProps) {
   const st = useSyncExternalStore(store.subscribe, store.state, store.state);
+  const midiState = useSignalValue(midi?.state ?? NO_MIDI);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const q = query.trim().toLowerCase();
 
@@ -280,7 +319,7 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
   const fieldsUnder = (folder: InspectFolder): InspectItem[] => [...items.filter((p) => p.folder === folder.id), ...(tree.get(folder.id) ?? []).flatMap(fieldsUnder)];
   const emptyUnder = (folder: InspectFolder): boolean => rowsOf(folder.id).length === 0 && (tree.get(folder.id) ?? []).every(emptyUnder);
 
-  const row = (p: InspectItem) => <Row key={p.key} item={p} items={items} store={store} st={st} />;
+  const row = (p: InspectItem) => <Row key={p.key} item={p} items={items} store={store} st={st} midi={midi} midiState={midiState} />;
 
   const folder = (f: InspectFolder): ReactNode => {
     if (emptyUnder(f)) return null;
@@ -319,15 +358,40 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
     ...(names.length ? ([{ type: 'separator' }] as MenuEntry[]) : []),
     { id: '+save', label: 'Save current as preset', onSelect: () => store.savePreset(`Preset ${Object.keys(st.saved).length + 1}`) },
     ...Object.keys(st.saved).map((name): MenuEntry => ({ id: '-' + name, label: `Delete ${name}`, danger: true, onSelect: () => store.removePreset(name) })),
+    { type: 'separator' },
+    { id: '+roll', label: 'Randomize', onSelect: () => void store.randomize() },
+    { id: '+export', label: 'Export values', onSelect: () => download('values.json', JSON.stringify(store.toJSON(), null, 2)) },
+    { id: '+import', label: 'Import values', onSelect: () => fileRef.current?.click() },
+    { id: '+link', label: 'Copy link to these values', onSelect: () => void navigator.clipboard?.writeText(store.toURL()) },
   ];
   const body = [...loose.map(row), ...top.map(folder)].filter(Boolean);
 
+  const onKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'z' || (e.target as HTMLElement).matches('input, textarea')) return;
+    e.preventDefault();
+    if (e.shiftKey) store.redo();
+    else store.undo();
+  };
+
   return (
-    <div className={cx('ar-inspector', className)} style={{ ...(labelWidth === undefined ? null : { '--ar-field-label-w': typeof labelWidth === 'number' ? `${labelWidth}px` : labelWidth }), ...style } as CSSProperties}>
+    <div className={cx('ar-inspector', className)} onKeyDown={onKeyDown} style={{ ...(labelWidth === undefined ? null : { '--ar-field-label-w': typeof labelWidth === 'number' ? `${labelWidth}px` : labelWidth }), ...style } as CSSProperties}>
       {bar ? (
         <div className="ar-inspector__bar">
           {toolbar}
           {search ? <TextField size="sm" className="ar-inspector__search" icon={SEARCH} clearable aria-label="Find a parameter" placeholder="Find" value={query} onChange={setQuery} /> : <span className="ar-inspector__spacer" />}
+          <IconButton size="sm" label="Undo" icon={UNDO} disabled={!st.undoable} onClick={store.undo} />
+          <IconButton size="sm" label="Redo" icon={REDO} disabled={!st.redoable} onClick={store.redo} />
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = '';
+              void file?.text().then(store.fromJSON);
+            }}
+          />
           <Menu
             align="end"
             items={presetItems}

@@ -1,9 +1,10 @@
 'use client';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useGlide, usePresence } from '../core/motion';
 import { useControllable, useSafeId } from '../core/hooks';
+import { PortalTargetContext } from '../core/portal';
 import { cx, normalizeOptions, reducedMotion, revealClipped, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { OptionInput, ScopeProps } from '../core/utils';
 
@@ -51,6 +52,7 @@ export function Select<V extends string = string>({ label, options, value, defau
   const panel = useRef<HTMLDivElement>(null);
   const typed = useRef({ s: '', t: 0 });
   const listId = useSafeId('arl');
+  const portalTarget = useContext(PortalTargetContext);
 
   const current = opts.find((o) => o.value === cur);
   const show = () => {
@@ -73,17 +75,19 @@ export function Select<V extends string = string>({ label, options, value, defau
       const t = e.target as Node;
       if (!ref.current?.contains(t) && !panel.current?.contains(t)) close();
     };
-    document.addEventListener('pointerdown', down, true);
+    const doc = ref.current?.ownerDocument ?? document;
+    const view = doc.defaultView ?? window;
+    doc.addEventListener('pointerdown', down, true);
     // the page moving under the face closes the list; the list's own rows scrolling does not
     const scrolled = (e: Event) => {
       if (!panel.current?.contains(e.target as Node)) close();
     };
-    window.addEventListener('resize', close);
-    window.addEventListener('scroll', scrolled, true);
+    view.addEventListener('resize', close);
+    view.addEventListener('scroll', scrolled, true);
     return () => {
-      document.removeEventListener('pointerdown', down, true);
-      window.removeEventListener('resize', close);
-      window.removeEventListener('scroll', scrolled, true);
+      doc.removeEventListener('pointerdown', down, true);
+      view.removeEventListener('resize', close);
+      view.removeEventListener('scroll', scrolled, true);
     };
   }, [open]);
   // The list unrolls from the face downward, and rolls back up into it on close.
@@ -222,7 +226,7 @@ export function Select<V extends string = string>({ label, options, value, defau
         <span className={cx('ar-text ar-select__text', appearance === 'insert' && 'ar-text--over', !current && 'is-placeholder')}>{text}</span>
         <Chevron />
       </span>
-      {pnl && typeof document !== 'undefined' ? createPortal(pnl, document.body) : pnl}
+      {pnl && typeof document !== 'undefined' ? createPortal(pnl, portalTarget ?? document.body) : pnl}
     </div>
   );
 }

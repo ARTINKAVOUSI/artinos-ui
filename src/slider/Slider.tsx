@@ -1,8 +1,10 @@
 'use client';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { RollingValue } from '../core/RollingValue';
+import { RollingValue, SignalDigits } from '../core/RollingValue';
 import { useControllable, useSafeId } from '../core/hooks';
+import { isPointerLocked, lockPointer, unlockPointer } from '../core/scrub';
+import type { Signal } from '../core/signal';
 import { clamp, cx, GRADIENTS, gradientCss, joinFormatted, luminance, pxToken, reducedMotion, revealClipped, runFormat, sampleStops, scopeAttrs, snapshotTokens } from '../core/utils';
 import type { Format, Formatter, Gradient, GradientName, Mapping, ScopeProps } from '../core/utils';
 import { applyDetent, CURVES, extraDigits, majorEvery, makeScale, modifierRatio, nextDetent, niceUnit, parseTyped, SEAM_GRAB, snapKey, zoneRatio } from './engine';
@@ -30,6 +32,9 @@ export type SliderStatus = 'bound' | 'automated' | 'warn' | 'fault';
 
 export interface SliderProps extends ScopeProps {
   label?: string;
+  /** The value itself: the slider reads and writes this signal and paints the change straight onto
+   *  the page, so a drag renders nothing above its digits. Takes the place of `value`. */
+  signal?: Signal<number>;
   value?: number;
   defaultValue?: number;
   /** Live, on every change. */
@@ -108,11 +113,14 @@ interface Drag {
   oy: number;
   snap: number | null;
   maj: number | null;
+  /** How far the hand has gone off the readout's line, locked or not. */
+  dy: number;
+  locked: boolean;
 }
 
 export function Slider(props: SliderProps) {
   const {
-    label, value: valueProp, defaultValue, onChange, onCommit,
+    label, signal: bound, value: valueProp, defaultValue, onChange, onCommit,
     min = 0, max = 1, step, steps, detents, mapping, origin, bipolar,
     format = 'number', decimals = 2, unit, formatter,
     variant = 'material', gradient = 'temperature', describe, layout = 'integrated', labelWidth = 106,
@@ -130,7 +138,12 @@ export function Slider(props: SliderProps) {
   const sampleG = (t: number) => sampleStops(G!.stops, t);
   const originV = origin ?? (bipolar ? (min < 0 && max > 0 ? 0 : (min + max) / 2) : null);
 
-  const [value, setValue] = useControllable(valueProp, defaultValue ?? min, onChange);
+  const [value, report] = useControllable(bound ? bound.peek() : valueProp, defaultValue ?? min, onChange);
+  const setValue = (v: number) => {
+    bound?.set(v);
+    report(v);
+  };
+  const [, renderNow] = useReducer((n: number) => n + 1, 0);
   const [enabled, setEnabled] = useControllable(enabledProp, defaultEnabled, onEnabledChange);
   const toggleable = toggleableProp ?? true;
   const [mode, setMode] = useState<Mode | null>(null);
@@ -158,6 +171,7 @@ export function Slider(props: SliderProps) {
   const insetRef = useRef(2);
   const hudTokens = useRef<Record<string, string>>({});
   const clipId = useSafeId('arc');
+  const partRef = useRef(() => {});
   if (!drag.current) live.current = value;
   if (value !== dirRef.current.v) dirRef.current = { v: value, d: value > dirRef.current.v ? 1 : -1 };
 
@@ -215,7 +229,7 @@ export function Slider(props: SliderProps) {
   };
   const moveScrub = (e: ReactPointerEvent, dx: number) => {
     const d = drag.current!;
-    const r = Math.min(zoneRatio(e.clientY - d.oy, precision), modifierRatio(e, precision));
+    const r = Math.min(zoneRatio(d.dy, precision), modifierRatio(e, precision));
     let v: number;
     if (variant === 'ruler') v = live.current + (dx / ppu(1)) * r;
     else {
@@ -230,7 +244,8 @@ export function Slider(props: SliderProps) {
     }
     setRatio(r);
     emit(v);
-    setHud({ kind: 'scrub', ox: d.ox, oy: d.oy, px: e.clientX, py: e.clientY });
+    // locked, the pointer stands still: the guide is drawn from the distance travelled
+    setHud({ kind: 'scrub', ox: d.ox, oy: d.oy, px: d.locked ? d.ox : e.clientX, py: d.oy + d.dy });
   };
   const moveRuler = (e: ReactPointerEvent, dx: number) => {
     const d = drag.current!;
@@ -276,8 +291,9 @@ export function Slider(props: SliderProps) {
     hudTokens.current = snapshotTokens(rootRef.current, HUD_TOKENS);
     drag.current = {
       m, id: e.pointerId, v0: live.current, lx: x, vx: m === 'jump' ? x : g.left + tToP(t0) * g.W, t: t0, g,
-      ox: vr ? vr.left + vr.width / 2 : x, oy: vr ? vr.top + vr.height / 2 : y, snap: null, maj: null,
+      ox: vr ? vr.left + vr.width / 2 : x, oy: vr ? vr.top + vr.height / 2 : y, snap: null, maj: null, dy: 0, locked: false,
     };
+    drag.current.dy = y - drag.current.oy;
     setMode(m);
     setRatio(1);
     if (m === 'jump') moveBody(e, 0);
@@ -293,7 +309,11 @@ export function Slider(props: SliderProps) {
       return;
     }
     if (e.pointerId !== d.id) return;
-    const dx = e.clientX - d.lx;
+    d.locked = isPointerLocked(trackRef.current);
+    const dx = d.locked ? e.movementX : e.clientX - d.lx;
+    d.dy = d.locked ? d.dy + e.movementY : e.clientY - d.oy;
+    // a precision scrub has no end: once it is under way the hand may run past the screen's edge
+    if (d.m === 'scrub' && !d.locked && Math.abs(e.clientX - d.lx) + Math.abs(e.movementY) > 2) lockPointer(trackRef.current, e.pointerType);
     d.lx = e.clientX;
     if (d.m === 'scrub') moveScrub(e, dx);
     else if (d.m === 'ruler') moveRuler(e, dx);
@@ -303,6 +323,7 @@ export function Slider(props: SliderProps) {
     const d = drag.current;
     if (!d) return;
     drag.current = null;
+    unlockPointer(trackRef.current);
     if (cancel) emit(d.v0);
     else if (variant === 'ruler' && snapStep) {
       const prev = live.current;
@@ -380,7 +401,7 @@ export function Slider(props: SliderProps) {
   const finishEdit = (text: string | null) => {
     setEditing(false);
     if (text !== null) {
-      const n = parseTyped(text, format);
+      const n = parseTyped(text, format, live.current);
       if (n !== null && !Number.isNaN(n)) {
         emit(Number.isFinite(n) ? n : n < 0 ? Math.min(min, max) : Math.max(min, max));
         onCommit?.(live.current);
@@ -418,7 +439,7 @@ export function Slider(props: SliderProps) {
     const el = rootRef.current;
     if (!el) return;
     const h = (e: WheelEvent) => {
-      if (document.activeElement !== el || !wheelRef.current.enabled) return;
+      if (el.ownerDocument.activeElement !== el || !wheelRef.current.enabled) return;
       const dv = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? -e.deltaY : e.deltaX;
       if (!dv) return;
       e.preventDefault();
@@ -490,25 +511,64 @@ export function Slider(props: SliderProps) {
   const hot = mode === 'seam' || mode === 'jump' || mode === 'ruler' || flash === 'on' || flash === 'snap' || flash === 'tick';
 
   // fill span [lo, hi] and the seam: inside the active end
-  let lo = 0;
-  let hi = tToP(t);
-  let seamP = hi;
-  let sd = -1;
-  if (originV !== null && variant === 'material') {
-    const o = toT(originV);
-    lo = Math.min(o, t);
-    hi = Math.max(o, t);
-    seamP = t;
-    sd = Math.abs(t - o) < 1e-9 ? 0 : t > o ? -1 : 1;
-  }
-  if (variant === 'gradient') sd = 0;
+  const shapeAt = (at: number) => {
+    let lo = 0;
+    let hi = tToP(at);
+    let seamP = hi;
+    let sd = -1;
+    if (originV !== null && variant === 'material') {
+      const o = toT(originV);
+      lo = Math.min(o, at);
+      hi = Math.max(o, at);
+      seamP = at;
+      sd = Math.abs(at - o) < 1e-9 ? 0 : at > o ? -1 : 1;
+    }
+    if (variant === 'gradient') sd = 0;
+    return { lo, hi, seamP, sd };
+  };
+  const { lo, hi, seamP, sd } = shapeAt(t);
+  const shape = useRef({ lo, hi, seamP, sd });
+  shape.current = { lo, hi, seamP, sd };
+
+  /* on a signal, a change is painted here and React is not asked: the fill and seam are custom
+     properties, the digits are their own small part. Faces drawn from the value (ruler, curve,
+     wave) render themselves, and only themselves. */
+  const paint = useRef((_: number) => {});
+  paint.current = (v) => {
+    if (!drag.current) live.current = v;
+    if (v !== dirRef.current.v) dirRef.current = { v, d: v > dirRef.current.v ? 1 : -1 };
+    if (variant !== 'material' && variant !== 'stepped' && variant !== 'gradient') return renderNow();
+    const at = toT(v);
+    const next = shapeAt(at);
+    shape.current = next;
+    const el = trackRef.current;
+    if (el) {
+      el.style.setProperty('--ar-lo', String(next.lo));
+      el.style.setProperty('--ar-hi', String(next.hi));
+      el.style.setProperty('--ar-p', String(next.seamP));
+      el.style.setProperty('--_sd', String(next.sd));
+      if (variant === 'stepped') {
+        const on = Math.round(at * (quant - 1)) + 1;
+        el.querySelectorAll('.ar-slider__cell').forEach((cell, i) => cell.toggleAttribute('data-lit', i < on));
+      }
+    }
+    rootRef.current?.setAttribute('aria-valuenow', String(v));
+    rootRef.current?.setAttribute('aria-valuetext', joinFormatted(runFormat(v, { format, decimals, unit, formatter })));
+    partRef.current();
+  };
+  useEffect(() => bound?.subscribe((v) => paint.current(v)), [bound]);
 
   const dot = showDot ? <i className="ar-dot" data-on={enabled ? '' : undefined} /> : null;
   const labelEl = (over: boolean) => (integrated && label ? <span ref={over ? undefined : labelRef} className={cx('ar-text ar-slider__label', over && 'ar-text--over')}>{label}</span> : null);
   const editor = <ValueEditor initial={editInitial()} label={(props['aria-label'] ?? label ?? 'Value') + ' — type a value'} onDone={finishEdit} />;
+  const digits = bound ? (
+    <SignalDigits signal={bound} format={(v) => runFormat(v, { format, decimals, extra, unit, formatter })} dir={() => dirRef.current.d} fast={dragging} base={decimals} />
+  ) : (
+    <RollingValue text={fv.text} unit={fv.unit} dir={dirRef.current.d} fast={dragging} base={decimals} />
+  );
   const readout = (over: boolean) => (
     <span ref={over ? undefined : valRef} className={cx('ar-value ar-slider__readout', over && 'ar-slider__readout--over')}>
-      {editing && !over ? editor : <RollingValue text={fv.text} unit={fv.unit} dir={dirRef.current.d} fast={dragging} base={decimals} />}
+      {editing && !over ? editor : digits}
     </span>
   );
   const markTicks = (list: number[] | null | undefined, kind: string) =>
@@ -529,13 +589,13 @@ export function Slider(props: SliderProps) {
   const trackVars = { '--ar-lo': lo, '--ar-hi': hi, '--ar-p': seamP, '--_sd': sd } as CSSProperties;
 
   /* the seam parts around label and readout ink instead of striking it through */
-  const partRef = useRef(() => {});
   partRef.current = () => {
+    const now = shape.current;
     const seamed = integrated && enabled && (variant === 'material' || variant === 'gradient');
-    const [over] = seamed ? seamsOverInk(trackRef.current, [[seamP, sd, hi - lo]], [labelRef.current, valRef.current]) : [false];
+    const [over] = seamed ? seamsOverInk(trackRef.current, [[now.seamP, now.sd, now.hi - now.lo]], [labelRef.current, valRef.current]) : [false];
     rootRef.current?.toggleAttribute('data-parted', over);
     /* a fill edge inside a word: marked for apps that style it; the package draws each letter in the ink of what is behind it */
-    const crossing = integrated && enabled && variant === 'material' && edgeCrossesInk(trackRef.current, [lo, hi], [labelRef.current, valRef.current]);
+    const crossing = integrated && enabled && variant === 'material' && edgeCrossesInk(trackRef.current, [now.lo, now.hi], [labelRef.current, valRef.current]);
     rootRef.current?.toggleAttribute('data-crossing', crossing);
     /* stepped cells run behind the text: marked the same way, nothing is dimmed */
     const inked = integrated && variant === 'stepped';
@@ -622,7 +682,7 @@ export function Slider(props: SliderProps) {
             </span>
           ) : null}
           <span ref={valRef} className="ar-value ar-slider__readout" data-ink={inkAt(0.93)}>
-            {editing ? editor : <RollingValue text={fv.text} unit={fv.unit} dir={dirRef.current.d} fast={dragging} base={decimals} />}
+            {editing ? editor : digits}
           </span>
         </div>
       </div>

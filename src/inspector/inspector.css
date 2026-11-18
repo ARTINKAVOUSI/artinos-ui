@@ -119,7 +119,7 @@
   text-overflow: ellipsis;
   color: var(--ar-tone-label);
 }
-.ar-inspector__monitor > .ar-sparkline {
+.ar-inspector__monitor > .ar-graph__trace {
   grid-column: 1 / -1;
   width: 100%;
   height: max(calc(22px * var(--ar-k, 1)), 16px);

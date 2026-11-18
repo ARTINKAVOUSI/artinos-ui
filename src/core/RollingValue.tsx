@@ -1,6 +1,7 @@
 'use client';
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { newCadence, noteArrival, refreshFor, rollFor, type Cadence, type ReactiveMotion } from './reactive';
+import type { ReadSignal } from './signal';
 import { reducedMotion } from './utils';
 
 /* Rolling readout — only the digits that change move, in the direction of change.
@@ -212,6 +213,26 @@ export function RollingValue({ text, unit, dir, fast, base = 2, motion = 'auto',
       ) : null}
     </span>
   );
+}
+
+export interface SignalDigitsProps extends Omit<RollingValueProps, 'text' | 'unit' | 'dir'> {
+  signal: ReadSignal<number>;
+  /** The value as the readout shows it. */
+  format: (value: number) => { text: string; unit?: string };
+  /** Direction of the last change, read when the digits change. */
+  dir?: () => number;
+}
+
+/** A readout on a signal: the only part of a control that renders while the value moves, and only
+ *  when the digits it shows have changed. */
+export function SignalDigits({ signal, format, dir, ...rest }: SignalDigitsProps) {
+  const read = () => {
+    const f = format(signal.peek());
+    return f.unit ? `${f.text}\u0000${f.unit}` : f.text;
+  };
+  const shown = useSyncExternalStore(signal.subscribe, read, read);
+  const [text, unit] = shown.split('\u0000');
+  return <RollingValue text={text} unit={unit} dir={dir?.()} {...rest} />;
 }
 
 const NUMBER = /[-+−]?\d[\d.,:]*/g;

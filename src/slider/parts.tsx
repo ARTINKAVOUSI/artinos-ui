@@ -1,7 +1,8 @@
 'use client';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
+import { PortalTargetContext } from '../core/portal';
 import { reducedMotion } from '../core/utils';
 import { PRECISION_ZONES, ratioLabel } from './engine';
 
@@ -43,6 +44,7 @@ export const HUD_TOKENS = ['--ar-signal-hi', '--ar-sheet-bg', '--ar-sheet-blur',
  * Portalled to <body> so clipped or blurred panels never cut it off.
  */
 export function Hud({ h, text, ratio, levels, tokens }: { h: HudState; text: string; ratio: number; levels: number; tokens: Record<string, string> }) {
+  const portalTarget = useContext(PortalTargetContext);
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (ref.current?.animate && !reducedMotion()) ref.current.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 130, easing: 'cubic-bezier(.2,.7,.2,1)' });
@@ -92,7 +94,7 @@ export function Hud({ h, text, ratio, levels, tokens }: { h: HudState; text: str
       {body}
     </div>
   );
-  return typeof document !== 'undefined' ? createPortal(layer, document.body) : layer;
+  return typeof document !== 'undefined' ? createPortal(layer, portalTarget ?? document.body) : layer;
 }
 
 /**

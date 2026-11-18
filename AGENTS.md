@@ -1,6 +1,6 @@
 # ARTINOS UI — instructions for AI agents
 
-This folder is the whole ARTINOS UI package: a copy-paste React control system (51 kit components, from sliders to a dockable workspace and a node editor) with 9 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
+This folder is the whole ARTINOS UI package: a copy-paste React control system (55 kit components, from sliders to a dockable workspace and a node editor) with 9 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
 
 ## Bringing ARTINOS UI into another project
 
@@ -19,7 +19,7 @@ Do the work in the **target project**. Only read from this folder, don't modify 
    - light app → `studio-light`
    - over a 3D canvas, video or photo → any glass or frost theme, with `scene="light"` on `ArtinosTheme` when what is behind is light
 
-   Pick the components the UI uses, plus `Panel` for grouped controls (it brings `Section`) and `ItemRow` for lists. Use `Dock` for an editor layout around a canvas, with `DockSections` and `Params` when sections move between panes or come from a schema. `GraphGPU` needs `three` and is only included when named.
+   Pick the components the UI uses, plus `Panel` for grouped controls (it brings `Section`) and `ItemRow` for lists. For a few tweakable values use `Controls` (`useControls`); for code with no React, `Pane` (`createPane`). Use `Dock` for an editor layout around a canvas, with `DockSections` and `Params` when sections move between panes or come from a schema. `GraphGPU` needs `three` and is only included when named.
 
 4. **Set up the project** from its root:
    ```bash
@@ -47,6 +47,9 @@ Do the work in the **target project**. Only read from this folder, don't modify 
 ## Working on the package itself
 
 - **`src/`** is the components. Keep them portable: relative imports only, tokens instead of literal colours, and `'use client'` on stateful files. Build new parts from the shared anatomy in `core/core.css` (`ar-well`, `ar-insert`, `ar-led`, `ar-text`, `ar-value`). Overlays portal through `ThemedPortal`. A folder's shared sheet (`folder/folder.css`) and a component's own `Name.css` are picked up by the kit builder, in the order of `src/artinos.css`. The theme registry (`THEMES` / `THEME_META`) is in `src/core/utils.ts`. A theme is a role block in `src/tokens/themes.css` plus a finish block in `src/tokens/materials.css`. After changing the registry, run `node artinos.mjs sync`. The type collections (`TYPE_COLLECTIONS` / `TYPE_META`, one entry per line so the kit builder can read it) are in the same file; a collection is a `[data-ar-type='…']` block in `src/tokens/type.css`, and its faces are named in `TYPE_META.fonts` (the kit builder writes `fonts.css` from it) and in `src/tokens/fonts.css` for the showcase.
+- **The value core is `core/signal.ts`, and it stays free of React and the DOM.** A value that moves every frame travels on a signal: a control paints the change itself and tells React only when the hand settles (`store.scrub`, then `store.commit`). A new control for the Inspector goes through `inspector/registry.ts`, as the built-in ones do in `inspector/controls.tsx`. Overlays and listeners use the window they are in (`ownerDocument`, `PortalTargetContext`), because a panel can live in a window of its own.
+- **Tests** cover what can silently break: the kit builder, arithmetic with known answers, and the saved-values format (`tools/*.test.mjs`, run with `pnpm test`). A change to `InspectDocument` needs a `version` and a `migrate`, so files already saved keep loading.
+- **`tools/build.mjs`** writes the publishable npm package to `dist/npm` (`pnpm build` here) and prints what each import costs. The copy-in kit stays the source of truth.
 - **`docs/`** holds the four guides: `design.md` (the rules of the look: when a type, ink or spacing token changes, its tables change in the same edit), `components.md` (the prop reference), `catalogue.md` (every kind of every component, and which to pick) and `theming.md`. They ship inside every kit and the installed skill, so write them for someone using a kit. A new variant or state goes into the catalogue as well as the API guide.
 - **Keep the guides in step with the code, in the same change.** A new or removed prop goes into `components.md` and `catalogue.md`; a change to how things look or are composed goes into `design.md`; a prop that breaks existing app code goes into the *Updating a kit* notes in `skill/SKILL.md`. A kit carries the guides, so a project learns only what they say.
 - **`skill/SKILL.md`** is the skill template (`{{PACKAGE}}` is filled in on install). After changing it or `docs/`, run `node artinos.mjs skill --user`.

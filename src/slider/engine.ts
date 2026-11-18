@@ -1,4 +1,5 @@
 /* Slider engine — the gesture rules shared by Slider and RangeSlider. No React. */
+import { evaluate } from '../core/expression';
 import { clamp, resolveMapping } from '../core/utils';
 import type { Mapping } from '../core/utils';
 
@@ -117,12 +118,19 @@ export const CURVES: Record<CurveName, (x: number) => number> = {
 /**
  * Parse a value typed into the readout, in the units the readout shows:
  * '47' or '47%' (percent) → 0.47 · '1.2k' / '1.2 kHz' → 1200 · '−4.5 dB' → -4.5 ·
- * '128°' → 128 · '-inf' / '−∞' → -Infinity. Returns null when nothing numeric is there.
+ * '128°' → 128 · '-inf' / '−∞' → -Infinity. Arithmetic works too, in the same units, with `x` the
+ * value now: '2*3+1' · 'pi/2' · '*2' · '+=10' (core/expression). Returns null when nothing numeric is there.
  */
-export function parseTyped(text: string, format?: string): number | null {
+export function parseTyped(text: string, format?: string, current = 0): number | null {
   const s = text.trim().replace(/−/g, '-').replace(/(\d),(\d)/g, '$1.$2');
   if (/^-\s*(inf|∞)/i.test(s)) return -Infinity;
   if (/^\+?\s*(inf|∞)/i.test(s)) return Infinity;
+  // a plain reading with its unit stays a reading; anything else is tried as arithmetic first
+  if (!/^[-+]?\d*\.?\d+(?:e[-+]?\d+)?\s*(?:k?hz|k|db|%|°|ms|s|px)?$/i.test(s)) {
+    const scale = format === 'percent' ? 100 : 1;
+    const v = evaluate(s, current * scale);
+    if (v !== null) return v / scale;
+  }
   const m = s.match(/^([-+]?\d*\.?\d+(?:e[-+]?\d+)?)\s*(k)?/i);
   if (!m) return null;
   let v = parseFloat(m[1]);

@@ -7,10 +7,10 @@ Contents:
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
 - [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge · Tag
-- [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline
+- [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline · Graph · FrameGraph
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
-- [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · NodeGraph · LiveGraphView · GraphGPU
+- [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · useControls · createPane · NodeGraph · LiveGraphView · GraphGPU
 - [Rig](#rig): ViewGizmo · Trackball · Vector3Field · TransformGizmo
 - [Scopes](#scopes): theme · density · material
 - [Layout and text](#layout-and-text): spacing · type roles · alignment · grouping
@@ -45,6 +45,7 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | one of many (5+), or choices with icons and descriptions | `Select` | `appearance="well"` in forms | a frosted list that never clips |
 | a colour | `ColorField` | `alpha` | the colour is the insert; hex and opacity are scrubbable |
 | a file | `FileDrop` | `accept` | drop or browse |
+| a value read every frame (a uniform, a speed) | `Slider` / `NumberField` | `signal` | the drag paints itself and renders nothing above the control |
 | a value someone else drives (LFO, expression, remote) | any control inside `PropertyRow` | `binding`, `status="bound"`; or `status` on the Slider | names the driver instead of hiding the control |
 | a group that can be turned off as a whole (an effect, a pass) | `Section` | `enabled` / `defaultEnabled` | the title row carries the on/off; the body folds |
 | a parameter that can be turned off alone (a post effect, a modifier) | `Slider` / `RangeSlider` | `toggleable` (default) | double-click the body; the value is kept |
@@ -136,7 +137,9 @@ These apply to `Slider` and `RangeSlider` whatever the `variant`, and most to `N
 | `steps` | ● | ● | `step` | `step` | |
 | `origin` / `bipolar` | ● | | | | |
 | precision scrub from the readout | ● | ● | drag the cell (Alt 0.1×, Shift 10×) | | |
-| typed entry | ● | ● | ● | | |
+| typed entry, with sums (`2*3`, `pi/2`, `*2`, `+=10`) | ● | ● | ● | | |
+| `signal` (a drag renders nothing above the control) | ● | | ● | | |
+| endless drag past the screen's edge | readout | | ● | | |
 | enable / off, `status` | ● | enable | | | |
 | `layout="paired"` | ● | ● | | | |
 | `onCommit` | ● | ● | ● | ● | ● |
@@ -271,6 +274,7 @@ Read-only instruments. All of them take `motion`, which says what the value is s
 - **Progress**: a task under way — label, percentage, a well whose fill paces itself to how often the work reports, with a soft sheen (`sheen`) travelling along it while it runs. `variant="ring"` for a compact ring with the percentage inside; `segments` for countable work; `buffer` for what is ready ahead of it; `size`, `tone`. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
 - **Meter**: a level in a well with a signal fill and a rolling readout. `value`, or `source` read every frame for fast signals; `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it) or `format`; `peak` holds the true peak for a moment and lets it fall; `segments` lights cells; `zones` paint ranges along the track, or with `zonePaint="level"` turn the whole fill; `origin` fills out from a centre (pan, difference); `marker` and `ticks` give it a scale; `orientation="vertical"`; `size` `'sm' | 'md' | 'lg' | 'xl'`; `tone` `'live' | 'warm' | 'neutral' | 'hot'` cross-fades the fill.
 - **Spectrum**: a bank of level bars for a frequency analysis or any many-channel signal. Hand `source` your analyser; it reads every frame without React, and gathers more bins than bars on a log `scale`, each bar showing its loudest bin. `bars`, `max` (255 for byte data), `peak` caps, `segments` for LED cells, `mirror` from a centre line, `zones`, `height`, `tone`. `motion` defaults to `'audio'`.
+- **Graph**: a live trace with its name and figure, for a reading whose history matters. `budget` draws a line and turns the trace to the fault colour while over it; `series` with `stacked` shows what a total is made of. `GraphTrace` is the trace alone; `FrameGraph` is the page's own frame rate. It writes straight to the page and rests off screen.
 - **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`; `motion`.
 
 ```tsx
@@ -469,6 +473,18 @@ A read-only, column-laid view of a running graph with live controls, for a monit
 ### GraphGPU
 
 `compileGPU(graph, host)` turns a `gpu` graph into three.js TSL nodes; `refreshUniforms` updates the uniforms each frame. It needs `three` with `three/tsl`, so it is not in the index or in `--components all`: include it with `--components GraphGPU` and import it by path.
+
+### Which way to a panel
+
+| you have… | use | because |
+|---|---|---|
+| a tool with a designed layout | `Inspector` with `createInspectorStore` | folders, presets, keyframes, links and checks, bound to your object |
+| a component that needs a few tweakable values | `useControls` with `ControlsPanel` | one line, values back |
+| a value read every frame (a shader uniform, a speed) | `useControls(…, { transient: true })`, or `signal` with `<Slider signal>` | nothing renders while it moves |
+| a sketch or an app with no React | `createPane` | `pane.addBinding(object, key)` |
+| a kind of value the package does not draw | `registerControl` | it joins every panel, with reset, undo and presets |
+
+A live reading is a `Graph` when its history matters and a `Meter` when only its level does. Give a frame time a `budget`.
 
 ## Scopes
 

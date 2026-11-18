@@ -238,6 +238,8 @@ Every panel, in every density, is drawn on the same few lines. A part never inve
 - Every number as a plain slider. Pick the kind from `catalogue.md`.
 - An icon before a section's title, or a line or box drawn between sections. A section's hairline is in its own title row.
 - A control placed straight in a panel with no section around it, or a panel positioned by hand over a canvas.
+- A value read every frame held in React state, so a drag renders the whole panel. Put it on a signal.
+- A panel laid out by hand for a few tweakable values. `useControls` builds it, in the right rows.
 - Edits inside the kit folder. Change tokens (`tokens={{ … }}` or `--ar-*` in your CSS); a re-export overwrites kit files.
 
 ## A page section built to the rules

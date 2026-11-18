@@ -4,6 +4,14 @@
    here: import compileGPU from the kit's graph/gpu file directly.
 */
 
+// the value core: a signal is the value, and needs neither React nor the DOM
+export { signal, computed, effect, batch, untrack } from './core/signal';
+export type { Signal, ReadSignal, SignalOptions } from './core/signal';
+export { tweened, mixTween } from './core/tween';
+export type { Tweened, TweenOptions, Tweenable } from './core/tween';
+export { useSignal, useSignalValue } from './core/useSignal';
+export { evaluate } from './core/expression';
+
 // design system
 export { ArtinosTheme, themeStyle, densityTokensCss } from './core/Theme';
 export type { ArtinosThemeProps, DensityTokens, TokenOverrides } from './core/Theme';
@@ -85,6 +93,8 @@ export type { MeterProps } from './display/Meter';
 export { Spectrum } from './display/Spectrum';
 export type { SpectrumProps } from './display/Spectrum';
 export type { InstrumentTone, Zone } from './display/zones';
+export { Graph, GraphTrace, FrameGraph } from './display/Graph';
+export type { GraphProps, GraphTraceProps, GraphSeries, FrameGraphProps } from './display/Graph';
 export { Sparkline } from './display/Sparkline';
 export type { SparklineProps } from './display/Sparkline';
 export { Stat } from './display/Stat';
@@ -131,8 +141,20 @@ export { Inspector } from './inspector/Inspector';
 export type { InspectorProps } from './inspector/Inspector';
 export { InspectorTimeline } from './inspector/Timeline';
 export type { InspectorTimelineProps } from './inspector/Timeline';
-export { createInspectorStore, mergeInspectorStores, isField, sameValue, keyAt, valueAt } from './inspector/store';
-export type { InspectAction, InspectChoice, InspectColor, InspectDiagnosis, InspectField, InspectFolder, InspectItem, InspectKey, InspectLink, InspectMonitor, InspectNumber, InspectPoint, InspectRange, InspectText, InspectToggle, InspectValue, InspectValues, InspectVector, InspectorState, InspectorStore, InspectorStoreOptions } from './inspector/store';
+export { createInspectorStore, mergeInspectorStores, isField, sameValue, keyAt, valueAt, seededRandom, INSPECT_FORMAT } from './inspector/store';
+export { registerControl } from './inspector/registry';
+export type { InspectControl, InspectControlProps } from './inspector/registry';
+export { createMidiMap } from './inspector/midi';
+export type { MidiBinding, MidiMap, MidiMapOptions, MidiState } from './inspector/midi';
+export type { RandomizeOptions, InspectDocument, InspectCustom, InspectAction, InspectChoice, InspectColor, InspectDiagnosis, InspectField, InspectFolder, InspectItem, InspectKey, InspectLink, InspectMonitor, InspectNumber, InspectPoint, InspectRange, InspectText, InspectToggle, InspectValue, InspectValues, InspectVector, InspectorState, InspectorStore, InspectorStoreOptions } from './inspector/store';
+
+// a panel from a line: a hook for React, a binding call for everything else
+export { useControls, ControlsPanel, controlsStore } from './pane/useControls';
+export type { ControlsPanelProps, SignalsOf, UseControlsOptions } from './pane/useControls';
+export { monitor, folder } from './pane/schema';
+export type { ControlEntry, ControlOptions, ControlSchema, FolderEntry, MonitorEntry, MonitorOptions, ValuesOf } from './pane/schema';
+export { createPane } from './pane/createPane';
+export type { BindingOptions, Pane, PaneBinding, PaneFolder, PaneOptions } from './pane/createPane';
 
 // dock: the studio workspace, and the MetaBlock engine it is built on
 export { Dock, TEAR_PREFIX, useDock } from './dock/Dock';

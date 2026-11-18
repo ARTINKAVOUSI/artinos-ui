@@ -30,5 +30,6 @@
 @import './dock/metablock/WorkspaceView.css';
 @import './dock/Dock.css';
 @import './dock/DockMenu.css';
+@import './pane/pane.css';
 @import './graph/graph.css';
 @import './tokens/density.css';

@@ -163,7 +163,7 @@ function Stage({ scene }: { scene?: string }) {
     let last = performance.now();
     const frame = (now: number) => {
       raf = requestAnimationFrame(frame);
-      const dt = Math.min(0.1, (now - last) / 1000);
+      const dt = Math.max(0, Math.min(0.1, (now - last) / 1000));
       last = now;
       stats.ms += (dt * 1000 - stats.ms) * 0.1;
       stats.fps = 1000 / stats.ms;

@@ -16,6 +16,7 @@ import { useWorkspaceRevision } from './metablock/hooks';
 import type { MetaBlockCapabilities, MetaBlockGroup, MetaBlockInstance } from './metablock/types';
 import { MetaBlockWorkspace } from './metablock/workspace';
 import { MetaBlockWorkspaceView } from './metablock/WorkspaceView';
+import { PopoutWindows } from './PopoutWindows';
 import type { GroupChromeContext, MetaBlockWorkspaceViewProps } from './metablock/WorkspaceView';
 
 /* ARTINOS Dock — a studio workspace in one component. Panels live in docks on the
@@ -511,6 +512,11 @@ export function Dock({
   const windowActions = (c: GroupChromeContext) =>
     c.activeBlock ? (
       <>
+        {c.activeBlock.capabilities.popoutable === false ? null : (
+          <button type="button" className="ar-tool" title="Open in a new window" onClick={() => c.blockActions.popout(c.activeBlock!.id)}>
+            {DockIcons.popout}
+          </button>
+        )}
         {c.activeBlock.capabilities.maximizable === false ? null : (
           <button
             type="button"
@@ -579,6 +585,7 @@ export function Dock({
         padding={10}
         gap={8}
         {...viewProps}
+        canPopout
         workspace={workspace}
         renderBlock={renderBlock}
         renderGroupChrome={renderGroupChrome}
@@ -594,6 +601,7 @@ export function Dock({
           );
         }}
       />
+      <PopoutWindows workspace={workspace} renderBlock={renderBlock} anchor={rootRef} />
       {brand ? <div className="ar-dock__brand">{brand}</div> : null}
       {/* the way back: a small mark at the foot (a frame, its panes waiting at the sides) and the key.
           Always mounted so it can arrive and leave. */}

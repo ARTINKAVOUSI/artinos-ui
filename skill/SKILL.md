@@ -1,6 +1,6 @@
 ---
 name: artinos-ui
-description: Add ARTINOS UI — the precision-instrument React control system (Slider, RangeSlider, Knob, XYPad, NumberField, TextField, Switch, Checkbox, ToggleGroup, ChipGroup, Segmented, ColorField, Select, FileDrop, Button, Toolbar, Badge, Stat, Meter, Spectrum, Progress, Sparkline, Panel/Section/SectionGroup/Field, Text/Stack/Inline, Tabs, PropertyRow, ItemList/ItemGroup/ItemRow, Menu, Dialog, Toast, Tooltip, CommandPalette, a dockable Dock workspace on the MetaBlock engine and a NodeGraph editor) with 9 glass, frost and solid themes and twelve type systems — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (nimbus, pro-gray, studio-light, frost-deep, onyx…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel, a dockable editor layout, a command palette or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming an existing artinos-ui kit, adding themes or components to it, or updating it.
+description: Add ARTINOS UI — the precision-instrument React control system: sliders, knobs, number fields, switches, selects, colour fields, meters, graphs, panels, tabs, menus, dialogs, a command palette, useControls, createPane, signals, a dockable Dock workspace on the MetaBlock engine and a NodeGraph editor, with 9 glass, frost and solid themes and twelve type systems — to a project, and build parameter panels, inspectors, studio workspaces and control docks with it. Use this skill whenever the user mentions ARTINOS UI, artinos-ui, the ARTINOS sliders or theme names (nimbus, pro-gray, studio-light, frost-deep, onyx…), or wants glass/frosted control panels, precision sliders, a parameter inspector or tweak panel (a Leva, Tweakpane or lil-gui style GUI), a dockable editor layout or a node editor for a React / Next / Vite / React Three Fiber project — even if they don't name the package. Also use it for theming, extending or updating an existing artinos-ui kit.
 ---
 
 # ARTINOS UI in a project
@@ -48,6 +48,8 @@ node "{{PACKAGE}}/artinos.mjs" list
 - **Grouped controls:** `Panel` (it brings `Section`, `SectionGroup`, `Field`).
 - **Inspector rows** with reset, binding and status: `PropertyRow`.
 - **A pro parameter editor** (many values bound both ways to an object, with keyframes, links, presets, monitors and multiple selection): `Inspector` (brings `createInspectorStore`), and `InspectorTimeline` for its keyframes. It is made for the dense family (below).
+- **A few tweakable values in a component:** `Controls` (`useControls`, `ControlsPanel`). **A sketch or an app with no React:** `Pane` (`createPane`, `pane.addBinding(object, key)`).
+- **Live traces** with a budget line or stacked series: `Graph` (brings `GraphTrace`, `FrameGraph`). **Hardware controllers:** `Midi` (`createMidiMap`).
 - **Lists of things** (layers, renders, materials, files): `ItemRow` (brings `ItemList`, `ItemGroup`).
 - **A studio or editor around a canvas:** `Dock`. It brings the MetaBlock engine, its menu, the command palette and `PanelBar`. Add `DockSections` (`createDockSections`: sections that move between panes) and `Params` (`createParamPanes`: settings from a schema) when the UI uses them.
 - **Overlays:** `Menu`, `Dialog`, `Toast`, `Tooltip`, `CommandPalette`.
@@ -149,6 +151,8 @@ The current one is `selected`; `empty` says what to do when there is nothing yet
 | a position or scale (three numbers) · an object's rotation · where the camera looks from | `Vector3Field` · `Trackball` · `ViewGizmo` (and `TransformGizmo`, with `three`, for handles in the scene) |
 | on/off · flags · one of 2–4 · one of many · a colour · a file | `Switch` · `ToggleGroup` · `Segmented` · `Select` · `ColorField` · `FileDrop` |
 | a read-only level · frequency bars · trend · figure · task · key figure with its change | `Meter` · `Spectrum` · `Sparkline` · `RollingValue` · `Progress` · `Stat` |
+| a value read every frame (a uniform, a speed) | `Slider signal={s}` or `NumberField signal={s}`, or `useControls(name, schema, { transient: true })` |
+| a live reading whose history matters (frame time, load) | `Graph budget={…}`; the page's own frame rate is `FrameGraph` |
 | a value that streams or must keep exact time (audio, scrubbing, telemetry) | the instrument's `motion` (`'audio'`, `'instant'`, default `'auto'`), and `source` instead of `value` when it changes faster than React should render |
 
 Conveniences that are easy to miss: `format` (`percent`, `db`, `hz`, `angle`, `time`) and `unit` instead of hand-formatting; `mapping="log"` / `"exp"` (geometry only, the value stays exact); `detents` for meaningful points like 0 dB; `onCommit` for expensive work (fires once, on release); `toggleable` (on by default: double-click switches a parameter off and keeps its value).
@@ -176,6 +180,7 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 - `--force` rewrites the kit and removes files it no longer needs; anything the app changed inside the kit is lost, which is why restyling lives in tokens.
 - Then run the type-check: an update can rename or remove a prop. Fix the app's code to the guides, never the kit. Recent changes worth checking: `Tabs` takes `orientation`, `variant` (`line` · `pill` · `icon`), `fill`, `onClose` and per-item `count` / `dot`; `Panel` takes `tabsPlacement`; `DockPanel` takes `dock: 'center'` and `icon`, `Dock` takes `tabs`, and a `Panel` inside a Dock pane now drops its own glass and title; `Section` and `createParamPanes` groups no longer take `icon` (a section title stands alone); `DockPanel` takes `capabilities`; `ItemList` takes `variant`, `size`, `tileWidth` and `empty`, and `ItemRow` takes `thumbnail`, `icon`, `description`, `value`, `status`, `progress`, `checked` and a tree (`depth`, `expanded`). The themes are one flat set: `HERO_THEMES`, `variationsOf` and `THEME_META[id].parent` are gone, use `THEMES` (the default first). `ArtinosTheme` has no `mode` and there is no `data-ar-mode`: the pro look is the `dense` density.
 - Tokens removed from the package: `--ar-text-ghost` (use `--ar-text-faint`), `--ar-weight-black` (use `--ar-weight-bold`), `--ar-track-role`, and the unused colour primitives `--ar-ink-*`, `--ar-paper-*`, `--ar-chalk-*`, `--ar-slate-*`, `--ar-teal-*`. Search the app and any custom theme for them after an update: a `var()` of a removed token falls back to nothing. Sizes now come from one ladder, `--ar-step-12` … `--ar-step-48`; the size tokens keep their names and values.
+- Changes to what the Inspector does: a number with a `step` now holds whole steps; dragging a row tells `subscribe` listeners when the hand settles, so an app that needs every change uses `onChange`, `store.live` or `store.signal(key)`; monitors draw `.ar-graph__trace` instead of `.ar-sparkline`; `InspectorStore` has new members, so a hand-written store must add them or use `createInspectorStore`.
 - Re-read `references/design.md` after an update: the rules move with the package.
 - The skill itself is refreshed by `setup`; `node "{{PACKAGE}}/artinos.mjs" skill --user` refreshes it for every project.
 
@@ -187,6 +192,8 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 - **Unreadable over a light scene:** set `scene="light"` on `ArtinosTheme`, or use a light theme.
 - **Clipped dropdowns or HUD.** Select lists and the slider HUD portal to `<body>` with the theme tokens. Parents with `overflow: hidden` or `backdrop-filter` are fine; don't move them.
 - **R3F / canvas apps.** The controls are DOM. For an editor, pass the `<Canvas>` as the Dock's `viewport` and the panels dock around it; for a few controls, render a `Panel` in an absolutely positioned overlay beside the `<Canvas>`, never inside it.
+- **A panel that stutters while dragging.** A value in React state renders its whole parent on every move. Put it on a signal (`<Slider signal={s} />`) or ask `useControls` for `transient: true`, and read it with `s.peek()` in the frame loop.
+- **Open in New Window does nothing.** Browsers allow a popup only from a real click, and a popup blocker sends the panel back to its place.
 - **Dock is blank or zero-height.** It fills its parent: give the parent a height (`100vh`, or a sized grid cell).
 - **Saved dock layout looks stale.** `storageKey` restores the last arrangement; it is skipped when panel ids change. `useDock().resetLayout()` starts over. A changed `capabilities` applies to a fresh layout.
 - **`useToast` throws.** Wrap the app (or the subtree) in `<ToastProvider>` once.
@@ -194,3 +201,7 @@ node "{{PACKAGE}}/artinos.mjs" setup --project . --themes nimbus,frost-deep --co
 - **Double-click on a slider body** toggles it off, keeping its value. Pass `toggleable={false}` where that must never happen.
 - **Everything is a plain slider.** Frequencies without `mapping="log"`, focal lengths that aren't rulers, white balance that isn't a gradient, counts that aren't stepped, intervals as two sliders. Go back through `references/catalogue.md`'s checklist.
 - **Browsers.** The CSS needs `@property`, `color-mix()`, `:has()` and `backdrop-filter`, which every evergreen browser has.
+
+## Quick panels
+
+For a few tweakable values use `useControls` with `<ControlsPanel />` in a Dock panel; for code with no React use `createPane`. A value read every frame belongs on a signal: `<Slider signal={s} />`, or `useControls(name, schema, { transient: true })`. A kind of value the package does not draw is added once with `registerControl` and then works in every panel. Store options worth reaching for: `persist` (kept across reloads), `url` (carried in a link), `version` with `migrate` (older files keep loading). See *Signals · useControls · createPane* in `references/components.md`.

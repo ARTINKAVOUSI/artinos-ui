@@ -8,6 +8,7 @@ import { ControlsChapter } from './Controls';
 import { DisplayChapter } from './Display';
 import { GraphChapter } from './Graph';
 import { LayoutChapter } from './Layout';
+import { LiveChapter } from './Live';
 import { OverlaysChapter } from './Overlays';
 import { RigChapter } from './Rig';
 import { SlidersChapter } from './Sliders';
@@ -25,6 +26,7 @@ export function ComponentChapters({ afterDensity }: { afterDensity?: ReactNode }
       <DisplayChapter />
       <OverlaysChapter />
       <GraphChapter />
+      <LiveChapter />
     </ToastProvider>
   );
 }

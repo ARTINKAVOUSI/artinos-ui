@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 51 kit components on a token-based design system with **108 themes** (glass, frost, studio, atelier and luxe) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 55 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 
@@ -22,11 +22,31 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 | Controls | NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop |
 | Rig | ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`) |
 | Actions | Button · IconButton · Toolbar · Kbd · Badge · Tag |
-| Display | Stat · Meter · Spectrum · Progress · Sparkline · RollingValue |
+| Display | Stat · Meter · Spectrum · Progress · Sparkline · Graph / GraphTrace / FrameGraph · RollingValue |
 | Layout | Panel / Section / SectionGroup / Field · Text / Stack / Inline · StatStrip · Callout · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow |
 | Overlays | Menu / ContextMenu · Dialog · Toast · Tooltip · CommandPalette |
-| Dock | Dock / PanelBar / useDock · createDockSections · createParamPanes · MetaBlock (the docking engine) |
+| Dock | Dock / PanelBar / useDock · createDockSections · createParamPanes · Inspector / InspectorTimeline · MetaBlock (the docking engine) |
+| Live values | signal / computed / effect · useControls / ControlsPanel · createPane · registerControl · createMidiMap |
 | Graph | NodeGraph · LiveGraphView · GraphGPU (needs `three`) |
+
+## Three ways to a panel
+
+All three end in the same dockable panel, on the same values.
+
+```tsx
+// a few values in a component
+const { speed, tint } = useControls('Scene', { speed: { value: 1, min: 0, max: 10 }, tint: '#4fd1ba' });
+
+// no React in your code
+const pane = createPane({ title: 'Scene' });
+pane.addBinding(params, 'speed', { min: 0, max: 10 });
+
+// a designed tool: folders, presets, keyframes, links, checks, undo, files
+const store = createInspectorStore(items, { target: scene, persist: 'my-app.values' });
+<Inspector items={items} folders={folders} store={store} />
+```
+
+A value read every frame goes on a signal: `<Slider signal={speed} />` paints its own change, so a drag renders nothing above the control.
 
 ## Use it in a project
 
@@ -111,22 +131,24 @@ artinos-ui/
     artinos.css       single stylesheet entry
     index.ts          public exports
     tokens/           tokens.css · themes.css · materials.css · type.css · fonts.css
-    core/             ArtinosTheme · ThemedPortal · RollingValue · utils · hooks · motion · core.css
+    core/             ArtinosTheme · ThemedPortal · RollingValue · signal · tween · expression · utils · hooks · motion · core.css
     slider/           Slider · RangeSlider · engine · HUD parts · slider.css
     controls/         NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented
                       Select · ColorField · FileDrop · Knob · XYPad · controls.css + one sheet each
     rig/              ViewGizmo · Trackball · Vector3Field · TransformGizmo (three) · math · rig.css
     actions/          Button · IconButton · Toolbar · Kbd · Badge · Tag · actions.css
-    display/          Stat · Meter · Spectrum · Progress · Sparkline · display.css
+    display/          Stat · Meter · Spectrum · Progress · Sparkline · Graph · display.css
     layout/           Panel · Section · SectionGroup · Field · Text · StatStrip · Callout · Tabs
                       PropertyRow · ItemRow · layout.css + one sheet each
     overlays/         Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · overlays.css
-    dock/             Dock · PanelBar · DockMenu · sections (createDockSections) · params (createParamPanes)
+    inspector/        Inspector · InspectorTimeline · store · control registry · built-in controls · MIDI
+    pane/             useControls · ControlsPanel · createPane · the short schema
+    dock/             Dock · PanelBar · DockMenu · PopoutWindows · sections (createDockSections) · params (createParamPanes)
       metablock/        the docking engine: workspace model, layout, physics, WorkspaceView
     graph/            NodeGraph · LiveGraphView · graph model · editor · gpu.ts (three TSL, opt-in)
   docs/             design.md · catalogue.md · components.md · theming.md
   skill/            SKILL.md: the Claude Code skill (installed by the command)
-  tools/            kit.mjs (kit builder) · zip.mjs: shared by the command and the showcase
+  tools/            kit.mjs (kit builder) · zip.mjs: shared by the command and the showcase · build.mjs (npm build) · tests
   showcase/         Vite app: the chaptered gallery · Theme Studio · Export kit, plus the built page
   design/           design references only; nothing imports it
 ```
@@ -139,5 +161,21 @@ pnpm install
 pnpm dev     # http://localhost:5173 (studio at #studio, export at #export)
 pnpm build   # type-check, then rebuild showcase/artinos-ui-showcase.html
 ```
+
+From this folder, once the showcase's dependencies are installed:
+
+```bash
+pnpm test    # the kit builder, arithmetic and the saved-values format
+pnpm build   # a publishable package in dist/npm, and what each import costs
+```
+
+| import | minified | gzip |
+|---|---|---|
+| `artinos-ui/signals` | 5.3 kB | 2.7 kB |
+| `Slider` | 31.7 kB | 13.0 kB |
+| `useControls` | 101.6 kB | 36.7 kB |
+| `createPane` | 204.1 kB | 67.8 kB |
+| everything | 324.4 kB | 108.5 kB |
+| `artinos.css` | 304.4 kB | 47.9 kB |
 
 Keep the guides in step with the code, in the same change (see `AGENTS.md`). After changing `skill/` or `docs/`, run `node artinos.mjs skill --user` to refresh installed copies. After adding or editing themes in `src/core/utils.ts`, run `node artinos.mjs sync`.

@@ -900,3 +900,23 @@
   background: var(--ar-bg-active);
   box-shadow: inset 0 0 0 1px var(--ar-signal-line);
 }
+
+/* ---------- a panel in its own browser window ---------- */
+.ar-popout-body {
+  margin: 0;
+  background: var(--ar-bg-app);
+}
+.ar-popout {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ar-bg-app); /* a window has no scene behind it for the glass to sit on */
+  color: var(--ar-text-hi);
+}
+.ar-popout__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}

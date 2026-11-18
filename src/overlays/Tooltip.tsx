@@ -65,8 +65,9 @@ export function Tooltip({ content, children, side = 'top', delay = 450, shortcut
       top = a.top + a.height / 2 - t.height / 2;
     }
     if (side === 'top' && top < 4) top = a.bottom + gap;
-    left = Math.min(window.innerWidth - t.width - 4, Math.max(4, left));
-    top = Math.min(window.innerHeight - t.height - 4, Math.max(4, top));
+    const view = tip.current.ownerDocument.defaultView ?? window;
+    left = Math.min(view.innerWidth - t.width - 4, Math.max(4, left));
+    top = Math.min(view.innerHeight - t.height - 4, Math.max(4, top));
     setPosition({ left, top });
   }, [open, side, content]);
 

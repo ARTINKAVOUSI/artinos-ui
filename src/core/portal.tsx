@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
+import { createContext, useContext, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -41,8 +41,12 @@ const noop = () => () => {};
 const onClient = () => true;
 const onServer = () => false;
 
+/** Where overlays open: the body of the window they belong to (a popped-out panel has its own). */
+export const PortalTargetContext = createContext<HTMLElement | null>(null);
+
 /** createPortal(children, document.body), keeping the theme of where it is rendered. */
 export function ThemedPortal({ children }: { children: ReactNode }) {
+  const target = useContext(PortalTargetContext);
   const client = useSyncExternalStore(noop, onClient, onServer);
   const anchor = useRef<HTMLSpanElement>(null);
   const host = useRef<HTMLDivElement>(null);
@@ -71,7 +75,7 @@ export function ThemedPortal({ children }: { children: ReactNode }) {
             <div ref={host} className="ar-portal">
               {children}
             </div>,
-            document.body,
+            target ?? document.body,
           )
         : null}
     </>

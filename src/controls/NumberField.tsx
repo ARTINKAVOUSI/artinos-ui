@@ -1,19 +1,24 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
-import { RollingValue } from '../core/RollingValue';
+import { RollingValue, SignalDigits } from '../core/RollingValue';
+import { evaluate } from '../core/expression';
 import { useControllable } from '../core/hooks';
+import { isPointerLocked, lockPointer, unlockPointer } from '../core/scrub';
+import type { Signal } from '../core/signal';
 import { clamp, cx, joinFormatted, runFormat, scopeAttrs } from '../core/utils';
 import type { Format, Formatter, ScopeProps } from '../core/utils';
 
 /* ARTINOS NumberField — a recessed numeric cell. The cell is the scrubber:
- *   drag sideways   → scrub (Alt 0.1× · Shift 10×), readout rolls
- *   click           → type a value; Enter commits, Escape cancels
+ *   drag sideways   → scrub (Alt 0.1× · Shift 10×), readout rolls; the hand may run past the screen's edge
+ *   click           → type a value or a sum (2*3 · pi/2 · *2 · +=10); Enter commits, Escape cancels
  *   arrows / wheel  → ±step while focused
  * The label, when given, sits inside the well at the left. */
 
 export interface NumberFieldProps extends ScopeProps {
   label?: string;
+  /** The value itself: read and written here, so a scrub renders nothing above the digits. Takes the place of `value`. */
+  signal?: Signal<number>;
   value?: number;
   defaultValue?: number;
   onChange?: (value: number) => void;
@@ -39,10 +44,14 @@ const DRAG_START = 3;
 
 export function NumberField(props: NumberFieldProps) {
   const {
-    label, value, defaultValue = 0, onChange, onCommit, min = -Infinity, max = Infinity, step = 1, decimals = 0,
+    label, signal: bound, value, defaultValue = 0, onChange, onCommit, min = -Infinity, max = Infinity, step = 1, decimals = 0,
     format = 'number', unit, formatter, pixelsPerStep = 4, align = 'center', disabled, material, density, className, style, id,
   } = props;
-  const [v, setV] = useControllable(value, defaultValue, onChange);
+  const [v, report] = useControllable(bound ? bound.peek() : value, defaultValue, onChange);
+  const setV = (x: number) => {
+    bound?.set(x);
+    report(x);
+  };
   const [editing, setEditing] = useState<string | null>(null);
   const [scrubbing, setScrubbing] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -55,6 +64,16 @@ export function NumberField(props: NumberFieldProps) {
   const drag = useRef<{ x: number; v0: number; acc: number; id: number; moved: boolean } | null>(null);
   if (!drag.current) live.current = v;
   if (v !== dirRef.current.v) dirRef.current = { v, d: v > dirRef.current.v ? 1 : -1 };
+
+  /* on a signal the cell tells assistive tech itself; its digits are their own small part */
+  const paint = useRef((_: number) => {});
+  paint.current = (x) => {
+    if (!drag.current) live.current = x;
+    if (x !== dirRef.current.v) dirRef.current = { v: x, d: x > dirRef.current.v ? 1 : -1 };
+    rootRef.current?.setAttribute('aria-valuenow', String(x));
+    rootRef.current?.setAttribute('aria-valuetext', joinFormatted(runFormat(x, { format, decimals, unit, formatter })));
+  };
+  useEffect(() => bound?.subscribe((x) => paint.current(x)), [bound]);
 
   const q = (x: number, grain: number) => Number((Math.round(x / grain) * grain).toFixed(Math.max(decimals, 6)));
   const emit = (x: number) => {
@@ -79,13 +98,14 @@ export function NumberField(props: NumberFieldProps) {
   const onPointerMove = (e: ReactPointerEvent) => {
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
-    const dx = e.clientX - d.x;
+    const dx = isPointerLocked(rootRef.current) ? e.movementX : e.clientX - d.x;
     d.x = e.clientX;
     d.acc += dx * ratio(e);
     if (!d.moved && Math.abs(d.acc) < DRAG_START) return;
     if (!d.moved) {
       d.moved = true;
       setScrubbing(true);
+      lockPointer(rootRef.current, e.pointerType);
     }
     const grain = step * (e.altKey ? 0.1 : 1);
     emit(q(d.v0 + (d.acc / pixelsPerStep) * step, grain));
@@ -95,6 +115,7 @@ export function NumberField(props: NumberFieldProps) {
     if (!d || d.id !== e.pointerId) return;
     drag.current = null;
     setScrubbing(false);
+    unlockPointer(rootRef.current);
     if (d.moved) onCommit?.(live.current);
     else startEdit();
   };
@@ -116,9 +137,11 @@ export function NumberField(props: NumberFieldProps) {
     if (text === null) return; // already committed or cancelled
     editRef.current = null;
     setEditing(null);
-    const n = parseFloat(text.replace('−', '-').replace(',', '.'));
-    if (Number.isFinite(n)) {
-      emit(format === 'percent' ? n / 100 : n);
+    // a sum is worked in the units the cell shows, with `x` the value now
+    const scale = format === 'percent' ? 100 : 1;
+    const n = evaluate(text.replace(/(\d),(\d)/g, '$1.$2'), live.current * scale);
+    if (n !== null) {
+      emit(n / scale);
       onCommit?.(live.current);
     }
     if (refocus) rootRef.current?.focus({ preventScroll: true });
@@ -136,7 +159,7 @@ export function NumberField(props: NumberFieldProps) {
     } else if (e.key === 'Enter' || e.key === 'F2') {
       e.preventDefault();
       startEdit();
-    } else if (/^[0-9.\-]$/.test(e.key)) {
+    } else if (/^[0-9.\-+*/(]$/.test(e.key)) {
       e.preventDefault();
       selectAll.current = false; // typing straight into the cell starts a fresh value
       setEditing(e.key);
@@ -153,7 +176,7 @@ export function NumberField(props: NumberFieldProps) {
     let commit: ReturnType<typeof setTimeout> | undefined;
     const h = (e: WheelEvent) => {
       const w = wheelRef.current;
-      if (document.activeElement !== el || w.disabled || w.editing !== null || !e.deltaY) return;
+      if (el.ownerDocument.activeElement !== el || w.disabled || w.editing !== null || !e.deltaY) return;
       e.preventDefault();
       w.nudge(e.deltaY < 0 ? 1 : -1, e);
       clearTimeout(commit);
@@ -189,6 +212,7 @@ export function NumberField(props: NumberFieldProps) {
       onPointerCancel={() => {
         drag.current = null;
         setScrubbing(false);
+        unlockPointer(rootRef.current);
       }}
       onKeyDown={onKeyDown}
       className={cx('ar-well ar-number', disabled && 'is-disabled', className)}
@@ -219,7 +243,11 @@ export function NumberField(props: NumberFieldProps) {
         />
       ) : (
         <span className="ar-value ar-number__value">
-          <RollingValue text={f.text} unit={f.unit} dir={dirRef.current.d} fast={scrubbing} base={decimals} />
+          {bound ? (
+            <SignalDigits signal={bound} format={(x) => runFormat(x, { format, decimals, unit, formatter })} dir={() => dirRef.current.d} fast={scrubbing} base={decimals} />
+          ) : (
+            <RollingValue text={f.text} unit={f.unit} dir={dirRef.current.d} fast={scrubbing} base={decimals} />
+          )}
         </span>
       )}
     </div>

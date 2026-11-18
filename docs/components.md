@@ -18,6 +18,10 @@ Contents:
 - Rig: ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`)
 - Also: Motion · ArtinosTheme · shared types · recipes · requirements
 
+## Typing a number
+
+`Slider` readouts and `NumberField` take arithmetic in the units they show: `2*3+1`, `pi/2`, `2^8`, `1.5k`, `sin(pi/2)`, `min(3, 8)`. `x` is the value now; `*2` and `/2` work on it directly and `+=10` and `-=10` step it. `evaluate(text, x)` is the same parser. Dragging a number, a slider's readout or an Inspector label locks the pointer once the drag is under way, so the hand can keep going past the edge of the screen.
+
 ## Slider
 
 The precision surface. The capsule is the control, the seam is the handle, the readout is the precision zone.
@@ -26,6 +30,7 @@ The precision surface. The capsule is the control, the seam is the handle, the r
 |---|---|---|---|
 | `label` | string | | shown inside the capsule (`integrated`) or beside it (`paired`) |
 | `value` / `defaultValue` | number | | |
+| `signal` | `Signal<number>` | | the value itself, in place of `value`: a drag paints the change and renders nothing above the digits |
 | `onChange` | (v) => void | | live, every change |
 | `onCommit` | (v) => void | | once, on release — use for expensive work |
 | `min` / `max` | number | 0 / 1 | |
@@ -95,7 +100,7 @@ const [band, setBand] = useState<RangeValue>([0.2, 0.7]);
 
 A recessed numeric cell. Drag to scrub (Alt 0.1×, Shift 10×), click/type to edit, arrows and wheel step.
 
-Props: `label`, `value` / `defaultValue` / `onChange` / `onCommit`, `min`, `max`, `step`, `decimals`, `format`, `unit`, `formatter`, `pixelsPerStep` (default 4), `align` (`'center' | 'end'`), `disabled`, `aria-label`.
+Props: `label`, `signal` (the value itself, in place of `value`), `value` / `defaultValue` / `onChange` / `onCommit`, `min`, `max`, `step`, `decimals`, `format`, `unit`, `formatter`, `pixelsPerStep` (default 4), `align` (`'center' | 'end'`), `disabled`, `aria-label`.
 
 ```tsx
 <NumberField label="Width" value={w} onChange={setW} min={0} max={4096} decimals={0} unit="px" />
@@ -509,6 +514,8 @@ The Dock fills its parent, so give the parent a height.
 
 **MetaBlock** is the framework-free docking engine underneath. Use it directly when you need your own chrome: `new MetaBlockWorkspace(...)` with `<MetaBlockWorkspaceView workspace renderBlock renderGroupChrome …>`, `useWorkspaceRevision(workspace)`, `defaultCapabilities` and the `types` exports. Its stylesheet is `dock/metablock/WorkspaceView.css`. Its `--mb-*` / `--au-*` variables are bound to the theme only under `.ar-dock`, so set them yourself on a custom host.
 
+**A panel in its own window.** Right-click a tab and choose Open in New Window, or use the window button on a floating panel, for a second monitor. It is the same panel on the same values, with the Dock's theme; closing the window brings it home. `capabilities: { popoutable: false }` keeps a panel in the workspace.
+
 ### Auto-hide: one switch for a clean view
 
 Every Dock, every `Panel autoHide` and every `<AutoHide>` fades together and the viewport stays. Hidden by hand (a key, a call, an event) it stays hidden until switched back; hidden when idle, any input brings it back. While hidden a part takes no pointer and (Panel, AutoHide) no focus.
@@ -541,7 +548,7 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 <InspectorTimeline items={items} store={store} />
 ```
 
-**Items** (`InspectItem`): every item has `key`, `label`, `folder?`, `help?` (tooltip), `when?(values)` (shown only while true) and `check?(value, values)` returning `{ status: 'warn' | 'fault', message }` to explain a bad value under its row.
+**Items** (`InspectItem`): every item has `key`, `label`, `folder?`, `help?` (tooltip), `when?(values)` (shown only while true) and `check?(value, values)` returning `{ status: 'warn' | 'fault', message }` to explain a bad value under its row. `locked` keeps a row out of Randomize.
 
 | `kind` | value | control | extra fields |
 |---|---|---|---|
@@ -553,14 +560,15 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 | `range` | `[lo, hi]` | `RangeSlider` | `min`, `max`, `step`, `unit`, `minSpan` |
 | `point` | `[x, y]` | `XYPad` | `xRange`, `yRange`, `height` |
 | `text` | string | `TextField` | `placeholder` |
-| `monitor` | none: `read()` returns a number | a figure, and a trace with `graph` | `min`, `max`, `unit`, `decimals`, `interval` (ms, default 120) |
+| `monitor` | none: `read()` returns a number | a figure, and a trace with `graph` | `min`, `max`, `unit`, `decimals`, `budget` (a line across the trace), `interval` (ms; default 120, 50 with `graph`) |
 | `action` | none | a `Button` that calls `run()` | |
+| `custom` | any JSON value | the control registered under `control` | `control`, `default`, `options`, `randomize(random, current)` |
 
 **Folders** (`InspectFolder`): `{ id, title, parent?, open?, switch? }`. `parent` nests a folder: its names step in, its controls stay on the panel's one column. `switch` names a toggle item that becomes the folder's on/off LED instead of a row.
 
-**Inspector props:** `items`, `folders`, `store`, `only` (top folder ids: one schema across several panels), `presets` (`{ name: values }`; the panel adds Save current as preset), `bar` (Find · Presets · Reset; default true), `search`, `toolbar`, `labelWidth` (inherits the density family's label column), `storageKey` (folder folds).
+**Inspector props:** `items`, `folders`, `store`, `only` (top folder ids: one schema across several panels), `presets` (`{ name: values }`; the panel adds Save current as preset), `bar` (Find · Presets · Reset; default true), `search`, `toolbar`, `labelWidth` (inherits the density family's label column), `storageKey` (folder folds), `midi` (a `createMidiMap`: rows learn a hardware controller). The bar also holds Undo and Redo; Presets holds Randomize, Export values, Import values and Copy link.
 
-**A row:** drag the value, or a number's label, to scrub (Alt fine, Shift coarse); click a number to type. The dot in the gutter resets. The diamond adds or removes a keyframe at the playhead. Right-click: Reset, Copy, Paste, keyframe, and for a number Follow (another number of its folder, in the proportion they have now) and Unlink.
+**A row:** drag the value, or a number's label, to scrub (Alt fine, Shift coarse); click a number to type. The dot in the gutter resets. The diamond adds or removes a keyframe at the playhead. Right-click: Reset, Copy, Paste, keyframe, Randomize, and for a number Follow (another number of its folder, in the proportion they have now) and Unlink. With `midi`, Learn MIDI controller.
 
 **The store:** `createInspectorStore(items, { target?, onChange?, duration?, tracks?, follow?, storageKey? })`.
 - `target` is your own object. Every change in the panel is written to it; its own values win at the start.
@@ -569,9 +577,82 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 - Timeline: `toggleKey(key)`, `setTime(seconds)`, `play(on)`; `duration` (default 4, loops) and starting `tracks: { key: [{ t, v }] }`. Numbers, vectors, ranges, points and hex colours glide between keyframes; toggles and choices hold. A value set on an animated key lands as a keyframe at the playhead.
 - Links: `link(key, from | null)`: target = source × the ratio they had when linked.
 - Presets saved from the panel live in localStorage under `storageKey`.
+- Live values: `signal(key)` is one value as a signal, `scrub(key, value)` sets it mid-gesture (the object and the signal now, the panel when the hand settles), `commit()` ends the gesture, `live` carries every change.
+- History: `undo()`, `redo()`; Ctrl/⌘ Z and Ctrl/⌘ Shift Z inside the panel. Each settled gesture is one step; `history` sets how many are kept (default 100, 0 is off).
+- Files: `toJSON()` writes `{ format: 'artinos.values', version, values, tracks?, links?, presets? }`; `fromJSON(doc)` reads that, its text, or a bare map of values, checks each value against its row and is one undo step. `version` and `migrate(values, fromVersion)` bring older files forward.
+- Keeping: `persist: 'key'` keeps the values across reloads; `url: true` (or a parameter name) carries the changed values in the address; `toURL()` gives that address.
+- `randomize({ keys?, seed?, amount? })` rolls new values and returns the seed. Rows with `locked`, a link or keyframes stay; a toggle rolls only when named in `keys`.
+- `define(items)` adds rows to a running store.
 - `mergeInspectorStores([a, b])` is one store for a multiple selection: the panel shows the first one's values, marks rows that differ as mixed, and writes each change to all.
 
 **InspectorTimeline props:** `items`, `store`, `labelWidth` (inherits, like the Inspector's). One lane per animated value: drag to move the playhead (it settles on a keyframe it comes near), click a keyframe to go to it, double-click to remove it.
+
+## Signals · useControls · createPane
+
+Three ways to reach the same panel, on one value core.
+
+**Signals** hold a value outside React. `signal(v)`, `computed(fn)`, `effect(fn)`, `batch(fn)`, `untrack(fn)`; read with `s()` (subscribes inside `computed` and `effect`) or `s.peek()`, write with `s.set(v)`, listen with `s.subscribe(fn)`. `tweened(v, { duration, ease })` glides to `.target(next)`, through OKLab for `#rrggbb` colours. In a component, `useSignal(initial)` keeps one and `useSignalValue(s)` renders on change. `artinos-ui/signals` is the core alone, with no React.
+
+```tsx
+const amount = signal(0.35);
+effect(() => { mesh.scale.setScalar(amount()); });
+<Slider label="Amount" signal={amount} />
+```
+
+`Slider` and `NumberField` take `signal` in place of `value`: a drag paints the fill and seam directly and renders only the digits, and nothing above the control. The ruler, curve and wave faces are drawn from the value, so they render themselves, still nothing above them.
+
+**useControls** declares a panel from a component; `<ControlsPanel only? bar? />` shows what was declared, as content for a Dock panel or a `Panel`.
+
+```tsx
+const { size, tint } = useControls('Badge', {
+  size: { value: 96, min: 40, max: 160, step: 1, unit: 'px' },   // a slider (no min/max: a scrub field)
+  tint: '#4fd1ba',                                               // a colour
+  round: true,                                                   // a switch
+  label: 'Prism',                                                // a text field
+  quality: { value: 'high', options: ['low', 'high'] },          // a choice
+  position: [0, 0, 0],                                           // a vector
+  light: [0.2, 0.4],                                             // a pad
+  band: { value: [20, 80], min: 0, max: 100 },                   // a range
+  fps: monitor(() => stats.fps, { graph: true, budget: 60 }),    // a read-out
+  restart: () => reset(),                                        // a button
+  Motion: folder({ tilt: 12 }, { open: false }),                 // a folder; its keys come back flat
+});
+```
+
+The component renders when one of its values changes. For a value read every frame pass `{ transient: true }` and get signals back: nothing renders. The third argument also takes the store's `persist`, `url`, `version`, `migrate` and `history`. `controlsStore(name)` is the store behind a named panel.
+
+**createPane** is the same panel with no React in the calling code. It binds a property of any object; `{x, y, z}` objects and three.js `Vector3` and `Color` bind as they are.
+
+```ts
+const pane = createPane({ title: 'Scene', theme: 'nimbus' });
+pane.addBinding(params, 'speed', { min: 0, max: 10 });
+pane.addBinding(mesh, 'position', { min: -1, max: 1 });
+const look = pane.addFolder({ title: 'Look' });
+look.addBinding(material, 'color');
+pane.addMonitor(stats, 'fps', { graph: true, min: 0, max: 120 });
+pane.addButton({ title: 'Reset', onClick: () => pane.reset() });
+pane.listen();   // follow objects your frame loop changes
+```
+
+Options: `title`, `container` (default: a layer over the page that lets clicks through), `bounds`, `theme`, `density`, `type`, `persist`, `url`. A binding returns `{ key, signal, on(fn), refresh() }`. The pane has `on(fn)`, `refresh()`, `listen(on?)`, `reset()`, `undo()`, `redo()`, `randomize(options?)`, `exportState()`, `importState(doc)`, `dispose()` and `store`. It runs on React inside, so `react` and `react-dom` must be installed.
+
+**registerControl** adds a control to every panel, or replaces a built-in kind by its name.
+
+```tsx
+registerControl<number>('dial', {
+  component: ({ item, value, set, commit }) => <Knob label={item.label} value={value} onChange={set} onCommit={commit} />,
+  animatable: true,                       // takes keyframes
+  match: (v) => isDial(v),                // optional: claims bare values in useControls and createPane
+});
+{ key: 'drive', label: 'Drive', kind: 'custom', control: 'dial', default: 0.4, randomize: (random) => random() }
+useControls({ drive: { value: 0.4, control: 'dial' } });
+```
+
+A control receives `item`, `value`, `signal`, `status`, `set`, `commit` and `options`. `continuous: false` tells the panel at once on each change (a choice, whose value can show or hide other rows). `transient: true` says the control follows `signal` itself.
+
+**Graph · GraphTrace · FrameGraph** are live traces that write straight to the page and rest while off screen. `Graph`: `label`, `unit`, `decimals`, `format`, `read` or `series: { label, read, tone }[]`, `stacked`, `samples` (120), `interval` (ms, 0 = every frame), `min`, `max`, `budget` (a line; the trace turns to the fault colour while over it), `tone`. `GraphTrace` is the trace alone, with `onSample`. `FrameGraph budget={16.7}` is the page's own frame rate.
+
+**createMidiMap(store, items, { storageKey?, access? })** lets rows learn a hardware controller: pass it as the Inspector's `midi` and right-click a number, toggle or choice. `handle([status, cc, value])` feeds a message from anywhere else.
 
 ## NodeGraph · LiveGraphView · graph/gpu
 
@@ -661,5 +742,6 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
 - Stateful component files start with `'use client'`; `ArtinosTheme` is hook-free. The precision HUD, the Select list, menus, toasts, tooltips and the command palette portal to `<body>` and carry the theme's tokens with them (`ThemedPortal`, also exported for your own overlays).
 - The Dock needs a sized parent, because it fills 100% of it. `graph/gpu` additionally needs `three`.
 - Evergreen browsers: the CSS uses `@property`, `color-mix()`, `:has()` and `backdrop-filter`.
-- No permanent animation loop. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
+- `Graph` and graphed Inspector monitors sample on the frame clock while on screen and rest off screen. Nothing else runs a permanent loop.
+- No permanent animation loop in the controls. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
 - Respects `prefers-reduced-motion`.

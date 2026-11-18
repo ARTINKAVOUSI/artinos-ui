@@ -42,6 +42,7 @@ function Diagram({ kind, edge }: { kind: Placement; edge: Edge }) {
 function iconOf(item: MetaBlockContextMenuItem) {
   const id = item.id;
   if (/return-home|group-home/.test(id)) return Icons.returnHome;
+  if (/popout/.test(id)) return Icons.popout;
   if (/float/.test(id)) return Icons.float;
   if (/maximize/.test(id)) return item.label.startsWith('Restore') ? Icons.minimize : Icons.maximize;
   if (/close/.test(id)) return Icons.close;

@@ -121,6 +121,8 @@ export interface MetaBlockWorkspaceViewProps {
   /** Package-rendered toolbar strip above a child MetaBlock body, outside its scroll area. */
   renderBlockToolbar?: (block: MetaBlockInstance, group: MetaBlockGroup) => ReactNode;
   renderContextMenu?: (context: MetaBlockContextMenuRenderContext) => ReactNode;
+  /** The host opens real windows for popped-out groups (Dock does): the panel menu offers it. */
+  canPopout?: boolean;
   className?: string;
   padding?: number;
   gap?: number;
@@ -273,6 +275,7 @@ export function MetaBlockWorkspaceView({
   showSmartGuides = true,
   motion = {},
   onEvent,
+  canPopout = false,
 }: MetaBlockWorkspaceViewProps) {
   useWorkspaceRevision(workspace);
   const renderContent = renderBlock ?? renderPanel;
@@ -1140,6 +1143,8 @@ export function MetaBlockWorkspaceView({
               detail: contextGroup.posture === 'maximized' ? 'Previous posture' : 'Viewport stays locked',
               onSelect: () => (contextGroup.posture === 'maximized' ? workspace.restoreBlock(contextBlock.id) : workspace.maximizeBlock(contextBlock.id)),
             });
+          if (canPopout && contextBlock.capabilities.popoutable !== false)
+            windowItems.push({ id: 'popout', label: 'Open in New Window', detail: 'Its own browser window', onSelect: () => workspace.popoutBlock(contextBlock.id) });
           if (contextBlock.capabilities.pinable !== false) {
             windowItems.push(
               { id: 'pin-left', label: 'Pin Left', detail: 'Persistent edge', onSelect: () => workspace.pinBlock(contextBlock.id, { edge: 'left' }) },
