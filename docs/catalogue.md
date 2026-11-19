@@ -7,9 +7,9 @@ Contents:
 - [Sliders](#sliders): one capsule, six faces · RangeSlider · Knob · XYPad · the shared capabilities
 - [Controls](#controls): NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop
 - [Actions](#actions): Button · IconButton · Toolbar · Kbd · Badge · Tag
-- [Display](#display): RollingValue · Stat · Meter · Spectrum · Progress · Sparkline · Graph · FrameGraph
+- [Display](#display): RollingValue · Stat · MonitorCell · Meter · Spectrum · Progress · Sparkline · Graph · BarTimeline · PerfStrip · PerformancePanel
 - [Layout](#layout): Panel · Section · Field · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
-- [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
+- [Overlays](#overlays): Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · Loader
 - [Dock and graph](#dock-and-graph): Dock · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · useControls · createPane · NodeGraph · LiveGraphView · GraphGPU
 - [Rig](#rig): ViewGizmo · Trackball · Vector3Field · TransformGizmo
 - [Scopes](#scopes): theme · density · material
@@ -46,6 +46,9 @@ Start from what the value *is*, not from the widget you remember. Every row belo
 | a colour | `ColorField` | `alpha` | the colour is the insert; hex and opacity are scrubbable |
 | a file | `FileDrop` | `accept` | drop or browse |
 | a value read every frame (a uniform, a speed) | `Slider` / `NumberField` | `signal` | the drag paints itself and renders nothing above the control |
+| how a program is running | `PerfStrip` in a toolbar, `PerformancePanel` in a panel | `monitor={createPerfFeed()}` for figures from your own host | one line each, and it says what is holding the program back |
+| a live value in a tool (load, latency, queue, temperature) | `MonitorCell` in a `MonitorStrip` | `views`, `read`, `limit` | one control high, with several views of the value |
+| single events against a limit, as the panel's main subject | `BarTimeline` | `limit`, `format` | an outlier stays visible |
 | a value someone else drives (LFO, expression, remote) | any control inside `PropertyRow` | `binding`, `status="bound"`; or `status` on the Slider | names the driver instead of hiding the control |
 | a group that can be turned off as a whole (an effect, a pass) | `Section` | `enabled` / `defaultEnabled` | the title row carries the on/off; the body folds |
 | a parameter that can be turned off alone (a post effect, a modifier) | `Slider` / `RangeSlider` | `toggleable` (default) | double-click the body; the value is kept |
@@ -274,7 +277,10 @@ Read-only instruments. All of them take `motion`, which says what the value is s
 - **Progress**: a task under way — label, percentage, a well whose fill paces itself to how often the work reports, with a soft sheen (`sheen`) travelling along it while it runs. `variant="ring"` for a compact ring with the percentage inside; `segments` for countable work; `buffer` for what is ready ahead of it; `size`, `tone`. No `value`: indeterminate. `status="done"` settles in the signal colour; `status="error"` stops in the fault colour with the reason as `caption`. Use it for work with an end (bakes, uploads, exports); use `Meter` for a level that goes up and down.
 - **Meter**: a level in a well with a signal fill and a rolling readout. `value`, or `source` read every frame for fast signals; `label` required and drawn in a label column (`hideLabel` keeps it for screen readers only); `min` / `max`; `valueText` (null hides it) or `format`; `peak` holds the true peak for a moment and lets it fall; `segments` lights cells; `zones` paint ranges along the track, or with `zonePaint="level"` turn the whole fill; `origin` fills out from a centre (pan, difference); `marker` and `ticks` give it a scale; `orientation="vertical"`; `size` `'sm' | 'md' | 'lg' | 'xl'`; `tone` `'live' | 'warm' | 'neutral' | 'hot'` cross-fades the fill.
 - **Spectrum**: a bank of level bars for a frequency analysis or any many-channel signal. Hand `source` your analyser; it reads every frame without React, and gathers more bins than bars on a log `scale`, each bar showing its loudest bin. `bars`, `max` (255 for byte data), `peak` caps, `segments` for LED cells, `mirror` from a centre line, `zones`, `height`, `tone`. `motion` defaults to `'audio'`.
-- **Graph**: a live trace with its name and figure, for a reading whose history matters. `budget` draws a line and turns the trace to the fault colour while over it; `series` with `stacked` shows what a total is made of. `GraphTrace` is the trace alone; `FrameGraph` is the page's own frame rate. It writes straight to the page and rests off screen.
+- **MonitorCell**: one watched value in one control's height, in the same well as a slider: the name, a small picture and the number. A click changes the picture: every event, the history, the level with its peak, the spread, or the parts. `MonitorStrip` lines cells up in a row for a toolbar or a stack for a panel. This is the first choice for live values in a tool.
+- **BarTimeline**: every event as a bar against a limit, at full width, when single events are what the panel is for.
+- **PerfStrip / PerformancePanel**: frame rate, CPU, GPU and memory as monitor cells, in a bar or a panel, from the browser or from any program through `createPerfFeed`.
+- **Graph**: a live trace with its name and figure, for a reading whose history matters. `budget` draws a line and turns the trace to the fault colour while over it; `series` with `stacked` shows what a total is made of. `GraphTrace` is the trace alone; `FrameGraph` is a source's frame rate. It draws on a scrolling strip and rests off screen.
 - **Sparkline**: a trend that draws itself in, with a soft `fill` (default on), a glowing dot on the latest sample and an optional dashed `threshold` (a frame budget). `values` oldest first; `min` / `max` fix the range, otherwise it fits the data; `width` / `height` (120 × 28), it stretches to any width; `tone`; `motion`.
 
 ```tsx
@@ -392,6 +398,7 @@ Everything that floats sits on one frosted sheet and portals to `<body>` with th
 - **Toast**: wrap the app once in `<ToastProvider placement="bottom-right">` (`'bottom-center' | 'top-right'` too), then `const notify = useToast()` and `notify({ title, description?, tone?, duration?, action? })`. `tone` `'neutral' | 'success' | 'warning' | 'error'` is one small LED; a hairline drains to show the time left and holds while hovered; `duration: 0` keeps it until dismissed; the call returns a dismiss function.
 - **Tooltip**: `content`, one focusable child, `side` `'top' | 'bottom' | 'left' | 'right'`, `delay` (450 ms). Shows on hover and on keyboard focus, sliding out of the side it points away from.
 - **CommandPalette**: Ctrl/⌘ K search across `commands` (`{ id, label, group?, keywords?, shortcut?, icon?, run }`), grouped and fuzzy-matched on label and keywords. `open` / `onOpenChange`, `hotkey` (default mod + K; `null` turns it off; `{ key, mod?, shift? }` changes it), `placeholder`. The Dock has one built in.
+- **Loader**: a count to 100 on sideways digit reels, then the cover lifts. Timed (no `value`) for a splash; with `value` it follows real progress, each step easing in. `cover` `page` · `box` · `none`; `outline` draws the figures hollow, a hairline stroke with no fill. `label`, `duration`, `hold`, `onDone`.
 
 | you need | use |
 |---|---|
@@ -401,6 +408,7 @@ Everything that floats sits on one frosted sheet and portals to `<body>` with th
 | a notice that doesn't block | `Toast` |
 | the name or shortcut of a control | `Tooltip` |
 | any command by name, from the keyboard | `CommandPalette` |
+| a page or a canvas still loading | `Loader` |
 
 ## Rig
 

@@ -2,13 +2,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { READOUT_MS } from '../core/reactive';
 import { windowOf } from '../core/realm';
+import { onFrame } from '../core/ticker';
 import { cx } from '../core/utils';
+import { createTrace } from './trace';
 import type { InstrumentTone } from './zones';
 
-/* ARTINOS Graph — a live trace that never asks React for anything. It samples on the frame clock,
-   writes its paths and its figure straight onto the page, and rests while it is off screen, so a
-   monitor costs the same however many panels are open. Several series can stack; a budget draws a
-   line across the trace and turns it to the fault colour while the latest reading is over. */
+/* ARTINOS Graph — a live trace that never asks React for anything. It samples on the shared frame
+   clock, draws on a scrolling strip (display/trace.ts) where only the newest reading costs anything, and rests
+   while it is off screen, so a monitor costs almost nothing however many panels are open. Several
+   series can stack; a budget draws a line across the trace, and readings over it take the fault colour. */
 
 export interface GraphSeries {
   label: string;
@@ -36,17 +38,15 @@ export interface GraphTraceProps {
   label: string;
   /** Each reading (the total, when stacked), as it comes. */
   onSample?: (value: number) => void;
+  /** Earlier readings to open with: 0 is the newest. */
+  seed?: (back: number) => number;
   className?: string;
 }
 
-const W = 100;
-const H = 100;
-
-export function GraphTrace({ read, series, stacked, samples = 120, interval = 0, min, max, budget, tone = 'live', label, onSample, className }: GraphTraceProps) {
-  const root = useRef<SVGSVGElement>(null);
-  const budgetLine = useRef<SVGLineElement>(null);
-  const lines = useRef<(SVGPathElement | null)[]>([]);
-  const areas = useRef<(SVGPathElement | null)[]>([]);
+export function GraphTrace({ read, series, stacked, samples = 120, interval = 0, min, max, budget, tone = 'live', label, onSample, seed, className }: GraphTraceProps) {
+  const root = useRef<HTMLDivElement>(null);
+  const picture = useRef<HTMLDivElement>(null);
+  const budgetLine = useRef<HTMLElement>(null);
   const feeds = useRef<(() => number)[]>([]);
   feeds.current = series ? series.map((s) => s.read) : read ? [read] : [];
   const told = useRef(onSample);
@@ -55,90 +55,72 @@ export function GraphTrace({ read, series, stacked, samples = 120, interval = 0,
 
   useEffect(() => {
     const el = root.current;
-    if (!el) return;
-    const rings = Array.from({ length: count }, () => new Float32Array(samples));
-    let filled = 0;
-    let head = 0;
-    let raf = 0;
-    let last = 0;
-    let seen = true;
-    // the trace's own window: its frames keep coming, and its observer can see it, when the panel is popped out
+    const host = picture.current;
+    if (!el || !host) return;
+    // the trace's own window: its frames keep coming, and its observers can see it, when the panel is popped out
     const view = windowOf(el);
+    const trace = createTrace(host, {
+      samples,
+      series: count,
+      stacked,
+      min,
+      max,
+      budget,
+      onRange(lo, hi) {
+        if (budgetLine.current && budget !== undefined) budgetLine.current.style.top = `${(1 - (budget - lo) / (hi - lo)) * 100}%`;
+      },
+    });
+    // the theme's colours, resolved by the page: canvas cannot read a token
+    const readInks = () => {
+      const inks = [...el.querySelectorAll<HTMLElement>('[data-ink]')].map((p) => view.getComputedStyle(p).color);
+      trace.inks({ series: inks.slice(0, count), over: inks[count] });
+    };
+    readInks();
+    if (seed)
+      for (let back = samples - 1; back >= 0; back--) {
+        const v = seed(back);
+        if (Number.isFinite(v)) trace.push([v]);
+      }
+    const sized = new view.ResizeObserver(() => trace.resize());
+    sized.observe(el);
+    let seen = true;
     const watch = typeof view.IntersectionObserver === 'undefined' ? null : new view.IntersectionObserver(([e]) => void (seen = e.isIntersecting));
     watch?.observe(el);
-
-    const at = (s: number, i: number) => rings[s][(head - filled + i + samples) % samples];
-    const paint = () => {
-      const totals = (i: number, upTo: number) => {
-        let sum = 0;
-        for (let s = 0; s <= upTo; s++) sum += at(s, i);
-        return sum;
-      };
-      let lo = min ?? Infinity;
-      let hi = max ?? -Infinity;
-      if (min === undefined || max === undefined)
-        for (let i = 0; i < filled; i++)
-          for (let s = 0; s < count; s++) {
-            const v = stacked ? totals(i, s) : at(s, i);
-            if (min === undefined) lo = Math.min(lo, v);
-            if (max === undefined) hi = Math.max(hi, v);
-          }
-      if (stacked && min === undefined) lo = 0;
-      if (budget !== undefined && max === undefined) hi = Math.max(hi, budget * 1.15);
-      if (!(hi > lo)) hi = lo + 1;
-      const y = (v: number) => H - (Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo) * H;
-      const x = (i: number) => (W * (samples - filled + i)) / (samples - 1);
-      for (let s = 0; s < count; s++) {
-        let top = '';
-        for (let i = 0; i < filled; i++) top += `${i ? 'L' : 'M'}${x(i).toFixed(2)} ${y(stacked ? totals(i, s) : at(s, i)).toFixed(2)}`;
-        lines.current[s]?.setAttribute('d', top);
-        let floor = `L${x(filled - 1).toFixed(2)} ${H}L${x(0).toFixed(2)} ${H}Z`;
-        if (stacked && s > 0) {
-          floor = '';
-          for (let i = filled - 1; i >= 0; i--) floor += `L${x(i).toFixed(2)} ${y(totals(i, s - 1)).toFixed(2)}`;
-          floor += 'Z';
-        }
-        areas.current[s]?.setAttribute('d', filled > 1 ? top + floor : '');
-      }
-      if (budget !== undefined) {
-        const by = y(budget).toFixed(2);
-        budgetLine.current?.setAttribute('y1', by);
-        budgetLine.current?.setAttribute('y2', by);
-      }
-    };
-    const frame = (now: number) => {
-      raf = view.requestAnimationFrame(frame);
+    const values = new Float64Array(count);
+    let last = 0;
+    let inked = 0;
+    const stop = onFrame(view, (now) => {
       if (!seen || now - last < interval) return;
       last = now;
+      if (now - inked > 4000) {
+        inked = now;
+        readInks();
+      }
       let total = 0;
-      feeds.current.forEach((feed, s) => {
-        const v = feed();
-        rings[s][head] = Number.isFinite(v) ? v : 0;
-        total = stacked ? total + rings[s][head] : rings[s][head];
-      });
-      head = (head + 1) % samples;
-      filled = Math.min(samples, filled + 1);
-      paint();
-      el.toggleAttribute('data-over', budget !== undefined && total > budget);
+      for (let s = 0; s < count; s++) {
+        values[s] = feeds.current[s]?.() ?? 0;
+        total = stacked ? total + values[s] : values[s];
+      }
+      trace.push(values);
       told.current?.(total);
-    };
-    raf = view.requestAnimationFrame(frame);
+    });
     return () => {
-      view.cancelAnimationFrame(raf);
+      stop();
+      sized.disconnect();
       watch?.disconnect();
+      host.replaceChildren();
     };
   }, [count, samples, interval, min, max, budget, stacked]);
 
   return (
-    <svg ref={root} className={cx('ar-graph__trace', className)} data-tone={tone} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={label}>
+    <div ref={root} className={cx('ar-graph__trace', className)} role="img" aria-label={label}>
+      <div ref={picture} className="ar-graph__picture" aria-hidden />
       {Array.from({ length: count }, (_, s) => (
-        <g key={s} className="ar-graph__series" data-tone={series?.[s]?.tone ?? tone}>
-          <path ref={(p) => void (areas.current[s] = p)} className="ar-graph__area" />
-          <path ref={(p) => void (lines.current[s] = p)} className="ar-graph__line" />
-        </g>
+        <i key={s} data-ink className="ar-graph__ink" data-tone={series?.[s]?.tone ?? tone} hidden />
       ))}
-      {budget !== undefined ? <line ref={budgetLine} className="ar-graph__budget" x1="0" x2={W} y1="0" y2="0" /> : null}
-    </svg>
+      <i data-ink className="ar-graph__ink" data-tone="hot" hidden />
+      {budget !== undefined ? <i ref={budgetLine} className="ar-graph__budget" /> : null}
+    </div>
   );
 }
 
@@ -151,18 +133,25 @@ export interface GraphProps extends Omit<GraphTraceProps, 'onSample'> {
 
 /** A figure that changes without React: `ref` goes on its span, and `show(value)` writes the text
  *  straight to the page, at most every READOUT_MS however often it is called. */
-export function useLiveFigure(format: (value: number) => string) {
+export function useLiveFigure<T = number>(format: (value: T) => string) {
   const ref = useRef<HTMLSpanElement>(null);
   const shownAt = useRef(0);
   const written = useRef(format);
   written.current = format;
-  const show = useCallback((value: number) => {
-    const now = performance.now();
-    if (now - shownAt.current < READOUT_MS || !ref.current) return;
-    shownAt.current = now;
-    ref.current.textContent = written.current(value);
+  /** Write it now, whatever the pace. */
+  const write = useCallback((value: T) => {
+    if (ref.current) ref.current.textContent = written.current(value);
   }, []);
-  return { ref, show };
+  const show = useCallback(
+    (value: T) => {
+      const now = performance.now();
+      if (now - shownAt.current < READOUT_MS) return;
+      shownAt.current = now;
+      write(value);
+    },
+    [write],
+  );
+  return { ref, show, write };
 }
 
 /** A name, a figure and a live trace beneath them. */
@@ -189,25 +178,4 @@ export function Graph({ label, unit, decimals = 1, format, series, className, ..
       ) : null}
     </div>
   );
-}
-
-export interface FrameGraphProps {
-  /** The frame budget in ms. Default 16.7 (60 fps). */
-  budget?: number;
-  label?: string;
-  className?: string;
-}
-
-/** The page's own frame rate: the figure in fps, the trace in ms against the budget. */
-export function FrameGraph({ budget = 16.7, label = 'Frame rate', className }: FrameGraphProps) {
-  const clock = useRef({ last: 0, smooth: budget });
-  const read = () => {
-    const now = performance.now();
-    const c = clock.current;
-    const ms = c.last ? now - c.last : budget;
-    c.last = now;
-    c.smooth += (ms - c.smooth) * 0.12;
-    return ms;
-  };
-  return <Graph label={label} unit="fps" read={read} budget={budget} min={0} format={() => (1000 / clock.current.smooth).toFixed(0)} className={className} />;
 }

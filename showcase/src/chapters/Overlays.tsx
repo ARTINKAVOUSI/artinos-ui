@@ -1,7 +1,7 @@
 /* 07 · Overlays — menus, the dialog, toasts, tooltips and the command palette. All of them
    are the one frosted sheet, portalled to <body>, keeping the theme they were opened in. */
-import { useState } from 'react';
-import { Button, CommandPalette, ContextMenu, Dialog, IconButton, Kbd, Menu, Tooltip, useToast } from '../../../src';
+import { useEffect, useState } from 'react';
+import { Button, CommandPalette, ContextMenu, Dialog, IconButton, Kbd, Loader, Menu, Segmented, Tooltip, useToast } from '../../../src';
 import type { Command, MenuEntry } from '../../../src';
 import { Chapter, ICONS, Spec } from '../shared';
 import { IC } from './demos';
@@ -126,6 +126,61 @@ function PaletteDemo() {
   );
 }
 
+/** A live feed: progress that lands in uneven steps, as a scene's files do. */
+function useFakeLoad(run: number) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    setV(0);
+    let x = 0;
+    let id = 0;
+    const next = () => {
+      x = Math.min(1, x + 0.06 + Math.random() * 0.22);
+      setV(x);
+      if (x < 1) id = window.setTimeout(next, 260 + Math.random() * 520);
+    };
+    id = window.setTimeout(next, 400);
+    return () => window.clearTimeout(id);
+  }, [run]);
+  return v;
+}
+
+function LoaderDemo() {
+  const [run, setRun] = useState(1);
+  const [mode, setMode] = useState<'timed' | 'live'>('timed');
+  const [page, setPage] = useState(0);
+  const [outline, setOutline] = useState(false);
+  const live = useFakeLoad(mode === 'live' ? run : 0);
+  const again = (m: 'timed' | 'live') => {
+    setMode(m);
+    setRun((n) => n + 1);
+  };
+  return (
+    <div className="sc-stack">
+      <div className="sc-row" style={{ alignItems: 'center' }}>
+        <Button onClick={() => again('timed')}>Replay</Button>
+        <Button onClick={() => again('live')}>Live progress</Button>
+        <Button variant="ghost" onClick={() => setPage((n) => n + 1)}>
+          Full page
+        </Button>
+        <Segmented
+          label="Figures"
+          options={['Solid', 'Outline']}
+          value={outline ? 'Outline' : 'Solid'}
+          onChange={(v) => {
+            setOutline(v === 'Outline');
+            again(mode);
+          }}
+        />
+      </div>
+      <div className="sc-loader-stage">
+        <Loader key={mode + run} cover="box" outline={outline} value={mode === 'live' ? live : undefined} label={mode === 'live' ? 'Loading scene' : undefined} />
+      </div>
+      {page ? <Loader key={'p' + page} outline={outline} onDone={() => setPage(0)} /> : null}
+    </div>
+  );
+}
+
 export function OverlaysChapter() {
   return (
     <Chapter id="overlays">
@@ -175,6 +230,16 @@ notify({ title: 'Render queued', action: { label: 'Undo', onClick: undo } });`}
   commands={[{ id: 'render', label: 'Render frame', group: 'Render', keywords: 'export image', run: render }]} />`}
       >
         <PaletteDemo />
+      </Spec>
+
+      <Spec
+        id="loader"
+        text="A count to 100 on three sideways digit reels, in the figure face: the tens lead, the units follow a beat behind, the hundreds turn once. At 100 it holds, the figures fade and settle back one after another, and the cover lifts. Give it value for real progress, each step easing in, or leave it out for a timed count. cover is page, box (over the nearest positioned parent: a canvas, a panel) or none."
+        code={`<Loader onDone={() => setReady(true)} />
+<Loader cover="box" value={progress} label="Loading scene" />
+<Loader outline />`}
+      >
+        <LoaderDemo />
       </Spec>
     </Chapter>
   );

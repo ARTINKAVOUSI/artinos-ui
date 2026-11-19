@@ -241,6 +241,8 @@ Every panel, in every density, is drawn on the same few lines. A part never inve
 - A value read every frame held in React state, so a drag renders the whole panel. Put it on a signal.
 - A panel laid out by hand for a few tweakable values. `useControls` builds it, in the right rows.
 - A second store, schema or undo stack for parameters beside the one the panels use.
+- A status shown by colour alone. A `MonitorCell` says its state in a word as well.
+- A gauge, dial or tile that takes more room than the control beside it. Live values go in a `MonitorCell`: one control height.
 - Edits inside the kit folder. Change tokens (`tokens={{ … }}` or `--ar-*` in your CSS); a re-export overwrites kit files.
 
 ## A page section built to the rules

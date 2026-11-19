@@ -16,6 +16,7 @@ export type { History, HistoryStep } from './core/history';
 export { useCommands } from './core/commands';
 export type { Command } from './core/commands';
 export { useControllable } from './core/hooks';
+export { onFrame } from './core/ticker';
 export { windowOf } from './core/realm';
 export { lockPointer, unlockPointer, isPointerLocked, precisionOf } from './core/scrub';
 
@@ -100,8 +101,25 @@ export type { MeterProps } from './display/Meter';
 export { Spectrum } from './display/Spectrum';
 export type { SpectrumProps } from './display/Spectrum';
 export type { InstrumentTone, Zone } from './display/zones';
-export { Graph, GraphTrace, FrameGraph, useLiveFigure } from './display/Graph';
-export type { GraphProps, GraphTraceProps, GraphSeries, FrameGraphProps } from './display/Graph';
+export { Graph, GraphTrace, useLiveFigure } from './display/Graph';
+export type { GraphProps, GraphTraceProps, GraphSeries } from './display/Graph';
+export { MonitorCell, MonitorStrip } from './display/MonitorCell';
+export type { MonitorCellProps, MonitorStripProps, MonitorReading, MonitorStatus, MonitorView } from './display/MonitorCell';
+export { useLiveReading } from './display/live';
+export { BarTimeline } from './display/BarTimeline';
+export type { BarTimelineProps } from './display/BarTimeline';
+
+// performance: a panel for any program, and the sources it reads
+export { PerformancePanel, PerfStrip, PerfHealthLine, FrameTimeline, FrameGraph, perfCells, PERF_LABELS } from './perf/PerformancePanel';
+export type { PerformancePanelProps, PerfStripProps, FrameGraphProps, PerfCell, PerfLabels, PerfView } from './perf/PerformancePanel';
+export { perfHealth, PERF_HEALTH_WORDS } from './perf/health';
+export type { PerfHealth, PerfHealthWords, PerfLimiter } from './perf/health';
+export { createPerfFeed } from './perf/source';
+export type { PerfFeed, PerfFeedOptions, PerfSource, PerfStats, PerfTimer, PerfReport, PerfPressure } from './perf/source';
+export { createPerfMonitor, perfMonitor } from './perf/monitor';
+export type { PerfMonitor, GpuTimer, WatchedRenderer } from './perf/monitor';
+export { perfRows, perfControls, formatMemory, formatCount } from './perf/items';
+export type { PerfRowsOptions } from './perf/items';
 export { Sparkline } from './display/Sparkline';
 export type { SparklineProps } from './display/Sparkline';
 export { Stat } from './display/Stat';
@@ -142,6 +160,8 @@ export { Tooltip } from './overlays/Tooltip';
 export type { TooltipProps } from './overlays/Tooltip';
 export { CommandPalette } from './overlays/CommandPalette';
 export type { CommandPaletteProps } from './overlays/CommandPalette';
+export { Loader } from './overlays/Loader';
+export type { LoaderProps } from './overlays/Loader';
 
 // inspector: the pro parameter editor, from a schema, bound both ways to the app's object
 export { Inspector, InspectorFolder, ValueHistory } from './inspector/Inspector';

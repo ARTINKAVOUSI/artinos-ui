@@ -1,12 +1,13 @@
 /* Live values — the value core and everything built on it: signals, the two short ways to a panel,
    custom controls, undo and files, monitors, typed sums, MIDI and panels in their own windows. */
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
   Button,
   ControlsPanel,
   createInspectorStore,
   createMidiMap,
   createPane,
+  createPerfFeed,
   Dock,
   effect,
   FrameGraph,
@@ -14,9 +15,15 @@ import {
   Graph,
   Inspector,
   Knob,
+  MonitorCell,
+  MonitorStrip,
   NumberField,
   Panel,
+  PerformancePanel,
+  perfMonitor,
+  PerfStrip,
   registerControl,
+  Segmented,
   signal,
   Slider,
   themeScopeOf,
@@ -220,6 +227,217 @@ function MonitorsDemo() {
   );
 }
 
+/* ---------- the performance panel, on a real WebGL scene you can load ---------- */
+
+const LOAD_ITEMS: InspectItem[] = [
+  { key: 'script', label: 'Script', kind: 'number', default: 2, min: 0, max: 30, step: 0.5, unit: 'ms', help: 'Busy work on the main thread, every frame' },
+  { key: 'shader', label: 'Shader', kind: 'number', default: 24, min: 1, max: 240, step: 1, help: 'Iterations per pixel' },
+  { key: 'garbage', label: 'Allocation', kind: 'number', default: 0, min: 0, max: 30, step: 1, unit: 'MB/s', help: 'Memory thrown away each second' },
+];
+const loadStore = createInspectorStore(LOAD_ITEMS);
+
+const VERTEX = `#version 300 es
+void main() { vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2); gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
+const FRAGMENT = `#version 300 es
+precision highp float;
+uniform vec2 size; uniform float time; uniform int steps;
+out vec4 colour;
+void main() {
+  vec2 p = (gl_FragCoord.xy - size * 0.5) / size.y;
+  float glow = 0.0;
+  for (int i = 0; i < steps; i++) {
+    float a = float(i) * 0.37 + time * 0.2;
+    p += 0.018 * vec2(sin(p.y * 7.0 + a), cos(p.x * 6.0 - a));
+    glow += 0.012 / (0.05 + length(p - 0.32 * vec2(cos(a), sin(a * 1.3))));
+  }
+  glow /= float(steps) / 24.0;
+  colour = vec4(vec3(0.05, 0.07, 0.08) + glow * vec3(0.05, 0.16, 0.15), 1.0);
+}`;
+
+function PerfStage() {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    const gl = canvas?.getContext('webgl2', { antialias: false });
+    if (!canvas || !gl) return;
+    const shader = (type: number, text: string) => {
+      const s = gl.createShader(type) as WebGLShader;
+      gl.shaderSource(s, text);
+      gl.compileShader(s);
+      return s;
+    };
+    const program = gl.createProgram() as WebGLProgram;
+    gl.attachShader(program, shader(gl.VERTEX_SHADER, VERTEX));
+    gl.attachShader(program, shader(gl.FRAGMENT_SHADER, FRAGMENT));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    const uniform = (name: string) => gl.getUniformLocation(program, name);
+    const [size, time, steps] = [uniform('size'), uniform('time'), uniform('steps')];
+
+    // the app's side of the monitor: its GPU work and its own named parts of a frame
+    const monitor = perfMonitor();
+    const gpu = monitor.watchContext(gl);
+    const scene = monitor.timer('Scene');
+    const draw = monitor.timer('Draw');
+
+    let raf = 0;
+    let kept: unknown = null;
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const load = loadStore.get();
+      const w = Math.round(canvas.clientWidth * 0.75);
+      const h = Math.round(canvas.clientHeight * 0.75);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        gl.viewport(0, 0, w, h);
+      }
+      scene.measure(() => {
+        const until = performance.now() + Number(load.script);
+        while (performance.now() < until);
+        const mb = Number(load.garbage);
+        if (mb) kept = new Float64Array(Math.round((mb * 131072) / 60));
+      });
+      draw.begin();
+      gpu?.begin();
+      gl.uniform2f(size, w, h);
+      gl.uniform1f(time, now / 1000);
+      gl.uniform1i(steps, Number(load.shader));
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gpu?.end();
+      draw.end();
+      void kept;
+    };
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      gpu?.dispose();
+    };
+  }, []);
+  return (
+    <>
+      <canvas ref={ref} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
+      <div style={{ position: 'absolute', left: 12, right: 12, bottom: 12 }}>
+        <PerfStrip />
+      </div>
+    </>
+  );
+}
+
+function PerfLab() {
+  const panels = useMemo<DockPanel[]>(
+    () => [
+      { id: 'perf', title: 'Performance', dock: 'right', content: <PerformancePanel defaultView="extended" storageKey="artinos-showcase.perf" /> },
+      { id: 'load', title: 'Load', dock: 'left', content: <Inspector items={LOAD_ITEMS} store={loadStore} search={false} keyframes={false} /> },
+    ],
+    [],
+  );
+  return (
+    <div className="sc-live__dock sc-live__dock--tall">
+      <Dock panels={panels} viewport={<PerfStage />} palette={false} sizes={{ right: 0.42, left: 0.2 }} />
+    </div>
+  );
+}
+
+/* ---------- three sizes of one instrument, and what it says about each situation ---------- */
+
+type Scene = 'smooth' | 'gpu' | 'cpu' | 'memory';
+const SCENES: Record<Scene, (w: number) => { ms: number; cpu: number; gpu: number; gpuMs: number; heap: number; growth: number }> = {
+  smooth: (w) => ({ ms: 16.1 + w * 0.3, cpu: 0.26 + 0.1 * w, gpu: 0.38 + 0.12 * w, gpuMs: 6.4 + 2 * w, heap: 1840 + 60 * w, growth: 1.2 }),
+  gpu: (w) => ({ ms: 27 + w * 7, cpu: 0.34 + 0.1 * w, gpu: 0.93 + 0.06 * w, gpuMs: 25 + 6 * w, heap: 2210 + 40 * w, growth: 0.8 }),
+  cpu: (w) => ({ ms: 24 + w * 9, cpu: 0.86 + 0.1 * w, gpu: 0.31 + 0.1 * w, gpuMs: 5.6 + w, heap: 1960 + 40 * w, growth: 2.1 }),
+  memory: (w) => ({ ms: 16.2 + w * 0.3, cpu: 0.36 + 0.1 * w, gpu: 0.42 + 0.1 * w, gpuMs: 7.2 + w, heap: 3720 + 20 * w, growth: 46 }),
+};
+
+function PerfSizes() {
+  const [scene, setScene] = useState<Scene>('smooth');
+  const feed = useMemo(() => {
+    const source = createPerfFeed({ initial: { refresh: 60, heapLimit: 4096, gpuName: 'Studio workstation', cores: 16 } });
+    // the panels open with a history behind them
+    for (let i = 0; i < 300; i++) source.frame(16.1 + Math.random() * 0.8 + (i % 73 === 0 ? 12 : 0));
+    return source;
+  }, []);
+  const current = useRef(scene);
+  current.current = scene;
+  useEffect(() => {
+    let t = 0;
+    const id = setInterval(() => {
+      t += 0.06;
+      const f = SCENES[current.current](0.5 + 0.5 * Math.sin(t));
+      feed.frame(f.ms + Math.random() * 0.5 + (Math.random() < 0.012 ? 12 : 0));
+      feed.update({ mainLoad: f.cpu, gpuLoad: Math.min(1, f.gpu), gpuMs: f.gpuMs, heapUsed: f.heap, heapGrowth: f.growth, frameWork: f.ms * f.cpu });
+    }, 33);
+    return () => clearInterval(id);
+  }, [feed]);
+  return (
+    <div className="sc-live__sizes">
+      <Segmented<Scene>
+        label="Situation"
+        value={scene}
+        onChange={setScene}
+        options={[
+          { value: 'smooth', label: 'Smooth' },
+          { value: 'gpu', label: 'GPU bound' },
+          { value: 'cpu', label: 'CPU bound' },
+          { value: 'memory', label: 'Memory' },
+        ]}
+      />
+      <PerfStrip monitor={feed} />
+      <div className="sc-live__sizes-row">
+        <Panel title="In a panel">
+          <PerformancePanel monitor={feed} />
+        </Panel>
+        <Panel title="Opened">
+          <PerformancePanel monitor={feed} defaultView="extended" />
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- the same parts on figures from anywhere ---------- */
+
+function AnyProgram() {
+  // a render node reporting over a socket, played here by a timer
+  const feed = useMemo(() => createPerfFeed({ budget: 33.3, initial: { gpuName: 'Render node 04', cores: 32, heapLimit: 65536 } }), []);
+  const requests = useRef(new Set<(ms: number) => void>());
+  const subscribe = useCallback((push: (ms: number) => void) => {
+    requests.current.add(push);
+    return () => void requests.current.delete(push);
+  }, []);
+  const service = useRef({ queue: 12, latency: 80, errors: 0.2 });
+  useEffect(() => {
+    let t = 0;
+    const id = setInterval(() => {
+      t += 0.05;
+      const wave = 0.5 + 0.5 * Math.sin(t);
+      feed.frame(28 + 7 * wave + Math.random() * 6 + (Math.random() < 0.03 ? 40 : 0));
+      feed.update({ mainLoad: 0.42 + 0.3 * wave, gpuLoad: 0.61 + 0.3 * Math.sin(t * 0.7), gpuMs: 19 + 6 * wave, heapUsed: 28400 + 3200 * wave });
+      const s = service.current;
+      s.queue = Math.max(0, s.queue + (Math.random() - 0.48) * 3);
+      s.latency = 70 + 50 * wave + Math.random() * 40 + (Math.random() < 0.05 ? 160 : 0);
+      s.errors = Math.max(0, 0.3 + 0.3 * Math.sin(t * 0.4));
+      requests.current.forEach((push) => push(s.latency));
+    }, 50);
+    return () => clearInterval(id);
+  }, [feed]);
+  return (
+    <div className="sc-live__grid">
+      <Panel title="Render node">
+        <PerformancePanel monitor={feed} names={{ heapUsed: 'RAM', mainLoad: 'CPU threads' }} words={{ memory: 'RAM' }} />
+      </Panel>
+      <Panel title="API service">
+        <MonitorStrip orientation="stack">
+          <MonitorCell label="Queue" views={['trace', 'level', 'spread']} read={() => ({ value: service.current.queue.toFixed(0), unit: 'jobs', share: service.current.queue / 40, status: service.current.queue > 30 ? 'warn' : 'ok', state: 'Backing up', plot: service.current.queue })} />
+          <MonitorCell label="Latency" views={['bars', 'trace', 'spread']} subscribe={subscribe} format={(v) => v.toFixed(0)} read={() => ({ value: service.current.latency.toFixed(0), unit: 'ms', limit: 120, status: service.current.latency > 200 ? 'fault' : service.current.latency > 120 ? 'warn' : 'ok', state: 'Slow', plot: service.current.latency })} />
+          <MonitorCell label="Errors" views={['trace', 'level']} read={() => ({ value: service.current.errors.toFixed(2), unit: '%', share: service.current.errors, status: 'ok', plot: service.current.errors })} />
+          <MonitorCell label="Disk" views={['parts', 'level']} reading={{ value: '656', unit: 'GB', share: 0.656, status: 'ok', parts: [{ label: 'Models', value: 412 }, { label: 'Cache', value: 180 }, { label: 'Logs', value: 64 }, { label: 'Free', value: 344, rest: true }] }} />
+        </MonitorStrip>
+      </Panel>
+    </div>
+  );
+}
+
 /* ---------- typed sums, endless scrub ---------- */
 
 function TypingDemo() {
@@ -373,6 +591,54 @@ store.undo(); store.randomize({ seed: 7 }); store.toJSON();`}
 ]} />`}
       >
         <MonitorsDemo />
+      </Spec>
+      <Spec
+        id="live-sizes"
+        text="One value in one control's height: its name, a small picture and the number. Click a cell and the picture changes view: every event, the history, the level with its peak, the spread, or what it is made of. Right-click to pick one, and hover the picture to read the past. Cells line up in a toolbar, or stack in a panel."
+        keys={[
+          ['Click', 'Next view'],
+          ['Right-click', 'Choose a view'],
+          ['Hover', 'Read the past'],
+        ]}
+        code={`<PerfStrip />                         // one line, for a toolbar
+<PerformancePanel />                  // stacked, opens to every figure
+
+<MonitorCell label="Latency" views={['bars', 'trace', 'spread']}
+  read={() => ({ value: ms, unit: 'ms', limit: 120 })} subscribe={onRequest} />`}
+        wide
+      >
+        <PerfSizes />
+      </Spec>
+      <Spec
+        id="live-perf"
+        text="The strip along the scene and the panel beside it read the same figures. Turn up the load on the left and watch them answer. It shows only what the browser can really report."
+        code={`<Dock panels={[{ id: 'perf', title: 'Performance', content: <PerformancePanel /> }]} toolbar={<PerfStrip />} />
+
+// connect your renderer, and time the parts of your frame
+perfMonitor().watchRenderer(renderer);
+const physics = perfMonitor().timer('Physics');
+physics.measure(() => world.step());`}
+        wide
+      >
+        <PerfLab />
+      </Spec>
+      <Spec
+        id="live-any"
+        text="None of it is tied to the browser. Report figures from a desktop host, a game engine or a server, and the same cells show exactly those. A MonitorCell watches any value at all, here on an API service."
+        code={`const feed = createPerfFeed({ budget: 33.3 });
+socket.onmessage = ({ data }) => {
+  feed.frame(data.frameMs);
+  feed.update({ mainLoad: data.cpu, gpuLoad: data.gpu, heapUsed: data.ramMb });
+};
+<PerfStrip monitor={feed} />
+
+<MonitorStrip orientation="stack">
+  <MonitorCell label="Queue" read={() => ({ value: queue.size, unit: 'jobs', share: queue.size / 40 })} />
+  <MonitorCell label="Disk" views={['parts', 'level']} reading={{ value: 656, unit: 'GB', parts }} />
+</MonitorStrip>`}
+        wide
+      >
+        <AnyProgram />
       </Spec>
       <Spec
         id="live-typing"

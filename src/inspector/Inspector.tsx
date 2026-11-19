@@ -6,6 +6,8 @@ import { IconButton } from '../actions/IconButton';
 import { TextField } from '../controls/TextField';
 import { useCommands, useCommandScope } from '../core/commands';
 import { READOUT_MS } from '../core/reactive';
+import { windowOf } from '../core/realm';
+import { onFrame } from '../core/ticker';
 import { isPointerLocked, lockPointer, precisionOf, unlockPointer } from '../core/scrub';
 import { signal } from '../core/signal';
 import type { Signal } from '../core/signal';
@@ -99,15 +101,19 @@ const SEARCH = (
 /** A monitor: what the app reports, sampled while on screen and written straight to the page. Its name
  *  and figure on one line, and with `graph` a trace across the panel beneath them. */
 function MonitorRow({ item: m }: { item: InspectMonitor }) {
-  const { ref, show } = useLiveFigure((v) => (Number.isFinite(v) ? v.toFixed(m.decimals ?? 1) : '—'));
+  const { ref, show, write } = useLiveFigure<number | string>((v) => (typeof v === 'string' ? v || '—' : !Number.isFinite(v) ? '—' : m.format ? m.format(v) : v.toFixed(m.decimals ?? 1)));
   const read = useRef(m.read);
   read.current = m.read;
   useEffect(() => {
     if (m.graph) return;
-    show(read.current());
-    const id = setInterval(() => show(read.current()), m.interval ?? READOUT_MS);
-    return () => clearInterval(id);
-  }, [m.graph, m.interval, show]);
+    let last = -Infinity;
+    const every = m.interval ?? READOUT_MS;
+    return onFrame(windowOf(ref.current), (now) => {
+      if (now - last < every) return;
+      last = now;
+      write(read.current());
+    });
+  }, [m.graph, m.interval, ref, write]);
   return (
     <div className="ar-inspector__row ar-inspector__monitor" data-kind="monitor" data-control={m.key} title={m.help}>
       <span className="ar-inspector__name">{m.label}</span>
@@ -115,7 +121,7 @@ function MonitorRow({ item: m }: { item: InspectMonitor }) {
         <span ref={ref}>—</span>
         {m.unit ? <em>{m.unit}</em> : null}
       </span>
-      {m.graph ? <GraphTrace label={m.label} read={() => read.current()} min={m.min} max={m.max} budget={m.budget} samples={96} interval={m.interval ?? 50} onSample={show} /> : null}
+      {m.graph ? <GraphTrace label={m.label} read={() => Number(read.current())} min={m.min} max={m.max} budget={m.budget} samples={96} interval={m.interval ?? 50} onSample={show} /> : null}
     </div>
   );
 }

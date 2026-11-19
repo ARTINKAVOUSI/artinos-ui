@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 55 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 58 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 
@@ -22,7 +22,8 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 | Controls | NumberField · TextField · Switch · Checkbox · ToggleGroup · ChipGroup · Segmented · Select · ColorField · FileDrop |
 | Rig | ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`) |
 | Actions | Button · IconButton · Toolbar · Kbd · Badge · Tag |
-| Display | Stat · Meter · Spectrum · Progress · Sparkline · Graph / GraphTrace / FrameGraph · RollingValue |
+| Display | Stat · MonitorCell / MonitorStrip · Meter · Spectrum · Progress · Sparkline · Graph / GraphTrace · BarTimeline · RollingValue |
+| Performance | PerfStrip · PerformancePanel · FrameTimeline · FrameGraph · perfMonitor · createPerfFeed |
 | Layout | Panel / Section / SectionGroup / Field · Text / Stack / Inline · StatStrip · Callout · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow |
 | Overlays | Menu / ContextMenu · Dialog · Toast · Tooltip · CommandPalette |
 | Dock | Dock / PanelBar / useDock · createDockSections · createParamPanes · Inspector / InspectorTimeline · MetaBlock (the docking engine) |
@@ -150,12 +151,13 @@ artinos-ui/
                       Select · ColorField · FileDrop · Knob · XYPad · controls.css + one sheet each
     rig/              ViewGizmo · Trackball · Vector3Field · TransformGizmo (three) · math · rig.css
     actions/          Button · IconButton · Toolbar · Kbd · Badge · Tag · actions.css
-    display/          Stat · Meter · Spectrum · Progress · Sparkline · Graph · display.css
+    display/          Stat · MonitorCell · Meter · Spectrum · Progress · Sparkline · Graph · BarTimeline · display.css
     layout/           Panel · Section · SectionGroup · Field · Text · StatStrip · Callout · Tabs
                       PropertyRow · ItemRow · layout.css + one sheet each
     overlays/         Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · overlays.css
     inspector/        Inspector · InspectorTimeline · store · control registry · built-in controls · MIDI
     pane/             useControls · ControlsPanel · createPane · the short schema
+    perf/             PerfStrip · PerformancePanel · the browser monitor · createPerfFeed
     dock/             Dock · PanelBar · DockMenu · PopoutWindows · sections (createDockSections) · params (createParamPanes)
       metablock/        the docking engine: workspace model, layout, physics, WorkspaceView
     graph/            NodeGraph · LiveGraphView · graph model · editor · gpu.ts (three TSL, opt-in)
@@ -186,9 +188,9 @@ pnpm build   # a publishable package in dist/npm, and what each import costs
 |---|---|---|
 | `artinos-ui/signals` | 6.0 kB | 3.0 kB |
 | `Slider` | 31.8 kB | 13.1 kB |
-| `useControls` | 105.3 kB | 38.2 kB |
-| `createPane` | 208.1 kB | 69.5 kB |
-| everything | 330.6 kB | 110.9 kB |
-| `artinos.css` | 304.4 kB | 47.9 kB |
+| `useControls` | 107.9 kB | 39.5 kB |
+| `createPane` | 220.2 kB | 75.1 kB |
+| everything | 361.1 kB | 123.1 kB |
+| `artinos.css` | 308.8 kB | 48.6 kB |
 
 Keep the guides in step with the code, in the same change (see `AGENTS.md`). After changing `skill/` or `docs/`, run `node artinos.mjs skill --user` to refresh installed copies. After adding or editing themes in `src/core/utils.ts`, run `node artinos.mjs sync`.

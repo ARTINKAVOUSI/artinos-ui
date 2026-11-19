@@ -52,10 +52,10 @@ const FOLDER = Symbol('artinos.folder');
 
 export interface MonitorEntry {
   [MONITOR]: true;
-  read: () => number;
+  read: () => number | string;
   options: MonitorOptions;
 }
-export type MonitorOptions = Partial<Pick<InspectMonitor, 'label' | 'help' | 'min' | 'max' | 'unit' | 'decimals' | 'graph' | 'interval' | 'budget'>>;
+export type MonitorOptions = Partial<Pick<InspectMonitor, 'label' | 'help' | 'min' | 'max' | 'unit' | 'decimals' | 'format' | 'graph' | 'interval' | 'budget'>>;
 
 export interface FolderEntry<S extends ControlSchema = ControlSchema> {
   [FOLDER]: true;
@@ -69,7 +69,7 @@ export type ControlEntry = number | boolean | string | readonly number[] | (() =
 export type ControlSchema = { readonly [key: string]: ControlEntry };
 
 /** A read-out of something the app reports. */
-export const monitor = (read: () => number, options: MonitorOptions = {}): MonitorEntry => ({ [MONITOR]: true, read, options });
+export const monitor = (read: () => number | string, options: MonitorOptions = {}): MonitorEntry => ({ [MONITOR]: true, read, options });
 /** A folder of rows. Its keys share the panel's values, flat. */
 export const folder = <S extends ControlSchema>(schema: S, { open = true, switch: owner }: { open?: boolean; switch?: string } = {}): FolderEntry<S> => ({ [FOLDER]: true, schema, open, switch: owner });
 

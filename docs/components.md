@@ -13,7 +13,7 @@ Contents:
 - Layout: Panel / Section / SectionGroup / Field · Text · Stack / Inline · Tabs · PropertyRow · ItemList / ItemGroup / ItemRow
 - Actions: Button · IconButton · Toolbar · Kbd · Badge
 - Display: RollingValue · RollingText · Stat · Meter · Spectrum · Progress · Sparkline
-- Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
+- Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · Loader
 - Dock and graph: Dock · PanelBar · AutoHide · MetaBlock · createDockSections · createParamPanes · Inspector · InspectorTimeline · NodeGraph · LiveGraphView · graph/gpu
 - Rig: ViewGizmo · Trackball · Vector3Field · TransformGizmo (needs `three`)
 - Also: Motion · ArtinosTheme · shared types · recipes · requirements
@@ -419,7 +419,7 @@ gizmo.addEventListener('dragging-changed', (e) => (orbit.enabled = !e.value));
 
 Math helpers (exported): `QUAT_IDENTITY`, `VIEWS` (the six axis views), `qFromEuler` / `eulerFromQuat` (Euler degrees, XYZ order), `qFromOrbit(azimuth, elevation)`, `orbitPosition(view, distance, target?)`, `orbitBy(view, yaw, pitch)`, `qMul`, `qSlerp`, `qRotate`, `qAxisAngle`, `qConjugate`, `qNormalize`.
 
-## Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette
+## Overlays: Menu · ContextMenu · Dialog · Toast · Tooltip · CommandPalette · Loader
 
 Everything that floats sits on one sheet: the float surface that a Select's list opens on, with the same blur, ring and shadow. Rows are light body text; group headings and shortcuts are mono caps. Menus, toasts, tooltips and the palette portal to `<body>` through `ThemedPortal`, so they keep the theme, density and token overrides of the place they were opened.
 
@@ -434,6 +434,7 @@ Everything that floats sits on one sheet: the float surface that a Select's list
   - The call returns a dismiss function.
 - **Tooltip** takes `content`, `children` (one focusable element), `side` (`'top' | 'bottom' | 'left' | 'right'`) and `delay` (450ms). It shows on hover and on keyboard focus. `shortcut` (e.g. `['mod', 'D']`) shows the action's key caps after the hint.
 - **CommandPalette** is a search sheet that matches fuzzily on label and keywords. Props: `commands: Command[]` (`{ id, label, group?, keywords?, shortcut?, icon?, run }`), `open` / `onOpenChange`, `hotkey` (default Ctrl/⌘ + K; `null` turns it off), `placeholder`.
+- **Loader** counts to 100 on three sideways digit reels in the figure face, holds, lets the figures fade and settle back one by one, then lifts its cover. Props: `value` (0..1 real progress; leave it out for a timed count), `duration` (timed count, ms, default 2600), `hold` (ms at 100, default 450), `label` (a quiet caps line under the figures), `cover` (`'page'` portalled over the window, the default · `'box'` over the nearest positioned parent · `'none'` in the flow), `onDone` (after the cover has gone; the Loader then renders nothing), `outline` (hollow figures: a hairline stroke in the ink, no fill). The figure size is `--ar-loader-size` (default `--ar-read-hero`).
 
 ```tsx
 <Menu trigger={<Button icon={<MoreIcon />}>Object</Button>} items={[
@@ -560,7 +561,7 @@ const store = createInspectorStore(items, { target: scene });   // called once, 
 | `range` | `[lo, hi]` | `RangeSlider` | `min`, `max`, `step`, `unit`, `minSpan` |
 | `point` | `[x, y]` | `XYPad` | `xRange`, `yRange`, `height` |
 | `text` | string | `TextField` | `placeholder` |
-| `monitor` | none: `read()` returns a number | a figure, and a trace with `graph` | `min`, `max`, `unit`, `decimals`, `budget` (a line across the trace), `interval` (ms; default 120, 50 with `graph`) |
+| `monitor` | none: `read()` returns a number or a word | a figure, and a trace with `graph` | `min`, `max`, `unit`, `decimals`, `format`, `budget` (a line across the trace), `interval` (ms; default 120, 50 with `graph`) |
 | `action` | none | a `Button` that calls `run()` | |
 | `custom` | any JSON value | the control registered under `control` | `control`, `default`, `options`, `randomize(random, current)` |
 
@@ -671,6 +672,67 @@ A control receives `item`, `value`, `signal`, `status`, `set`, `commit` and `opt
 
 **createMidiMap(store, items, { storageKey?, access? })** lets rows learn a hardware controller: pass it as the Inspector's `midi` and right-click a number, toggle or choice. `handle([status, cc, value])` feeds a message from anywhere else.
 
+## MonitorCell · MonitorStrip · BarTimeline
+
+Live values in the room a control panel can spare. A **MonitorCell** is one control high, in the same well as a slider: the name, a small picture and the number. The picture has several views of the one value.
+
+```tsx
+<MonitorStrip>                                              {/* a row, for a toolbar or status bar */}
+  <MonitorCell label="Latency" views={['bars', 'trace', 'spread']} subscribe={onRequest}
+    read={() => ({ value: ms, unit: 'ms', limit: 120, status: 'ok' })} />
+  <MonitorCell label="Queue" read={() => ({ value: queue.size, unit: 'jobs', share: queue.size / 40 })} />
+</MonitorStrip>
+
+<MonitorStrip orientation="stack">                          {/* a stack, for a panel: shared columns */}
+  <MonitorCell label="Disk" views={['parts', 'level']}
+    reading={{ value: 656, unit: 'GB', share: 0.66, parts: [{ label: 'Models', value: 412 }, { label: 'Free', value: 344, rest: true }] }} />
+</MonitorStrip>
+```
+
+| view | shows | needs |
+|---|---|---|
+| `bars` | every event against the limit | `subscribe` for single events, or the periodic readings; `limit` |
+| `trace` | the recent history | `plot`, or a numeric `value` |
+| `level` | how full it is, with the recent peak | `share` (0–1) |
+| `spread` | how the recent readings are distributed | |
+| `parts` | what the value is made of | `parts` |
+
+**In use:** a click moves to the next view, a right-click lists them, and hovering the picture reads the past in the cell's own readout. A value that needs attention shows its `state` word beside its name. In a narrow row the pictures give way and the names and numbers stay.
+
+**MonitorCell props:** `label`, `read` (with `clock`, a signal; every 250 ms without one) or `reading`, `subscribe`, `valueAt` (earlier events), `views`, `view` / `defaultView` / `onViewChange`, `storageKey` (remembers the view), `format` (a past reading), `viewLabels`, `samples`. A reading is `{ value, unit?, status?, state?, share?, plot?, limit?, parts? }`. **MonitorStrip:** `orientation` (`row` · `stack`).
+
+**BarTimeline** is the large form of the `bars` view: `label`, `subscribe(push)`, `limit`, `span`, `format`, `formatLimit`, `overLabel`, `valueAt`, `paused`, `onToggle`.
+
+## PerfStrip · PerformancePanel · sources
+
+How a program is running, built from monitor cells. **PerfStrip** is one line for a toolbar or status bar. **PerformancePanel** stacks the same cells under a sentence saying what the figures mean, and opens to every frame and every figure.
+
+```tsx
+<Dock toolbar={<PerfStrip />} … />                          // this browser page, in a bar
+<PerformancePanel />                                        // in a panel
+
+// your renderer, and the named parts of your frame
+perfMonitor().watchRenderer(renderer);                      // three.js, or anything with render() and info
+const physics = perfMonitor().timer('Physics');
+physics.measure(() => world.step());
+
+// figures your program already has: a desktop host, an engine, a server
+const feed = createPerfFeed({ budget: 33.3 });
+feed.frame(frameMs);
+feed.update({ mainLoad: cpu, gpuLoad: gpu, heapUsed: ramMb, heapLimit: ramTotalMb });
+<PerfStrip monitor={feed} words={{ memory: 'RAM' }} />
+```
+
+**PerfStrip props:** `monitor` (a `PerfSource`; default `perfMonitor()`), `cells` (default `perfCells(monitor)`; your own are `{ id, label, read(stats), views?, frames?, format? }`), `orientation`, `words`, `storageKey`.
+
+**PerformancePanel props:** `monitor`, `view` / `defaultView` (`compact` · `extended`) / `onViewChange`, `cells`, `only` (which figures get rows), `names` (other names for figures and folders), `extraItems` and `extraFolders` (your own Inspector rows), `words`, `healthWords` (the diagnosis's sentences), `storageKey`.
+
+**What it says.** `perfHealth(stats)` turns the figures into a sentence and names what is holding the program back: the GPU, the CPU, memory, or nothing. `PerfHealthLine` shows it on one line.
+
+**What a browser can report.** Frames are measured. A page cannot read the machine's CPU use, so CPU is an estimate of how busy the main thread is, with the system's own pressure word where the browser offers one. GPU time needs a connected WebGL2 renderer and a browser with timer queries. Memory is the JS heap, in Chromium browsers. A desktop host that knows the real figures reports them through `createPerfFeed`.
+
+**The monitor sleeps** two seconds after the last reader leaves, so it costs nothing while no panel is open. `perfRows(source)` gives the figures as Inspector rows, `perfControls(source)` as a `useControls` schema, and `pane.addPerformance(source?)` adds them to a `createPane`. `FrameTimeline` and `FrameGraph` are the frame parts alone.
+
 ## NodeGraph · LiveGraphView · graph/gpu
 
 - **NodeGraph**: a node editor on a canvas well with a dot grid. Nodes are the frosted sheet (the material every list and menu floats on), each with an LED before its title in its family's colour and the fold chevron at the end of the title row; fields are wells. Wired ports light like LEDs and wires glow in the signal colour.
@@ -759,6 +821,6 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
 - Stateful component files start with `'use client'`; `ArtinosTheme` is hook-free. The precision HUD, the Select list, menus, toasts, tooltips and the command palette portal to `<body>` and carry the theme's tokens with them (`ThemedPortal`, also exported for your own overlays).
 - The Dock needs a sized parent, because it fills 100% of it. `graph/gpu` additionally needs `three`.
 - Evergreen browsers: the CSS uses `@property`, `color-mix()`, `:has()` and `backdrop-filter`.
-- `Graph` and graphed Inspector monitors sample on the frame clock while on screen and rest off screen. Nothing else runs a permanent loop.
+- Every live graph shares one frame clock per window (`onFrame`) and scrolls on the compositor, so a frame draws only its newest reading. Graphs rest off screen, and the performance monitor sleeps when nothing reads it.
 - No permanent animation loop in the controls. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
 - Respects `prefers-reduced-motion`.

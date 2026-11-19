@@ -440,44 +440,39 @@
   color: var(--ar-tone-label);
 }
 .ar-graph__trace {
+  position: relative;
   display: block;
   width: 100%;
   height: max(calc(40px * var(--ar-k, 1)), 24px);
   overflow: hidden;
 }
-.ar-graph__series,
+.ar-graph__picture,
+.ar-bars__picture {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.ar-graph__ink,
 .ar-graph__legend > span {
   color: var(--ar-signal);
 }
-.ar-graph__series[data-tone='warm'],
+.ar-graph__ink[data-tone='warm'],
 .ar-graph__legend > span[data-tone='warm'] {
   color: var(--ar-warn);
 }
-.ar-graph__series[data-tone='neutral'],
+.ar-graph__ink[data-tone='neutral'],
 .ar-graph__legend > span[data-tone='neutral'] {
   color: var(--ar-text-low);
 }
-.ar-graph__series[data-tone='hot'],
-.ar-graph__legend > span[data-tone='hot'],
-.ar-graph__trace[data-over] .ar-graph__series {
+.ar-graph__ink[data-tone='hot'],
+.ar-graph__legend > span[data-tone='hot'] {
   color: var(--ar-fault);
 }
-.ar-graph__line {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.25;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-.ar-graph__area {
-  fill: currentColor;
-  fill-opacity: 0.14;
-}
 .ar-graph__budget {
-  stroke: var(--ar-tick-major);
-  stroke-width: 1;
-  stroke-dasharray: 2 3;
-  vector-effect: non-scaling-stroke;
+  position: absolute;
+  inset-inline: 0;
+  border-top: 1px dashed var(--ar-tick-major);
+  pointer-events: none;
 }
 .ar-graph__legend {
   display: flex;
@@ -493,6 +488,192 @@
   margin-right: calc(4px * var(--ar-k, 1));
   vertical-align: middle;
   background: currentColor;
+}
+
+/* ---------- MonitorCell: one watched value in one control's height ---------- */
+.ar-monitors {
+  container: ar-monitors / inline-size;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+.ar-monitors__cells {
+  display: flex;
+  gap: var(--ar-space-1, 2px);
+  min-width: 0;
+}
+.ar-monitors[data-orientation='stack'] .ar-monitors__cells {
+  flex-direction: column;
+  gap: var(--ar-row-gap, 4px);
+}
+.ar-monitor {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  flex: 1 1 0;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: calc(6px * var(--ar-k, 1));
+  min-width: 0;
+  height: var(--ar-h);
+  padding-inline: calc(8px * var(--ar-k, 1));
+  border-radius: calc(var(--ar-radius, calc(var(--ar-h) * 0.31)) * var(--ar-k, 1));
+  background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
+  cursor: pointer;
+  color: var(--ar-signal);
+}
+.ar-monitor:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-monitor [data-ink='ok'] {
+  color: var(--ar-signal);
+}
+.ar-monitor [data-ink='warn'] {
+  color: var(--ar-warn);
+}
+.ar-monitor [data-ink='fault'] {
+  color: var(--ar-fault);
+}
+.ar-monitor [data-ink='mute'] {
+  color: var(--ar-text-low);
+}
+/* a stack keeps its names, pictures and numbers in shared columns */
+.ar-monitors[data-orientation='stack'] .ar-monitor {
+  flex: none;
+  grid-template-columns: calc(58px * var(--ar-k, 1)) auto minmax(0, 1fr) calc(56px * var(--ar-k, 1));
+}
+.ar-monitor__name {
+  grid-column: 1;
+  min-width: 0;
+}
+/* said only when it needs attention */
+.ar-monitor__state {
+  grid-column: 2;
+  font: var(--ar-type-note);
+  white-space: nowrap;
+  color: var(--ar-warn);
+}
+.ar-monitor__state:empty {
+  display: none;
+}
+.ar-monitor[data-status='fault'] .ar-monitor__state {
+  color: var(--ar-fault);
+}
+.ar-monitor__picture {
+  grid-column: 3;
+  position: relative;
+  display: block;
+  min-width: 0;
+  height: calc(var(--ar-h) - 10px);
+}
+.ar-monitor__canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.ar-monitor__cross {
+  position: absolute;
+  inset-block: 0;
+  width: 1px;
+  background: var(--ar-text-hi);
+  pointer-events: none;
+}
+.ar-monitor__figure {
+  grid-column: 4;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: calc(2px * var(--ar-k, 1));
+  white-space: nowrap;
+}
+.ar-monitor__figure b {
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-value, var(--ar-text-hi));
+}
+.ar-monitor[data-status='warn'] .ar-monitor__figure b {
+  color: var(--ar-warn);
+}
+.ar-monitor[data-status='fault'] .ar-monitor__figure b {
+  color: var(--ar-fault);
+}
+.ar-monitor__figure small {
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
+}
+/* a narrow row: the pictures give way, the names and numbers stay */
+@container ar-monitors (max-width: 460px) {
+  .ar-monitors:not([data-orientation='stack']) .ar-monitor {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .ar-monitors:not([data-orientation='stack']) .ar-monitor__figure {
+    grid-column: 2;
+  }
+  .ar-monitors:not([data-orientation='stack']) .ar-monitor__picture,
+  .ar-monitors:not([data-orientation='stack']) .ar-monitor__state {
+    display: none;
+  }
+}
+
+/* ---------- BarTimeline: every event against a limit ---------- */
+.ar-bars {
+  position: relative;
+  height: calc(88px * var(--ar-k, 1));
+  overflow: hidden;
+  border-bottom: 1px solid var(--ar-line-strong);
+  touch-action: none;
+}
+.ar-bars[data-toggles] {
+  cursor: pointer;
+}
+.ar-bars [data-ink='ok'] {
+  color: var(--ar-signal);
+}
+.ar-bars [data-ink='warn'] {
+  color: var(--ar-warn);
+}
+.ar-bars [data-ink='fault'] {
+  color: var(--ar-fault);
+}
+.ar-bars[data-paused] .ar-bars__picture {
+  opacity: 0.72;
+}
+.ar-bars__limit {
+  position: absolute;
+  inset-inline: 0;
+  border-top: 1px dashed var(--ar-tick-major);
+  pointer-events: none;
+}
+.ar-bars__limit::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 1px;
+  left: 0;
+  font: var(--ar-type-note);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-note);
+}
+.ar-bars__cross {
+  position: absolute;
+  inset-block: 0;
+  width: 1px;
+  background: var(--ar-text-hi);
+  pointer-events: none;
+}
+.ar-bars__tip {
+  position: absolute;
+  top: 2px;
+  padding: 1px calc(6px * var(--ar-k, 1));
+  border-radius: calc(var(--ar-radius-control) * var(--ar-k, 1));
+  background: var(--ar-float-bg);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  font: var(--ar-type-note);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ar-text-hi);
+  pointer-events: none;
 }
 
 /* ---------- Stat: one figure that matters ---------- */

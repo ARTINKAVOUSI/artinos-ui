@@ -31,5 +31,6 @@
 @import './dock/Dock.css';
 @import './dock/DockMenu.css';
 @import './pane/pane.css';
+@import './perf/perf.css';
 @import './graph/graph.css';
 @import './tokens/density.css';

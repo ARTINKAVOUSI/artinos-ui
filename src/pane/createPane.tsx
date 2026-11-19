@@ -11,6 +11,9 @@ import { Inspector } from '../inspector/Inspector';
 import type { InspectorProps } from '../inspector/Inspector';
 import { createInspectorStore } from '../inspector/store';
 import type { InspectDocument, InspectFolder, InspectItem, InspectorStore, InspectValue, RandomizeOptions } from '../inspector/store';
+import { perfRows } from '../perf/items';
+import { perfMonitor } from '../perf/monitor';
+import type { PerfSource } from '../perf/source';
 import { itemFor, nameOf } from './schema';
 import type { ControlOptions, MonitorOptions } from './schema';
 
@@ -60,6 +63,8 @@ export interface PaneFolder {
   addMonitor<T extends object, K extends keyof T & string>(object: T, key: K, options?: MonitorOptions): void;
   addButton(options: { title: string; onClick: () => void }): void;
   addFolder(options: { title: string; open?: boolean }): PaneFolder;
+  /** The figures of a performance source. Default: this page. */
+  addPerformance(source?: PerfSource): void;
 }
 
 export interface Pane extends PaneFolder {
@@ -166,6 +171,11 @@ export function createPane({ title = 'Controls', container, bounds, theme, densi
       const id = `${folderId ?? ''}/${name}/${folders.peek().length}`;
       folders.set([...folders.peek(), { id, title: name, parent: folderId, open }]);
       return folderApi(id);
+    },
+    addPerformance(source = perfMonitor()) {
+      const rows = perfRows(source, { parent: folderId });
+      folders.set([...folders.peek(), ...rows.folders]);
+      rows.items.forEach(add);
     },
   });
 

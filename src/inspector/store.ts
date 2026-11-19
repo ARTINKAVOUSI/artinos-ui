@@ -55,7 +55,7 @@ export type InspectRange = ItemBase & { kind: 'range'; default: readonly [number
 export type InspectPoint = ItemBase & { kind: 'point'; default: readonly [number, number]; xRange?: [number, number]; yRange?: [number, number]; height?: number };
 export type InspectText = ItemBase & { kind: 'text'; default: string; placeholder?: string };
 /** A read-only value the app reports: sampled while on screen, drawn as a figure and, with `graph`, a trace. */
-export type InspectMonitor = ItemBase & { kind: 'monitor'; read: () => number; min?: number; max?: number; unit?: string; decimals?: number; graph?: boolean; interval?: number; budget?: number };
+export type InspectMonitor = ItemBase & { kind: 'monitor'; read: () => number | string; format?: (value: number) => string; min?: number; max?: number; unit?: string; decimals?: number; graph?: boolean; interval?: number; budget?: number };
 export type InspectAction = ItemBase & { kind: 'action'; run: () => void };
 /** A value drawn by a control added with `registerControl`. `randomize` gives Randomize a value for it. */
 export type InspectCustom = ItemBase & { kind: 'custom'; control: string; default: InspectValue; options?: Record<string, unknown>; randomize?: (random: () => number, current: InspectValue) => InspectValue };

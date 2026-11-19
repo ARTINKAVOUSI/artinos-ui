@@ -1,0 +1,60 @@
+/* ARTINOS performance — the panel's arrangement. The cells are general display parts (display/display.css). */
+.ar-perf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ar-row-gap, 4px);
+  min-width: 0;
+  font-family: var(--ar-font-ui);
+}
+.ar-perf[data-view='extended'] {
+  gap: var(--ar-space-3);
+}
+.ar-perf > .ar-bars {
+  height: calc(56px * var(--ar-k, 1));
+}
+/* a short chart names its budget and leaves the double out */
+.ar-perf > .ar-bars .ar-bars__limit + .ar-bars__limit::after {
+  content: none;
+}
+
+/* what the figures mean, on one line */
+.ar-perf-health {
+  --_light: var(--ar-text-faint);
+  display: flex;
+  align-items: center;
+  gap: calc(6px * var(--ar-k, 1));
+  min-width: 0;
+  min-height: var(--ar-h);
+}
+.ar-perf-health[data-status='ok'] {
+  --_light: var(--ar-signal);
+}
+.ar-perf-health[data-status='warn'] {
+  --_light: var(--ar-warn);
+}
+.ar-perf-health[data-status='fault'] {
+  --_light: var(--ar-fault);
+}
+.ar-perf-health__light {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--_light);
+}
+.ar-perf-health strong {
+  flex: none;
+  font: var(--ar-type-label);
+  font-weight: var(--ar-weight-section, 600);
+  white-space: nowrap;
+  color: var(--ar-tone-title);
+}
+.ar-perf-health [data-part='detail'] {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font: var(--ar-type-note);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-tone-note);
+}

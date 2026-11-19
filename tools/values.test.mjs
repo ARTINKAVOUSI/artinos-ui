@@ -9,13 +9,13 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const showcase = createRequire(new URL('../showcase/package.json', import.meta.url));
 const esbuild = createRequire(showcase.resolve('vite'))('esbuild');
 const built = await esbuild.build({
-  stdin: { contents: "export { evaluate } from './src/core/expression.ts'; export { parseTyped } from './src/slider/engine.ts'; export { createInspectorStore, INSPECT_FORMAT } from './src/inspector/store.ts';", resolveDir: root, loader: 'ts' },
+  stdin: { contents: "export { evaluate } from './src/core/expression.ts'; export { parseTyped } from './src/slider/engine.ts'; export { createInspectorStore, INSPECT_FORMAT } from './src/inspector/store.ts'; export { createPerfFeed } from './src/perf/source.ts';", resolveDir: root, loader: 'ts' },
   bundle: true,
   format: 'esm',
   write: false,
   logLevel: 'error',
 });
-const { evaluate, parseTyped, createInspectorStore, INSPECT_FORMAT } = await import(`data:text/javascript;base64,${Buffer.from(built.outputFiles[0].contents).toString('base64')}`);
+const { evaluate, parseTyped, createInspectorStore, INSPECT_FORMAT, createPerfFeed } = await import(`data:text/javascript;base64,${Buffer.from(built.outputFiles[0].contents).toString('base64')}`);
 
 test('sums come out right', () => {
   for (const [text, value] of [['2*3+1', 7], ['(4+6)/2', 5], ['2^8', 256], ['-2^2', -4], ['2^3^2', 512], ['1.5k', 1500], ['10%3', 1], ['min(3, 8)', 3], ['sqrt(81)', 9]]) assert.equal(evaluate(text), value, text);
@@ -87,4 +87,20 @@ test('one gesture is one undo step, and a seed repeats', () => {
   s.reset();
   s.randomize({ seed });
   assert.deepEqual(s.get(), first);
+});
+
+test('frame figures come out right from known frames', async () => {
+  const feed = createPerfFeed({ budget: 20 });
+  // 99 steady frames and one that takes 100 ms
+  for (let i = 0; i < 99; i++) feed.frame(10);
+  feed.frame(100);
+  await new Promise((r) => setTimeout(r, 260));
+  feed.frame(10);
+  const s = feed.get();
+  assert.equal(s.worst, 100);
+  assert.equal(s.p95, 10);
+  assert.equal(s.janks, 1);
+  assert.equal(s.dropped, 4);
+  assert.ok(Math.abs(s.frameMs - 1100 / 101) < 1e-9);
+  assert.ok(Number.isNaN(s.gpuLoad), 'nobody reported a GPU');
 });

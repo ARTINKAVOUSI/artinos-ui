@@ -706,3 +706,71 @@
 .ar-dialog[open]:not([data-state='closing']) :is(.ar-dialog__body, .ar-dialog__foot) {
   animation-name: ar-fade-in;
 }
+
+/* ---------- loader: a count to 100 on sideways digit reels ---------- */
+.ar-loader {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(14px * var(--ar-k, 1));
+  color: var(--ar-text-hi);
+}
+.ar-loader[data-cover] {
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  background: var(--ar-bg-app);
+}
+.ar-loader[data-cover='page'] {
+  position: fixed;
+}
+.ar-loader[data-cover='box'] {
+  position: absolute;
+}
+.ar-loader__figure {
+  display: inline-flex;
+  font-family: var(--ar-figure-font, var(--ar-font-num));
+  font-weight: var(--ar-weight-readout, 300);
+  font-size: var(--ar-loader-size, var(--ar-read-hero));
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  letter-spacing: 0;
+  /* a cell is a digit and a gutter: 1ch is a plain zero, a tabular digit can be a little wider, and
+     an outline stroke reaches past the glyph, so neither may show in the next window */
+  --_cell: calc(1ch + 0.16em);
+}
+/* each digit looks through its own window; the reel slides sideways behind it. The windows overlap
+   by their gutters, so the figures keep the face's own spacing */
+.ar-loader__window {
+  display: block;
+  width: var(--_cell);
+  margin-inline: -0.065em;
+  overflow: hidden;
+  transform-origin: 50% 60%;
+}
+.ar-loader__reel {
+  display: flex;
+  will-change: transform;
+}
+.ar-loader__reel > span {
+  flex: none;
+  width: var(--_cell);
+  text-align: center;
+}
+/* outline: hollow figures, a hairline stroke in the ink. A firmer weight than the solid figures
+   so the inside of each stroke has room to read as empty */
+.ar-loader[data-outline] .ar-loader__figure {
+  color: transparent;
+  font-weight: var(--ar-weight-regular, 400);
+  -webkit-text-stroke: max(1px, 0.022em) var(--ar-text-hi);
+  paint-order: stroke fill;
+}
+.ar-loader__label {
+  font-family: var(--ar-font-ui);
+  font-size: var(--ar-caps-sm);
+  font-weight: var(--ar-weight-text);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ar-text-low);
+}
