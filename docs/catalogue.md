@@ -409,6 +409,7 @@ Everything that floats sits on one frosted sheet and portals to `<body>` with th
 | the name or shortcut of a control | `Tooltip` |
 | any command by name, from the keyboard | `CommandPalette` |
 | a page or a canvas still loading | `Loader` |
+| several live values in a small pane, read together | `MonitorDeck` (`PerfDeck` for frame rate, CPU, GPU, memory) |
 
 ## Rig
 

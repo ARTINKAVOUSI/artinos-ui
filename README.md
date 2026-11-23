@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 58 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 59 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 

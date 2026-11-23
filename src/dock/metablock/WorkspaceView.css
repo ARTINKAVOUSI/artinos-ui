@@ -85,7 +85,7 @@
   min-width: 0;
   min-height: 0;
   display: flex;
-  gap: 6px;
+  gap: 0;
   padding: 0;
   box-sizing: border-box;
 }
@@ -100,8 +100,116 @@
   .mb-panel-split[data-axis="horizontal"] {
     flex-direction: column;
   }
+  .mb-panel-split[data-axis="horizontal"] > .mb-panel-split__handle {
+    width: auto;
+    height: 8px;
+    cursor: row-resize;
+  }
+}
+/* the line between two halves: 8px of grip, a hairline that lights while it is held */
+.mb-panel-split__handle {
+  position: relative;
+  flex: none;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+.mb-panel-split[data-axis="vertical"] > .mb-panel-split__handle {
+  width: auto;
+  height: 8px;
+  cursor: row-resize;
+}
+.mb-panel-split__handle::after {
+  content: '';
+  position: absolute;
+  inset: 25% 3.5px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--au-text, #fff) 22%, transparent);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.mb-panel-split[data-axis="vertical"] > .mb-panel-split__handle::after {
+  inset: 3.5px 25%;
+}
+@container mb-body (max-width: 520px) {
+  .mb-panel-split[data-axis="horizontal"] > .mb-panel-split__handle::after {
+    inset: 3.5px 25%;
+  }
+}
+.mb-panel-split__handle:hover::after,
+.mb-panel-split__handle:focus-visible::after,
+.mb-panel-split__handle[data-dragging]::after {
+  opacity: 1;
+}
+.mb-panel-split__handle[data-dragging]::after,
+.mb-panel-split__handle:focus-visible::after {
+  background: var(--au-accent, var(--ar-signal, #6fd3c0));
+}
+/* a half's own head: its name, the way to drag it out, and the way back to a tab */
+.mb-panel-split__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 4px 0 10px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font: var(--ar-tab-weight, 300) var(--ar-tab-size, 12px) / 1 var(--ar-font-ui, inherit);
+  letter-spacing: var(--ar-tab-tracking, 0.12em);
+  text-transform: uppercase;
+  color: var(--ar-tone-label, color-mix(in srgb, var(--au-text, #fff) 70%, transparent));
+}
+.mb-panel-split__head > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mb-panel-host[data-active='true'] > .mb-panel-split__head {
+  color: var(--ar-text-hi, var(--au-text, #fff));
+}
+.mb-panel-host[data-active='true'] > .mb-panel-split__head > span {
+  text-decoration: underline 1px var(--au-accent, var(--ar-signal, #6fd3c0));
+  text-underline-offset: 5px;
+}
+.mb-panel-split__unsplit {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.mb-panel-split__unsplit svg {
+  width: 9px;
+  height: 9px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.mb-panel-split__head:hover .mb-panel-split__unsplit,
+.mb-panel-split__unsplit:focus-visible {
+  opacity: 1;
+}
+.mb-panel-split__unsplit:hover {
+  background: color-mix(in srgb, var(--au-text, #fff) 10%, transparent);
+}
+.mb-panel-split__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
 }
 .mb-panel-split > .mb-panel-host {
+  display: flex;
+  flex-direction: column;
   flex: 1 1 0;
   /* a split share is its share of the group, never its content's height: a long panel scrolls inside */
   min-width: 0;

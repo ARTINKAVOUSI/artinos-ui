@@ -1,6 +1,6 @@
 # ARTINOS UI — instructions for AI agents
 
-This folder is the whole ARTINOS UI package: a copy-paste React control system (58 kit components, from sliders to a dockable workspace and a node editor) with 9 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
+This folder is the whole ARTINOS UI package: a copy-paste React control system (59 kit components, from sliders to a dockable workspace and a node editor) with 9 themes, its guides, a showcase and one command, `artinos.mjs` (Node 18+, no dependencies). You're probably here because a user working in **another project** pointed you at this folder.
 
 ## Bringing ARTINOS UI into another project
 

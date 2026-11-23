@@ -1075,3 +1075,170 @@
     animation: none;
   }
 }
+
+/* ---------- MonitorDeck: a few live values in the least room they can take ---------- */
+/* one picture: every trace over the whole deck, the figure at its head, one thin line at its foot */
+.ar-deck {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 100%;
+  min-height: calc(var(--ar-h) * 3);
+  color: var(--ar-text-hi);
+}
+.ar-deck__well {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: calc(var(--ar-radius, calc(var(--ar-h) * 0.31)) * var(--ar-k, 1));
+  background: linear-gradient(var(--ar-lift), var(--ar-lift)), var(--ar-trough);
+  overflow: hidden;
+  cursor: crosshair;
+}
+/* the well's own shading lies over the traces, as on every control */
+.ar-deck__well::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--ar-well);
+  pointer-events: none;
+}
+.ar-deck__well:focus-visible::after {
+  box-shadow: var(--ar-well), var(--ar-focus-ring);
+}
+/* alone in a pane the deck is the pane: the traces run edge to edge, with no well drawn inside it */
+.ar-dock__panel:has(> .ar-deck:only-child) {
+  display: grid;
+  padding: 0;
+}
+.mb-block-scroll:has(> .ar-dock__panel > .ar-deck:only-child) {
+  padding: 0;
+}
+.ar-dock__panel:has(> .ar-deck:only-child) .ar-deck__well {
+  border-radius: 0;
+  background: none;
+}
+.ar-dock__panel:has(> .ar-deck:only-child) .ar-deck__well::after {
+  box-shadow: none;
+}
+.ar-dock__panel:has(> .ar-deck:only-child) .ar-deck__well:focus-visible::after {
+  box-shadow: inset var(--ar-focus-ring);
+}
+/* the traces keep clear of the line at the foot; their areas fade out behind it */
+.ar-deck__canvas {
+  position: absolute;
+  inset: calc(4px * var(--ar-k, 1)) 0 0;
+}
+/* the figure: the one bold number of the pane */
+.ar-deck__hero {
+  position: absolute;
+  top: calc(8px * var(--ar-k, 1));
+  left: calc(11px * var(--ar-k, 1));
+  display: flex;
+  align-items: baseline;
+  gap: calc(5px * var(--ar-k, 1));
+  white-space: nowrap;
+}
+.ar-deck__hero b {
+  font: var(--ar-stat-style, normal) var(--ar-weight-bold, 700) round(calc(var(--ar-h) * 1.34), 2px) / 1 var(--ar-stat-font, var(--ar-font-num));
+  font-stretch: var(--ar-title-stretch);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-tone-title);
+}
+.ar-deck[data-status='warn'] .ar-deck__hero b {
+  color: var(--ar-warn);
+}
+.ar-deck[data-status='fault'] .ar-deck__hero b {
+  color: var(--ar-fault);
+}
+.ar-deck__hero small {
+  display: flex;
+  gap: calc(3px * var(--ar-k, 1));
+  font: var(--ar-type-note);
+  font-weight: 300;
+  color: var(--ar-tone-label);
+}
+.ar-deck__hero-name {
+  font: inherit;
+}
+.ar-deck__word {
+  position: absolute;
+  top: calc(9px * var(--ar-k, 1));
+  right: calc(11px * var(--ar-k, 1));
+  max-width: 50%;
+  overflow: hidden;
+  font: var(--ar-type-note);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--ar-tone-label);
+}
+.ar-deck[data-status='warn']:not([data-held]) .ar-deck__word {
+  color: var(--ar-warn);
+}
+.ar-deck[data-status='fault']:not([data-held]) .ar-deck__word {
+  color: var(--ar-fault);
+}
+/* the line: one thin row laid over the foot of the picture; what does not fit is left off */
+.ar-deck__line {
+  position: absolute;
+  inset: auto calc(11px * var(--ar-k, 1)) calc(5px * var(--ar-k, 1));
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 calc(9px * var(--ar-k, 1));
+  min-width: 0;
+  height: 1lh;
+  overflow: hidden;
+  font: var(--ar-type-note);
+  font-weight: 300;
+  white-space: nowrap;
+  color: var(--ar-tone-label);
+  pointer-events: none;
+}
+.ar-deck__facts {
+  display: contents;
+}
+.ar-deck__line > *,
+.ar-deck__facts > * {
+  flex: none;
+}
+.ar-deck__line b {
+  font: inherit;
+  font-weight: var(--ar-weight-regular, 400);
+  font-variant-numeric: tabular-nums;
+  color: var(--ar-text-hi);
+}
+.ar-deck__key {
+  all: unset;
+  display: inline-flex;
+  align-items: baseline;
+  gap: calc(4px * var(--ar-k, 1));
+  border-radius: 3px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.ar-deck__key:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+/* the key: a short stroke in the trace's own ink */
+.ar-deck__key > i {
+  align-self: center;
+  width: calc(7px * var(--ar-k, 1));
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.ar-deck__key[aria-pressed='false'] {
+  opacity: 0.5;
+}
+.ar-deck__key[data-status='warn'] b {
+  color: var(--ar-warn);
+}
+.ar-deck__key[data-status='fault'] b {
+  color: var(--ar-fault);
+}

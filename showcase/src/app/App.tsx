@@ -1,6 +1,6 @@
 /* ARTINOS UI — full showcase. Every control on this page is live and comes from
    ../src (the package) exactly as a consuming app would import it.
-   The app shell: theme / density / backdrop state, view routing (page · #studio · #themes),
+   The app shell: theme / density / backdrop state, view routing (page · #studio · #themes · #layouts),
    the top bar, the hero and the instrument under it, the page (hero, index, chapters) and the Export kit dialog (#export). */
 import { useEffect, useState } from 'react';
 import { ACCENTS, ACCENT_META, ArtinosTheme, Button, DENSITIES, DENSITY_META, GLASS_THEMES, RollingValue, Segmented, Select, THEMES, THEME_META, TYPE_COLLECTIONS } from '../../../src';
@@ -16,6 +16,7 @@ import type { Backdrop } from '../shared';
 import { ThemeStudio } from '../studio/ThemeStudio';
 import { InstrumentStage } from './live';
 import { ThemesPage } from '../themes/ThemesPage';
+import { LayoutsPage } from '../layouts/LayoutsPage';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 
@@ -25,8 +26,8 @@ export function App() {
   const pick = <T extends string>(k: string, list: readonly T[], d: T) => (list.includes(q.get(k) as T) ? (q.get(k) as T) : d);
   const [theme, setTheme] = useState<string>(pick('theme', THEMES, 'nimbus'));
   const [customs, setCustoms] = useState<CustomTheme[]>(() => loadThemes());
-  type View = 'showcase' | 'studio' | 'themes';
-  const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : 'showcase');
+  type View = 'showcase' | 'studio' | 'themes' | 'layouts';
+  const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : location.hash === '#layouts' ? 'layouts' : 'showcase');
   const [view, setView] = useState<View>(viewOf);
   useEffect(() => {
     const h = () => {
@@ -101,6 +102,8 @@ export function App() {
       />
     );
 
+  if (view === 'layouts') return <LayoutsPage theme={baseTheme} accent={accent} type={type} bg={bg} density={density} onDensity={setDensity} onExit={() => go('showcase')} />;
+
   return (
     <ArtinosTheme theme={baseTheme} tokens={custom?.tokens} densityTokens={custom?.layers} density={density} type={type} accent={accent === 'theme' ? undefined : (accent as (typeof ACCENTS)[number])} scene={LIGHT_BACKDROPS.has(bg) ? 'light' : undefined} ground className="sc-root">
       {bg !== 'none' ? <div className="sc-backdrop" style={{ backgroundImage: `url(${BACKDROPS[bg]})` }} /> : null}
@@ -133,6 +136,9 @@ export function App() {
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
         </label>
         <span className="sc-bar__actions">
+          <Button size="sm" onClick={() => go('layouts')}>
+            Layouts
+          </Button>
           <Button size="sm" onClick={() => go('themes')}>
             Themes
           </Button>

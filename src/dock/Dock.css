@@ -71,6 +71,89 @@
   border: 0;
   background: transparent;
 }
+/* look 'hidden': no tab strip. The chrome takes no room; a thin grip lies over the panel's top edge,
+   showing only under the pointer, to drag the group and open its menu */
+.ar-dock .mb-group-chrome:has(> .ar-dock__strip--hidden) {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 0;
+}
+.ar-dock__strip--hidden {
+  position: absolute;
+  inset: 0 calc(12px * var(--ar-k, 1)) auto;
+  height: calc(6px * var(--ar-k, 1));
+  min-height: 0;
+  padding: 0;
+  cursor: grab;
+}
+.ar-dock__strip--hidden::before {
+  content: '';
+  position: absolute;
+  inset: calc(2px * var(--ar-k, 1)) 35% auto;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ar-text-low);
+  opacity: 0;
+  transition: opacity var(--ar-dur-state) var(--ar-ease);
+}
+.ar-dock__strip--hidden:hover::before,
+.mb-group[data-grabbed='true'] .ar-dock__strip--hidden::before {
+  opacity: 0.7;
+}
+.mb-group[data-grabbed='true'] .ar-dock__strip--hidden {
+  cursor: grabbing;
+}
+
+/* ---------- tools: the canvas's tools, a rail attached to the panels ---------- */
+/* the panels' own glass and corner, one tab-rail wide; it stands on the panels' foot line, 8px off
+   their side, and goes where they go. The chosen tool's line is lit on the side facing the canvas. */
+.ar-dock > .ar-dock__tools {
+  position: absolute;
+  z-index: 5;
+  padding: calc(3px * var(--ar-k, 1));
+  border-radius: var(--mb-radius, var(--ar-radius-panel));
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0), var(--ar-panel-floor);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+  transition:
+    opacity var(--ar-dur-surface) var(--ar-ease),
+    translate var(--ar-dur-surface) var(--ar-ease),
+    scale var(--ar-dur-surface) var(--ar-ease);
+}
+.ar-dock__tools .ar-toolbar {
+  gap: calc(2px * var(--ar-k, 1));
+}
+.ar-dock__tools .ar-icon-button {
+  --_size: calc(var(--ar-h) + 2px);
+}
+.ar-dock__tools .ar-icon-button[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  inset: 22% auto 22% calc(-3px * var(--ar-k, 1));
+  width: 2px;
+  border-radius: 1px;
+  background: var(--ar-signal);
+}
+.ar-dock__tools[data-side='right'] .ar-icon-button[aria-pressed='true']::after {
+  inset: 22% calc(-3px * var(--ar-k, 1)) 22% auto;
+}
+.ar-dock__tools[data-side='top'] .ar-icon-button[aria-pressed='true']::after {
+  inset: calc(-3px * var(--ar-k, 1)) 22% auto;
+  width: auto;
+  height: 2px;
+}
+.ar-dock[data-ui-hidden] > .ar-dock__tools[data-side='left'] {
+  translate: 18px 0;
+}
+.ar-dock[data-ui-hidden] > .ar-dock__tools[data-side='right'] {
+  translate: -18px 0;
+}
+.ar-dock[data-ui-hidden] > .ar-dock__tools[data-side='top'] {
+  translate: 0 18px;
+}
+
 /* the engine anchors its menu host at 0 height, so a percentage max-height collapses */
 .ar-dock .mb-context-menu {
   max-height: min(430px, calc(100vh - 32px));
@@ -394,7 +477,8 @@
    by hand and slowly when idle; when the interface comes back they settle in one after another
    (left, bottom, right, then floating windows). The engine's transition reads --mb-fade-*. */
 .ar-dock[data-ui-hidden] .mb-group:not([data-role='viewport']),
-.ar-dock[data-ui-hidden] > .ar-dock__brand {
+.ar-dock[data-ui-hidden] > .ar-dock__brand,
+.ar-dock[data-ui-hidden] > .ar-dock__tools {
   --mb-fade-ms: var(--ar-autohide-out, 240ms);
   --mb-fade-ease: var(--ar-ease-exit);
   opacity: 0;
@@ -843,11 +927,32 @@
   align-items: center;
   gap: calc(2px * var(--ar-k, 1));
 }
+/* on a rail, search is a bare magnifier like the window buttons: the strip's sizes (a 220px basis,
+   a 96px floor) would stretch it down the column */
 .ar-dock__search--rail {
+  flex: none;
   justify-content: center;
-  width: calc(28px * var(--ar-k, 1));
-  height: calc(28px * var(--ar-k, 1));
+  width: calc(24px * var(--ar-k, 1));
+  min-width: 0;
+  max-width: none;
+  height: max(calc(24px * var(--ar-k, 1)), 16px);
+  margin: 0;
   padding: 0;
+  border-radius: calc(var(--ar-insert-radius) * var(--ar-k, 1));
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.ar-dock__search--rail:hover {
+  background: var(--ar-bg-hover);
+}
+.ar-dock__search--rail:focus-visible {
+  box-shadow: var(--ar-focus-ring);
+}
+.ar-dock__search--rail svg {
+  width: calc(13px * var(--ar-k, 1));
+  height: max(calc(13px * var(--ar-k, 1)), 13px);
 }
 
 /* ---------- a group's tab looks: line (default) · pill · icon, on a strip or a rail ---------- */

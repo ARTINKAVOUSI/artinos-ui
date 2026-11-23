@@ -74,6 +74,7 @@ const TAB_LOOKS: Array<[DockTabStyle['look'], string]> = [
   ['line', 'Line'],
   ['pill', 'Pill'],
   ['icon', 'Icon'],
+  ['hidden', 'Hidden'],
 ];
 
 export function DockMenu({ model, close, tabs }: DockMenuProps) {
@@ -235,7 +236,7 @@ export function DockMenu({ model, close, tabs }: DockMenuProps) {
                 data-item
                 data-active={tabs.value.look === value || undefined}
                 className="ar-dock-menu__chip"
-                title={value === 'icon' ? 'Icons alone, named by their tooltips' : value === 'pill' ? 'The current tab on a soft wash' : 'Names over a lit underline'}
+                title={value === 'hidden' ? 'No tabs: the panel takes their room; right-click it to bring them back' : value === 'icon' ? 'Icons alone, named by their tooltips' : value === 'pill' ? 'The current tab on a soft wash' : 'Names over a lit underline'}
                 onClick={() => tabs.onChange({ ...tabs.value, look: value })}
               >
                 {label}

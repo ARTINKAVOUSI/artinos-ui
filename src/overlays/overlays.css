@@ -720,7 +720,11 @@
   z-index: 1000;
   display: flex;
   justify-content: center;
-  background: var(--ar-bg-app);
+  /* the cover is the theme's own panel material: frosted glass over the scene in a glass theme,
+     the solid sheet in a solid one; never a flat app ground laid over a photo or a canvas */
+  background: var(--ar-loader-cover, var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0));
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
 }
 .ar-loader[data-cover='page'] {
   position: fixed;

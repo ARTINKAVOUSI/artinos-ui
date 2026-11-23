@@ -434,7 +434,7 @@ Everything that floats sits on one sheet: the float surface that a Select's list
   - The call returns a dismiss function.
 - **Tooltip** takes `content`, `children` (one focusable element), `side` (`'top' | 'bottom' | 'left' | 'right'`) and `delay` (450ms). It shows on hover and on keyboard focus. `shortcut` (e.g. `['mod', 'D']`) shows the action's key caps after the hint.
 - **CommandPalette** is a search sheet that matches fuzzily on label and keywords. Props: `commands: Command[]` (`{ id, label, group?, keywords?, shortcut?, icon?, run }`), `open` / `onOpenChange`, `hotkey` (default Ctrl/⌘ + K; `null` turns it off), `placeholder`.
-- **Loader** counts to 100 on three sideways digit reels in the figure face, holds, lets the figures fade and settle back one by one, then lifts its cover. Props: `value` (0..1 real progress; leave it out for a timed count), `duration` (timed count, ms, default 2600), `hold` (ms at 100, default 450), `label` (a quiet caps line under the figures), `cover` (`'page'` portalled over the window, the default · `'box'` over the nearest positioned parent · `'none'` in the flow), `onDone` (after the cover has gone; the Loader then renders nothing), `outline` (hollow figures: a hairline stroke in the ink, no fill). The figure size is `--ar-loader-size` (default `--ar-read-hero`).
+- **Loader** counts to 100 on three sideways digit reels in the figure face, holds, lets the figures fade and settle back one by one, then lifts its cover. Props: `value` (0..1 real progress; leave it out for a timed count), `duration` (timed count, ms, default 2600), `hold` (ms at 100, default 450), `label` (a quiet caps line under the figures), `cover` (`'page'` portalled over the window, the default · `'box'` over the nearest positioned parent · `'none'` in the flow), `onDone` (after the cover has gone; the Loader then renders nothing), `outline` (hollow figures: a hairline stroke in the ink, no fill). The cover is the theme's panel material (frosted glass over the scene in a glass theme, the solid sheet in a solid one); `--ar-loader-cover` sets another background. The figure size is `--ar-loader-size` (default `--ar-read-hero`).
 
 ```tsx
 <Menu trigger={<Button icon={<MoreIcon />}>Object</Button>} items={[
@@ -460,13 +460,16 @@ Props:
 - `panels: DockPanel[]`, each `{ id, title, description?, keywords?, dock?: 'left' | 'right' | 'bottom' | 'center' | 'float', active?, content, footer?, icon?, capabilities? }`. `dock: 'center'` fills what the edge docks leave, for a workspace of panels with no canvas (over a `viewport` it would cover it). `icon` is the glyph on the panel's tab, alone on a narrow side rail. A `Panel` given as `content` becomes the pane: no glass or title of its own (the tab names it), its subtitle, actions, tabs, side rail and footer kept. A panel is a MetaBlock: `capabilities` (`closable`, `movable`, `resizable`, `floatable`, `dockable`, `splittable`, `tabbable`, `maximizable`, `pinable`, `autoHideable`, `popoutable`, `nestable`, `acceptsDrop`, all on by default) says what it may do, and drags, menus and window buttons follow it, e.g. `{ closable: false, floatable: false }` keeps it docked and open;
 - `viewport`;
 - `storageKey`: saves the arrangement to localStorage, and restores it only while every saved id still exists;
-- `tabs`: how each group of panels shows its tabs, per edge (`left`, `right`, `bottom`, `center`) and `float` (detached windows): `'top'` · `'side'`, or `{ placement: 'top' | 'side', look: 'line' | 'pill' | 'icon' }` (`DockTabStyle`). Top is a strip, side a rail down the group's outer edge (on a floating window, its left; the window controls at the rail's foot); line is names over a lit underline, pill the current tab on a soft wash, icon the marks alone with the name as tooltip. A rail shows names, and icons alone when the group is 260px or narrower. The style is the group's MetaBlock meta (`meta.tabs`): the prop seeds it, every tab's right-click menu has Tabs (Top · Side) and Look (Line · Pill · Icon) rows to change it, `api.workspace.setGroupMeta(groupId, { tabs })` sets it in code, and the saved layout keeps it, so it travels with the group when it floats or docks. The panel's `PanelBar` stays in the panel on a rail;
+- `tabs`: how each group of panels shows its tabs, per edge (`left`, `right`, `bottom`, `center`) and `float` (detached windows): `'top'` · `'side'`, or `{ placement: 'top' | 'side', look: 'line' | 'pill' | 'icon' | 'hidden' }` (`DockTabStyle`). Top is a strip, side a rail down the group's outer edge (on a floating window, its left; the window controls at the rail's foot); line is names over a lit underline, pill the current tab on a soft wash, icon the marks alone with the name as tooltip, hidden no tabs at all: the content takes their room, and a thin grip along the top edge (seen under the pointer) still drags the group and opens its menu. A rail shows names, and icons alone when the group is 260px or narrower. The style is the group's MetaBlock meta (`meta.tabs`): the prop seeds it, every tab's right-click menu has Tabs (Top · Side) and Look (Line · Pill · Icon · Hidden) rows to change it, `api.workspace.setGroupMeta(groupId, { tabs })` sets it in code, and the saved layout keeps it, so it travels with the group when it floats or docks. The panel's `PanelBar` stays in the panel on a rail;
 - `sizes`: fractions per edge; default left .22, right .24, bottom .36. A side dock never drops below 220px (taking at most 40% of the room left), a bottom dock below 120px (at most half), so a small workspace keeps usable columns;
+- two panels side by side in one group (drop a tab on a group's edge): each half has its own head, to drag it out, right-click it for its menu, or put it back as a tab (×); the line between them drags to resize (arrow keys move it, a double-click evens it), and the shares are kept with the layout;
+- a group split off beside a dock (`api.workspace.splitBlock`) wears a side rail on that dock's edge, so one column keeps its rails on one side;
 - `floatBounds`;
 - `commands`: extra palette entries;
 - `palette`: the search entry plus the ⌘/Ctrl K palette; default true. The tabs give way to it (they scroll) so it never leaves the strip, which always stays one row; in a strip 520px wide or less search folds to a magnifier;
 - `toolbar`: the right end of every strip;
 - `brand`: a corner chip;
+- `tools` (and `toolsLabel`, default 'Tools'): the canvas's tools, `IconButton`s and `ToolbarSeparator`s. The Dock draws them as one rail of panel glass attached to the panels on the side that faces the canvas: against the left side of a right column, standing on its foot line; against the right side of a left column; on top of a bottom deck's first column, laid flat. It is 8px off the panels (the view's `gap`), follows them through every move, resize and float, hides with the interface, and lights the pressed tool's line on the side facing the canvas. Needs a `viewport`. Give each tool its key in its label (`label="Move · W"`) and handle the key in the app;
 - `hideKey`: e.g. `'h'`, `'tab'` or `'mod+.'` hides the interface for a clean view of the viewport, and the same key brings it back (a small glass pill at the foot, a mark and the key, shows it on a click). It is the shared auto-hide switch (see *Auto-hide* below), so every Dock and every Panel with `autoHide` hides with it;
 - `idleHide`: ms with no input before the interface fades on its own (off by default); any input brings it back. `idleReveal`: `'move'` (default, any pointer move, wheel, touch or key) · `'near'` (a key, or the pointer near an edge or over a hidden panel's place, so orbiting the canvas keeps the view clean). It never hides while a button is held, a field has focus, a menu or dialog is open, or the pointer rests on a panel;
 - `viewProps`: engine tuning such as padding, gap and snapping;
@@ -672,7 +675,7 @@ A control receives `item`, `value`, `signal`, `status`, `set`, `commit` and `opt
 
 **createMidiMap(store, items, { storageKey?, access? })** lets rows learn a hardware controller: pass it as the Inspector's `midi` and right-click a number, toggle or choice. `handle([status, cc, value])` feeds a message from anywhere else.
 
-## MonitorCell · MonitorStrip · BarTimeline
+## MonitorCell · MonitorStrip · MonitorDeck · BarTimeline
 
 Live values in the room a control panel can spare. A **MonitorCell** is one control high, in the same well as a slider: the name, a small picture and the number. The picture has several views of the one value.
 
@@ -700,6 +703,21 @@ Live values in the room a control panel can spare. A **MonitorCell** is one cont
 **In use:** a click moves to the next view, a right-click lists them, and hovering the picture reads the past in the cell's own readout. A value that needs attention shows its `state` word beside its name. In a narrow row the pictures give way and the names and numbers stay.
 
 **MonitorCell props:** `label`, `read` (with `clock`, a signal; every 250 ms without one) or `reading`, `subscribe`, `valueAt` (earlier events), `views`, `view` / `defaultView` / `onViewChange`, `storageKey` (remembers the view), `format` (a past reading), `viewLabels`, `samples`. A reading is `{ value, unit?, status?, state?, share?, plot?, limit?, parts? }`. **MonitorStrip:** `orientation` (`row` · `stack`).
+
+**MonitorDeck** is a few values in the least room they can take, as one picture: every channel's history drawn over the whole deck, one over another, each as its `share` (0–1) of its own full scale; the first channel's figure at its head, bold; and one thin line laid over its foot, a key and a number for each further trace, then every other fact (what does not fit the width is left off). It fills its parent (three control heights at least, 63px in Dense); alone in a Dock pane it is the pane, edge to edge, with no well drawn inside. It never grows: there is nothing to open.
+
+```tsx
+<PerfDeck />                                   // FPS bold, CPU and GPU over it; memory and the renderer's figures on the line
+<PerfDeck monitor={feed} facts={(s) => [{ label: 'Bodies', value: world.count }]} />
+<MonitorDeck channels={[
+  { id: 'latency', label: 'Latency', read: () => ({ value: ms.toFixed(0), unit: 'ms', plot: ms, share: ms / 200, status: ms > 120 ? 'warn' : 'ok', state: 'slow' }) },
+  { id: 'queue', label: 'Queue', read: () => ({ value: jobs, plot: jobs, share: jobs / 40 }) },
+]} facts={() => [{ label: 'Disk', value: '656 GB' }]} />
+```
+
+**In use:** move over the well to read a moment across every trace (the figure, the keys and a time tag follow the hairline); click to hold it, arrow keys step through it (Shift by ten), Escape lets go. Click a key to take its trace out of the picture.
+
+**MonitorDeck props:** `channels` (`{ id, label, read(): MonitorReading, tone?, format? }`; the first is the figure), `facts` (`() => { label, value }[]`), `clock` (a signal; every 250 ms without one), `samples` (120), `label`, `heldWord`. **PerfDeck props:** `monitor`, `words`, `facts(stats)`, and the deck's `samples`, `label`. A figure the source does not report (draw calls with no renderer connected) is left off the line.
 
 **BarTimeline** is the large form of the `bars` view: `label`, `subscribe(push)`, `limit`, `span`, `format`, `formatLimit`, `overLabel`, `valueAt`, `paused`, `onToggle`.
 

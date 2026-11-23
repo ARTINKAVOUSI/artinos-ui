@@ -1,0 +1,69 @@
+/* The layouts page: a bar, and one workspace filling the window under it. */
+.sc-layouts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  height: 100vh;
+  padding: 10px;
+  box-sizing: border-box;
+  background: var(--sc-scene) center / cover no-repeat fixed, #1d1d1f;
+  color: var(--ar-text-hi);
+}
+
+/* the bar: the theme's own panel glass */
+.sc-layouts__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 8px 12px;
+  border-radius: var(--ar-radius-panel);
+  background: var(--ar-panel-sheen), linear-gradient(var(--ar-panel-tint) 0 0);
+  -webkit-backdrop-filter: var(--ar-panel-blur);
+  backdrop-filter: var(--ar-panel-blur);
+  box-shadow: var(--ar-panel-shadow);
+}
+.sc-layouts__title {
+  font: var(--ar-type-panel);
+  color: var(--ar-tone-panel);
+}
+.sc-layouts__presets {
+  flex: none;
+  width: 440px;
+}
+.sc-layouts__density {
+  flex: none;
+  width: 236px;
+}
+.sc-layouts__about {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--ar-type-note);
+  color: var(--ar-tone-note);
+}
+
+/* the workspace: the Dock fills it; the loader covers it */
+.sc-layouts__stage {
+  position: relative;
+  min-height: 0;
+  border-radius: var(--ar-radius-panel);
+  overflow: hidden;
+}
+/* the canvas is the page's own scene, seen through */
+.sc-layouts__canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1280px) {
+  .sc-layouts__about {
+    display: none;
+  }
+  .sc-layouts__bar {
+    flex-wrap: wrap;
+  }
+}

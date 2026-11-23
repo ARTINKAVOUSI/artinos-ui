@@ -10,7 +10,7 @@ const MIN_EDGE = 120;
 const EDGE_CAP = 0.5;
 
 function splitRect(target: Rect, node: LayoutNode, gap: number) {
-  const ratio = clamp(node.size, 0.12, 0.72);
+  const ratio = clamp(node.size, 0.05, 0.72);
   let placed: Rect | null = null,
     remain: Rect = target;
   if (node.area === 'left') {

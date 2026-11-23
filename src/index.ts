@@ -105,13 +105,15 @@ export { Graph, GraphTrace, useLiveFigure } from './display/Graph';
 export type { GraphProps, GraphTraceProps, GraphSeries } from './display/Graph';
 export { MonitorCell, MonitorStrip } from './display/MonitorCell';
 export type { MonitorCellProps, MonitorStripProps, MonitorReading, MonitorStatus, MonitorView } from './display/MonitorCell';
+export { MonitorDeck } from './display/MonitorDeck';
+export type { MonitorDeckProps, DeckChannel, DeckFact } from './display/MonitorDeck';
 export { useLiveReading } from './display/live';
 export { BarTimeline } from './display/BarTimeline';
 export type { BarTimelineProps } from './display/BarTimeline';
 
 // performance: a panel for any program, and the sources it reads
-export { PerformancePanel, PerfStrip, PerfHealthLine, FrameTimeline, FrameGraph, perfCells, PERF_LABELS } from './perf/PerformancePanel';
-export type { PerformancePanelProps, PerfStripProps, FrameGraphProps, PerfCell, PerfLabels, PerfView } from './perf/PerformancePanel';
+export { PerformancePanel, PerfStrip, PerfDeck, PerfHealthLine, FrameTimeline, FrameGraph, perfCells, PERF_LABELS } from './perf/PerformancePanel';
+export type { PerformancePanelProps, PerfStripProps, PerfDeckProps, FrameGraphProps, PerfCell, PerfLabels, PerfView } from './perf/PerformancePanel';
 export { perfHealth, PERF_HEALTH_WORDS } from './perf/health';
 export type { PerfHealth, PerfHealthWords, PerfLimiter } from './perf/health';
 export { createPerfFeed } from './perf/source';

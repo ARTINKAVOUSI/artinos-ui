@@ -1,11 +1,13 @@
 'use client';
 import {
+  Fragment,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent,
   type ReactNode,
@@ -514,8 +516,87 @@ export function MetaBlockWorkspaceView({
     workspace.setGroupMeta(targetId, {
       splitChildren: [...new Set(order)],
       splitAxis: area === 'top' || area === 'bottom' ? 'vertical' : 'horizontal',
+      // a new half starts the halves even again
+      splitSizes: null,
     });
     workspace.activateBlock(anchor ?? incoming);
+  };
+  /** Each split block's share of its group (they sum to the number of blocks); equal until resized. */
+  const splitShares = (group: MetaBlockGroup, n: number): number[] => {
+    const saved = group.meta?.splitSizes;
+    return Array.isArray(saved) && saved.length === n && saved.every((v: unknown) => typeof v === 'number' && v > 0) ? saved : Array.from({ length: n }, () => 1);
+  };
+  /** The smallest share a split block may be squeezed to, of the two being resized. */
+  const SPLIT_MIN = 0.12;
+  /** Move the line between split blocks `i` and `i + 1`: painted live, kept in the group's meta on release. */
+  const beginSplitResize = (event: PointerEvent<HTMLElement>, groupId: string, i: number, n: number) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const handle = event.currentTarget;
+    const split = handle.parentElement;
+    const group = workspace.groups.get(groupId);
+    if (!split || !group) return;
+    const hosts = [...split.querySelectorAll<HTMLElement>(':scope > .mb-panel-host')];
+    // the axis as drawn: a narrow group stacks a horizontal split
+    const row = getComputedStyle(split).flexDirection.startsWith('row');
+    const box = split.getBoundingClientRect();
+    const length = (row ? box.width : box.height) || 1;
+    const start = row ? event.clientX : event.clientY;
+    const shares = [...splitShares(group, n)];
+    const total = shares.reduce((a, b) => a + b, 0);
+    const pair = shares[i] + shares[i + 1];
+    const floor = pair * SPLIT_MIN;
+    let next = shares;
+    try {
+      handle.setPointerCapture(event.pointerId);
+    } catch {
+      /* a pointer already gone: the drag still follows moves over the handle */
+    }
+    handle.dataset.dragging = 'true';
+    const move = (e: globalThis.PointerEvent) => {
+      const delta = (((row ? e.clientX : e.clientY) - start) / length) * total;
+      const a = clamp(shares[i] + delta, floor, pair - floor);
+      next = [...shares];
+      next[i] = a;
+      next[i + 1] = pair - a;
+      hosts[i].style.flexGrow = String(next[i]);
+      hosts[i + 1].style.flexGrow = String(next[i + 1]);
+    };
+    const end = () => {
+      handle.removeEventListener('pointermove', move);
+      handle.removeEventListener('pointerup', end);
+      handle.removeEventListener('pointercancel', end);
+      delete handle.dataset.dragging;
+      if (next !== shares) workspace.setGroupMeta(groupId, { splitSizes: next });
+    };
+    handle.addEventListener('pointermove', move);
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+  };
+  /** Arrow keys move the line between split blocks by a twentieth. */
+  const nudgeSplit = (event: ReactKeyboardEvent<HTMLElement>, groupId: string, i: number, n: number) => {
+    const step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key];
+    const group = workspace.groups.get(groupId);
+    if (!step || !group) return;
+    event.preventDefault();
+    const shares = [...splitShares(group, n)];
+    const pair = shares[i] + shares[i + 1];
+    const a = clamp(shares[i] + step * pair * 0.05, pair * SPLIT_MIN, pair * (1 - SPLIT_MIN));
+    shares[i] = a;
+    shares[i + 1] = pair - a;
+    workspace.setGroupMeta(groupId, { splitSizes: shares });
+  };
+  /** Take a block out of its group's split; it stays in the group as a tab. */
+  const unsplit = (groupId: string, blockId: string) => {
+    const group = workspace.groups.get(groupId);
+    if (!group) return;
+    const order: string[] = (Array.isArray(group.meta?.splitChildren) ? group.meta.splitChildren : []).filter((id: string) => group.children.includes(id));
+    const at = order.indexOf(blockId);
+    const shares = splitShares(group, order.length).filter((_, k) => k !== at);
+    const rest = order.filter((id) => id !== blockId);
+    workspace.setGroupMeta(groupId, { splitChildren: rest.length > 1 ? rest : [], splitSizes: rest.length > 1 ? shares : null });
+    workspace.activateBlock(blockId);
   };
   /** Docked groups split in the layout; anything else (floating, maximized) splits inside itself. */
   const splitsInside = (targetId: string) => workspace.groups.get(targetId)?.posture !== 'docked';
@@ -1440,22 +1521,61 @@ export function MetaBlockWorkspaceView({
             <div className="mb-group-body">
               {splitBlocks.length > 1 ? (
                 <div className="mb-panel-split" data-axis={group.meta?.splitAxis ?? 'horizontal'}>
-                  {splitBlocks.map((block) => (
-                    <div
-                      key={block.id}
-                      className="mb-panel-host"
-                      data-block-id={block.id}
-                      data-block-role={block.role}
-                      data-detaching={
-                        interaction.kind === 'block' && interaction.blockId === block.id && interaction.sourceGroupId === group.id ? 'true' : 'false'
-                      }
-                      onContextMenu={(e) => openBlockContextMenu(e, group.id, block.id)}
-                    >
-                      <MetaBlockBody block={block} group={group} toolbar={renderBlockToolbar?.(block, group)}>
-                        {renderContent(block, group)}
-                      </MetaBlockBody>
-                    </div>
-                  ))}
+                  {splitBlocks.map((block, i) => {
+                    const shares = splitShares(group, splitBlocks.length);
+                    return (
+                      <Fragment key={block.id}>
+                        {i > 0 ? (
+                          <div
+                            className="mb-panel-split__handle"
+                            role="separator"
+                            aria-label={`Resize ${splitBlocks[i - 1].title} and ${block.title}`}
+                            tabIndex={0}
+                            onPointerDown={(e) => beginSplitResize(e, group.id, i - 1, splitBlocks.length)}
+                            onKeyDown={(e) => nudgeSplit(e, group.id, i - 1, splitBlocks.length)}
+                            onDoubleClick={() => workspace.setGroupMeta(group.id, { splitSizes: null })}
+                          />
+                        ) : null}
+                        <div
+                          className="mb-panel-host"
+                          data-block-id={block.id}
+                          data-block-role={block.role}
+                          data-active={block.id === active?.id ? 'true' : 'false'}
+                          data-detaching={
+                            interaction.kind === 'block' && interaction.blockId === block.id && interaction.sourceGroupId === group.id ? 'true' : 'false'
+                          }
+                          style={{ flexGrow: shares[i] } as CSSProperties}
+                          onPointerDown={() => group.activeChild !== block.id && workspace.activateBlock(block.id)}
+                          onContextMenu={(e) => openBlockContextMenu(e, group.id, block.id)}
+                        >
+                          {/* each half has its own head: drag it out, right-click it for its menu, or put it back as a tab */}
+                          <div className="mb-panel-split__head" {...blockProps(group.id, block.id)} title={`${block.title} · drag to move`}>
+                            <span>{block.title}</span>
+                            <button
+                              type="button"
+                              className="mb-panel-split__unsplit"
+                              aria-label={`Put ${block.title} back as a tab`}
+                              title="Back to a tab"
+                              onPointerDown={(e) => e.stopPropagation()}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                unsplit(group.id, block.id);
+                              }}
+                            >
+                              <svg viewBox="0 0 12 12" aria-hidden>
+                                <path d="M3 3l6 6M9 3l-6 6" />
+                              </svg>
+                            </button>
+                          </div>
+                          <div className="mb-panel-split__body">
+                            <MetaBlockBody block={block} group={group} toolbar={renderBlockToolbar?.(block, group)}>
+                              {renderContent(block, group)}
+                            </MetaBlockBody>
+                          </div>
+                        </div>
+                      </Fragment>
+                    );
+                  })}
                 </div>
               ) : active ? (
                 <div

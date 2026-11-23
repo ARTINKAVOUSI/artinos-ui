@@ -11,13 +11,15 @@ import { Graph } from '../display/Graph';
 import { useLiveReading } from '../display/live';
 import { MonitorCell, MonitorStrip } from '../display/MonitorCell';
 import type { MonitorReading, MonitorStatus, MonitorView } from '../display/MonitorCell';
+import { MonitorDeck } from '../display/MonitorDeck';
+import type { DeckChannel, DeckFact, MonitorDeckProps } from '../display/MonitorDeck';
 import { Inspector } from '../inspector/Inspector';
 import { createInspectorStore } from '../inspector/store';
 import type { InspectFolder, InspectItem } from '../inspector/store';
 import { Menu } from '../overlays/Menu';
 import { perfHealth } from './health';
 import type { PerfHealthWords } from './health';
-import { formatMemory, perfRows, reportedKeys } from './items';
+import { formatCount, formatMemory, perfRows, reportedKeys } from './items';
 import type { PerfRowsOptions } from './items';
 import { perfMonitor } from './monitor';
 import type { PerfSource, PerfStats } from './source';
@@ -161,6 +163,57 @@ export function PerfStrip({ monitor = perfMonitor(), cells, orientation = 'row',
       ))}
     </MonitorStrip>
   );
+}
+
+export interface PerfDeckProps extends Omit<MonitorDeckProps, 'channels' | 'clock' | 'facts'> {
+  /** Where the figures come from. Default: this browser page. */
+  monitor?: PerfSource;
+  words?: Partial<PerfLabels>;
+  /** More facts for the line, after the source's own. */
+  facts?: (stats: PerfStats) => readonly DeckFact[];
+}
+
+/** How a program is running in the least room: the frame rate bold, the CPU and GPU traces over it,
+ *  then memory and whatever the renderer reports, on one dense line. */
+export function PerfDeck({ monitor = perfMonitor(), words, facts, ...deck }: PerfDeckProps) {
+  const channels = useMemo<DeckChannel[]>(() => {
+    const w = { ...PERF_LABELS, ...words };
+    const load = (id: string, name: string, pick: (s: PerfStats) => number): DeckChannel => ({
+      id,
+      label: name,
+      format: (v) => `${v.toFixed(0)}%`,
+      read() {
+        const share = pick(monitor.get());
+        const known = Number.isFinite(share);
+        return { value: known ? (share * 100).toFixed(0) : '—', unit: known ? '%' : '', plot: share * 100, share, status: !known ? 'idle' : share < 0.7 ? 'ok' : share < 0.9 ? 'warn' : 'fault', state: share < 0.9 ? w.busy : w.saturated };
+      },
+    });
+    return [
+      {
+        id: 'fps',
+        label: w.frameRate,
+        format: (v) => v.toFixed(0),
+        read() {
+          const s = monitor.get();
+          const share = s.fps / (s.refresh || 60);
+          return { value: Number.isFinite(s.fps) ? s.fps.toFixed(0) : '—', plot: s.fps, share, status: !Number.isFinite(share) ? 'idle' : share >= 0.9 ? 'ok' : share >= 0.6 ? 'warn' : 'fault', state: share >= 0.6 ? w.uneven : w.slow };
+        },
+      },
+      load('cpu', w.cpu, (s) => s.mainLoad),
+      load('gpu', w.gpu, (s) => s.gpuLoad),
+    ];
+  }, [monitor, words]);
+  const line = useCallback(() => {
+    const s = monitor.get();
+    const own: DeckFact[] = [];
+    const add = (label: string, value: number, say: (v: number) => string) => Number.isFinite(value) && own.push({ label, value: say(value) });
+    add('Mem', s.heapUsed, formatMemory);
+    add('Calls', s.drawCalls, formatCount);
+    add('Tris', s.triangles, formatCount);
+    add('Tex', s.textures, formatCount);
+    return facts ? [...own, ...facts(s)] : own;
+  }, [monitor, words, facts]);
+  return <MonitorDeck channels={channels} clock={monitor.updated} facts={line} {...deck} />;
 }
 
 /** Every frame of a source against its budget. */

@@ -1,8 +1,9 @@
 'use client';
-import { Component, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Component, createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, ReactElement, ReactNode } from 'react';
 import { Button } from '../actions/Button';
 import { Kbd } from '../actions/Kbd';
+import { Toolbar } from '../actions/Toolbar';
 import { interfaceVisibility, useAutoHide } from '../core/autohide';
 import { CommandScopeContext, CommandsContext } from '../core/commands';
 import type { Command } from '../core/commands';
@@ -33,7 +34,7 @@ export type DockEdge = 'left' | 'right' | 'bottom';
  *  (icons alone, each named by its tooltip). */
 export interface DockTabStyle {
   placement: 'top' | 'side';
-  look: 'line' | 'pill' | 'icon';
+  look: 'line' | 'pill' | 'icon' | 'hidden';
 }
 
 export interface DockPanel {
@@ -100,8 +101,14 @@ export interface DockProps {
   toolbar?: ReactNode;
   /** A chip in the top-left corner, e.g. the app name. */
   brand?: ReactNode;
+  /** The canvas's tools (IconButtons, ToolbarSeparators): a rail of panel glass attached to the panels
+   *  on the side that faces the canvas, standing on their foot line. It follows every move and resize,
+   *  and hides with the interface. Needs a `viewport`. */
+  tools?: ReactNode;
+  /** Names the tools rail for assistive technology. Default 'Tools'. */
+  toolsLabel?: string;
   /** How each group shows its tabs, per dock edge (and 'float' for detached windows): 'top' · 'side',
-   *  or { placement, look } (look: 'line' · 'pill' · 'icon'). It seeds the group's MetaBlock meta;
+   *  or { placement, look } (look: 'line' · 'pill' · 'icon' · 'hidden'). It seeds the group's MetaBlock meta;
    *  the tab's right-click menu changes it at run time, and the layout keeps it. */
   tabs?: Partial<Record<DockEdge | 'center' | 'float', 'top' | 'side' | Partial<DockTabStyle>>>;
   /** Key that hides / shows the interface (the viewport stays): 'h', 'tab', 'mod+.'… Off by default.
@@ -224,6 +231,8 @@ export function Dock({
   palette = true,
   toolbar,
   brand,
+  tools,
+  toolsLabel = 'Tools',
   tabs: tabPlacement,
   hideKey = null,
   idleHide = 0,
@@ -248,7 +257,7 @@ export function Dock({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [shape, storageKey, version],
   );
-  useWorkspaceRevision(workspace);
+  const revision = useWorkspaceRevision(workspace);
   // panels added while it runs (addPanel): floating, outside the saved arrangement's panel set
   const [extras, setExtras] = useState<DockPanel[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -455,6 +464,20 @@ export function Dock({
 
   /** The edge a docked group belongs to, from its id (dock.left · dock.right · dock.bottom · dock.center). */
   const edgeOf = (groupId: string) => (groupId.startsWith('dock.') ? (groupId.slice(5) as DockEdge | 'center') : null);
+  /** Where a group's rail stands: a dock's on its own edge; a group split off beside a dock on that
+   *  dock's edge, so one column keeps its rails on one side; a floating window's on its left. */
+  const railEdge = (group: MetaBlockGroup): DockEdge | 'center' | 'float' => {
+    if (group.role === 'dock') return edgeOf(group.id) ?? 'center';
+    if (group.posture === 'floating') return 'float';
+    let at: string | null | undefined = group.id;
+    for (let hop = 0; at && hop < 8; hop++) {
+      const edge = edgeOf(at);
+      if (edge) return edge;
+      const from: string = at;
+      at = workspace.layout.find((n) => n.groupId === from)?.targetGroupId;
+    }
+    return 'float';
+  };
   /** A group's tab style: its MetaBlock meta first (set from the tab menu and kept with the layout),
    *  then the Dock's `tabs` for its edge (or 'float'), then a strip of lines. */
   const styleOf = (group: MetaBlockGroup): DockTabStyle => {
@@ -551,13 +574,17 @@ export function Dock({
   const renderGroupChrome = (c: GroupChromeContext) => {
     const style = styleOf(c.group);
     const docked = c.group.role === 'dock';
+    if (style.look === 'hidden')
+      // no tabs at all: the content takes the room; a grip along the top edge, seen only under the
+      // pointer, still drags the group and opens its menu (where Look brings the tabs back)
+      return <header className="ar-dock__strip ar-dock__strip--hidden" title={c.activeBlock ? `${c.activeBlock.title} · drag to move, right-click for tabs` : undefined} {...c.dragHandleProps} />;
     if (style.placement === 'side')
       // a rail: the tabs down the side, search or the window controls at its foot; the panel's bar stays in the panel
       return (
-        <header className="ar-dock__strip ar-dock__strip--side" data-edge={docked ? edgeOf(c.group.id) ?? 'center' : 'float'} data-look={style.look} {...c.dragHandleProps}>
+        <header className="ar-dock__strip ar-dock__strip--side" data-edge={railEdge(c.group)} data-look={style.look} {...c.dragHandleProps}>
           {tabStrip(c, style)}
           <div className="ar-dock__rail-foot" data-no-drag>
-            {docked ? search(true) : windowActions(c)}
+            {docked ? search(true) : railEdge(c.group) === 'float' ? windowActions(c) : null}
           </div>
         </header>
       );
@@ -596,6 +623,65 @@ export function Dock({
     else workspace.undo();
   };
 
+  // the tools rail stands against the panels on the side facing the canvas: the left side of a right
+  // column, the right side of a left one, else on top of the bottom deck's first column
+  const toolsRef = useRef<HTMLDivElement>(null);
+  const [toolsAt, setToolsAt] = useState<{ side: 'left' | 'right' | 'top' | 'corner'; style: CSSProperties } | null>(null);
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!tools || !viewport || !root) return;
+    const place = () => {
+      const area = root.getBoundingClientRect();
+      const rectOf = (edge: DockEdge) => {
+        const r = root.querySelector<HTMLElement>(`[data-mb-group-id="dock.${edge}"]`)?.getBoundingClientRect();
+        if (!r?.width) return null;
+        // a column split into stacked groups reaches from its top group's top to its bottom group's foot
+        const column = [...root.querySelectorAll<HTMLElement>('.mb-group:not([data-role="viewport"])')]
+          .map((g) => g.getBoundingClientRect())
+          .filter((g) => (edge === 'bottom' ? Math.abs(g.top - r.top) < 2 : Math.abs(g.left - r.left) < 2 && Math.abs(g.width - r.width) < 2));
+        return {
+          left: Math.min(...column.map((g) => g.left)),
+          right: Math.max(...column.map((g) => g.right)),
+          top: Math.min(...column.map((g) => g.top)),
+          bottom: Math.max(...column.map((g) => g.bottom)),
+        };
+      };
+      const gap = viewProps?.gap ?? 8;
+      const right = rectOf('right');
+      const left = rectOf('left');
+      const bottom = rectOf('bottom');
+      const next = right
+        ? { side: 'left' as const, style: { right: area.right - right.left + gap, bottom: area.bottom - (bottom && bottom.left < right.left ? bottom.top - gap : right.bottom) } }
+        : left
+          ? { side: 'right' as const, style: { left: left.right - area.left + gap, bottom: area.bottom - left.bottom } }
+          : bottom
+            ? { side: 'top' as const, style: { left: bottom.left - area.left, bottom: area.bottom - bottom.top + gap } }
+            : { side: 'corner' as const, style: { left: viewProps?.padding ?? 10, top: viewProps?.padding ?? 10 } };
+      setToolsAt((was) => (was && was.side === next.side && JSON.stringify(was.style) === JSON.stringify(next.style) ? was : next));
+    };
+    // the panels settle with a short glide after a change or a resize: follow them to rest
+    let frame = 0;
+    const settle = () => {
+      cancelAnimationFrame(frame);
+      let frames = 0;
+      place();
+      frame = requestAnimationFrame(function follow() {
+        place();
+        if (++frames < 30) frame = requestAnimationFrame(follow);
+      });
+    };
+    settle();
+    // the workspace and every group: a group taking its size (on load, or as a split is dragged) re-places it
+    const sized = new ResizeObserver(settle);
+    sized.observe(root);
+    root.querySelectorAll('.mb-group').forEach((g) => sized.observe(g));
+    return () => {
+      cancelAnimationFrame(frame);
+      sized.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [revision, tools != null, viewport != null]);
+
   return (
     <div ref={rootRef} className={cx('ar-dock', className)} style={style} onKeyDown={onKeyDown} data-ui-hidden={ui.hiddenBy ?? undefined} data-ui-revealing={revealing || undefined}>
       <MetaBlockWorkspaceView
@@ -620,6 +706,13 @@ export function Dock({
       />
       <PopoutWindows workspace={workspace} renderBlock={renderBlock} renderFooter={renderGroupFooter} anchor={rootRef} />
       {brand ? <div className="ar-dock__brand">{brand}</div> : null}
+      {tools && viewport ? (
+        <div ref={toolsRef} className="ar-dock__tools" data-side={toolsAt?.side} style={toolsAt?.style ?? { visibility: 'hidden' }} inert={ui.visible ? undefined : true}>
+          <Toolbar label={toolsLabel} orientation={toolsAt?.side === 'top' ? 'horizontal' : 'vertical'}>
+            {tools}
+          </Toolbar>
+        </div>
+      ) : null}
       {/* the way back: a small mark at the foot (a frame, its panes waiting at the sides) and the key.
           Always mounted so it can arrive and leave. */}
       <div className="ar-dock__reveal" data-shown={ui.hiddenBy === 'manual' || undefined} inert={ui.hiddenBy !== 'manual' || undefined}>

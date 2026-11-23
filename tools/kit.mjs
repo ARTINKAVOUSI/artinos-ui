@@ -40,6 +40,7 @@ export const COMPONENTS = [
   { group: 'Display', id: 'Spectrum', label: 'Spectrum', file: 'display/Spectrum.tsx', note: 'a bank of level bars for frequency and audio' },
   { group: 'Display', id: 'Graph', label: 'Graph · GraphTrace', file: 'display/Graph.tsx', note: 'live traces with a budget line and stacked series' },
   { group: 'Display', id: 'MonitorCell', label: 'MonitorCell · MonitorStrip', file: 'display/MonitorCell.tsx', note: 'one value in one control height, with several views: events, history, level, spread, parts' },
+  { group: 'Display', id: 'MonitorDeck', label: 'MonitorDeck', file: 'display/MonitorDeck.tsx', note: 'a few live values in the least room: one bold figure over every trace, the rest on one thin line at its foot' },
   { group: 'Display', id: 'BarTimeline', label: 'BarTimeline', file: 'display/BarTimeline.tsx', note: 'every event as a bar against a limit' },
   { group: 'Display', id: 'Performance', label: 'PerformancePanel · PerfStrip · createPerfFeed', file: 'perf/PerformancePanel.tsx', note: 'frame rate, CPU, GPU and memory in a toolbar or a panel, from the browser or your own figures' },
   { group: 'Display', id: 'Sparkline', label: 'Sparkline', file: 'display/Sparkline.tsx', note: 'inline trend line' },
