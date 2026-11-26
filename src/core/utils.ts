@@ -252,11 +252,11 @@ export interface ThemeMeta {
 }
 
 export const THEME_META: Record<ThemeName, ThemeMeta> = {
-  'tactile-porcelain': { label: 'Porcelain', family: 'materials', kind: 'solid', description: 'Warm ceramic, carved wells and low-relief satin inserts.', swatch: ['#e4e0d8', '#f3f0e9', '#287b69'] },
-  'tactile-graphite': { label: 'Graphite', family: 'materials', kind: 'solid', description: 'Soft-touch graphite, deep quiet wells and restrained mint seams.', swatch: ['#25292b', '#42484b', '#83c8b3'] },
-  'tactile-alloy': { label: 'Alloy', family: 'materials', kind: 'solid', description: 'Precision satin metal, crisp micro-bevels and defined contact shadows.', swatch: ['#bec4c8', '#dce0e3', '#286e86'] },
-  'tactile-basalt': { label: 'Basalt', family: 'materials', kind: 'solid', description: 'Near-black mineral surfaces, restrained chamfers and champagne seams.', swatch: ['#171817', '#333632', '#c6b58d'] },
-  'tactile-opal': { label: 'Opal', family: 'materials', kind: 'solid', description: 'Milky polymer-inspired surfaces, diffused relief and soft edge light.', swatch: ['#ccd9d7', '#e4efec', '#327f70'] },
+  'tactile-porcelain': { label: 'Porcelain', family: 'materials', kind: 'solid', description: 'Warm porcelain, rounded low-relief edges and soft directional contact shadows.', swatch: ['#e1ddd4', '#f4f0e7', '#287b69'] },
+  'tactile-graphite': { label: 'Graphite', family: 'materials', kind: 'solid', description: 'Matte graphite, compact rounded inserts, deeper sockets and mint seams.', swatch: ['#222628', '#3d4447', '#83c8b3'] },
+  'tactile-alloy': { label: 'Alloy', family: 'materials', kind: 'solid', description: 'Satin alloy, square-shouldered micro-bevels and precise machined seams.', swatch: ['#b9c0c5', '#e4e8ea', '#286e86'] },
+  'tactile-basalt': { label: 'Basalt', family: 'materials', kind: 'solid', description: 'Near-black mineral chassis, shallow chamfered inserts and champagne accents.', swatch: ['#171918', '#30342f', '#c6b58d'] },
+  'tactile-opal': { label: 'Opal', family: 'materials', kind: 'solid', description: 'Opalescent polymer-inspired relief, rounded capsules and diffuse edge highlights.', swatch: ['#cbdad7', '#f2f9f6', '#327f70'] },
   'haze-carve': { label: 'Haze Carve', family: 'scene', kind: 'glass', description: 'Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
   nimbus: { label: 'Nimbus', family: 'scene', kind: 'glass', description: 'The default. Haze Carve softened: deep frost, gently carved wells, a bright value gradient and a little more room. Calm over any scene.', swatch: ['#6a6a6a', '#9a9a9a', '#4fd1ba'] },
   'haze-day': { label: 'Haze Day', family: 'scene', kind: 'glass', description: 'The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow.', swatch: ['#e4e4e4', '#ffffff', '#0a8a78'] },
