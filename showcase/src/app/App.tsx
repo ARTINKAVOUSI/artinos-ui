@@ -17,6 +17,7 @@ import { ThemeStudio } from '../studio/ThemeStudio';
 import { InstrumentStage } from './live';
 import { ThemesPage } from '../themes/ThemesPage';
 import { LayoutsPage } from '../layouts/LayoutsPage';
+import { ConceptsPage } from '../concepts/ConceptsPage';
 import { loadThemes, saveThemes } from '../studio/store';
 import type { CustomTheme } from '../studio/store';
 
@@ -26,8 +27,8 @@ export function App() {
   const pick = <T extends string>(k: string, list: readonly T[], d: T) => (list.includes(q.get(k) as T) ? (q.get(k) as T) : d);
   const [theme, setTheme] = useState<string>(pick('theme', THEMES, 'nimbus'));
   const [customs, setCustoms] = useState<CustomTheme[]>(() => loadThemes());
-  type View = 'showcase' | 'studio' | 'themes' | 'layouts';
-  const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : location.hash === '#layouts' ? 'layouts' : 'showcase');
+  type View = 'showcase' | 'studio' | 'themes' | 'layouts' | 'concepts';
+  const viewOf = (): View => (location.hash === '#studio' ? 'studio' : location.hash === '#themes' ? 'themes' : location.hash === '#layouts' ? 'layouts' : location.hash === '#concepts' ? 'concepts' : 'showcase');
   const [view, setView] = useState<View>(viewOf);
   useEffect(() => {
     const h = () => {
@@ -102,6 +103,8 @@ export function App() {
       />
     );
 
+  if (view === 'concepts') return <ConceptsPage density={density} onDensity={setDensity} type={type} onExit={() => go('showcase')} />;
+
   if (view === 'layouts') return <LayoutsPage theme={baseTheme} accent={accent} type={type} bg={bg} density={density} onDensity={setDensity} onExit={() => go('showcase')} />;
 
   return (
@@ -136,6 +139,7 @@ export function App() {
           <Select options={BACKDROP_OPTIONS} value={bg} onChange={(v) => setBg(v as Backdrop)} appearance="well" label="Backdrop" />
         </label>
         <span className="sc-bar__actions">
+          <Button size="sm" onClick={() => go('concepts')}>Concepts</Button>
           <Button size="sm" onClick={() => go('layouts')}>
             Layouts
           </Button>
