@@ -5,7 +5,7 @@
    ThemeTile and galleryThemes also serve the inline gallery on the main page. */
 import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, THEMES, THEME_META, DENSITIES, DENSITY_META } from '../../../src';
+import { ACCENTS, ACCENT_META, ArtinosTheme, Badge, Button, IconButton, ItemRow, Knob, Meter, Panel, Section, Segmented, Select, Slider, Sparkline, Stat, Switch, THEMES, THEME_META, DENSITIES, DENSITY_META } from '../../../src';
 import type { Accent, Density, ThemeName } from '../../../src';
 import { IC, useLiveSeries } from '../chapters/demos';
 import { BACKDROPS, BACKDROP_OPTIONS, Swatch } from '../shared';
@@ -120,6 +120,52 @@ function Stage({ t, onUse }: { t: ThemeName; onUse: () => void }) {
   );
 }
 
+/** One instrument, five materials. State is shared so only the finish changes. */
+function TactileComparison({ density, type, accent }: { density: Density; type: string; accent?: Accent }) {
+  const [level, setLevel] = useState(0.64);
+  const [roughness, setRoughness] = useState(0.38);
+  const [enabled, setEnabled] = useState(true);
+  const [quality, setQuality] = useState('High');
+  const studies = THEMES.filter((t) => t.startsWith('tactile-'));
+  return (
+    <section className="sc-tactile" aria-labelledby="tactile-title">
+      <div className="sc-tactile__heading">
+        <div>
+          <h2 id="tactile-title">Tactile Modernism</h2>
+          <p>One instrument, five material studies. Change any control to compare its response in every finish.</p>
+        </div>
+        <Button size="sm" onClick={() => { setLevel(0.64); setRoughness(0.38); setEnabled(true); setQuality('High'); }}>Reset all</Button>
+      </div>
+      <div className="sc-tactile__grid">
+        {studies.map((t) => (
+          <ArtinosTheme key={t} theme={t} density={density} type={type} accent={accent} ground className="sc-tactile__sample">
+            <Panel title={THEME_META[t].label} subtitle="Material study">
+              <Section title="Surface">
+                <div className="sc-tactile__dial">
+                  <Knob label="Intensity" value={level} onChange={setLevel} size={72} defaultValue={0.64} />
+                  <div className="sc-tactile__readings">
+                    <Stat label="Intensity" value={level * 100} decimals={1} unit="%" />
+                    <Meter label="Signal" value={enabled ? level : 0} />
+                  </div>
+                </div>
+                <Slider label="Intensity" value={level} onChange={setLevel} />
+                <Slider label="Roughness" value={roughness} onChange={setRoughness} />
+                <Switch label="Enabled" value={enabled} onChange={setEnabled} />
+                <Segmented label="Quality" options={['Low', 'Med', 'High']} value={quality} onChange={setQuality} />
+                <div className="sc-tactile__actions">
+                  <Button onClick={() => setEnabled(false)}>Standby</Button>
+                  <Button variant="primary" onClick={() => setEnabled(true)}>Activate</Button>
+                </div>
+              </Section>
+            </Panel>
+            <p className="sc-tactile__description">{THEME_META[t].description}</p>
+          </ArtinosTheme>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function ThemesPage({
   initial,
   accent,
@@ -167,6 +213,7 @@ export function ThemesPage({
       </div>
 
       <main className="sc-themes__main">
+        <TactileComparison density={density} type={type} accent={acc} />
         <div className="sc-tiles">
           {themes.map((t) => (
             <ThemeTile key={t} t={t} accent={acc} active={t === sel} onPick={() => setSel(t)} />
