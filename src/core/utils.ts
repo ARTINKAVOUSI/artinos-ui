@@ -233,6 +233,17 @@ export function pxToken(el: Element | null, name: string, fallback: number) {
    every control. Pick one theme; nothing else is required. Material and density
    are optional overrides for special cases. */
 
+/** Structural design language, orthogonal to the theme, density and type collection. */
+export const DESIGNS = ['classic', 'monolith', 'precision-rack', 'floating-lab', 'atelier-blocks'] as const;
+export type DesignName = (typeof DESIGNS)[number];
+export const DESIGN_META: Record<DesignName, { label: string; description: string }> = {
+  classic: { label: 'Classic', description: 'The original continuous instrument row.' },
+  monolith: { label: 'Monolith', description: 'One sculpted slab; recessed trays and broad, continuous controls.' },
+  'precision-rack': { label: 'Precision Rack', description: 'Side-labelled instrument bays, rail faders and mechanical inserts.' },
+  'floating-lab': { label: 'Floating Lab', description: 'Independent floating modules with optical tracks and lightweight controls.' },
+  'atelier-blocks': { label: 'Atelier Blocks', description: 'Editorial card grid, stacked parameter labels and expressive control tiles.' },
+};
+
 export const THEMES = [
   'nimbus', 'pro-gray', 'studio-light', 'frost-deep', 'onyx', 'smoke', 'haze-carve', 'haze-day', 'ice',
   'tactile-porcelain', 'tactile-graphite', 'tactile-alloy', 'tactile-basalt', 'tactile-opal',
