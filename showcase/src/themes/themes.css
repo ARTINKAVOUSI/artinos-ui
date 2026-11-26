@@ -261,3 +261,16 @@
   flex: none;
   width: 236px;
 }
+
+/* Tactile comparison uses the package's real Panel and controls. Only its gallery layout lives here. */
+.sc-tactile { margin-block: 0 32px; }
+.sc-tactile__heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.sc-tactile__heading h2 { margin: 0 0 4px; font-size: 1.25rem; color: var(--ar-text-hi); }
+.sc-tactile__heading p { margin: 0; color: var(--ar-text-mid); font-size: .875rem; }
+.sc-tactile__grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 12px; align-items: stretch; }
+.sc-tactile__sample { min-width: 0; padding: 12px; border-radius: var(--ar-radius-panel); }
+.sc-tactile__dial { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+.sc-tactile__readings { flex: 1; min-width: 0; }
+.sc-tactile__actions { display: flex; gap: 6px; margin-top: 8px; }
+.sc-tactile__actions > * { flex: 1; min-width: 0; }
+.sc-tactile__description { margin: 10px 2px 0; color: var(--ar-text-mid); font-size: .75rem; line-height: 1.45; }
