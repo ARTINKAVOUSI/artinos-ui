@@ -16,7 +16,7 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 
 ## Tactile Modernism — experimental collection
 
-Five additional native themes: `tactile-porcelain`, `tactile-graphite`, `tactile-alloy`, `tactile-basalt`, `tactile-opal`. They restyle the shared panel, well, insert, sheet and seam without changing control behavior or the Nimbus default. See [theming](docs/theming.md) and use the existing gallery theme picker (`?theme=tactile-graphite&backdrop=none`). The built showcase HTML must be regenerated locally after this source change.
+Five additional native themes: `tactile-porcelain`, `tactile-graphite`, `tactile-alloy`, `tactile-basalt`, `tactile-opal`. They restyle the shared panel, well, insert, sheet and seam without changing control behavior or the Nimbus default. See [theming](docs/theming.md) and use the existing gallery theme picker (`?theme=tactile-graphite&backdrop=none`). Open the Themes page (`#themes`) for the Tactile Modernism comparison: the five native instruments share intensity, roughness, quality and enabled state. The built showcase HTML must be regenerated locally after this source change.
 
 ## Components
 
