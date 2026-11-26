@@ -1,6 +1,6 @@
 # ARTINOS UI
 
-A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 59 kit components on a token-based design system with **9 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
+A precision-instrument control system for React: control panels, inspectors, studio tools and the pages around them. Each parameter is one compact surface: the capsule is the control, the seam is the handle, the readout is where you type. There are 59 kit components on a token-based design system with **14 themes** (glass, frost and solid) and **twelve type systems**. The default look is the `nimbus` theme with the `fine` type system.
 
 **copy → paste → import → use.** Only `react` and `react-dom` (18.3+). No npm package, provider, build plugin or Tailwind. `three` is needed only by the optional `TransformGizmo` and `graph/gpu`.
 
@@ -13,6 +13,10 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 **Three levels build every screen:** parts in a **section**, sections in a **panel**. A panel is one thing wherever it sits: a `Panel` on a page, or a panel in a `Dock` around a canvas, where it is a MetaBlock with capabilities (float, dock, tab, split, maximize, close). A section is the one way to group, with a hairline through its own title row. Everything else (rows, controls, readouts, lists, text) is a part inside a section.
 
 **Five materials make every part.** **Panel glass** holds things (Panel, Dock panes, a floating Toolbar). The **frosted sheet** floats (lists, menus, the palette, dialogs, toasts, tooltips). The **well** is where a value is edited (fields, troughs, key caps, canvases). The **insert** is the polished part you press or drag (buttons, knob caps, slider fills). The **seam or LED** marks what is live. Text is one voice: the sans for labels, buttons, prose and every number (tabular digits), a mono only for code.
+
+## Tactile Modernism — experimental collection
+
+Five additional native themes: `tactile-porcelain`, `tactile-graphite`, `tactile-alloy`, `tactile-basalt`, `tactile-opal`. They restyle the shared panel, well, insert, sheet and seam without changing control behavior or the Nimbus default. See [theming](docs/theming.md) and use the existing gallery theme picker (`?theme=tactile-graphite&backdrop=none`). The built showcase HTML must be regenerated locally after this source change.
 
 ## Components
 
@@ -106,7 +110,7 @@ Read them in this order. Every kit carries all four in its own `docs/`, so a pro
 1. [`docs/design.md`](docs/design.md): the look and the feel, the three layout levels, the type systems and scale, what never to do, and the check to run on a screenshot. Read it first.
 2. [`docs/catalogue.md`](docs/catalogue.md): every kind of every component (the slider faces, the control shapes, list looks, row states) and which to pick for a parameter.
 3. [`docs/components.md`](docs/components.md): every prop, default and example, requirements and performance.
-4. [`docs/theming.md`](docs/theming.md): the 9 themes, solid vs glass, scenes, density, token overrides, custom themes and every key token.
+4. [`docs/theming.md`](docs/theming.md): the 14 themes, solid vs glass, scenes, density, token overrides, custom themes and every key token.
 
 ## Showcase
 
