@@ -634,3 +634,7 @@ Neighbouring roles differ in at least two ways at once — size and weight, or s
 - Labels in a group share one column (`labelWidth` on the Panel or Section).
 - Sentence case everywhere, section names included; no capitals except tab names (hairline capitals, set by the package); no full stops on labels.
 - Look at it: take a screenshot and check the rules above before calling it done.
+
+## Structural design languages (experimental)
+
+Choose `ArtinosTheme design` independently of the theme. Monolith uses continuous recessed section trays and soft inserts. Precision Rack uses module bays and lower rail faders. Floating Lab uses independent panes with optical lanes. Atelier Blocks uses responsive section cards and stacked property rows. These are alternative presentations of existing components; semantic variants such as stepped, gradient, ruler and bipolar remain available. See `theming.md` and the Concepts gallery for usage.
