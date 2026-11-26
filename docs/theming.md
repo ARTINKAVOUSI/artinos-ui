@@ -34,14 +34,14 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 | `haze-carve` | Haze Carve | glass | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
 | `haze-day` | Haze Day | glass | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
 | `ice` | Ice | glass | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
-| `tactile-porcelain` | Porcelain | solid | Warm ceramic, carved wells and low-relief satin inserts. |
-| `tactile-graphite` | Graphite | solid | Soft-touch graphite, deep quiet wells and restrained mint seams. |
-| `tactile-alloy` | Alloy | solid | Precision satin metal, crisp micro-bevels and defined contact shadows. |
-| `tactile-basalt` | Basalt | solid | Near-black mineral surfaces, restrained chamfers and champagne seams. |
-| `tactile-opal` | Opal | solid | Milky polymer-inspired surfaces, diffused relief and soft edge light. |
+| `tactile-porcelain` | Porcelain | solid | Warm porcelain, rounded low-relief edges and soft directional contact shadows. |
+| `tactile-graphite` | Graphite | solid | Matte graphite, compact rounded inserts, deeper sockets and mint seams. |
+| `tactile-alloy` | Alloy | solid | Satin alloy, square-shouldered micro-bevels and precise machined seams. |
+| `tactile-basalt` | Basalt | solid | Near-black mineral chassis, shallow chamfered inserts and champagne accents. |
+| `tactile-opal` | Opal | solid | Opalescent polymer-inspired relief, rounded capsules and diffuse edge highlights. |
 <!-- themes:end -->
 
-**Tactile Modernism (experimental):** five solid finishes explore the middle ground between soft UI and physical instruments. Each changes the panel, sheet, well, insert and seam together. Opal suggests translucent polymer through diffuse highlights; it is not a refractive glass renderer. All use the same components, type and density. Compare them against Nimbus and Studio Light in the showcase. Use `ground` for a complete solid workspace.
+**Tactile Modernism (experimental):** five solid finishes explore the middle ground between soft UI and physical instruments. Each changes the panel, sheet, well, insert and seam together. Opal suggests translucent polymer through diffuse highlights; it is not a refractive glass renderer. All use the same components, type and density. The second study adds distinct well and insert radii, inset depth, panel edge profiles, directional light and material-specific shadow stacks. Compare them against Nimbus and Studio Light in the showcase. Use `ground` for a complete solid workspace.
 
 **Choosing:**
 - **Dark app:** `pro-gray` (solid): the neutral grey of professional 3D and grading software.
