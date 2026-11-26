@@ -52,6 +52,12 @@ export interface InspectorProps {
   search?: boolean;
   /** Extra tools at the start of the bar. */
   toolbar?: ReactNode;
+  /** Optional instrument summary above the folders, with the same store as the rows. */
+  summary?: ReactNode;
+  /** Optional navigation or context rail. Structural designs arrange it differently. */
+  rail?: ReactNode;
+  /** Optional output/action strip after the parameters. */
+  footer?: ReactNode;
   /** The label column, the same at every depth so the controls stay on one line. Inherits the scope's
    *  (the density family's --ar-field-label-w) so every panel in a tool shares one. */
   labelWidth?: number | string;
@@ -393,7 +399,7 @@ export function InspectorFolder({ id, ...view }: FolderViewProps & { id: string 
   return f ? <>{folder(f, true)}</> : null;
 }
 
-export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, labelWidth, storageKey, midi, advanced, hide, keyframes, className, style }: InspectorProps) {
+export function Inspector({ items, folders = [], store, only, presets = {}, bar = true, search = true, toolbar, summary, rail, footer, labelWidth, storageKey, midi, advanced, hide, keyframes, className, style }: InspectorProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const { st, tree, rowsOf, row, folder } = useFolderView({ items, folders, store, midi, storageKey, advanced, hide, keyframes, query });
@@ -445,7 +451,7 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
   };
 
   return (
-    <div className={cx('ar-inspector', className)} onKeyDown={onKeyDown} style={{ ...(labelWidth === undefined ? null : { '--ar-field-label-w': typeof labelWidth === 'number' ? `${labelWidth}px` : labelWidth }), ...style } as CSSProperties}>
+    <div className={cx('ar-inspector', className)} data-rail={rail != null ? '' : undefined} data-summary={summary != null ? '' : undefined} onKeyDown={onKeyDown} style={{ ...(labelWidth === undefined ? null : { '--ar-field-label-w': typeof labelWidth === 'number' ? `${labelWidth}px` : labelWidth }), ...style } as CSSProperties}>
       {bar ? (
         <div className="ar-inspector__bar">
           {toolbar}
@@ -476,7 +482,10 @@ export function Inspector({ items, folders = [], store, only, presets = {}, bar 
           </Button>
         </div>
       ) : null}
+      {rail != null ? <aside className="ar-inspector__rail">{rail}</aside> : null}
+      {summary != null ? <div className="ar-inspector__summary">{summary}</div> : null}
       <div className="ar-inspector__body">{body.length ? body : <p className="ar-inspector__empty">No parameter matches “{query}”.</p>}</div>
+      {footer != null ? <div className="ar-inspector__footer">{footer}</div> : null}
     </div>
   );
 }
