@@ -38,8 +38,8 @@
   .ar-inspector .ar-prop__main { min-height: calc(var(--ar-h) + 5px); }
   .ar-inspector .ar-prop__label { flex-basis: min(32%, var(--ar-field-label-w)); }
   .ar-inspector .ar-section__body { gap: 6px; }
-  .ar-slider[data-variant='material'] .ar-slider__track { border-radius: 12px; }
-  .ar-slider[data-variant='material'] .ar-slider__fill { border-radius: 9px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track { border-radius: 12px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__fill { border-radius: 9px; }
   .ar-knob__dial::before, .ar-knob__dial::after { inset: 14%; }
   .ar-knob__cap { inset: 23%; }
   .ar-knob__track, .ar-knob__value { stroke-width: 2.7; }
@@ -61,19 +61,19 @@
   .ar-inspector__body > .ar-section > .ar-section__head .ar-section__trigger { flex-wrap: wrap; align-content: start; }
   .ar-inspector__body > .ar-section > .ar-section__head .ar-section__title { white-space: normal; overflow-wrap: anywhere; }
   .ar-inspector__body > .ar-section > .ar-section__head .ar-section__rule { display: none; }
-  .ar-inspector__body > .ar-section > .ar-section__fold { padding: 10px 17px; }
+  .ar-inspector__body > .ar-section[data-open] > .ar-section__fold { padding: 10px 17px; }
   .ar-inspector .ar-prop__label { flex-basis: min(30%,var(--ar-field-label-w)); }
   /* A full-size interactive channel with its visual rail in the lower half. The original
      content/readout and editor remain in the upper half; no second slider implementation. */
-  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h), 38px); --ar-seam-offset: 0px; border-radius: 4px; background: var(--ar-bg-well); }
-  .ar-slider[data-variant='material'] .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; left: 5px; right: 5px; bottom: 6px; height: 5px; background: var(--ar-trough); box-shadow: var(--ar-well); border-radius: 2px; }
-  .ar-slider[data-variant='material'] .ar-slider__fill { top: auto; bottom: 7px; height: 3px; border-radius: 1px; background: var(--ar-signal); box-shadow: none; }
-  .ar-slider[data-variant='material'] .ar-slider__rim { display: none; }
-  .ar-slider[data-variant='material'] .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
-  .ar-slider[data-variant='material'] .ar-slider__content--over { display: none; }
-  .ar-slider[data-variant='material'] .ar-slider__seam { top: auto; bottom: 3px; width: 9px; height: 12px; transform: translateX(-50%); border-radius: 2px; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; }
-  .ar-slider[data-variant='material'] .ar-slider__seam::after { content: ''; position: absolute; top: 2px; bottom: 2px; left: 4px; width: 1px; background: var(--ar-seam-active); }
-  .ar-slider[data-variant='material'][data-off] .ar-slider__seam { opacity: .4; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track { --_h: max(var(--ar-h), 38px); --ar-seam-offset: 0px; border-radius: 4px; background: var(--ar-bg-well); }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; left: 5px; right: 5px; bottom: 6px; height: 5px; background: var(--ar-trough); box-shadow: var(--ar-well); border-radius: 2px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__fill { top: auto; bottom: 7px; height: 3px; border-radius: 1px; background: var(--ar-signal); box-shadow: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__rim { display: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__content--over { display: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__seam { top: auto; bottom: 3px; width: 9px; height: 12px; transform: translateX(-50%); border-radius: 2px; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__seam::after { content: ''; position: absolute; top: 2px; bottom: 2px; left: 4px; width: 1px; background: var(--ar-seam-active); }
+  .ar-slider:is([data-variant='material'],[data-variant='range'])[data-off] .ar-slider__seam { opacity: .4; }
   .ar-knob__cap { inset: 22%; background: var(--ar-insert-sheen),var(--ar-insert); box-shadow: var(--ar-insert-shadow),0 0 0 2px var(--ar-trough),0 0 0 3px var(--ar-line-strong); }
   .ar-knob__track, .ar-knob__value { stroke-width: 1.4; stroke-linecap: butt; }
   .ar-switch--compact { --ar-radius: 5px; --ar-insert-radius: 2px; }
@@ -94,13 +94,13 @@
   .ar-inspector__body > .ar-section { padding: 12px 17px; border-radius: 15px; background: var(--ar-panel-sheen),var(--ar-panel-tint); backdrop-filter: var(--ar-panel-blur); box-shadow: var(--ar-panel-shadow); }
   .ar-inspector__body > .ar-section:first-child { grid-column: 1/-1; }
   .ar-inspector__footer { grid-column: 1/-1; margin: 0; border: 0; padding: 10px; border-radius: 12px; background: var(--ar-panel-tint); box-shadow: var(--ar-panel-shadow); backdrop-filter: var(--ar-panel-blur); }
-  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h),36px); --ar-seam-offset: 0px; background: color-mix(in srgb,var(--ar-bg-raised) 58%,transparent); box-shadow: inset 0 0 0 1px var(--ar-line); }
-  .ar-slider[data-variant='material'] .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; bottom: 5px; left: 5px; right: 5px; height: 4px; border-radius: 9px; background: var(--ar-trough); }
-  .ar-slider[data-variant='material'] .ar-slider__fill { top: auto; bottom: 5px; height: 4px; border-radius: 9px; background: var(--ar-signal); box-shadow: none; }
-  .ar-slider[data-variant='material'] .ar-slider__rim { display: none; }
-  .ar-slider[data-variant='material'] .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
-  .ar-slider[data-variant='material'] .ar-slider__content--over { display: none; }
-  .ar-slider[data-variant='material'] .ar-slider__seam { top: auto; bottom: 3px; height: 8px; width: 8px; border-radius: 50%; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; transform: translateX(-50%); }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track { --_h: max(var(--ar-h),36px); --ar-seam-offset: 0px; background: color-mix(in srgb,var(--ar-bg-raised) 58%,transparent); box-shadow: inset 0 0 0 1px var(--ar-line); }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; bottom: 5px; left: 5px; right: 5px; height: 4px; border-radius: 9px; background: var(--ar-trough); }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__fill { top: auto; bottom: 5px; height: 4px; border-radius: 9px; background: var(--ar-signal); box-shadow: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__rim { display: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__content--over { display: none; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__seam { top: auto; bottom: 3px; height: 8px; width: 8px; border-radius: 50%; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; transform: translateX(-50%); }
   .ar-knob__dial::before,.ar-knob__dial::after { inset: 19%; }
   .ar-knob__cap { inset: 26%; }
   .ar-knob__track,.ar-knob__value { stroke-width: 1.5; }
@@ -123,8 +123,8 @@
   .ar-inspector .ar-prop__control > .ar-switch--compact { justify-self: start; }
   .ar-inspector .ar-prop__actions { top: 9px; }
   .ar-inspector__footer { grid-column: 1/-1; padding: 9px; margin: 0; border: 0; border-radius: 8px; background: var(--ar-bg-surface); box-shadow: var(--ar-panel-shadow); }
-  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h),34px); border-radius: 6px; }
-  .ar-slider[data-variant='material'] .ar-slider__fill { top: 5px; bottom: 5px; border-radius: 4px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__track { --_h: max(var(--ar-h),34px); border-radius: 6px; }
+  .ar-slider:is([data-variant='material'],[data-variant='range']) .ar-slider__fill { top: 5px; bottom: 5px; border-radius: 4px; }
   .ar-knob__dial::before,.ar-knob__dial::after { inset: 12%; }
   .ar-knob__cap { inset: 22%; }
   .ar-knob__track,.ar-knob__value { stroke-width: 3; }
@@ -144,4 +144,49 @@
   @scope ([data-ar-design]:not([data-ar-design='classic'])) to ([data-ar-design]) {
     .ar-button,.ar-button__face,.ar-knob__cap { transition: none; }
   }
+}
+
+/* Complete the same construction language outside Inspector (component gallery, Dock, Panel).
+   Geometry is set on the scope, with density still scaling the shared anatomy. */
+@scope ([data-ar-design='monolith']) to ([data-ar-design]) {
+  :scope { --ar-radius: 12px; --ar-insert-radius: 9px; --ar-radius-control: 10px; --ar-radius-panel: 20px; --ar-radius-card: 14px; --ar-inset: 2px; }
+  .ar-panel__head { padding-block-end: 12px; }
+  .ar-panel__foot { border-radius: 0 0 16px 16px; background: var(--ar-bg-well); }
+  .ar-number,.ar-select,.ar-color { border-radius: 12px; }
+  .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 6px; }
+  .ar-xypad { border-radius: 14px; }
+  .ar-stat[data-framed] { border-radius: 14px; background: var(--ar-trough); box-shadow: var(--ar-well); }
+}
+@scope ([data-ar-design='precision-rack']) to ([data-ar-design]) {
+  :scope { --ar-radius: 4px; --ar-insert-radius: 2px; --ar-radius-control: 4px; --ar-radius-panel: 8px; --ar-radius-card: 5px; --ar-inset: 1.5px; }
+  .ar-panel__head { border-bottom: 1px solid var(--ar-line-strong); background: var(--ar-bg-well); }
+  .ar-panel__foot { background: var(--ar-bg-well); }
+  .ar-number,.ar-select,.ar-color { border-radius: 4px; box-shadow: var(--ar-well); }
+  .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 2px; }
+  .ar-xypad { border-radius: 4px; background: linear-gradient(var(--ar-line-subtle) 1px, transparent 1px) 0 0 / 12px 12px, linear-gradient(90deg,var(--ar-line-subtle) 1px,transparent 1px) 0 0 / 12px 12px,var(--ar-trough); }
+  .ar-stat[data-framed] { border-radius: 4px; background: var(--ar-bg-well); box-shadow: var(--ar-well); }
+  .ar-meter__track { border-radius: 2px; }
+}
+@scope ([data-ar-design='floating-lab']) to ([data-ar-design]) {
+  :scope { --ar-radius: 9px; --ar-insert-radius: 7px; --ar-radius-control: 8px; --ar-radius-panel: 16px; --ar-radius-card: 12px; --ar-inset: 2px; }
+  .ar-panel__head { border-bottom: 1px solid var(--ar-line-subtle); }
+  .ar-number,.ar-select,.ar-color { border-radius: 9px; }
+  .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 50%; }
+  .ar-xypad { border-radius: 12px; background: radial-gradient(circle,var(--ar-line) .7px,transparent 1px) 0 0 / 16px 16px,var(--ar-trough); }
+  .ar-stat[data-framed] { border-radius: 12px; background: var(--ar-bg-raised); box-shadow: inset 0 0 0 1px var(--ar-line); }
+  .ar-meter__track { border-radius: 9px; }
+}
+@scope ([data-ar-design='atelier-blocks']) to ([data-ar-design]) {
+  :scope { --ar-radius: 7px; --ar-insert-radius: 5px; --ar-radius-control: 7px; --ar-radius-panel: 12px; --ar-radius-card: 10px; --ar-inset: 2px; }
+  .ar-panel__head { border-bottom: 1px solid var(--ar-line); }
+  .ar-number,.ar-select,.ar-color { border-radius: 7px; }
+  .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 4px; }
+  .ar-xypad { border-radius: 9px; }
+  .ar-stat[data-framed] { border-radius: 10px; background: var(--ar-bg-raised); box-shadow: var(--ar-panel-shadow); }
+  .ar-stat__value { font-weight: var(--ar-weight-bold); }
+}
+/* Preserve endpoint hit areas and unambiguous range thumbs; do not let a decorative grip
+   change the pointer geometry or hide either of the real keyboard targets. */
+@scope ([data-ar-design='precision-rack'], [data-ar-design='floating-lab']) to ([data-ar-design]) {
+  .ar-range .ar-slider__seam--lo, .ar-range .ar-slider__seam--hi { --ar-seam-offset: 0px; }
 }
