@@ -328,3 +328,7 @@ Take a screenshot and look at it from arm's length.
 - Is every control in a section, every section in a panel? Does each section carry its hairline in its title row, with no icon and no line between sections?
 - Is any text set by hand, in capitals, in a mono outside marks and code, or under 12px? Remove it.
 - Is any paragraph wider than a comfortable line, or any number missing its unit?
+
+## Structural concept collection (experimental)
+
+The classic capsule is the baseline, not a constraint for every experimental design. Four independent structures now explore material continuity (Monolith), instrument bays (Precision Rack), distributed surfaces (Floating Lab) and editorial tiles (Atelier Blocks). Structural CSS changes section composition, row topology, slider face, knob/socket silhouette, switch and segmented shape. Palette does not define the structure. Never fork the control behavior or inspector store for a visual language. A standalone component and one in an inspector share the same morphology. In all designs use functional edges, concise labels, keyboard focus, clear values, restrained material gradients and real section content instead of ornamental hardware. See the live Concepts page; use narrow and locked-palette modes to review the design rather than the color.
