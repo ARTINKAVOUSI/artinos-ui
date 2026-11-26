@@ -229,3 +229,16 @@ The default system is **Fine**: hairline **Inter** (300, in a bright ink) on eve
 .my-mark  { font: var(--ar-weight-medium) var(--ar-caps-sm) / 1 var(--ar-font-num); letter-spacing: calc(var(--ar-track-caps) * var(--ar-caps-on)); text-transform: var(--ar-caps-case); }
 .my-title  { font: var(--ar-weight-title) var(--ar-text-xl) / var(--ar-leading-snug) var(--ar-font-display); letter-spacing: var(--ar-track-title); }
 ```
+
+## Structural design axis (experimental)
+
+Theme is the material and ink; design changes construction and arrangement. `DESIGNS`, `DESIGN_META` and `DesignName` are public exports. Use `design="classic" | "monolith" | "precision-rack" | "floating-lab" | "atelier-blocks"` on `ArtinosTheme` or `data-ar-design` on a DOM scope. Omit to inherit; `classic` stops a nested experimental scope. The CSS is shipped in `tokens/designs.css` and imported by full and trimmed kits. It uses `@scope` and container queries; browsers without `@scope` retain the original design.
+
+| Design | Inspector construction | Components |
+|---|---|---|
+| Monolith | Single chassis and nested recessed trays | Broad sculpted fill, rounded switch, recessed dial |
+| Precision Rack | Side-labelled horizontal instrument bays; stack on narrow panels | Rail fader with distinct grip and upper readout, compact square inserts |
+| Floating Lab | Separate floating sections in a responsive grid | Slim optical progress lane and circular seam, lightweight dials |
+| Atelier Blocks | Editorial card grid with stacked labels and adaptive columns | Tile controls, inset fills, broad dial rings |
+
+Keep the existing theme/density/type values separate. All designs use original component handlers and Inspector store. The optional Inspector `rail`, `summary`, `footer` are application content, not a second data model. The gallery (`#concepts`) demonstrates them with shared signals, search, presets, undo and timeline. Do not use fixed panel dimensions in a consuming project; layouts adapt to available inspector width.
