@@ -842,3 +842,13 @@ import { Select, THEMES, THEME_META } from './artinos-ui';
 - Every live graph shares one frame clock per window (`onFrame`) and scrolls on the compositor, so a frame draws only its newest reading. Graphs rest off screen, and the performance monitor sleeps when nothing reads it.
 - No permanent animation loop in the controls. Position is driven by three registered CSS properties (`--ar-lo`, `--ar-hi`, `--ar-p`), so fill, seam and ink clip move together; the ruler zoom is the only `requestAnimationFrame` loop, and it runs for 220ms. Ticks and detents are a handful of nodes.
 - Respects `prefers-reduced-motion`.
+
+## Inspector structural slots (experimental)
+
+`Inspector` accepts `summary?: ReactNode` (instrument or context above folders), `rail?: ReactNode` (application navigation), and `footer?: ReactNode` (output and actions). All are optional; existing calls render the original content. Use the same `InspectorStore` for controls inside the slots. The scope's `ArtinosTheme design` selects the structural language. The built-in search, presets, undo, rows, context menus and keyframe behavior are unchanged. `DESIGNS` and `DESIGN_META` are exported from the root.
+
+```tsx
+<ArtinosTheme theme="tactile-porcelain" design="monolith">
+  <Inspector items={items} folders={folders} store={store} />
+</ArtinosTheme>
+```
