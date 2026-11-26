@@ -26,6 +26,10 @@ ARTINOS should feel like a well-made instrument: calm, exact, quiet until touche
 
 What it is not: a dashboard of coloured cards, a themed or playful look, bold borders, drop shadows on every box, capitals and tracking, icons on every heading, or a tint over the glass to rescue text.
 
+## Tactile Modernism (experimental)
+
+Physical inspiration, digitally refined: use the five tactile themes for shallow relief, small edge highlights, clear contact shadows and quiet material finishes without literal textures or decorative realism. The well is recessed; the insert is touchable; the seam is the handle. Preserve all existing component geometry, continuous rows, hierarchy, typography, density, keyboard access and value behavior. No new controls, fake screws, heavy bevels or separate state engine. Porcelain is soft and warm; Graphite is matte and calm; Alloy is precise; Basalt is restrained and dark; Opal is diffuse and pale. Compare every finish with Nimbus using the actual component gallery, not mock controls.
+
 ## The type systems
 
 Pick one per product with `<ArtinosTheme type="…">`. Each is a complete design for one use, not just a font. Four are **one family**, told apart by size, weight and ink; three are **hairline and heavy**, thin control text in a bright ink under heavy titles, so the levels part by weight at a glance; five are **pairings**, a display face for titles over a text face for every control and paragraph, so the headlines carry character while the controls stay calm.
