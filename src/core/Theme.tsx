@@ -1,6 +1,6 @@
 import type { CSSProperties, ElementType, HTMLAttributes, ReactNode } from 'react';
 import { cx, DENSITIES } from './utils';
-import type { Accent, Density, MaterialName, ThemeName, TypeCollection } from './utils';
+import type { Accent, Density, DesignName, MaterialName, ThemeName, TypeCollection } from './utils';
 import { DEFAULT_THEME, THEME_ALIASES, TYPE_ALIASES } from './utils';
 
 /** Token overrides: `{ signal: '#ff4fa3', 'radius-control': '6px' }` or full `--ar-*` names. */
@@ -57,6 +57,8 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
   theme?: ThemeName | (string & {});
   /** Advanced: override the theme's control finish for every control inside. */
   material?: MaterialName;
+  /** Experimental structural language. Independent of theme; inherits if omitted. */
+  design?: DesignName;
   /** The density family for the whole scope (see DENSITIES): dense · standard · comfort. Every size and
    *  corner of the theme is scaled to it, and dense has its own row rules. Inherits when omitted. */
   density?: Density;
@@ -87,7 +89,7 @@ export interface ArtinosThemeProps extends HTMLAttributes<HTMLElement> {
  * available without React: <div data-ar-theme="nimbus">. Per-density tokens come with a small
  * rule of their own, so they follow whichever density family is in force.
  */
-export function ArtinosTheme({ theme = DEFAULT_THEME, material, density, type, accent, scene, tokens, densityTokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
+export function ArtinosTheme({ theme = DEFAULT_THEME, material, design, density, type, accent, scene, tokens, densityTokens, ground, as = 'div', className, style, children, ...rest }: ArtinosThemeProps) {
   // Narrowed for JSX: hosts that augment JSX.IntrinsicElements (React Three Fiber) make
   // the full ElementType union too large for TypeScript to call. Any tag renders the same.
   const Tag = as as 'div';
@@ -98,6 +100,7 @@ export function ArtinosTheme({ theme = DEFAULT_THEME, material, density, type, a
       {...rest}
       data-ar-theme={THEME_ALIASES[theme] ?? theme}
       data-ar-material={material}
+      data-ar-design={design}
       data-ar-density={density}
       data-ar-type={type ? (TYPE_ALIASES[type] ?? type) : undefined}
       data-ar-accent={accent}
