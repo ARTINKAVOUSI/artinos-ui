@@ -287,7 +287,7 @@ function buildIndex(sources, files) {
   return out.join('\n').replace(/\n{3,}/g, '\n\n');
 }
 
-function buildCssEntry(o, cssFiles) {
+function buildCssEntry(o, cssFiles, designs = false) {
   const imports = [
     o.googleFonts ? './tokens/fonts.css' : null,
     './tokens/tokens.css',
@@ -297,6 +297,7 @@ function buildCssEntry(o, cssFiles) {
     o.customs.length ? './tokens/custom-themes.css' : null,
     ...cssFiles.map((f) => './' + f),
     './tokens/density.css',
+    designs ? './tokens/designs.css' : null,
   ].filter(Boolean);
   return `/* ARTINOS UI — single stylesheet entry. Import once, at the app root:
      import './${o.folder}/artinos.css';
@@ -419,11 +420,12 @@ export function buildKit(sources, o) {
 
   const files = {};
   const list = themes.map((t) => `${t.padEnd(14)}${meta[t]?.label ?? ''}`).join('\n *   ');
-  files['artinos.css'] = buildCssEntry(o, cssFiles);
+  files['artinos.css'] = buildCssEntry(o, cssFiles, 'tokens/designs.css' in sources);
   files['index.ts'] = buildIndex(sources, new Set(tsFiles));
   if (o.googleFonts) files['tokens/fonts.css'] = buildFontsCss(types, tmeta);
   files['tokens/tokens.css'] = sources['tokens/tokens.css'];
   files['tokens/density.css'] = sources['tokens/density.css'];
+  if ('tokens/designs.css' in sources) files['tokens/designs.css'] = sources['tokens/designs.css'];
   files['tokens/themes.css'] = trimCss(
     sources['tokens/themes.css'],
     themeOk,
