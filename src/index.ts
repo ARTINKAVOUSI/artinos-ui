@@ -23,8 +23,8 @@ export { lockPointer, unlockPointer, isPointerLocked, precisionOf } from './core
 // design system
 export { ArtinosTheme, themeStyle, densityTokensCss } from './core/Theme';
 export type { ArtinosThemeProps, DensityTokens, TokenOverrides } from './core/Theme';
-export { THEMES, THEME_META, GLASS_THEMES, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, DENSITY_META, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
-export type { Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
+export { DESIGNS, DESIGN_META, THEMES, THEME_META, GLASS_THEMES, THEME_ALIASES, DEFAULT_THEME, MATERIALS, DENSITIES, DENSITY_META, TYPE_COLLECTIONS, TYPE_ALIASES, TYPE_META, ACCENTS, ACCENT_META, GRADIENTS, MAPPINGS, formatValue } from './core/utils';
+export type { DesignName, Accent, ThemeName, ThemeMeta, ThemeFamily, MaterialName, Density, TypeCollection, TypeMeta, ScopeProps, Format, Formatter, Formatted, Mapping, MappingName, MappingFns, Gradient, GradientName, Stop, OptionInput } from './core/utils';
 export { RollingValue, RollingText, SignalDigits } from './core/RollingValue';
 export type { RollingValueProps, SignalDigitsProps } from './core/RollingValue';
 export { ThemedPortal, themeScopeOf, PortalTargetContext } from './core/portal';
