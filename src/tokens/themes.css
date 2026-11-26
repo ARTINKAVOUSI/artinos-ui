@@ -19,6 +19,11 @@
  *   haze-carve      Haze carved: tracks set into the frost and edged by a fine groove, values floating softly.
  *   haze-day        The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow.
  *   ice             Clean cool frost: a faint blue-white pane, icy controls, deep navy ink.
+ *   tactile-porcelainWarm ceramic, carved wells and low-relief satin inserts.
+ *   tactile-graphiteSoft-touch graphite, deep quiet wells and restrained mint seams.
+ *   tactile-alloy   Precision satin metal, crisp micro-bevels and defined contact shadows.
+ *   tactile-basalt  Near-black mineral surfaces, restrained chamfers and champagne seams.
+ *   tactile-opal    Milky polymer-inspired surfaces, diffused relief and soft edge light.
  * themes:end
  */
 
@@ -352,6 +357,202 @@
   --ar-text-mid: rgba(17, 17, 17, 0.9);
   --ar-text-low: rgba(17, 17, 17, 0.82);
   --ar-text-faint: rgba(17, 17, 17, 0.75);
+}
+
+/* TACTILE MODERNISM — restrained material studies. */
+[data-ar-theme='tactile-porcelain'] {
+  --ar-bg-app: #e4e0d8;
+  --ar-bg-surface: #ede9e1;
+  --ar-bg-raised: #f3f0e9;
+  --ar-bg-hover: rgba(0,0,0,.05);
+  --ar-bg-active: rgba(0,0,0,.09);
+  --ar-bg-well: #d6d2c9;
+  --ar-text-hi: #282d28;
+  --ar-text-mid: #454b45;
+  --ar-text-low: #585d55;
+  --ar-text-faint: #666b62;
+  --ar-line-subtle: rgba(0,0,0,.06);
+  --ar-line: rgba(64,60,50,.13);
+  --ar-line-strong: rgba(0,0,0,.24);
+  --ar-signal: #287b69;
+  --ar-signal-hi: #195b4d;
+  --ar-signal-line: rgba(40,123,105,.45);
+  --ar-signal-wash: rgba(40,123,105,.13);
+  --ar-signal-ink: #ffffff;
+  --ar-bind: #355f86;
+  --ar-warn: #80510c;
+  --ar-fault: #a52435;
+  --ar-tick: rgba(0,0,0,.3);
+  --ar-tick-major: #585d55;
+  --ar-shadow-well: inset 0 1px 3px #665e4933, inset 0 -1px 1px #ffffffb3, inset 0 0 0 1px #665e4920;
+  --ar-rim: none;
+  --ar-panel-tint: #ede9e1;
+  --ar-panel-sheen: linear-gradient(160deg,#ffffff60,transparent 48%);
+  --ar-panel-blur: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(64,60,50,.13), inset 0 1px 0 #ffffff99, 0 12px 28px -18px #0005;
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: #f2eee7;
+  --ar-float-ring: inset 0 0 0 1px rgba(64,60,50,.13);
+  --ar-float-shadow: 0 12px 30px -12px #0005;
+  --ar-float-ink: #282d28;
+  --ar-float-ink-low: #585d55;
+  color-scheme: light;
+}
+
+[data-ar-theme='tactile-graphite'] {
+  --ar-bg-app: #25292b;
+  --ar-bg-surface: #303638;
+  --ar-bg-raised: #42484b;
+  --ar-bg-hover: rgba(255,255,255,.05);
+  --ar-bg-active: rgba(255,255,255,.09);
+  --ar-bg-well: #23282a;
+  --ar-text-hi: #e7edeb;
+  --ar-text-mid: #d4dcd9;
+  --ar-text-low: #b5c1bd;
+  --ar-text-faint: #a4b2ae;
+  --ar-line-subtle: rgba(255,255,255,.06);
+  --ar-line: rgba(255,255,255,.09);
+  --ar-line-strong: rgba(255,255,255,.24);
+  --ar-signal: #83c8b3;
+  --ar-signal-hi: #b9e5d6;
+  --ar-signal-line: rgba(131,200,179,.45);
+  --ar-signal-wash: rgba(131,200,179,.13);
+  --ar-signal-ink: #25292b;
+  --ar-bind: #9cbcd3;
+  --ar-warn: #f2c47f;
+  --ar-fault: #ff9590;
+  --ar-tick: rgba(255,255,255,.3);
+  --ar-tick-major: #b5c1bd;
+  --ar-shadow-well: inset 0 2px 4px #0007, inset 0 -1px 0 #ffffff12, inset 0 0 0 1px #0005;
+  --ar-rim: none;
+  --ar-panel-tint: #303638;
+  --ar-panel-sheen: linear-gradient(155deg,#ffffff09,transparent 60%);
+  --ar-panel-blur: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(255,255,255,.09), inset 0 1px 0 #ffffff0d, 0 12px 28px -18px #0005;
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: #353b3e;
+  --ar-float-ring: inset 0 0 0 1px rgba(255,255,255,.09);
+  --ar-float-shadow: 0 12px 30px -12px #0005;
+  --ar-float-ink: #e7edeb;
+  --ar-float-ink-low: #b5c1bd;
+  color-scheme: dark;
+}
+
+[data-ar-theme='tactile-alloy'] {
+  --ar-bg-app: #bec4c8;
+  --ar-bg-surface: #d0d5d8;
+  --ar-bg-raised: #e2e5e7;
+  --ar-bg-hover: rgba(0,0,0,.05);
+  --ar-bg-active: rgba(0,0,0,.09);
+  --ar-bg-well: #aeb7bd;
+  --ar-text-hi: #202a31;
+  --ar-text-mid: #35434b;
+  --ar-text-low: #45535b;
+  --ar-text-faint: #4b5960;
+  --ar-line-subtle: rgba(0,0,0,.06);
+  --ar-line: rgba(43,58,68,.22);
+  --ar-line-strong: rgba(0,0,0,.24);
+  --ar-signal: #286e86;
+  --ar-signal-hi: #1b5166;
+  --ar-signal-line: rgba(40,110,134,.45);
+  --ar-signal-wash: rgba(40,110,134,.13);
+  --ar-signal-ink: #ffffff;
+  --ar-bind: #355f86;
+  --ar-warn: #80510c;
+  --ar-fault: #a52435;
+  --ar-tick: rgba(0,0,0,.3);
+  --ar-tick-major: #45535b;
+  --ar-shadow-well: inset 0 1px 2px #27384466, inset 0 -1px 0 #ffffff9c, inset 0 0 0 1px #27384440;
+  --ar-rim: none;
+  --ar-panel-tint: #d0d5d8;
+  --ar-panel-sheen: linear-gradient(150deg,#ffffff73,transparent 42%);
+  --ar-panel-blur: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(43,58,68,.22), inset 0 1px 0 #ffffff99, 0 12px 28px -18px #0005;
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: #dce1e4;
+  --ar-float-ring: inset 0 0 0 1px rgba(43,58,68,.22);
+  --ar-float-shadow: 0 12px 30px -12px #0005;
+  --ar-float-ink: #202a31;
+  --ar-float-ink-low: #45535b;
+  color-scheme: light;
+}
+
+[data-ar-theme='tactile-basalt'] {
+  --ar-bg-app: #171817;
+  --ar-bg-surface: #242624;
+  --ar-bg-raised: #333632;
+  --ar-bg-hover: rgba(255,255,255,.05);
+  --ar-bg-active: rgba(255,255,255,.09);
+  --ar-bg-well: #191b18;
+  --ar-text-hi: #eeeae1;
+  --ar-text-mid: #d4d1c8;
+  --ar-text-low: #bcbab0;
+  --ar-text-faint: #a9aa9e;
+  --ar-line-subtle: rgba(255,255,255,.06);
+  --ar-line: rgba(239,232,210,.09);
+  --ar-line-strong: rgba(255,255,255,.24);
+  --ar-signal: #c6b58d;
+  --ar-signal-hi: #e4d4af;
+  --ar-signal-line: rgba(198,181,141,.45);
+  --ar-signal-wash: rgba(198,181,141,.13);
+  --ar-signal-ink: #171817;
+  --ar-bind: #9cbcd3;
+  --ar-warn: #f2c47f;
+  --ar-fault: #ff9590;
+  --ar-tick: rgba(255,255,255,.3);
+  --ar-tick-major: #bcbab0;
+  --ar-shadow-well: inset 0 1px 2px #000b, inset 0 -1px 0 #ffffff0d, inset 0 0 0 1px #0008;
+  --ar-rim: none;
+  --ar-panel-tint: #242624;
+  --ar-panel-sheen: linear-gradient(155deg,#e8deba08,transparent 40%);
+  --ar-panel-blur: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(239,232,210,.09), inset 0 1px 0 #ffffff0d, 0 12px 28px -18px #0005;
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: #2c2f2a;
+  --ar-float-ring: inset 0 0 0 1px rgba(239,232,210,.09);
+  --ar-float-shadow: 0 12px 30px -12px #0005;
+  --ar-float-ink: #eeeae1;
+  --ar-float-ink-low: #bcbab0;
+  color-scheme: dark;
+}
+
+[data-ar-theme='tactile-opal'] {
+  --ar-bg-app: #ccd9d7;
+  --ar-bg-surface: #e1ebe8;
+  --ar-bg-raised: #f4f9f8;
+  --ar-bg-hover: rgba(0,0,0,.05);
+  --ar-bg-active: rgba(0,0,0,.09);
+  --ar-bg-well: #c9dbd5;
+  --ar-text-hi: #203b35;
+  --ar-text-mid: #344d48;
+  --ar-text-low: #48625c;
+  --ar-text-faint: #516963;
+  --ar-line-subtle: rgba(0,0,0,.06);
+  --ar-line: rgba(44,87,76,.15);
+  --ar-line-strong: rgba(0,0,0,.24);
+  --ar-signal: #327f70;
+  --ar-signal-hi: #205d51;
+  --ar-signal-line: rgba(50,127,112,.45);
+  --ar-signal-wash: rgba(50,127,112,.13);
+  --ar-signal-ink: #ffffff;
+  --ar-bind: #355f86;
+  --ar-warn: #80510c;
+  --ar-fault: #a52435;
+  --ar-tick: rgba(0,0,0,.3);
+  --ar-tick-major: #48625c;
+  --ar-shadow-well: inset 0 1px 3px #42645b33, inset 0 -1px 1px #ffffffa6, inset 0 0 0 1px #42645b26;
+  --ar-rim: none;
+  --ar-panel-tint: #e1ebe8;
+  --ar-panel-sheen: linear-gradient(155deg,#ffffffa0,transparent 55%);
+  --ar-panel-blur: none;
+  --ar-panel-shadow: inset 0 0 0 1px rgba(44,87,76,.15), inset 0 1px 0 #ffffff99, 0 12px 28px -18px #0005;
+  --ar-panel-text-shadow: none;
+  --ar-float-bg: #f0f7f4;
+  --ar-float-ring: inset 0 0 0 1px rgba(44,87,76,.15);
+  --ar-float-shadow: 0 12px 30px -12px #0005;
+  --ar-float-ink: #203b35;
+  --ar-float-ink-low: #48625c;
+  color-scheme: light;
 }
 
 /* ---------- ACCENTS — data-ar-accent / <ArtinosTheme accent="…"> ----------
