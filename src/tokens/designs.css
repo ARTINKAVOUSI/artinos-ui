@@ -1,0 +1,147 @@
+/* Structural design languages, independent of theme. Scope boundaries allow nested designs
+   to opt out with design="classic". Native control hit areas, state, focus and keyboard stay intact.
+   @scope is supported in current Chromium, Safari and Firefox; older browsers keep Classic. */
+@scope ([data-ar-design]:not([data-ar-design='classic'])) to ([data-ar-design]) {
+  .ar-inspector { container-type: inline-size; }
+  .ar-inspector__rail, .ar-inspector__summary, .ar-inspector__footer { min-width: 0; }
+  .ar-inspector__rail { display: flex; flex-direction: column; gap: var(--ar-space-2); }
+  .ar-inspector__summary { margin-block-end: var(--ar-space-4); }
+  .ar-inspector__footer { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ar-space-3); margin-block-start: var(--ar-space-5); padding-block-start: var(--ar-space-3); border-top: 1px solid var(--ar-line); }
+  .ar-inspector__body > .ar-section { min-width: 0; margin-top: 0; }
+  .ar-inspector__body > .ar-section > .ar-section__head { min-width: 0; }
+  .ar-inspector__body > .ar-section > .ar-section__fold { min-width: 0; }
+  .ar-inspector__body > .ar-section > .ar-section__fold > .ar-section__body { min-width: 0; }
+  .ar-inspector__bar { flex-wrap: wrap; }
+  /* Keep reset marks and keyframe buttons inside the module gutters. */
+  .ar-inspector .ar-prop__actions { left: auto; right: -14px; }
+  .ar-inspector .ar-prop__mark { left: -13px; }
+  .ar-inspector .ar-prop__label { min-width: 0; }
+  .ar-inspector .ar-prop__message { margin-left: 0; }
+  .ar-inspector__body > .ar-section > .ar-section__head .ar-section__rule { flex: 1; }
+  .ar-button:not([data-variant]) { box-shadow: var(--ar-insert-shadow); background: var(--ar-insert-sheen), var(--ar-insert); color: var(--ar-insert-ink); }
+  .ar-button:not([data-variant]):active { box-shadow: var(--ar-well); background: var(--ar-trough); color: var(--ar-value-ink); }
+  .ar-button:not([data-variant]):focus-visible { outline: 2px solid var(--ar-signal); outline-offset: 2px; }
+  .ar-knob__value { filter: none; }
+  .ar-knob__pointer { box-shadow: none; }
+  .ar-knob__dial:focus-visible { outline: 2px solid var(--ar-signal); outline-offset: 2px; }
+  .ar-slider:focus-visible .ar-slider__track, .ar-range:has(:focus-visible) .ar-slider__track { outline: 1px solid var(--ar-signal); outline-offset: 1px; }
+}
+
+/* 01 — MONOLITH. Single slab, integral recessed trays, broad sculpted rows. */
+@scope ([data-ar-design='monolith']) to ([data-ar-design]) {
+  .ar-inspector { --ar-radius: 12px; --ar-insert-radius: 9px; --ar-inset: 2px; --ar-radius-panel: 20px; --ar-radius-control: 10px; padding: 18px; border-radius: 22px; background: var(--ar-panel-sheen), var(--ar-panel-tint); box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__rail { flex-direction: row; flex-wrap: wrap; padding: 4px; background: var(--ar-trough); box-shadow: var(--ar-well); border-radius: 14px; margin-bottom: 14px; }
+  .ar-inspector__summary { padding: 14px; border-radius: 17px; background: var(--ar-trough); box-shadow: var(--ar-well); }
+  .ar-inspector__body { gap: 12px; }
+  .ar-inspector__body > .ar-section { padding: 12px 18px 15px; border-radius: 16px; background: color-mix(in srgb,var(--ar-panel-tint) 80%,var(--ar-trough)); box-shadow: var(--ar-well); }
+  .ar-inspector__body > .ar-section > .ar-section__head { padding-bottom: 10px; }
+  .ar-inspector .ar-prop__main { min-height: calc(var(--ar-h) + 5px); }
+  .ar-inspector .ar-prop__label { flex-basis: min(32%, var(--ar-field-label-w)); }
+  .ar-inspector .ar-section__body { gap: 6px; }
+  .ar-slider[data-variant='material'] .ar-slider__track { border-radius: 12px; }
+  .ar-slider[data-variant='material'] .ar-slider__fill { border-radius: 9px; }
+  .ar-knob__dial::before, .ar-knob__dial::after { inset: 14%; }
+  .ar-knob__cap { inset: 23%; }
+  .ar-knob__track, .ar-knob__value { stroke-width: 2.7; }
+  .ar-switch--compact { --ar-insert-radius: 999px; --ar-radius: 999px; }
+  .ar-segmented { --ar-radius: 12px; --ar-insert-radius: 9px; }
+  @container (max-width: 360px) {
+    .ar-inspector__body > .ar-section { padding-inline: 15px; }
+  }
+}
+
+/* 02 — PRECISION RACK. Modular horizontal instrument bays, rail faders, compact readouts. */
+@scope ([data-ar-design='precision-rack']) to ([data-ar-design]) {
+  .ar-inspector { --ar-radius: 4px; --ar-insert-radius: 2px; --ar-inset: 1.5px; --ar-radius-control: 4px; padding: 10px; border-radius: 9px; background: var(--ar-bg-app); box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__rail { flex-direction: row; flex-wrap: wrap; padding: 6px; margin-bottom: 8px; border-radius: 5px; background: var(--ar-trough); box-shadow: var(--ar-well); }
+  .ar-inspector__summary { padding: 12px; background: var(--ar-bg-surface); border-radius: 5px; box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__body { gap: 8px; }
+  .ar-inspector__body > .ar-section { display: grid; grid-template-columns: minmax(78px, .24fr) minmax(0,1fr); align-items: stretch; background: var(--ar-panel-sheen),var(--ar-bg-surface); border-radius: 5px; box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__body > .ar-section > .ar-section__head { align-items: flex-start; padding: 12px 6px; border-inline-end: 1px solid var(--ar-line-strong); background: var(--ar-bg-well); border-radius: 5px 0 0 5px; }
+  .ar-inspector__body > .ar-section > .ar-section__head .ar-section__trigger { flex-wrap: wrap; align-content: start; }
+  .ar-inspector__body > .ar-section > .ar-section__head .ar-section__title { white-space: normal; overflow-wrap: anywhere; }
+  .ar-inspector__body > .ar-section > .ar-section__head .ar-section__rule { display: none; }
+  .ar-inspector__body > .ar-section > .ar-section__fold { padding: 10px 17px; }
+  .ar-inspector .ar-prop__label { flex-basis: min(30%,var(--ar-field-label-w)); }
+  /* A full-size interactive channel with its visual rail in the lower half. The original
+     content/readout and editor remain in the upper half; no second slider implementation. */
+  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h), 38px); --ar-seam-offset: 0px; border-radius: 4px; background: var(--ar-bg-well); }
+  .ar-slider[data-variant='material'] .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; left: 5px; right: 5px; bottom: 6px; height: 5px; background: var(--ar-trough); box-shadow: var(--ar-well); border-radius: 2px; }
+  .ar-slider[data-variant='material'] .ar-slider__fill { top: auto; bottom: 7px; height: 3px; border-radius: 1px; background: var(--ar-signal); box-shadow: none; }
+  .ar-slider[data-variant='material'] .ar-slider__rim { display: none; }
+  .ar-slider[data-variant='material'] .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
+  .ar-slider[data-variant='material'] .ar-slider__content--over { display: none; }
+  .ar-slider[data-variant='material'] .ar-slider__seam { top: auto; bottom: 3px; width: 9px; height: 12px; transform: translateX(-50%); border-radius: 2px; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; }
+  .ar-slider[data-variant='material'] .ar-slider__seam::after { content: ''; position: absolute; top: 2px; bottom: 2px; left: 4px; width: 1px; background: var(--ar-seam-active); }
+  .ar-slider[data-variant='material'][data-off] .ar-slider__seam { opacity: .4; }
+  .ar-knob__cap { inset: 22%; background: var(--ar-insert-sheen),var(--ar-insert); box-shadow: var(--ar-insert-shadow),0 0 0 2px var(--ar-trough),0 0 0 3px var(--ar-line-strong); }
+  .ar-knob__track, .ar-knob__value { stroke-width: 1.4; stroke-linecap: butt; }
+  .ar-switch--compact { --ar-radius: 5px; --ar-insert-radius: 2px; }
+  .ar-segmented { --ar-radius: 4px; --ar-insert-radius: 2px; }
+  @container (max-width: 450px) {
+    .ar-inspector__body > .ar-section { grid-template-columns: minmax(0,1fr); }
+    .ar-inspector__body > .ar-section > .ar-section__head { border-inline-end: 0; border-bottom: 1px solid var(--ar-line); border-radius: 5px 5px 0 0; padding: 8px 12px; }
+  }
+}
+
+/* 03 — FLOATING LAB. Independent panes, slim optical lanes, dock-like navigation. */
+@scope ([data-ar-design='floating-lab']) to ([data-ar-design]) {
+  .ar-inspector { --ar-radius: 9px; --ar-insert-radius: 7px; --ar-radius-control: 8px; --ar-inset: 2px; display: grid; grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .ar-inspector__bar { grid-column: 1/-1; background: var(--ar-panel-sheen),var(--ar-panel-tint); padding: 10px; border-radius: 12px; box-shadow: var(--ar-panel-shadow); backdrop-filter: var(--ar-panel-blur); }
+  .ar-inspector__rail { flex-direction: row; flex-wrap: wrap; padding: 7px; border-radius: 12px; background: var(--ar-panel-tint); box-shadow: var(--ar-panel-shadow); backdrop-filter: var(--ar-panel-blur); }
+  .ar-inspector__summary { padding: 15px; border-radius: 16px; background: var(--ar-panel-sheen),var(--ar-panel-tint); box-shadow: var(--ar-panel-shadow); backdrop-filter: var(--ar-panel-blur); margin: 0; }
+  .ar-inspector__body { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); align-items: start; gap: 12px; }
+  .ar-inspector__body > .ar-section { padding: 12px 17px; border-radius: 15px; background: var(--ar-panel-sheen),var(--ar-panel-tint); backdrop-filter: var(--ar-panel-blur); box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__body > .ar-section:first-child { grid-column: 1/-1; }
+  .ar-inspector__footer { grid-column: 1/-1; margin: 0; border: 0; padding: 10px; border-radius: 12px; background: var(--ar-panel-tint); box-shadow: var(--ar-panel-shadow); backdrop-filter: var(--ar-panel-blur); }
+  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h),36px); --ar-seam-offset: 0px; background: color-mix(in srgb,var(--ar-bg-raised) 58%,transparent); box-shadow: inset 0 0 0 1px var(--ar-line); }
+  .ar-slider[data-variant='material'] .ar-slider__track::before { content: ''; position: absolute; pointer-events: none; bottom: 5px; left: 5px; right: 5px; height: 4px; border-radius: 9px; background: var(--ar-trough); }
+  .ar-slider[data-variant='material'] .ar-slider__fill { top: auto; bottom: 5px; height: 4px; border-radius: 9px; background: var(--ar-signal); box-shadow: none; }
+  .ar-slider[data-variant='material'] .ar-slider__rim { display: none; }
+  .ar-slider[data-variant='material'] .ar-slider__content--base { clip-path: none; align-items: flex-start; padding-top: 3px; }
+  .ar-slider[data-variant='material'] .ar-slider__content--over { display: none; }
+  .ar-slider[data-variant='material'] .ar-slider__seam { top: auto; bottom: 3px; height: 8px; width: 8px; border-radius: 50%; background: var(--ar-insert); box-shadow: var(--ar-insert-shadow); mask-image: none; transform: translateX(-50%); }
+  .ar-knob__dial::before,.ar-knob__dial::after { inset: 19%; }
+  .ar-knob__cap { inset: 26%; }
+  .ar-knob__track,.ar-knob__value { stroke-width: 1.5; }
+  .ar-switch--compact,.ar-segmented { --ar-radius: 999px; --ar-insert-radius: 999px; }
+}
+
+/* 04 — ATELIER BLOCKS. Editorial grid and labeled tiles; compact details expand vertically. */
+@scope ([data-ar-design='atelier-blocks']) to ([data-ar-design]) {
+  .ar-inspector { --ar-radius: 7px; --ar-insert-radius: 5px; --ar-radius-control: 7px; --ar-inset: 2px; display: grid; grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .ar-inspector__bar { grid-column: 1/-1; background: var(--ar-bg-surface); padding: 9px; border-radius: 8px; box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__rail { flex-direction: row; flex-wrap: wrap; padding: 8px; background: var(--ar-bg-surface); border-radius: 8px; box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__summary { padding: 18px; background: var(--ar-panel-sheen),var(--ar-bg-raised); border-radius: 12px; box-shadow: var(--ar-panel-shadow); margin: 0; }
+  .ar-inspector__body { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,230px),1fr)); align-items: start; gap: 12px; }
+  .ar-inspector__body > .ar-section { padding: 12px 17px; background: var(--ar-panel-sheen),var(--ar-bg-surface); border-radius: 10px; box-shadow: var(--ar-panel-shadow); }
+  .ar-inspector__body > .ar-section > .ar-section__head { border-bottom: 1px solid var(--ar-line); padding-bottom: 8px; margin-bottom: 8px; }
+  .ar-inspector__body > .ar-section .ar-section__body { gap: 8px; }
+  .ar-inspector .ar-prop__main { display: grid; grid-template-columns: minmax(0,1fr); gap: 4px; padding: 6px 0; border-bottom: 1px solid var(--ar-line-subtle); }
+  .ar-inspector .ar-prop__label { font-weight: var(--ar-weight-medium); }
+  .ar-inspector .ar-prop__control { width: 100%; }
+  .ar-inspector .ar-prop__control > .ar-switch--compact { justify-self: start; }
+  .ar-inspector .ar-prop__actions { top: 9px; }
+  .ar-inspector__footer { grid-column: 1/-1; padding: 9px; margin: 0; border: 0; border-radius: 8px; background: var(--ar-bg-surface); box-shadow: var(--ar-panel-shadow); }
+  .ar-slider[data-variant='material'] .ar-slider__track { --_h: max(var(--ar-h),34px); border-radius: 6px; }
+  .ar-slider[data-variant='material'] .ar-slider__fill { top: 5px; bottom: 5px; border-radius: 4px; }
+  .ar-knob__dial::before,.ar-knob__dial::after { inset: 12%; }
+  .ar-knob__cap { inset: 22%; }
+  .ar-knob__track,.ar-knob__value { stroke-width: 3; }
+  .ar-switch--compact { --ar-radius: 7px; --ar-insert-radius: 5px; }
+  .ar-segmented { --ar-radius: 8px; --ar-insert-radius: 5px; }
+}
+
+/* Width is the inspector's own available space, not the viewport. */
+@scope ([data-ar-design='atelier-blocks']) to ([data-ar-design]) {
+  @container (min-width: 740px) {
+    .ar-inspector__body { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .ar-inspector__body > .ar-section:first-child { grid-column: span 2; }
+    .ar-inspector__body > .ar-section:first-child .ar-section__body { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @scope ([data-ar-design]:not([data-ar-design='classic'])) to ([data-ar-design]) {
+    .ar-button,.ar-button__face,.ar-knob__cap { transition: none; }
+  }
+}
