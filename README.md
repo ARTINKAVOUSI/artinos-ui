@@ -18,6 +18,10 @@ A well-made instrument: calm over the scene, exact, restrained, direct, and aliv
 
 Five additional native themes: `tactile-porcelain`, `tactile-graphite`, `tactile-alloy`, `tactile-basalt`, `tactile-opal`. They restyle the shared panel, well, insert, sheet and seam without changing control behavior or the Nimbus default. See [theming](docs/theming.md) and use the existing gallery theme picker (`?theme=tactile-graphite&backdrop=none`). Open the Themes page (`#themes`) for the Tactile Modernism comparison: the five native instruments share intensity, roughness, quality and enabled state. The built showcase HTML must be regenerated locally after this source change.
 
+## Structural design systems (experimental)
+
+Four new structural languages, independent of the 14 themes: `monolith`, `precision-rack`, `floating-lab`, `atelier-blocks`. `classic` retains the existing appearance. Use `<ArtinosTheme design="precision-rack" theme="tactile-graphite">` to apply the new morphology to native components and the Inspector. The Inspector accepts optional `summary`, `rail` and `footer` slots; no additional state engine. Open the live Concepts page (`#concepts`) to compare all designs using a single real inspector store, narrow/wide layouts and a locked palette. Current browsers support the scoped CSS; older ones fall back to Classic. See [theming](docs/theming.md).
+
 ## Components
 
 | group | components |
