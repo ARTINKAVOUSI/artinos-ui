@@ -149,7 +149,7 @@
 /* Complete the same construction language outside Inspector (component gallery, Dock, Panel).
    Geometry is set on the scope, with density still scaling the shared anatomy. */
 @scope ([data-ar-design='monolith']) to ([data-ar-design]) {
-  :scope { --ar-radius: 12px; --ar-insert-radius: 9px; --ar-radius-control: 10px; --ar-radius-panel: 20px; --ar-radius-card: 14px; --ar-inset: 2px; }
+  :scope[data-ar-design] { --ar-radius: 12px; --ar-insert-radius: 9px; --ar-radius-control: 10px; --ar-radius-panel: 20px; --ar-radius-card: 14px; --ar-inset: 2px; }
   .ar-panel__head { padding-block-end: 12px; }
   .ar-panel__foot { border-radius: 0 0 16px 16px; background: var(--ar-bg-well); }
   .ar-number,.ar-select,.ar-color { border-radius: 12px; }
@@ -158,7 +158,7 @@
   .ar-stat[data-framed] { border-radius: 14px; background: var(--ar-trough); box-shadow: var(--ar-well); }
 }
 @scope ([data-ar-design='precision-rack']) to ([data-ar-design]) {
-  :scope { --ar-radius: 4px; --ar-insert-radius: 2px; --ar-radius-control: 4px; --ar-radius-panel: 8px; --ar-radius-card: 5px; --ar-inset: 1.5px; }
+  :scope[data-ar-design] { --ar-radius: 4px; --ar-insert-radius: 2px; --ar-radius-control: 4px; --ar-radius-panel: 8px; --ar-radius-card: 5px; --ar-inset: 1.5px; }
   .ar-panel__head { border-bottom: 1px solid var(--ar-line-strong); background: var(--ar-bg-well); }
   .ar-panel__foot { background: var(--ar-bg-well); }
   .ar-number,.ar-select,.ar-color { border-radius: 4px; box-shadow: var(--ar-well); }
@@ -168,7 +168,7 @@
   .ar-meter__track { border-radius: 2px; }
 }
 @scope ([data-ar-design='floating-lab']) to ([data-ar-design]) {
-  :scope { --ar-radius: 9px; --ar-insert-radius: 7px; --ar-radius-control: 8px; --ar-radius-panel: 16px; --ar-radius-card: 12px; --ar-inset: 2px; }
+  :scope[data-ar-design] { --ar-radius: 9px; --ar-insert-radius: 7px; --ar-radius-control: 8px; --ar-radius-panel: 16px; --ar-radius-card: 12px; --ar-inset: 2px; }
   .ar-panel__head { border-bottom: 1px solid var(--ar-line-subtle); }
   .ar-number,.ar-select,.ar-color { border-radius: 9px; }
   .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 50%; }
@@ -177,7 +177,7 @@
   .ar-meter__track { border-radius: 9px; }
 }
 @scope ([data-ar-design='atelier-blocks']) to ([data-ar-design]) {
-  :scope { --ar-radius: 7px; --ar-insert-radius: 5px; --ar-radius-control: 7px; --ar-radius-panel: 12px; --ar-radius-card: 10px; --ar-inset: 2px; }
+  :scope[data-ar-design] { --ar-radius: 7px; --ar-insert-radius: 5px; --ar-radius-control: 7px; --ar-radius-panel: 12px; --ar-radius-card: 10px; --ar-inset: 2px; }
   .ar-panel__head { border-bottom: 1px solid var(--ar-line); }
   .ar-number,.ar-select,.ar-color { border-radius: 7px; }
   .ar-checkbox__box,.ar-checkbox__box.ar-insert { border-radius: 4px; }
