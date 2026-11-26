@@ -132,7 +132,7 @@ function TactileComparison({ density, type, accent }: { density: Density; type: 
       <div className="sc-tactile__heading">
         <div>
           <h2 id="tactile-title">Tactile Modernism</h2>
-          <p>One instrument, five material studies. Change any control to compare its response in every finish.</p>
+          <p>One instrument, five edge profiles and material studies. Change any control to compare its response in every finish.</p>
         </div>
         <Button size="sm" onClick={() => { setLevel(0.64); setRoughness(0.38); setEnabled(true); setQuality('High'); }}>Reset all</Button>
       </div>
@@ -142,7 +142,7 @@ function TactileComparison({ density, type, accent }: { density: Density; type: 
             <Panel title={THEME_META[t].label} subtitle="Material study">
               <Section title="Surface">
                 <div className="sc-tactile__dial">
-                  <Knob label="Intensity" value={level} onChange={setLevel} size={72} defaultValue={0.64} />
+                  <Knob label="Intensity" value={level} onChange={setLevel} size={88} defaultValue={0.64} />
                   <div className="sc-tactile__readings">
                     <Stat label="Intensity" value={level * 100} decimals={1} unit="%" />
                     <Meter label="Signal" value={enabled ? level : 0} />
