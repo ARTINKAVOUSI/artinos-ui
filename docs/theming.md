@@ -1,6 +1,6 @@
 # ARTINOS UI — theming
 
-Contents: picking a theme (all 9) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
+Contents: picking a theme (all 14) · solid vs glass · density · token layers · overriding tokens · custom themes · finish overrides · key tokens
 
 `<artinos-ui>` below means the ARTINOS UI package folder.
 
@@ -20,7 +20,7 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 - **In a project with a kit:** `THEMES` / `THEME_META` from the kit's `index.ts`, or the header of its `tokens/themes.css`, list exactly the themes that kit contains. An id that isn't there silently falls back to the studio look.
 - **Adding a theme to a kit:** re-export with it rather than hand-copying CSS blocks, because a theme lives in two files and shares rules. Run `node <artinos-ui>/artinos.mjs export --project . --themes pro-gray,onyx --components <same list> --force`.
 
-**The themes.** Nine themes in one set, each a complete look of its own: pick the one for the job. `THEMES` lists them in this order, the default first.
+**The themes.** Fourteen themes in one set, each a complete look of its own: pick the one for the job. `THEMES` lists them in this order, the default first.
 
 <!-- themes:start -->
 | id | name | kind | look |
@@ -34,7 +34,14 @@ A theme is the whole look: ground, ink, accent colours, panel glass and the fini
 | `haze-carve` | Haze Carve | glass | Haze carved: tracks set into the frost and edged by a fine groove, values floating softly. |
 | `haze-day` | Haze Day | glass | The same deep blur under a bright white veil: graphite ink, a hairline pane and values on a breath of shadow. |
 | `ice` | Ice | glass | Clean cool frost: a faint blue-white pane, icy controls, deep navy ink. |
+| `tactile-porcelain` | Porcelain | solid | Warm ceramic, carved wells and low-relief satin inserts. |
+| `tactile-graphite` | Graphite | solid | Soft-touch graphite, deep quiet wells and restrained mint seams. |
+| `tactile-alloy` | Alloy | solid | Precision satin metal, crisp micro-bevels and defined contact shadows. |
+| `tactile-basalt` | Basalt | solid | Near-black mineral surfaces, restrained chamfers and champagne seams. |
+| `tactile-opal` | Opal | solid | Milky polymer-inspired surfaces, diffused relief and soft edge light. |
 <!-- themes:end -->
+
+**Tactile Modernism (experimental):** five solid finishes explore the middle ground between soft UI and physical instruments. Each changes the panel, sheet, well, insert and seam together. Opal suggests translucent polymer through diffuse highlights; it is not a refractive glass renderer. All use the same components, type and density. Compare them against Nimbus and Studio Light in the showcase. Use `ground` for a complete solid workspace.
 
 **Choosing:**
 - **Dark app:** `pro-gray` (solid): the neutral grey of professional 3D and grading software.
